@@ -1,0 +1,9 @@
+html,
+body {
+  font-family: "Charter", "Georgia", serif;
+}
+
+p {
+  margin-bottom: 0.5rem;
+  line-height: 150%;
+}

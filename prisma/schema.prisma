@@ -1,0 +1,364 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model author {
+  id       Int     @id @default(autoincrement())
+  name     String? @db.VarChar(500)
+  is_dchp1 Int?    @db.TinyInt
+  is_teach Int?    @db.TinyInt
+}
+
+// model Citation {
+//   id                    Int                @id @default(autoincrement())
+//   created               DateTime?          @db.DateTime(0)
+//   short_meaning         String?            @db.VarChar(200)
+//   part_of_speech        String?            @db.VarChar(50)
+//   spelling_variant      String?            @db.VarChar(200)
+//   text                  String?            @db.Text
+//   headword_id           Int?
+//   source_id             Int?
+//   user_id               Int?
+//   last_modified         DateTime?          @db.DateTime(0)
+//   last_modified_user_id Int?
+//   legacy_id             Int?
+//   is_incomplete         Int?
+//   memo                  String?            @db.Text
+//   is_dchp1              Int?               @db.TinyInt
+//   is_teach              Int?               @db.TinyInt
+//   clip_start            Int?
+//   clip_end              Int?
+//   clipped_text          String?            @db.Text
+//   meanings              MeaningCitations[]
+
+//   @@index([headword_id], map: "headword_id_idxfk")
+//   @@index([source_id], map: "source_id_idxfk")
+//   @@index([user_id], map: "user_id_idxfk")
+//   @@map("citation")
+// }
+
+// model Det {
+//   meaning_id  Int
+//   citation_id Int
+//   meaning     Meaning?  @relation(fields: [meaning_id], references: [id])
+//   citation    Citation? @relation(fields: [citation_id], references: [id])
+
+//   @@id([meaning_id, citation_id])
+//   @@index([citation_id])
+//   @@index([meaning_id], map: "det_citations_meanings_meaning_id_idxfk")
+//   @@map("det_citations_meanings")
+// }
+
+model MeaningDetCitations {
+  meaning_id  Int
+  citation_id Int
+  meaning     Meaning?  @relation(fields: [meaning_id], references: [id])
+  // citation    DetCitation? @relation(fields: [citation_id], references: [id])
+  citation    DetBibliography? @relation(fields: [citation_id], references: [id])
+
+  @@id([meaning_id, citation_id])
+  @@index([citation_id])
+  @@index([meaning_id], map: "det_citations_meanings_meaning_id_idxfk")
+  @@map("det_citations_meanings")
+}
+
+
+model Entry {
+  id                   Int       @id @default(autoincrement())
+  headword             String    @unique(map: "det_entries_unique_headword") @db.VarChar(255)
+  first_field          String    @db.VarChar(500)
+  etymology            String    @db.VarChar(500)
+  is_legacy            Boolean   @default(false)
+  is_public            Boolean   @default(false)
+  spelling_variants    String?   @db.VarChar(200)
+  superscript          String    @db.VarChar(50)
+  dagger               Boolean   @default(false)
+  general_labels       String?   @db.VarChar(500)
+  proofing_status      Int       @default(0)
+  proofing_user        String?   @db.VarChar(200)
+  fist_note            String?   @db.Text
+  image_file_name      String?   @db.VarChar(200)
+  comment              String?   @db.VarChar(1000)
+  first_draft          Boolean   @default(false)
+  revised_draft        Boolean   @default(false)
+  semantically_revised Boolean   @default(false)
+  edited_for_style     Boolean   @default(false)
+  proofread            Boolean   @default(false)
+  chief_editor_ok      Boolean   @default(false)
+  final_proofing       Boolean   @default(false)
+  no_cdn_susp          Boolean   @default(false)
+  no_cdn_conf          Boolean   @default(false)
+  edit_status_comment  String?   @db.VarChar(1000)
+  meanings             Meaning[]
+  seeAlso              SeeAlso[]
+
+  @@map("det_entries")
+}
+
+model DetCitation {
+  id	        Int	       @id
+  headword	  String?    @db.VarChar(400)
+  citation	  String?    @db.Text
+  meanshort	  String?    @db.VarChar(200)
+  spellvar	  String?    @db.VarChar(200)
+  dchp_1	    Int?       @db.TinyInt
+  yearpub	    String?    @db.VarChar(100)
+  page	      String?    @db.VarChar(300)
+  author	    String?    @db.VarChar(500)
+  place	      String?    @db.VarChar(500)
+  title	      String?    @db.Text
+  yearcomp	  String?    @db.VarChar(400)
+  perio_date	String?    @db.VarChar(200)
+  vol_iss	    String?    @db.VarChar(200)
+  url	        String?    @db.Text
+  uttered	    String?    @db.VarChar(500)
+  media	      String?    @db.VarChar(500)
+  broadcast	  String?    @db.VarChar(500)
+  evidence	  String?    @db.VarChar(500)
+  dateline	  String?    @db.VarChar(300)
+  short_title	String?    @db.MediumText
+  // meanings    MeaningDetCitations[]
+
+  @@map("det_citations")
+}
+
+model DetBibliography {
+  id           Int	       @id
+  citation     String?    @db.Text
+  yearpub      String?    @db.VarChar(100)
+  page         String?    @db.VarChar(300)
+  author       String?    @db.VarChar(500)
+  place        String?    @db.VarChar(500)
+  title        String?    @db.Text
+  editor       String?    @db.VarChar(500)
+  yearcomp     String?    @db.VarChar(400)
+  perio_date   String?    @db.VarChar(200)
+  vol_iss      String?    @db.VarChar(200)
+  url_acc_date String?   @db.VarChar(200)
+  url	         String?    @db.Text
+  publisher	   String?    @db.VarChar(300)
+  uttered	     String?    @db.VarChar(500)
+  witness	     String?    @db.VarChar(500)
+  time_apx	   String?    @db.VarChar(200)
+  media	       String?    @db.VarChar(500)
+  broadcast	   String?    @db.VarChar(500)
+  evidence	   String?    @db.VarChar(500)
+  dateline	   String?    @db.VarChar(300)
+  short_title	 String?    @db.MediumText
+  meanings     MeaningDetCitations[]
+
+  @@map("det_bibliographies")
+}
+
+
+model SeeAlso {
+  meaning_id Int
+  entry_id   Int
+  linknote   String  @db.VarChar(50)
+  headword   String? @db.VarChar(255)
+  meaning    Meaning @relation(fields: [meaning_id], references: [id])
+  entry      Entry   @relation(fields: [entry_id], references: [id])
+
+  @@id([meaning_id, entry_id])
+  @@index([entry_id], map: "det_entries_meanings_entry_id_idxfk")
+  @@index([meaning_id], map: "det_entries_meanings_meaning_id_idxfk")
+  @@index([entry_id, headword], map: "entry_id_idxfk")
+
+  @@map("det_entries_meanings")
+}
+
+model det_entries_references {
+  id            Int       @id @default(autoincrement())
+  entry_id      Int
+  reference_id  Int
+  sv_text       String?   @db.VarChar(10)
+  link_text     String?   @db.VarChar(100)
+  link_target   String?   @db.VarChar(1000)
+  date_accessed DateTime? @db.DateTime(0)
+
+  @@index([reference_id], map: "det_citations_meanings_citation_id_idx")
+  @@index([entry_id], map: "det_citations_meanings_meaning_id_idxfk")
+}
+
+model det_images {
+  id       Int     @id @default(autoincrement()) @db.UnsignedInt
+  caption  String? @db.Text
+  path     String  @default("") @db.VarChar(255)
+  entry_id Int
+  scale    Float?
+  order    Int?
+}
+
+model det_ips {
+  id        Int    @id @default(autoincrement()) @db.UnsignedInt
+  ip_addr   String @db.VarChar(45)
+  host_name String @db.VarChar(45)
+}
+
+model det_log_entries {
+  id       Int      @id @default(autoincrement())
+  entry_id Int
+  user_id  Int
+  created  DateTime @db.DateTime(0)
+  headword String?  @db.VarChar(255)
+
+  @@index([entry_id, headword], map: "entry_id_idxfk")
+}
+
+model Meaning {
+  id                       Int                @id @default(autoincrement())
+  entry_id                 Int
+  partofspeech             String             @db.VarChar(50)
+  definition               String             @db.Text
+  ordernum                 Int
+  orderletter              String             @db.VarChar(3)
+  usage                    String             @db.VarChar(100)
+  headword                 String?            @db.VarChar(255)
+  canadianism_type         String?            @db.VarChar(50)
+  canadianism_type_comment String?            @db.Text
+  order                    String?            @db.VarChar(10)
+  dagger                   Boolean
+  entry                    Entry              @relation(fields: [entry_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  citations                MeaningDetCitations[]
+  seeAlso                  SeeAlso[]
+  usageNotes               UsageNote[]
+
+  @@index([entry_id, headword], map: "entry_id_idxfk")
+  @@map("det_meanings")
+}
+
+model det_references {
+  id             Int    @id @default(autoincrement()) @db.UnsignedInt
+  short_display  String @default("") @db.VarChar(255)
+  reference_text String @db.Text
+}
+
+model UsageNote {
+  id         Int    @id @default(autoincrement())
+  meaning_id Int
+  text       String @db.Text
+  meaning    Meaning @relation(fields: [meaning_id], references: [id])
+
+  @@index([meaning_id], map: "meaning_id_idxfk")
+  @@map("det_usage_notes")
+}
+
+model det_user_sessions {
+  id      String  @id @db.VarChar(255)
+  data    String? @db.Text
+  expires Int?
+}
+
+model headword {
+  id       Int    @id @default(autoincrement())
+  headword String @db.VarChar(400)
+  is_dchp1 Int?   @db.TinyInt
+  is_teach Int?   @db.TinyInt
+
+  @@index([headword(length: 333)], map: "headword")
+  @@index([id], map: "headword_id_idxfk")
+}
+
+model place {
+  id       Int     @id @default(autoincrement())
+  name     String? @db.VarChar(500)
+  is_dchp1 Int?    @db.TinyInt
+  is_teach Int?    @db.TinyInt
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model sdt {
+  sdtid    Int
+  sourceid Int     @default(0) @db.UnsignedInt
+  sdt_memo String? @db.VarChar(500)
+  sdt_var  String? @db.VarChar(500)
+  sdt_dns  Int?
+
+  @@ignore
+}
+
+model sdt_head {
+  headid Int @unique(map: "headid")
+  sdtid  Int @id @default(autoincrement())
+
+  @@index([sdtid], map: "sdt_head_sdtid_idxfk")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model sdt_memos {
+  sdtid        Int?
+  big_memo_sdt String? @db.Text
+  big_memo_dic String? @db.Text
+
+  @@index([sdtid], map: "sdtid_idxfk")
+  @@ignore
+}
+
+model sdt_sources {
+  sourceid     Int     @id @default(autoincrement()) @db.UnsignedInt
+  source_name  String? @db.VarChar(500)
+  source_type  Int?
+  source_label String? @db.VarChar(100)
+
+  @@index([sourceid], map: "sdt_sources_sourceid_idxfk")
+}
+
+model source {
+  id                  Int     @id @default(autoincrement()) @db.UnsignedInt
+  type_id             Int?
+  year_published      String? @db.VarChar(100)
+  page                String? @db.VarChar(300)
+  author_id           Int?
+  title_id            Int?
+  place_id            Int?
+  url                 String? @db.Text
+  url_access_date     String? @db.VarChar(200)
+  dateline            String? @db.VarChar(300)
+  periodical_date     String? @db.VarChar(200)
+  year_composed       String? @db.VarChar(400)
+  publisher           String? @db.VarChar(300)
+  uttered             String? @db.VarChar(500)
+  utterance_witness   String? @db.VarChar(500)
+  utterance_time      String? @db.VarChar(200)
+  utterance_media     String? @db.VarChar(500)
+  utterance_broadcast String? @db.VarChar(500)
+  volume_issue        String? @db.VarChar(200)
+  editor              String? @db.VarChar(500)
+  evidence            String? @db.VarChar(500)
+  is_dchp1            Int?    @db.TinyInt
+  is_teach            Int?    @db.TinyInt
+
+  @@index([author_id], map: "author_id_idxfk")
+  @@index([place_id], map: "place_id_idxfk")
+  @@index([title_id], map: "title_id_idxfk")
+  @@index([year_published], map: "year_published_idx")
+}
+
+model title {
+  id         Int     @id @default(autoincrement())
+  name       String? @db.Text
+  short_name String? @db.MediumText
+  is_dchp1   Int?    @db.TinyInt
+  is_teach   Int?    @db.TinyInt
+}
+
+model user {
+  id           Int     @id @default(autoincrement())
+  student_id   Int?
+  course       String? @db.VarChar(100)
+  access_level Int?
+  is_active    Int?
+  first_name   String? @db.VarChar(100)
+  last_name    String? @db.VarChar(100)
+  email        String? @db.VarChar(200)
+  password     String? @db.VarChar(50)
+  password_key String? @db.VarChar(50)
+  is_dchp1     Int?    @db.TinyInt
+  is_proofer   Int?    @default(1)
+  is_teach     Int?    @db.TinyInt
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
