@@ -5,7 +5,8 @@ FROM node:16-bullseye-slim as base
 ENV NODE_ENV production
 
 # Install openssl for Prisma
-RUN apt-get update && apt-get install -y openssl sqlite3
+# RUN apt-get update && apt-get install -y openssl sqlite3
+RUN apt-get update && apt-get install -y openssl
 
 # Install all node_modules, including dev dependencies
 FROM base as deps
@@ -43,9 +44,6 @@ FROM base
 RUN echo "Make sure you set the DATABASE_URL secret!"
 ENV PORT="8080"
 ENV NODE_ENV="production"
-
-# add shortcut for connecting to database CLI
-RUN echo "#!/bin/sh\nset -x\nsqlite3 \$DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
 
 WORKDIR /myapp
 
