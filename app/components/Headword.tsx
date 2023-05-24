@@ -1,6 +1,7 @@
 import React from "react"
 import DictionaryVersion from "./DictionaryVersion"
 import HandNoteBlock from "./HandNoteBlock"
+import SanitizedTextSpan from "./SanitizedTextSpan"
 
 interface HeadwordProps {
   alternatives?: string
@@ -34,7 +35,11 @@ const Headword = ({
         </h2>
       )}
       <p>
-        {etymology && <span className="mr-1">{etymology}</span>}
+        {etymology && (
+          <span className="mr-1">
+            <SanitizedTextSpan text={etymology} />
+          </span>
+        )}
         {generalLabels && <span className="mr-1 italic">{generalLabels}</span>}
       </p>
       {handNote && (
