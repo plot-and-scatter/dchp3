@@ -90,8 +90,12 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
-      - name: 🏄 Copy test env vars
-        run: cp .env.example .env
+      - name: 🔑 Make envfile
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          # envkey_SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          envkey_DATABASE_URL: ${{ secrets.PLANETSCALE_MYSQL_DB_URL_FOR_CYPRESS }}
+          file_name: .env
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
@@ -116,7 +120,6 @@ jobs:
           wait-on: "http://localhost:8811"
         env:
           PORT: "8811"
-          DATABASE_URL: "${{ secrets.PLANETSCALE_MYSQL_DB_URL_FOR_CYPRESS }}"
 
   build:
     name: 🐳 Build
