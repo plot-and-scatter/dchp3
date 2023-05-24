@@ -1,11 +1,4 @@
-import QuickLink from "~/components/quicklinks/QuickLink"
-import Canuck from "~/samples/Canuck"
-
-// import { useOptionalUser } from "~/utils";
-
 export default function Index() {
-  // const user = useOptionalUser();
-
   return (
     <div className="relative">
       <header className="fixed top-0 z-50 flex h-12 w-full items-center justify-center bg-slate-700 text-white md:h-16">
