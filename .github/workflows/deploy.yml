@@ -116,6 +116,7 @@ jobs:
           wait-on: "http://localhost:8811"
         env:
           PORT: "8811"
+          DATABASE_URL: "${{ secrets.PLANETSCALE_MYSQL_DB_URL_FOR_CYPRESS }}"
 
   build:
     name: 🐳 Build
