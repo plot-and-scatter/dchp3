@@ -94,6 +94,8 @@ jobs:
         uses: SpicyPizza/create-envfile@v1.3
         with:
           # envkey_SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          # Yes, there is a warning on the next line. See issue at
+          # https://github.com/SpicyPizza/create-envfile/issues/10
           envkey_DATABASE_URL: ${{ secrets.PLANETSCALE_MYSQL_DB_URL_FOR_CYPRESS }}
           file_name: .env
 
@@ -107,8 +109,8 @@ jobs:
         with:
           useLockFile: false
 
-      - name: 🛠 Setup Database
-        run: npx prisma migrate reset --force
+      # - name: 🛠 Setup Database
+      #   run: npx prisma migrate reset --force
 
       - name: ⚙️ Build
         run: npm run build
