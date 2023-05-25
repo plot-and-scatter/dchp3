@@ -13,8 +13,10 @@ const Nav = (): JSX.Element => {
       <div className="flex w-full max-w-6xl items-center justify-between">
         <div className="flex items-center gap-8">
           <div className="">
-            <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> About
-            <span className="hidden md:inline"> the DCHP-3</span>
+            <Link to="/about">
+              <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> About
+              <span className="hidden md:inline"> the DCHP-3</span>
+            </Link>
           </div>
         </div>
         <div className="flex items-center gap-4 md:gap-8">
