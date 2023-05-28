@@ -46,8 +46,40 @@ export function getEntries(skip?: number, take: number = 20) {
     select: { id: true, headword: true },
     orderBy: { headword: "asc" },
     skip: _skip,
-    take,
+    take: 40,
   })
+}
+
+export async function putEntries(data: any) {
+  await prisma.entry.create({
+    data: {
+      id: 999999,
+      headword: "aaaa new test",
+      first_field: "first field",
+      etymology: "etymology",
+      is_legacy: false,
+      is_public: true,
+      spelling_variants: null,
+      superscript: "Superscript",
+      dagger: false,
+      general_labels: null,
+      proofing_status: 1,
+      proofing_user: null,
+      fist_note: null,
+      image_file_name: null,
+      comment: null,
+      first_draft: false,
+      revised_draft: true,
+      semantically_revised: false,
+      edited_for_style: false,
+      proofread: false,
+      chief_editor_ok: false,
+      final_proofing: false,
+      no_cdn_susp: false,
+      no_cdn_conf: false,
+      edit_status_comment: "this word is for testing"
+    },
+  });
 }
 
 export function getEntriesByInitialLetters(
