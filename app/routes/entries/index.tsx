@@ -12,7 +12,7 @@ export default function EntryIndexPage() {
           <div key={letter}>
             <Link
               className="text-xl font-bold text-red-600 hover:text-red-400"
-              to={`/entries/browse/${letter}`}
+              to={`/entries/browse/${letter}/1`}
             >
               {letter}
             </Link>

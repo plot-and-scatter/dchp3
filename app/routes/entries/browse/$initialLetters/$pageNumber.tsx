@@ -1,14 +1,20 @@
 import type { LoaderArgs } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react"
+import { Link, useCatch, useLoaderData, useParams, useSearchParams } from "@remix-run/react"
 import invariant from "tiny-invariant"
 
-import { getEntriesByInitialLetters } from "~/models/entry.server"
+import { getEntriesByInitialLettersAndPage } from "~/models/entry.server"
 
+// https://github.com/remix-run/remix/discussions/3407
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.initialLetters, "initialLetters not found")
+  invariant(params.pageNumber, "pageNumber not found")
 
-  const entries = await getEntriesByInitialLetters(params.initialLetters)
+  // const pageNumber: number = params.pageNumber
+  const entries = await getEntriesByInitialLettersAndPage(
+    params.initialLetters,
+    params.pageNumber);
+
   if (!entries) {
     throw new Response("Not Found", { status: 404 })
   }

@@ -50,6 +50,21 @@ export function getEntries(skip?: number, take: number = 20) {
   })
 }
 
+export function getEntriesByInitialLettersAndPage(
+  initialLetters: string,
+  page: string
+) {
+  const pageNumber = parseInt(page);
+  if (isNaN(pageNumber)) {
+    throw new Error(
+      `Page Number ("${page}") must be a number`
+    )
+  }
+
+  const skip: number = (pageNumber - 1) * 100;
+  return getEntriesByInitialLetters(initialLetters, skip);
+}
+
 export function getEntriesByInitialLetters(
   initialLetters: string,
   skip: number = 0,
