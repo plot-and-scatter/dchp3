@@ -11,10 +11,18 @@ const Nav = (): JSX.Element => {
     <div className="">Project History &amp; Team</div>
   </div> */}
       <div className="flex w-full max-w-6xl items-center justify-between">
-        <div className="flex items-center gap-8">
+        <div className="flex items-start gap-8">
           <div className="">
             <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> About
             <span className="hidden md:inline"> the DCHP-3</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="">
+            <Link to="/insertEntry">
+              <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> Insert
+              <span className="hidden md:inline"> entries </span>
+            </Link>
           </div>
         </div>
         <div className="flex items-center gap-4 md:gap-8">
