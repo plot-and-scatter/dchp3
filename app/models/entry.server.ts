@@ -53,8 +53,8 @@ export function getEntries(skip?: number, take: number = 20) {
 export async function putEntries(data: any) {
   await prisma.entry.create({
     data: {
-      id: 999999,
-      headword: "aaaa new test",
+      id: parseInt(data.id), // TODO this is not a good idea
+      headword: data.headword,
       first_field: "first field",
       etymology: "etymology",
       is_legacy: false,
