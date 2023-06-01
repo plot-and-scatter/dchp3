@@ -1,16 +1,14 @@
-import { LoaderArgs, } from "@remix-run/node"
+import type { LoaderArgs } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import { Link, useCatch, useLoaderData, useParams, } from "@remix-run/react"
+import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react"
 import invariant from "tiny-invariant"
 
 import { getEntriesByInitialLettersAndPage } from "~/models/entry.server"
 
-// https://github.com/remix-run/remix/discussions/3407
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ params }: LoaderArgs) {
   invariant(params.initialLetters, "initialLetters not found")
   invariant(params.pageNumber, "pageNumber not found")
 
-  // const pageNumber: number = params.pageNumber
   const entries = await getEntriesByInitialLettersAndPage(
     params.initialLetters,
     params.pageNumber);
@@ -37,7 +35,8 @@ export default function EntryDetailsPage() {
     <div>
       <h3 className="text-2xl font-bold">
         <>
-          Entries starting with {params.initialLetters}: Page {params.pageNumber}
+          Entries starting with  {params.initialLetters}
+          :  {data.entries.length}  (Page {params.pageNumber})
         </>
       </h3>
       {data.entries.map((e) => {
