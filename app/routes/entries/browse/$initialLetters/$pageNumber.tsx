@@ -23,13 +23,7 @@ export default function EntryDetailsPage() {
   const data = useLoaderData<typeof loader>()
   const params = useParams()
 
-  let curPage: number;
-
-  if (params.pageNumber) {
-    curPage = parseInt(params.pageNumber);
-  } else {
-    curPage = 1;
-  }
+  const currentPage = params.pageNumber ? parseInt(params.pageNumber) : 1
 
   return (
     <div>
@@ -51,10 +45,10 @@ export default function EntryDetailsPage() {
           </p>
         )
       })}
-      <Link to={`../browse/${params.initialLetters}/${curPage - 1}`}>
+      <Link to={`../browse/${params.initialLetters}/${currentPage - 1}`}>
         <button name="previousPage" className="bg-slate-500 border-gray-900 p-3 m-3">Prev Page</button>
       </Link>
-      <Link to={`../browse/${params.initialLetters}/${curPage + 1}`}>
+      <Link to={`../browse/${params.initialLetters}/${currentPage + 1}`}>
         <button name="nextPage" className="bg-slate-500 border-gray-900 p-3 m-3">Next Page</button>
       </Link>
     </div>

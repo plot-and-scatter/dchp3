@@ -1,9 +1,5 @@
 import { type LoaderArgs, redirect } from "@remix-run/server-runtime";
 
-export async function loader({ request, params }: LoaderArgs) {
-    return redirect(`${params.initialLetters}/1`);
-}
-
-export default function SearchIndexPage() {
-    return <></>
+export async function loader({ params }: LoaderArgs) {
+    return redirect(`/entries/browse/${params.initialLetters}/1`)
 }
