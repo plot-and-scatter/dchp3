@@ -1,6 +1,6 @@
-import type { LoaderArgs } from "@remix-run/node"
+import { ActionArgs, LoaderArgs, redirect } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import { Link, useCatch, useLoaderData, useParams, useSearchParams } from "@remix-run/react"
+import { Form, Link, useCatch, useLoaderData, useParams, useSearchParams } from "@remix-run/react"
 import invariant from "tiny-invariant"
 
 import { getEntriesByInitialLettersAndPage } from "~/models/entry.server"
@@ -25,11 +25,19 @@ export default function EntryDetailsPage() {
   const data = useLoaderData<typeof loader>()
   const params = useParams()
 
+  let curPage: number;
+
+  if (params.pageNumber) {
+    curPage = parseInt(params.pageNumber);
+  } else {
+    curPage = 1;
+  }
+
   return (
     <div>
       <h3 className="text-2xl font-bold">
         <>
-          Entries starting with {params.initialLetters}: {data.entries.length}
+          Entries starting with {params.initialLetters}: Page {params.pageNumber}
         </>
       </h3>
       {data.entries.map((e) => {
@@ -44,6 +52,12 @@ export default function EntryDetailsPage() {
           </p>
         )
       })}
+      <Link to={`../browse/${params.initialLetters}/${curPage - 1}`}>
+        <button name="previousPage" className="bg-slate-500 border-gray-900 p-3 m-3">Prev Page</button>
+      </Link>
+      <Link to={`../browse/${params.initialLetters}/${curPage + 1}`}>
+        <button name="nextPage" className="bg-slate-500 border-gray-900 p-3 m-3">Next Page</button>
+      </Link>
     </div>
   )
 }
