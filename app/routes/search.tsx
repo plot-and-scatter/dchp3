@@ -1,23 +1,18 @@
-import { Outlet, useNavigate, useParams } from "@remix-run/react"
+import { Form, Outlet, useNavigate, useParams } from "@remix-run/react"
+import { ActionArgs, redirect } from "@remix-run/server-runtime"
 import { useCallback, useState } from "react"
 import Header from "~/components/elements/Header"
 import Main from "~/components/elements/Main"
 import Nav from "~/components/elements/Nav"
 
+export async function action({ params }: ActionArgs) {
+  return redirect(`/search/b`)
+}
+
+
 export default function SearchPage() {
   const params = useParams()
   const [text, setText] = useState(params?.text)
-  const navigate = useNavigate()
-
-  const formSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      // TODO: Is this the best way to do this?
-      e.preventDefault()
-      navigate(`/search/${text}`)
-      return false
-    },
-    [navigate, text]
-  )
 
   return (
     <div className="relative">
@@ -27,8 +22,8 @@ export default function SearchPage() {
         <div>
           <h1 className="text-2xl font-bold">Search entries</h1>
           <p>Enter search text to find headwords containing that text.</p>
-          <form onSubmit={formSubmit}>
-            <div className="flex">
+          <Form method="post">
+            <div className="flex flex-col gap-3 p-1">
               <input
                 type="text"
                 placeholder="Search text"
@@ -38,23 +33,22 @@ export default function SearchPage() {
                   setText(e.target.value)
                 }}
               />
-              <div className="grid col gap-3 pl-3">
-                <label className="gap-2 p-1">
-                  Case-Sensitive
+
+              <div className="flex ml-2 justify-around">
+                <label>
+                  Case-sensitive:
+                  <input className="ml-3" type="checkbox" />
                 </label>
-                <input
-                  type="checkbox"
-                  className="ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
-                />
               </div>
+
               <button className="ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400">
                 <i className="fas fa-search mr-2"></i>
                 Search
               </button>
             </div>
-          </form>
+          </Form>
+          <Outlet />
         </div>
-        <Outlet />
 
       </Main >
     </div >
