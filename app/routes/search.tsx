@@ -27,8 +27,8 @@ export default function SearchPage() {
         <div>
           <h1 className="text-2xl font-bold">Search entries</h1>
           <p>Enter search text to find headwords containing that text.</p>
-          <div>
-            <form onSubmit={formSubmit}>
+          <form onSubmit={formSubmit}>
+            <div className="flex">
               <input
                 type="text"
                 placeholder="Search text"
@@ -38,15 +38,25 @@ export default function SearchPage() {
                   setText(e.target.value)
                 }}
               />
+              <div className="grid col gap-3 pl-3">
+                <label className="gap-2 p-1">
+                  Case-Sensitive
+                </label>
+                <input
+                  type="checkbox"
+                  className="ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
+                />
+              </div>
               <button className="ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400">
                 <i className="fas fa-search mr-2"></i>
                 Search
               </button>
-            </form>
-          </div>
-          <Outlet />
+            </div>
+          </form>
         </div>
-      </Main>
-    </div>
+        <Outlet />
+
+      </Main >
+    </div >
   )
 }
