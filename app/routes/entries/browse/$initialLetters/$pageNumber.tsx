@@ -11,7 +11,8 @@ export async function loader({ params }: LoaderArgs) {
 
   const entries = await getEntriesByInitialLettersAndPage(
     params.initialLetters,
-    params.pageNumber);
+    params.pageNumber
+  )
 
   if (!entries) {
     throw new Response("Not Found", { status: 404 })
@@ -29,8 +30,8 @@ export default function EntryDetailsPage() {
     <div>
       <h3 className="text-2xl font-bold">
         <>
-          Entries starting with  {params.initialLetters}
-          :  {data.entries.length}  (Page {params.pageNumber})
+          Entries starting with {params.initialLetters}: {data.entries.length}{" "}
+          (Page {params.pageNumber})
         </>
       </h3>
       {data.entries.map((e) => {
@@ -46,10 +47,20 @@ export default function EntryDetailsPage() {
         )
       })}
       <Link to={`../browse/${params.initialLetters}/${currentPage - 1}`}>
-        <button name="previousPage" className="bg-slate-500 border-gray-900 p-3 m-3">Prev Page</button>
+        <button
+          name="previousPage"
+          className="m-3 border-gray-900 bg-slate-500 p-3"
+        >
+          Prev Page
+        </button>
       </Link>
       <Link to={`../browse/${params.initialLetters}/${currentPage + 1}`}>
-        <button name="nextPage" className="bg-slate-500 border-gray-900 p-3 m-3">Next Page</button>
+        <button
+          name="nextPage"
+          className="m-3 border-gray-900 bg-slate-500 p-3"
+        >
+          Next Page
+        </button>
       </Link>
     </div>
   )

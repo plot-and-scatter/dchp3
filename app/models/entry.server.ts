@@ -56,19 +56,15 @@ export function getEntriesByInitialLettersAndPage(
   initialLetters: string,
   page: string
 ) {
-  const pageNumber = parseInt(page);
+  const pageNumber = parseInt(page)
   if (isNaN(pageNumber)) {
-    throw new Error(
-      `Page Number ("${page}") must be a number`
-    )
+    throw new Error(`Page Number ("${page}") must be a number`)
   } else if (isNonPositive(pageNumber)) {
-    throw new Error(
-      `Page Number ("${page}") must be greater than zero`
-    )
+    throw new Error(`Page Number ("${page}") must be greater than zero`)
   }
 
-  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE;
-  return getEntriesByInitialLetters(initialLetters, skip);
+  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
+  return getEntriesByInitialLetters(initialLetters, skip)
 }
 
 export function getEntriesByInitialLetters(
