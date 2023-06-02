@@ -53,7 +53,8 @@ export function getEntries(skip?: number, take: number = 20) {
 export function getEntriesByInitialLetters(
   initialLetters: string,
   skip: number = 0,
-  take: number = 100
+  take: number = 100,
+
 ) {
   if (initialLetters.length === 0) {
     throw new Error(
@@ -69,12 +70,24 @@ export function getEntriesByInitialLetters(
 export function getEntriesByBasicTextSearch(
   text: string,
   skip: number = 0,
-  take: number = 100
+  take: number = 100,
+  caseSensitive: boolean = false
 ) {
   if (text.length === 0) {
     throw new Error(`Text ("${text}") length must be greater than zero`)
   }
   const searchWildcard = `%${text}%`
+
+  const mainQuery = `SELECT id, headword FROM det_entries`
+  const whereClause = caseSensitive ?
+    ` WHERE LOWER(headword) LIKE LOWER(${searchWildcard})` :
+    ` WHERE (headword) LIKE (${searchWildcard})`
+  const orderByClause = ` ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
+
+  const queryString = mainQuery + whereClause + orderByClause
+
+  const temp = `SELECT id, headword FROM det_entries WHERE LOWER(headword) LIKE LOWER(${searchWildcard}) ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
+
   return prisma.$queryRaw<
     Pick<Entry, "id" | "headword">[]
   >`SELECT id, headword FROM det_entries WHERE LOWER(headword) LIKE LOWER(${searchWildcard}) ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
