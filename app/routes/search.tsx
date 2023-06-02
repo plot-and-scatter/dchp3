@@ -1,15 +1,18 @@
 import { Form, Outlet, useParams } from "@remix-run/react"
-import { ActionArgs, redirect } from "@remix-run/server-runtime"
+import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import { useState } from "react"
 import Header from "~/components/elements/Header"
 import Main from "~/components/elements/Main"
 import Nav from "~/components/elements/Nav"
 
 export async function action({ request }: ActionArgs) {
-  const data = Object.fromEntries(await request.formData());
+  const data = Object.fromEntries(await request.formData())
 
   const mainUrl = `/search/${data.searchText}`
-  const checkboxParameter = data.caseSensitive ? "?caseSensitive=" + data.caseSensitive : "";
+  const checkboxParameter = data.caseSensitive
+    ? "?caseSensitive=" + data.caseSensitive
+    : ""
+
   const redirectUrl = mainUrl + checkboxParameter
   return redirect(redirectUrl)
 }
@@ -39,10 +42,15 @@ export default function SearchPage() {
                 }}
               />
 
-              <div className="flex ml-2 justify-around">
+              <div className="ml-2 flex justify-around">
                 <label>
                   Case-sensitive:
-                  <input className="ml-3" name="caseSensitive" type="checkbox" value="true" />
+                  <input
+                    className="ml-3"
+                    name="caseSensitive"
+                    type="checkbox"
+                    value="true"
+                  />
                 </label>
               </div>
 
@@ -54,8 +62,7 @@ export default function SearchPage() {
           </Form>
           <Outlet />
         </div>
-
-      </Main >
-    </div >
+      </Main>
+    </div>
   )
 }
