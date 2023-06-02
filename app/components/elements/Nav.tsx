@@ -11,10 +11,10 @@ const Nav = (): JSX.Element => {
     <div className="">Project History &amp; Team</div>
   </div> */}
       <div className="flex w-full max-w-6xl items-center justify-between">
-        <div>
+        <Link to="/about">
           <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> About
           <span className="hidden md:inline"> the DCHP-3</span>
-        </div>
+        </Link>
         <Link to="/insertEntry">
           <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> Insert
           <span className="hidden md:inline"> entries </span>
