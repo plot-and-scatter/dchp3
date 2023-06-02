@@ -48,7 +48,7 @@ export function getEntries(skip?: number, take: number = 20) {
     select: { id: true, headword: true },
     orderBy: { headword: "asc" },
     skip: _skip,
-    take: 40,
+    take,
   })
 }
 
@@ -68,10 +68,18 @@ export function getEntriesByInitialLettersAndPage(
 }
 
 export async function putEntries(data: any) {
+  // the rest of the fields can go here and be added later
+  const idValue = parseInt(data.id)
+  const headword = data.headword
+
+  // temporary; we'll need to add error checking etc.
+  // this is just to protect our local dev test databases for now
+  const id = idValue ? idValue : Number.MAX_SAFE_INTEGER
+
   await prisma.entry.create({
     data: {
-      id: parseInt(data.id), // TODO this is not a good idea
-      headword: data.headword,
+      id: id,
+      headword: headword,
       first_field: "first field",
       etymology: "etymology",
       is_legacy: false,

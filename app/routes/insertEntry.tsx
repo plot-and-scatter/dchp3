@@ -7,10 +7,9 @@ import { putEntries } from "~/models/entry.server";
 
 
 export async function action({ request }: ActionArgs) {
-  const data = Object.fromEntries(await request.formData());
-  console.log(data);
-  putEntries(data);
-  return redirect(`/entries/${data.headword}`);
+  const data = Object.fromEntries(await request.formData())
+  putEntries(data)
+  return redirect(`/entries/${data.headword}`)
 }
 
 export default function Index() {
