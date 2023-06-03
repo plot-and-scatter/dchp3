@@ -1,6 +1,7 @@
 import React from "react"
 import DictionaryVersion from "./DictionaryVersion"
 import HandNoteBlock from "./HandNoteBlock"
+import SanitizedTextSpan from "./SanitizedTextSpan"
 
 interface HeadwordProps {
   alternatives?: string
@@ -30,12 +31,22 @@ const Headword = ({
       {alternatives && (
         <h2 className="leading-tight text-slate-700 md:text-xl">
           <span className="text-slate-500">Spelling variants:</span>{" "}
-          <span className="italic">{alternatives}</span>
+          <span className="italic">
+            <SanitizedTextSpan text={alternatives} />
+          </span>
         </h2>
       )}
       <p>
-        {etymology && <span className="mr-1">{etymology}</span>}
-        {generalLabels && <span className="mr-1 italic">{generalLabels}</span>}
+        {etymology && (
+          <span className="mr-1">
+            <SanitizedTextSpan text={etymology} />
+          </span>
+        )}
+        {generalLabels && (
+          <span className="mr-1 italic">
+            <SanitizedTextSpan text={generalLabels} />
+          </span>
+        )}
       </p>
       {handNote && (
         <HandNoteBlock className="text-xs text-slate-500 md:text-lg">
