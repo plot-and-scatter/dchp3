@@ -13,7 +13,7 @@ const BibliographyItem = ({
   return (
     <div className="BibliographyItem flex">
       <dt className="w-20 shrink-0 font-bold">{label}</dt>
-      <dt>{value}</dt>
+      <dt className="break-all">{value}</dt>
     </div>
   )
 }
