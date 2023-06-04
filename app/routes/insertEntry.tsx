@@ -7,6 +7,7 @@ import { insertEntry } from "~/models/entry.server"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
+  console.log(data)
   insertEntry(data)
   return redirect(`/entries/${data.headword}`)
 }
@@ -77,7 +78,7 @@ export default function Index() {
                   className="ml-3 pl-3"
                   type="checkbox"
                   value="firstCheckbox"
-                  name="testCheckbox"
+                  name="testFirstCheckbox"
                 />
               </label>
               <label className="ml-3 pl-3 font-bold">
@@ -86,7 +87,7 @@ export default function Index() {
                   className="ml-3 pl-3"
                   type="checkbox"
                   value="secondCheckbox"
-                  name="testCheckbox"
+                  name="testSecondCheckbox"
                 />
               </label>
               <label className="ml-3 pl-3 font-bold">
@@ -95,7 +96,7 @@ export default function Index() {
                   className="ml-3 pl-3"
                   type="checkbox"
                   value="thirdCheckbox"
-                  name="testCheckbox"
+                  name="testThirdCheckbox"
                 />
               </label>
             </div>
@@ -115,7 +116,7 @@ export default function Index() {
             <div className="my-3 p-2">
               <label className="flex flex-col font-bold">
                 Large Amount Of Text
-                <textarea className="h-28 font-normal">
+                <textarea name="testTextArea" className="h-28 font-normal">
                   this is a lot of text
                 </textarea>
               </label>
