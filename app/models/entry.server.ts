@@ -1,8 +1,10 @@
 import type { Entry } from "@prisma/client"
-
 import { prisma } from "~/db.server"
+import { isNonPositive } from "~/utils/numberUtils"
 
 export type { Entry } from "@prisma/client"
+
+const DEFAULT_PAGE_SIZE = 100
 
 export function getEntryById({ id }: Pick<Entry, "id">) {
   return prisma.entry.findUnique({
@@ -50,10 +52,25 @@ export function getEntries(skip?: number, take: number = 20) {
   })
 }
 
+export function getEntriesByInitialLettersAndPage(
+  initialLetters: string,
+  page: string
+) {
+  const pageNumber = parseInt(page)
+  if (isNaN(pageNumber)) {
+    throw new Error(`Page Number ("${page}") must be a number`)
+  } else if (isNonPositive(pageNumber)) {
+    throw new Error(`Page Number ("${page}") must be greater than zero`)
+  }
+
+  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
+  return getEntriesByInitialLetters(initialLetters, skip)
+}
+
 export function getEntriesByInitialLetters(
   initialLetters: string,
   skip: number = 0,
-  take: number = 100
+  take: number = DEFAULT_PAGE_SIZE
 ) {
   if (initialLetters.length === 0) {
     throw new Error(
