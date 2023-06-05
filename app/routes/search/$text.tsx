@@ -8,7 +8,17 @@ import { getEntriesByBasicTextSearch } from "~/models/entry.server"
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.text, "text not found")
 
-  const entries = await getEntriesByBasicTextSearch(params.text)
+  const url = new URL(request.url)
+  const caseSensitive: boolean =
+    url.searchParams.get("caseSensitive") === "true"
+
+  const entries = await getEntriesByBasicTextSearch(
+    params.text,
+    undefined,
+    undefined,
+    caseSensitive
+  )
+
   if (!entries) {
     throw new Response("Not Found", { status: 404 })
   }

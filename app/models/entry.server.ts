@@ -69,13 +69,19 @@ export function getEntriesByInitialLetters(
 export function getEntriesByBasicTextSearch(
   text: string,
   skip: number = 0,
-  take: number = 100
+  take: number = 100,
+  caseSensitive: boolean = false
 ) {
   if (text.length === 0) {
     throw new Error(`Text ("${text}") length must be greater than zero`)
   }
   const searchWildcard = `%${text}%`
+
   return prisma.$queryRaw<
     Pick<Entry, "id" | "headword">[]
-  >`SELECT id, headword FROM det_entries WHERE LOWER(headword) LIKE LOWER(${searchWildcard}) ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
+  >`SELECT id, headword FROM det_entries 
+    WHERE IF(${caseSensitive}, 
+      (headword) LIKE (${searchWildcard}), 
+      LOWER(headword) LIKE LOWER(${searchWildcard}))  
+    ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
 }
