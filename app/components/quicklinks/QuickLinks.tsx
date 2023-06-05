@@ -8,6 +8,12 @@ interface QuickLinksProps {
 }
 
 const QuickLinks = ({ data }: QuickLinksProps): JSX.Element => {
+  function filterOrderString(meaningOrder: string | null): string | null {
+    const validMeaningOrder: boolean =
+      meaningOrder !== null && meaningOrder !== "0"
+    return validMeaningOrder ? meaningOrder : ""
+  }
+
   return (
     <div className="mt-2 mr-5 hidden w-96 shrink-0 overflow-hidden  md:block">
       <div className="fixed w-96 overflow-hidden ">
@@ -26,7 +32,9 @@ const QuickLinks = ({ data }: QuickLinksProps): JSX.Element => {
                     key={meaning.id}
                     scrollToId={`meaning-${meaning.id}`}
                   >
-                    <span className="ml-2 font-bold">{meaning.order}</span>{" "}
+                    <span className="ml-2 font-bold">
+                      {filterOrderString(meaning.order)}
+                    </span>{" "}
                     <SanitizedTextSpan text={meaning.definition} />
                   </QuickLink>
                 ))}
