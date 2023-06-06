@@ -30,14 +30,18 @@ export default function Index() {
               <label className="font-bold">
                 ID
                 <input
-                  className="ml-3 border border-slate-700 pl-3"
+                  className="ml-3 border border-slate-400 pl-1"
                   type="number"
                   name="id"
                 />
               </label>
               <label className="ml-3 pl-3 font-bold">
                 Headword
-                <input className="ml-3 pl-3" type="text" name="headword" />
+                <input
+                  className="ml-3 border border-slate-400 pl-1"
+                  type="text"
+                  name="headword"
+                />
               </label>
             </div>
 
@@ -104,7 +108,10 @@ export default function Index() {
             <div className="my-3 flex justify-around">
               <label className="ml-3 pl-3 font-bold">
                 Dropdown
-                <select className="ml-3 pl-3 font-normal" name="testDropdown">
+                <select
+                  className="ml-3 border border-slate-400 pl-3 font-normal"
+                  name="testDropdown"
+                >
                   <option value="firstOption">first</option>
                   <option value="secondOption">second</option>
                   <option value="thirdOption">third</option>
@@ -116,7 +123,10 @@ export default function Index() {
             <div className="my-3 p-2">
               <label className="flex flex-col font-bold">
                 Large Amount Of Text
-                <textarea name="testTextArea" className="h-28 font-normal">
+                <textarea
+                  name="testTextArea"
+                  className="h-28 border border-slate-400 p-1 font-normal"
+                >
                   this is a lot of text
                 </textarea>
               </label>
