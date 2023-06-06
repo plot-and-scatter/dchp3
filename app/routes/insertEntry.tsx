@@ -3,11 +3,11 @@ import { Form } from "@remix-run/react"
 import Header from "~/components/elements/Header"
 import Main from "~/components/elements/Main"
 import Nav from "~/components/elements/Nav"
-import { putEntries } from "~/models/entry.server"
+import { insertEntry } from "~/models/entry.server"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
-  putEntries(data)
+  insertEntry(data)
   return redirect(`/entries/${data.headword}`)
 }
 

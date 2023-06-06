@@ -67,7 +67,7 @@ export function getEntriesByInitialLettersAndPage(
   return getEntriesByInitialLetters(initialLetters, skip)
 }
 
-export async function putEntries(data: any) {
+export async function insertEntry(data: any) {
   // the rest of the fields can go here and be added later
   const idValue = parseInt(data.id)
   const headword = data.headword
