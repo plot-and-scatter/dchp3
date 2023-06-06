@@ -34,34 +34,38 @@ export default function EntryDetailsPage() {
           (Page {params.pageNumber})
         </>
       </h3>
-      {data.entries.map((e) => {
-        return (
-          <p key={e.id}>
-            <Link
-              to={`/entries/${e.headword}`}
-              className="font-bold text-red-600 hover:text-red-400"
+      <div className="my-4 flex flex-col justify-center">
+        {data.entries.map((e) => {
+          return (
+            <p className="" key={e.id}>
+              <Link
+                to={`/entries/${e.headword}`}
+                className="font-bold text-red-600 hover:text-red-400"
+              >
+                {e.headword}
+              </Link>
+            </p>
+          )
+        })}
+        <div>
+          <Link to={`../browse/${params.initialLetters}/${currentPage - 1}`}>
+            <button
+              name="previousPage"
+              className="mx-3 my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
             >
-              {e.headword}
-            </Link>
-          </p>
-        )
-      })}
-      <Link to={`../browse/${params.initialLetters}/${currentPage - 1}`}>
-        <button
-          name="previousPage"
-          className="m-3 border-gray-900 bg-slate-500 p-3"
-        >
-          Prev Page
-        </button>
-      </Link>
-      <Link to={`../browse/${params.initialLetters}/${currentPage + 1}`}>
-        <button
-          name="nextPage"
-          className="m-3 border-gray-900 bg-slate-500 p-3"
-        >
-          Next Page
-        </button>
-      </Link>
+              Prev Page
+            </button>
+          </Link>
+          <Link to={`../browse/${params.initialLetters}/${currentPage + 1}`}>
+            <button
+              name="nextPage"
+              className="mx-auto my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
+            >
+              Next Page
+            </button>
+          </Link>
+        </div>
+      </div>
     </div>
   )
 }
