@@ -1,7 +1,8 @@
-import React from "react"
+import React, { useCallback } from "react"
 import DictionaryVersion from "./DictionaryVersion"
 import HandNoteBlock from "./HandNoteBlock"
 import SanitizedTextSpan from "./SanitizedTextSpan"
+import { useNavigate, useParams } from "@remix-run/react"
 
 interface HeadwordProps {
   alternatives?: string
@@ -22,11 +23,41 @@ const Headword = ({
   isNonCanadian,
   word,
 }: HeadwordProps): JSX.Element => {
+  const params = useParams()
+  const navigate = useNavigate()
+
+  const formSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      navigate(`/entries/${params.headword}/edit`)
+      return false
+    },
+    [navigate, params.headword]
+  )
+
+  // TODO: Check authentication
+  const authenticated = true
+  const hidden = authenticated ? "" : "hidden"
+
   return (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl leading-tight md:text-5xl">{word}</h1>
-        <DictionaryVersion isLegacy={isLegacy} />
+        <div className="flex justify-center">
+          <form onSubmit={formSubmit}>
+            <button
+              className={
+                "visible mr-2 ml-8 bg-slate-500 p-1 text-white hover:bg-slate-400 " +
+                hidden
+              }
+              name="editButtonWord"
+              value={word}
+            >
+              Edit
+            </button>
+          </form>
+          <DictionaryVersion isLegacy={isLegacy} />
+        </div>
       </div>
       {alternatives && (
         <h2 className="leading-tight text-slate-700 md:text-xl">
