@@ -9,12 +9,10 @@ import {
 import { useState } from "react"
 
 export async function action({ params, request }: ActionArgs) {
-  invariant(params.headword)
+  invariant(params.headword, "headword for update not found")
   const data = Object.fromEntries(await request.formData())
-
-  console.log("---PRINTING---" + params.headword)
-  console.log("BEING CHANGED TO " + data.newHeadword)
   updateEntryByHeadword(params.headword, data.newHeadword.toString())
+
   return null
 }
 
@@ -41,7 +39,7 @@ export default function EditEntryPage() {
       </p>
       <Form className="my-5" method="post">
         <div className="flex flex-col">
-          <label className="">
+          <label>
             Headword
             <input
               className="mx-2 my-4 border p-1"
@@ -50,7 +48,7 @@ export default function EditEntryPage() {
               onChange={(e) => setHeadword(e.target.value)}
             ></input>
           </label>
-          <label className="">
+          <label>
             Alternatives
             <input
               className="mx-2 my-4 border p-1"
@@ -58,7 +56,7 @@ export default function EditEntryPage() {
               onChange={(e) => setAlternatives(e.target.value)}
             ></input>
           </label>
-          <label className="">
+          <label>
             Sample Field
             <input
               className="mx-2 my-4 border p-1"

@@ -26,7 +26,7 @@ const Headword = ({
   const params = useParams()
   const navigate = useNavigate()
 
-  const formSubmit = useCallback(
+  const navigateToEditEntry = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       navigate(`/entries/${params.headword}/edit`)
@@ -44,14 +44,10 @@ const Headword = ({
       <div className="flex items-center justify-between">
         <h1 className="text-3xl leading-tight md:text-5xl">{word}</h1>
         <div className="flex justify-center">
-          <form onSubmit={formSubmit}>
+          <form onSubmit={navigateToEditEntry}>
             <button
-              className={
-                "visible mr-2 ml-8 bg-slate-500 p-1 text-white hover:bg-slate-400 " +
-                hidden
-              }
-              name="editButtonWord"
-              value={word}
+              className={`mr-2 ml-8 bg-slate-500 p-1 text-white hover:bg-slate-400 ${hidden}`}
+              type="submit"
             >
               Edit
             </button>
