@@ -1,39 +1,28 @@
-import { Form, useLoaderData } from "@remix-run/react"
-import { type LoadedDataType } from "."
-import { type ActionArgs, type LoaderArgs } from "@remix-run/server-runtime"
+import { Form } from "@remix-run/react"
+import { type ActionArgs } from "@remix-run/server-runtime"
 import invariant from "tiny-invariant"
-import {
-  getEntryByHeadword,
-  updateEntryByHeadword,
-} from "~/models/entry.server"
+import { updateEntryByHeadword } from "~/models/entry.server"
+
+interface EntryProps {
+  headword: string
+}
 
 export async function action({ params, request }: ActionArgs) {
   invariant(params.headword)
-  // const data = Object.fromEntries(await request.formData())
-
-  console.log("---PRINTING---" + params.headword)
+  const data = Object.fromEntries(await request.formData())
+  console.log("action running on: " + params.headword)
+  console.log("updating headword to: " + data.headword)
   updateEntryByHeadword(params.headword)
+
   return null
 }
 
-export async function loader({ params }: LoaderArgs) {
-  invariant(params.headword, "headword not found")
-
-  const entry = await getEntryByHeadword({ headword: params.headword })
-  if (!entry) {
-    throw new Response("Not Found", { status: 404 })
-  }
-  return entry
-}
-
-export default function EditEntryPage() {
-  const data = useLoaderData<typeof loader>() as LoadedDataType
-
+const UpdateEntryForm = ({ headword }: EntryProps): JSX.Element => {
   return (
     <div>
       <h1 className="text-2xl font-bold"> Update Entry</h1>
       <p>
-        Edit fields below to update the entry: <b>{data.headword}</b>
+        Edit fields below to update the entry: <b>{headword}</b>
       </p>
       <Form className="my-5" method="post">
         <div className="flex flex-col">
@@ -41,21 +30,24 @@ export default function EditEntryPage() {
             Headword
             <input
               className="mx-2 my-4 border p-1"
-              value={data.headword}
+              value={headword}
+              name="headword"
             ></input>
           </label>
           <label className="">
             Alternatives
             <input
+              type="text"
               className="mx-2 my-4 border p-1"
-              value={"sample text"}
+              value="sample text"
             ></input>
           </label>
           <label className="">
             Next Field
             <input
+              type="text"
               className="mx-2 my-4 border p-1"
-              value={"sample text"}
+              value="sample text"
             ></input>
           </label>
           <button
@@ -69,3 +61,5 @@ export default function EditEntryPage() {
     </div>
   )
 }
+
+export default UpdateEntryForm

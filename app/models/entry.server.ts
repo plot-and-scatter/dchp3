@@ -102,3 +102,8 @@ export function getEntriesByBasicTextSearch(
       LOWER(headword) LIKE LOWER(${searchWildcard}))  
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
 }
+
+export function updateEntryByHeadword(headword: string) {
+  console.log("Entry server updating: " + headword)
+  return null
+}
