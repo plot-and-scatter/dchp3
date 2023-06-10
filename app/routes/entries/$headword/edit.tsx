@@ -6,13 +6,15 @@ import {
   getEntryByHeadword,
   updateEntryByHeadword,
 } from "~/models/entry.server"
+import { useState } from "react"
 
 export async function action({ params, request }: ActionArgs) {
   invariant(params.headword)
-  // const data = Object.fromEntries(await request.formData())
+  const data = Object.fromEntries(await request.formData())
 
   console.log("---PRINTING---" + params.headword)
-  updateEntryByHeadword(params.headword)
+  console.log("BEING CHANGED TO " + data.newHeadword)
+  updateEntryByHeadword(params.headword, data.newHeadword.toString())
   return null
 }
 
@@ -28,6 +30,8 @@ export async function loader({ params }: LoaderArgs) {
 
 export default function EditEntryPage() {
   const data = useLoaderData<typeof loader>() as LoadedDataType
+  const [headword, setHeadword] = useState(data.headword)
+  const [alternatives, setAlternatives] = useState(data.spelling_variants)
 
   return (
     <div>
@@ -41,18 +45,21 @@ export default function EditEntryPage() {
             Headword
             <input
               className="mx-2 my-4 border p-1"
-              value={data.headword}
+              value={headword}
+              name="newHeadword"
+              onChange={(e) => setHeadword(e.target.value)}
             ></input>
           </label>
           <label className="">
             Alternatives
             <input
               className="mx-2 my-4 border p-1"
-              value={"sample text"}
+              value={alternatives ? alternatives : ""}
+              onChange={(e) => setAlternatives(e.target.value)}
             ></input>
           </label>
           <label className="">
-            Next Field
+            Sample Field
             <input
               className="mx-2 my-4 border p-1"
               value={"sample text"}

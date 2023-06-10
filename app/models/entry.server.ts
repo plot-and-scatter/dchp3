@@ -103,7 +103,7 @@ export function getEntriesByBasicTextSearch(
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
 }
 
-export function updateEntryByHeadword(headword: string) {
-  console.log("Entry server updating: " + headword)
+export function updateEntryByHeadword(headword: string, newHeadword: string) {
+  console.log("Entry server updating: " + headword + " ---> " + newHeadword)
   return null
 }
