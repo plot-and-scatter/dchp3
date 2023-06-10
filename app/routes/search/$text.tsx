@@ -3,7 +3,7 @@ import { json } from "@remix-run/node"
 import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react"
 import invariant from "tiny-invariant"
 
-import { getEntriesByBasicTextSearch } from "~/models/entry.server"
+import { getEntriesByBasicTextSearchAndPage } from "~/models/entry.server"
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.text, "text not found")
@@ -11,11 +11,12 @@ export async function loader({ request, params }: LoaderArgs) {
   const url = new URL(request.url)
   const caseSensitive: boolean =
     url.searchParams.get("caseSensitive") === "true"
+  const pageNumber: string | undefined =
+    url.searchParams.get("pageNumber") ?? undefined
 
-  const entries = await getEntriesByBasicTextSearch(
+  const entries = await getEntriesByBasicTextSearchAndPage(
     params.text,
-    undefined,
-    undefined,
+    pageNumber,
     caseSensitive
   )
 
