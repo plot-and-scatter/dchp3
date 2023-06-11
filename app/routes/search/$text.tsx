@@ -1,9 +1,25 @@
-import type { LoaderArgs } from "@remix-run/node"
-import { json } from "@remix-run/node"
-import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react"
+import type { ActionArgs, LoaderArgs } from "@remix-run/node"
+import { json, redirect } from "@remix-run/node"
+import {
+  Form,
+  Link,
+  useCatch,
+  useLoaderData,
+  useParams,
+} from "@remix-run/react"
 import invariant from "tiny-invariant"
 
 import { getEntriesByBasicTextSearchAndPage } from "~/models/entry.server"
+
+export async function action({ request, params }: ActionArgs) {
+  const url = new URL(request.url)
+  const pageNumber: string = url.searchParams.get("pageNumber") ?? "1"
+  const nextPageNumber = parseInt(pageNumber) + 1
+
+  url.searchParams.set("pageNumber", nextPageNumber.toString())
+
+  return redirect(url.toString())
+}
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.text, "text not found")
@@ -49,6 +65,9 @@ export default function EntryDetailsPage() {
           </p>
         )
       })}
+      <Form method="post">
+        <button type="submit">Next Page</button>
+      </Form>
     </div>
   )
 }
