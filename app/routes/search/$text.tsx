@@ -18,7 +18,10 @@ export async function action({ request, params }: ActionArgs) {
   const url = new URL(request.url)
 
   const pageNumber: string = url.searchParams.get("pageNumber") ?? "1"
-  const nextPageNumber = parseInt(pageNumber) + pageIncrement
+
+  let nextPageNumber = parseInt(pageNumber) + pageIncrement
+  nextPageNumber = nextPageNumber >= 1 ? nextPageNumber : 1
+
   url.searchParams.set("pageNumber", nextPageNumber.toString())
 
   return redirect(url.toString())
@@ -69,10 +72,20 @@ export default function EntryDetailsPage() {
         )
       })}
       <Form method="post">
-        <button type="submit" name="nextPage" value="false">
+        <button
+          className="mx-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
+          type="submit"
+          name="nextPage"
+          value="false"
+        >
           Prev Page
         </button>
-        <button type="submit" name="nextPage" value="true">
+        <button
+          className="mx-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
+          type="submit"
+          name="nextPage"
+          value="true"
+        >
           Next Page
         </button>
       </Form>
