@@ -71,7 +71,7 @@ export default function EntryDetailsPage() {
           </p>
         )
       })}
-      <Form method="post">
+      <Form reloadDocument method="post">
         <button
           className="mx-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
           type="submit"
