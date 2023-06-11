@@ -12,10 +12,13 @@ import invariant from "tiny-invariant"
 import { getEntriesByBasicTextSearchAndPage } from "~/models/entry.server"
 
 export async function action({ request, params }: ActionArgs) {
-  const url = new URL(request.url)
-  const pageNumber: string = url.searchParams.get("pageNumber") ?? "1"
-  const nextPageNumber = parseInt(pageNumber) + 1
+  const data = Object.fromEntries(await request.formData())
+  const pageIncrement = data.nextPage === "true" ? 1 : -1
 
+  const url = new URL(request.url)
+
+  const pageNumber: string = url.searchParams.get("pageNumber") ?? "1"
+  const nextPageNumber = parseInt(pageNumber) + pageIncrement
   url.searchParams.set("pageNumber", nextPageNumber.toString())
 
   return redirect(url.toString())
@@ -66,7 +69,12 @@ export default function EntryDetailsPage() {
         )
       })}
       <Form method="post">
-        <button type="submit">Next Page</button>
+        <button type="submit" name="nextPage" value="false">
+          Prev Page
+        </button>
+        <button type="submit" name="nextPage" value="true">
+          Next Page
+        </button>
       </Form>
     </div>
   )
