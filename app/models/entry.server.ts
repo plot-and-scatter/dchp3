@@ -67,6 +67,46 @@ export function getEntriesByInitialLettersAndPage(
   return getEntriesByInitialLetters(initialLetters, skip)
 }
 
+export async function insertEntry(data: any) {
+  // the rest of the fields can go here and be added later
+  const idValue = parseInt(data.id)
+  const headword = data.headword
+
+  // temporary; we'll need to add error checking etc.
+  // this is just to protect our local dev test databases for now
+  const id = idValue ? idValue : Number.MAX_SAFE_INTEGER
+
+  await prisma.entry.create({
+    data: {
+      id: id,
+      headword: headword,
+      first_field: "first field",
+      etymology: "etymology",
+      is_legacy: false,
+      is_public: true,
+      spelling_variants: null,
+      superscript: "Superscript",
+      dagger: false,
+      general_labels: null,
+      proofing_status: 1,
+      proofing_user: null,
+      fist_note: null,
+      image_file_name: null,
+      comment: null,
+      first_draft: false,
+      revised_draft: true,
+      semantically_revised: false,
+      edited_for_style: false,
+      proofread: false,
+      chief_editor_ok: false,
+      final_proofing: false,
+      no_cdn_susp: false,
+      no_cdn_conf: false,
+      edit_status_comment: "this word is for testing",
+    },
+  })
+}
+
 export function getEntriesByInitialLetters(
   initialLetters: string,
   skip: number = 0,
