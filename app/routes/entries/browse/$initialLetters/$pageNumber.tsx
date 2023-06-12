@@ -48,21 +48,17 @@ export default function EntryDetailsPage() {
           )
         })}
         <div>
-          <Link to={`../browse/${params.initialLetters}/${currentPage - 1}`}>
-            <button
-              name="previousPage"
-              className="mx-3 my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
-            >
-              Prev Page
-            </button>
+          <Link
+            className="mx-3 my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
+            to={`../browse/${params.initialLetters}/${currentPage - 1}`}
+          >
+            Prev Page
           </Link>
-          <Link to={`../browse/${params.initialLetters}/${currentPage + 1}`}>
-            <button
-              name="nextPage"
-              className="mx-auto my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
-            >
-              Next Page
-            </button>
+          <Link
+            className="mx-auto my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
+            to={`../browse/${params.initialLetters}/${currentPage + 1}`}
+          >
+            Next Page
           </Link>
         </div>
       </div>
