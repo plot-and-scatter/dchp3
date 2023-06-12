@@ -3,21 +3,34 @@ import { json } from "@remix-run/node"
 import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react"
 import invariant from "tiny-invariant"
 
-import { getEntriesByInitialLettersAndPage } from "~/models/entry.server"
+import {
+  getEntriesByInitialLettersAndPage,
+  getNonCanadianEntriesByPage,
+  getSpecialCharactersEntriesByPage,
+} from "~/models/entry.server"
+import { nonCanadianism, specialCharacter } from "../../index"
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.initialLetters, "initialLetters not found")
   invariant(params.pageNumber, "pageNumber not found")
 
-  const entries = await getEntriesByInitialLettersAndPage(
-    params.initialLetters,
-    params.pageNumber
-  )
+  const entries = await getEntries(params.initialLetters, params.pageNumber)
 
   if (!entries) {
     throw new Response("Not Found", { status: 404 })
   }
   return json({ entries })
+}
+
+async function getEntries(initialLetters: string, pageNumber: string) {
+  switch (initialLetters) {
+    case nonCanadianism:
+      console.log("CASE IS RUNNING")
+      return getNonCanadianEntriesByPage(pageNumber)
+    case specialCharacter:
+      return getSpecialCharactersEntriesByPage(pageNumber)
+  }
+  return getEntriesByInitialLettersAndPage(initialLetters, pageNumber)
 }
 
 export default function EntryDetailsPage() {

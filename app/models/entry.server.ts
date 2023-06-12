@@ -123,6 +123,41 @@ export function getEntriesByInitialLetters(
   >`SELECT id, headword FROM det_entries WHERE LOWER(headword) LIKE LOWER(${initialLettersWildcard}) ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
+export function getNonCanadianEntriesByPage(page: string) {
+  // TODO: extract this error checking out
+  const pageNumber = parseInt(page)
+  if (isNaN(pageNumber)) {
+    throw new Error(`Page Number ("${page}") must be a number`)
+  } else if (isNonPositive(pageNumber)) {
+    throw new Error(`Page Number ("${page}") must be greater than zero`)
+  }
+
+  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
+  const take = 100
+
+  return prisma.$queryRaw<
+    Pick<Entry, "id" | "headword">[]
+  >`SELECT id, headword FROM det_entries WHERE no_cdn_conf = true ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
+}
+
+export function getSpecialCharactersEntriesByPage(page: string) {
+  // TODO: extract this error checking out
+  const pageNumber = parseInt(page)
+  if (isNaN(pageNumber)) {
+    throw new Error(`Page Number ("${page}") must be a number`)
+  } else if (isNonPositive(pageNumber)) {
+    throw new Error(`Page Number ("${page}") must be greater than zero`)
+  }
+
+  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
+  const take = 100
+
+  return prisma.$queryRaw<
+    Pick<Entry, "id" | "headword">[]
+  >`SELECT id, headword FROM det_entries WHERE headword REGEXP "[^a-z^A-Z0-9]+"
+  ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
+}
+
 export function getEntriesByBasicTextSearch(
   text: string,
   skip: number = 0,
