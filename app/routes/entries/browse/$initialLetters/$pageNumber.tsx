@@ -25,7 +25,6 @@ export async function loader({ params }: LoaderArgs) {
 async function getEntries(initialLetters: string, pageNumber: string) {
   switch (initialLetters) {
     case nonCanadianism:
-      console.log("CASE IS RUNNING")
       return getNonCanadianEntriesByPage(pageNumber)
     case specialCharacter:
       return getSpecialCharactersEntriesByPage(pageNumber)
