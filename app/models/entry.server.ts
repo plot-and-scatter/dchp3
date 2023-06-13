@@ -1,6 +1,6 @@
 import type { Entry } from "@prisma/client"
 import { prisma } from "~/db.server"
-import { isNonPositive } from "~/utils/numberUtils"
+import { parsePageNumberOrError } from "~/utils/generalUtils"
 
 export type { Entry } from "@prisma/client"
 
@@ -56,14 +56,8 @@ export function getEntriesByInitialLettersAndPage(
   initialLetters: string,
   page: string
 ) {
-  const pageNumber = parseInt(page)
-  if (isNaN(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be a number`)
-  } else if (isNonPositive(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be greater than zero`)
-  }
-
-  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
+  const pageNumber = parsePageNumberOrError(page)
+  const skip = calculatePageSkip(pageNumber)
   return getEntriesByInitialLetters(initialLetters, skip)
 }
 
@@ -123,10 +117,31 @@ export function getEntriesByInitialLetters(
   >`SELECT id, headword FROM det_entries WHERE LOWER(headword) LIKE LOWER(${initialLettersWildcard}) ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
+export function getNonCanadianEntriesByPage(page: string) {
+  const pageNumber = parsePageNumberOrError(page)
+  const skip = calculatePageSkip(pageNumber)
+  const take = DEFAULT_PAGE_SIZE
+
+  return prisma.$queryRaw<
+    Pick<Entry, "id" | "headword">[]
+  >`SELECT id, headword FROM det_entries WHERE no_cdn_conf = true ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
+}
+
+export function getSpecialCharactersEntriesByPage(page: string) {
+  const pageNumber = parsePageNumberOrError(page)
+  const skip = calculatePageSkip(pageNumber)
+  const take = DEFAULT_PAGE_SIZE
+
+  return prisma.$queryRaw<
+    Pick<Entry, "id" | "headword">[]
+  >`SELECT id, headword FROM det_entries WHERE headword REGEXP "^['()\-[0-9]]+.*$"
+  ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
+}
+
 export function getEntriesByBasicTextSearch(
   text: string,
   skip: number = 0,
-  take: number = 100,
+  take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
 ) {
   if (text.length === 0) {
@@ -141,4 +156,8 @@ export function getEntriesByBasicTextSearch(
       (headword) LIKE (${searchWildcard}), 
       LOWER(headword) LIKE LOWER(${searchWildcard}))  
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
+}
+
+function calculatePageSkip(pageNumber: number): number {
+  return (pageNumber - 1) * DEFAULT_PAGE_SIZE
 }
