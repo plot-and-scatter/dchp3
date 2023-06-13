@@ -1,6 +1,6 @@
 import type { Entry } from "@prisma/client"
 import { prisma } from "~/db.server"
-import { isNonPositive } from "~/utils/numberUtils"
+import { parsePageNumberOrError } from "~/utils/generalUtils"
 
 export type { Entry } from "@prisma/client"
 
@@ -56,14 +56,8 @@ export function getEntriesByInitialLettersAndPage(
   initialLetters: string,
   page: string
 ) {
-  const pageNumber = parseInt(page)
-  if (isNaN(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be a number`)
-  } else if (isNonPositive(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be greater than zero`)
-  }
-
-  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
+  const pageNumber = parsePageNumberOrError(page)
+  const skip = calculatePageSkip(pageNumber)
   return getEntriesByInitialLetters(initialLetters, skip)
 }
 
@@ -124,16 +118,9 @@ export function getEntriesByInitialLetters(
 }
 
 export function getNonCanadianEntriesByPage(page: string) {
-  // TODO: extract this error checking out
-  const pageNumber = parseInt(page)
-  if (isNaN(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be a number`)
-  } else if (isNonPositive(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be greater than zero`)
-  }
-
-  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
-  const take = 100
+  const pageNumber = parsePageNumberOrError(page)
+  const skip = calculatePageSkip(pageNumber)
+  const take = DEFAULT_PAGE_SIZE
 
   return prisma.$queryRaw<
     Pick<Entry, "id" | "headword">[]
@@ -141,16 +128,9 @@ export function getNonCanadianEntriesByPage(page: string) {
 }
 
 export function getSpecialCharactersEntriesByPage(page: string) {
-  // TODO: extract this error checking out
-  const pageNumber = parseInt(page)
-  if (isNaN(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be a number`)
-  } else if (isNonPositive(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be greater than zero`)
-  }
-
-  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
-  const take = 100
+  const pageNumber = parsePageNumberOrError(page)
+  const skip = calculatePageSkip(pageNumber)
+  const take = DEFAULT_PAGE_SIZE
 
   return prisma.$queryRaw<
     Pick<Entry, "id" | "headword">[]
@@ -161,7 +141,7 @@ export function getSpecialCharactersEntriesByPage(page: string) {
 export function getEntriesByBasicTextSearch(
   text: string,
   skip: number = 0,
-  take: number = 100,
+  take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
 ) {
   if (text.length === 0) {
@@ -176,4 +156,8 @@ export function getEntriesByBasicTextSearch(
       (headword) LIKE (${searchWildcard}), 
       LOWER(headword) LIKE LOWER(${searchWildcard}))  
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
+}
+
+function calculatePageSkip(pageNumber: number): number {
+  return (pageNumber - 1) * DEFAULT_PAGE_SIZE
 }
