@@ -154,7 +154,7 @@ export function getSpecialCharactersEntriesByPage(page: string) {
 
   return prisma.$queryRaw<
     Pick<Entry, "id" | "headword">[]
-  >`SELECT id, headword FROM det_entries WHERE headword REGEXP "[^a-z^A-Z0-9]+"
+  >`SELECT id, headword FROM det_entries WHERE headword REGEXP "^['()\-[0-9]]+.*$"
   ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
