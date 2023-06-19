@@ -28,9 +28,7 @@ const Headword = ({
   return (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
       <div className="flex items-center justify-between">
-        <p className=" bg-inherit text-3xl leading-tight hover:bg-red-300 md:text-5xl">
-          {word}
-        </p>
+        <h1 className="text-3xl leading-tight md:text-5xl">{word}</h1>
         <EditingPopover
           attributeType={attributeEnum.HEADWORD}
           attributeID={id}

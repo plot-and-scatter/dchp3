@@ -150,15 +150,17 @@ export async function updateRecordByAttributeAndType(
   value: string
 ) {
   if (isNaN(type) || isNaN(id)) {
-    throw new Error(`Type and Id must be numbers`)
+    throw new Error(`Error Parsing Type and ID of element being edited`)
   } else if (isNonPositive(type) || isNonPositive(id)) {
-    throw new Error(`Type and Id must be non positive`)
+    throw new Error(`Error Parsing Type and ID of element being edited`)
   }
 
   switch (type) {
     case attributeEnum.HEADWORD:
       updateEntryHeadword(id, value)
       break
+    default:
+      throw new Error("Type of element being edited is not supported")
   }
 }
 

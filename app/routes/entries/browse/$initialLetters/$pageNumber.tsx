@@ -21,7 +21,7 @@ export async function loader({ params }: LoaderArgs) {
 }
 
 export default function EntryDetailsPage() {
-  const data: any = useLoaderData<typeof loader>()
+  const data = useLoaderData<typeof loader>()
   const params = useParams()
 
   const currentPage = params.pageNumber ? parseInt(params.pageNumber) : 1
@@ -34,7 +34,7 @@ export default function EntryDetailsPage() {
           (Page {params.pageNumber})
         </>
       </h3>
-      {data.entries.map((e: any) => {
+      {data.entries.map((e) => {
         return (
           <p key={e.id}>
             <Link
