@@ -3,6 +3,7 @@ import DictionaryVersion from "./DictionaryVersion"
 import HandNoteBlock from "./HandNoteBlock"
 import SanitizedTextSpan from "./SanitizedTextSpan"
 import { updateEntryHeadword } from "~/utils/APIUtils"
+import EditingPopover from "./editing/editingPopover"
 
 interface HeadwordProps {
   alternatives?: string
@@ -43,18 +44,19 @@ const Headword = ({
         <input
           contentEditable="true"
           value={text}
-          onKeyDown={(e) => handleSubmit(e, 999999, "headword", text)}
-          onChange={(e) => setText(e.target.value)}
           className=" bg-inherit text-3xl leading-tight hover:bg-red-300 md:text-5xl"
         />
+        <EditingPopover first="hi" />
         <DictionaryVersion isLegacy={isLegacy} />
       </div>
       {alternatives && (
         <h2 className="leading-tight text-slate-700 md:text-xl">
           <span className="text-slate-500">Spelling variants:</span>{" "}
-          <span className="italic">
-            <SanitizedTextSpan text={alternatives} />
-          </span>
+          <input>
+            <span className="italic">
+              <SanitizedTextSpan text={alternatives} />
+            </span>
+          </input>
         </h2>
       )}
       <p>
