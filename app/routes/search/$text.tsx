@@ -1,9 +1,31 @@
-import type { LoaderArgs } from "@remix-run/node"
-import { json } from "@remix-run/node"
-import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react"
+import type { ActionArgs, LoaderArgs } from "@remix-run/node"
+import { json, redirect } from "@remix-run/node"
+import {
+  Form,
+  Link,
+  useCatch,
+  useLoaderData,
+  useParams,
+} from "@remix-run/react"
 import invariant from "tiny-invariant"
 
-import { getEntriesByBasicTextSearch } from "~/models/entry.server"
+import { getEntriesByBasicTextSearchAndPage } from "~/models/entry.server"
+
+export async function action({ request, params }: ActionArgs) {
+  const data = Object.fromEntries(await request.formData())
+  const pageIncrement = data.nextPage === "true" ? 1 : -1
+
+  const url = new URL(request.url)
+
+  const pageNumber: string = url.searchParams.get("pageNumber") ?? "1"
+
+  let nextPageNumber = parseInt(pageNumber) + pageIncrement
+  nextPageNumber = nextPageNumber >= 1 ? nextPageNumber : 1
+
+  url.searchParams.set("pageNumber", nextPageNumber.toString())
+
+  return redirect(url.toString())
+}
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.text, "text not found")
@@ -11,11 +33,12 @@ export async function loader({ request, params }: LoaderArgs) {
   const url = new URL(request.url)
   const caseSensitive: boolean =
     url.searchParams.get("caseSensitive") === "true"
+  const pageNumber: string | undefined =
+    url.searchParams.get("pageNumber") ?? undefined
 
-  const entries = await getEntriesByBasicTextSearch(
+  const entries = await getEntriesByBasicTextSearchAndPage(
     params.text,
-    undefined,
-    undefined,
+    pageNumber,
     caseSensitive
   )
 
@@ -48,6 +71,24 @@ export default function EntryDetailsPage() {
           </p>
         )
       })}
+      <Form reloadDocument method="post">
+        <button
+          className="mx-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
+          type="submit"
+          name="nextPage"
+          value="false"
+        >
+          Prev Page
+        </button>
+        <button
+          className="mx-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
+          type="submit"
+          name="nextPage"
+          value="true"
+        >
+          Next Page
+        </button>
+      </Form>
     </div>
   )
 }

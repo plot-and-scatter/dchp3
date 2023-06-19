@@ -123,6 +123,22 @@ export function getEntriesByInitialLetters(
   >`SELECT id, headword FROM det_entries WHERE LOWER(headword) LIKE LOWER(${initialLettersWildcard}) ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
+export function getEntriesByBasicTextSearchAndPage(
+  text: string,
+  page: string = "1",
+  caseSensitive: boolean = false
+) {
+  const pageNumber = parseInt(page)
+  if (isNaN(pageNumber)) {
+    throw new Error(`Page Number ("${page}") must be a number`)
+  } else if (isNonPositive(pageNumber)) {
+    throw new Error(`Page Number ("${page}") must be greater than zero`)
+  }
+
+  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
+  return getEntriesByBasicTextSearch(text, skip, undefined, caseSensitive)
+}
+
 export function getEntriesByBasicTextSearch(
   text: string,
   skip: number = 0,
