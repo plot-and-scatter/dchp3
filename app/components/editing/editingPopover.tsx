@@ -32,7 +32,7 @@ const EditingPopover = ({ first }: Props) => {
           <Form action="/entries" method="post">
             <label>
               hi!
-              <input />
+              <input className="p-2" name="testInput" />
             </label>
           </Form>
         </div>

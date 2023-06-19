@@ -1,8 +1,6 @@
-import React, { useState } from "react"
 import DictionaryVersion from "./DictionaryVersion"
 import HandNoteBlock from "./HandNoteBlock"
 import SanitizedTextSpan from "./SanitizedTextSpan"
-import { updateEntryHeadword } from "~/utils/APIUtils"
 import EditingPopover from "./editing/editingPopover"
 
 interface HeadwordProps {
@@ -15,18 +13,6 @@ interface HeadwordProps {
   word: string
 }
 
-async function handleSubmit(
-  event: any,
-  id: number,
-  field: string,
-  newValue: string
-) {
-  if (event.key === "Enter") {
-    // alert("ENTER was pressed with: " + newValue)
-    updateEntryHeadword(id, newValue)
-  }
-}
-
 const Headword = ({
   alternatives,
   etymology,
@@ -36,16 +22,12 @@ const Headword = ({
   isNonCanadian,
   word,
 }: HeadwordProps): JSX.Element => {
-  const [text, setText] = useState(word)
-
   return (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
       <div className="flex items-center justify-between">
-        <input
-          contentEditable="true"
-          value={text}
-          className=" bg-inherit text-3xl leading-tight hover:bg-red-300 md:text-5xl"
-        />
+        <p className=" bg-inherit text-3xl leading-tight hover:bg-red-300 md:text-5xl">
+          {word}
+        </p>
         <EditingPopover first="hi" />
         <DictionaryVersion isLegacy={isLegacy} />
       </div>
