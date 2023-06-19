@@ -142,3 +142,43 @@ export function getEntriesByBasicTextSearch(
       LOWER(headword) LIKE LOWER(${searchWildcard}))  
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
 }
+
+export async function updateEntryHeadword(entryId: number, newValue: string) {
+  console.log(entryId)
+  console.log(newValue)
+
+  await prisma.entry.create({
+    data: {
+      id: 999991,
+      headword: "a_ test headword",
+      first_field: "first field",
+      etymology: "etymology",
+      is_legacy: false,
+      is_public: true,
+      spelling_variants: null,
+      superscript: "Superscript",
+      dagger: false,
+      general_labels: null,
+      proofing_status: 1,
+      proofing_user: null,
+      fist_note: null,
+      image_file_name: null,
+      comment: null,
+      first_draft: false,
+      revised_draft: true,
+      semantically_revised: false,
+      edited_for_style: false,
+      proofread: false,
+      chief_editor_ok: false,
+      final_proofing: false,
+      no_cdn_susp: false,
+      no_cdn_conf: false,
+      edit_status_comment: "this word is for testing",
+    },
+  })
+
+  await prisma.entry.update({
+    where: { id: entryId },
+    data: { headword: newValue },
+  })
+}

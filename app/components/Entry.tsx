@@ -5,9 +5,16 @@ import Meanings from "~/components/Meanings"
 import type { LoadedDataType } from "~/routes/entries/$headword"
 import QuickLinks from "./quicklinks/QuickLinks"
 import EntryImages from "./EntryImages"
+import { type ActionArgs, redirect } from "@remix-run/server-runtime"
+import { Form } from "@remix-run/react"
 
 interface EntryProps {
   data: LoadedDataType
+}
+
+export async function action({ params }: ActionArgs) {
+  console.log("MY CODE IS RUNNING")
+  return null
 }
 
 const Entry = ({ data }: EntryProps): JSX.Element => {
