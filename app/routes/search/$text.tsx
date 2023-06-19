@@ -9,7 +9,10 @@ import {
 } from "@remix-run/react"
 import invariant from "tiny-invariant"
 
-import { getEntriesByBasicTextSearchAndPage } from "~/models/entry.server"
+import {
+  getEntriesByBasicTextSearchAndPage,
+  getSearchResultsFromFistNotes,
+} from "~/models/entry.server"
 
 export async function action({ request, params }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -42,10 +45,17 @@ export async function loader({ request, params }: LoaderArgs) {
     caseSensitive
   )
 
+  const citations = await getSearchResultsFromFistNotes(
+    params.text,
+    caseSensitive
+  )
+
+  console.log(citations.length)
+
   if (!entries) {
     throw new Response("Not Found", { status: 404 })
   }
-  return json({ entries })
+  return json({ entries, citations })
 }
 
 export default function EntryDetailsPage() {

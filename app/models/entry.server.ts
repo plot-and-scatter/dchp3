@@ -1,5 +1,5 @@
-import type { Entry } from "@prisma/client"
 import { attributeEnum } from "~/components/editing/attributeEnum"
+import type { DetCitation, Entry } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { isNonPositive } from "~/utils/numberUtils"
 
@@ -187,4 +187,22 @@ export async function updateEntryHeadword(entryId: number, newValue: string) {
     where: { id: entryId },
     data: { headword: newValue },
   })
+}
+
+export function getSearchResultsFromFistNotes(
+  text: string,
+  caseSensitive: boolean = false
+) {
+  if (text.length === 0) {
+    throw new Error(`Text ("${text}") length must be greater than zero`)
+  }
+  const searchWildcard = `%${text}%`
+
+  return prisma.$queryRaw<
+    Pick<DetCitation, "citation" | "id" | "headword">[]
+  >`SELECT citation, id, headword FROM det_citations 
+    WHERE IF(${caseSensitive}, 
+      (citation) LIKE (${searchWildcard}), 
+      LOWER(citation) LIKE LOWER(${searchWildcard}))  
+    ORDER BY headword ASC`
 }
