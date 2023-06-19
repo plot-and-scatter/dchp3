@@ -45,3 +45,12 @@ export function useMatchesData(
 export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@")
 }
+
+export function getStringFromFormInput(formInput: FormDataEntryValue): string {
+  return formInput.toString()
+}
+
+export function getNumberFromFormInput(formInput: FormDataEntryValue) {
+  const stringValue = formInput.toString()
+  return parseInt(stringValue)
+}

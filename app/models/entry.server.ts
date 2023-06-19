@@ -1,4 +1,5 @@
 import type { Entry } from "@prisma/client"
+import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
 import { isNonPositive } from "~/utils/numberUtils"
 
@@ -143,39 +144,26 @@ export function getEntriesByBasicTextSearch(
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
 }
 
-export async function updateEntryHeadword(entryId: number, newValue: string) {
-  console.log(entryId)
-  console.log(newValue)
+export async function updateRecordByAttributeAndType(
+  type: number, // probably change this to enum
+  id: number,
+  value: string
+) {
+  if (isNaN(type) || isNaN(id)) {
+    throw new Error(`Type and Id must be numbers`)
+  } else if (isNonPositive(type) || isNonPositive(id)) {
+    throw new Error(`Type and Id must be non positive`)
+  }
 
-  await prisma.entry.create({
-    data: {
-      id: 999991,
-      headword: "a_ test headword",
-      first_field: "first field",
-      etymology: "etymology",
-      is_legacy: false,
-      is_public: true,
-      spelling_variants: null,
-      superscript: "Superscript",
-      dagger: false,
-      general_labels: null,
-      proofing_status: 1,
-      proofing_user: null,
-      fist_note: null,
-      image_file_name: null,
-      comment: null,
-      first_draft: false,
-      revised_draft: true,
-      semantically_revised: false,
-      edited_for_style: false,
-      proofread: false,
-      chief_editor_ok: false,
-      final_proofing: false,
-      no_cdn_susp: false,
-      no_cdn_conf: false,
-      edit_status_comment: "this word is for testing",
-    },
-  })
+  switch (type) {
+    case attributeEnum.HEADWORD:
+      updateEntryHeadword(id, value)
+      break
+  }
+}
+
+export async function updateEntryHeadword(entryId: number, newValue: string) {
+  console.log("UPDATING ENTRY")
 
   await prisma.entry.update({
     where: { id: entryId },

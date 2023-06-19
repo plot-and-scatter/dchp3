@@ -1,6 +1,7 @@
 import DictionaryVersion from "./DictionaryVersion"
 import HandNoteBlock from "./HandNoteBlock"
 import SanitizedTextSpan from "./SanitizedTextSpan"
+import { attributeEnum } from "./editing/attributeEnum"
 import EditingPopover from "./editing/editingPopover"
 
 interface HeadwordProps {
@@ -11,6 +12,7 @@ interface HeadwordProps {
   isLegacy: boolean
   isNonCanadian?: boolean
   word: string
+  id: number
 }
 
 const Headword = ({
@@ -21,6 +23,7 @@ const Headword = ({
   isLegacy,
   isNonCanadian,
   word,
+  id,
 }: HeadwordProps): JSX.Element => {
   return (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
@@ -28,17 +31,18 @@ const Headword = ({
         <p className=" bg-inherit text-3xl leading-tight hover:bg-red-300 md:text-5xl">
           {word}
         </p>
-        <EditingPopover first="hi" />
+        <EditingPopover
+          attributeType={attributeEnum.HEADWORD}
+          attributeID={id}
+        />
         <DictionaryVersion isLegacy={isLegacy} />
       </div>
       {alternatives && (
         <h2 className="leading-tight text-slate-700 md:text-xl">
           <span className="text-slate-500">Spelling variants:</span>{" "}
-          <input>
-            <span className="italic">
-              <SanitizedTextSpan text={alternatives} />
-            </span>
-          </input>
+          <span className="italic">
+            <SanitizedTextSpan text={alternatives} />
+          </span>
         </h2>
       )}
       <p>

@@ -1,14 +1,15 @@
 import { Popover } from "@headlessui/react"
-
 import { usePopper } from "react-popper"
 import { useState } from "react"
 import { Form } from "@remix-run/react"
+import { type attributeEnum } from "./attributeEnum"
 
 interface Props {
-  first: string
+  attributeType: attributeEnum
+  attributeID: number
 }
 
-const EditingPopover = ({ first }: Props) => {
+const EditingPopover = ({ attributeType, attributeID }: Props) => {
   let [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
   let [popperElement, setPopperElement] = useState<HTMLElement | null>()
   let { styles, attributes } = usePopper(referenceElement, popperElement)
@@ -32,8 +33,10 @@ const EditingPopover = ({ first }: Props) => {
           <Form action="/entries" method="post">
             <label>
               hi!
-              <input className="p-2" name="testInput" />
+              <input className="p-2" name="newValue" />
             </label>
+            <input type="hidden" name="attributeType" value={attributeType} />
+            <input type="hidden" name="attributeID" value={attributeID} />
           </Form>
         </div>
       </Popover.Panel>
