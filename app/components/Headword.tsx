@@ -28,11 +28,13 @@ const Headword = ({
   return (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl leading-tight md:text-5xl">{word}</h1>
-        <EditingPopover
-          attributeType={attributeEnum.HEADWORD}
-          attributeID={id}
-        />
+        <div className="flex justify-center align-middle">
+          <h1 className="text-3xl leading-tight md:text-5xl">{word}</h1>
+          <EditingPopover
+            attributeType={attributeEnum.HEADWORD}
+            attributeID={id}
+          />
+        </div>
         <DictionaryVersion isLegacy={isLegacy} />
       </div>
       {alternatives && (

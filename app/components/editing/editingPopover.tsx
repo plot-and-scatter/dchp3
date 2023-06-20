@@ -1,6 +1,6 @@
 import { Popover } from "@headlessui/react"
 import { usePopper } from "react-popper"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Form } from "@remix-run/react"
 import { type attributeEnum } from "./attributeEnum"
 
@@ -10,10 +10,13 @@ interface Props {
 }
 
 const EditingPopover = ({ attributeType, attributeID }: Props) => {
-  let [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
-  let [popperElement, setPopperElement] = useState<HTMLElement | null>()
-  let { styles, attributes } = usePopper(referenceElement, popperElement)
-
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
+  const [popperElement, setPopperElement] = useState<HTMLElement | null>()
+  const inputElement = useRef<HTMLInputElement>(null)
+  const { styles, attributes } = usePopper(referenceElement, popperElement)
+  useEffect(() => {
+    inputElement?.current?.focus()
+  }, [attributes]) // TODO: Choose specific attribute
   return (
     <Popover className="relative ml-2 inline-block">
       <Popover.Button
@@ -33,7 +36,7 @@ const EditingPopover = ({ attributeType, attributeID }: Props) => {
           <Form action="/entries" method="post">
             <label>
               hi!
-              <input className="p-2" name="newValue" />
+              <input ref={inputElement} className="p-2" name="newValue" />
             </label>
             <input type="hidden" name="attributeType" value={attributeType} />
             <input type="hidden" name="attributeID" value={attributeID} />
