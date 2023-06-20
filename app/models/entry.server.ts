@@ -186,6 +186,32 @@ export async function updateEntryHeadword(entryId: number, newValue: string) {
   await prisma.entry.update({
     where: { id: entryId },
     data: { headword: newValue },
+  }
+}
+    
+export function getSearchResultsFromMeanings(
+  text: string,
+  caseSensitive: boolean = false
+) {
+  if (text.length === 0) {
+    throw new Error(`Text ("${text}") length must be greater than zero`)
+  }
+
+  return prisma.meaning.findMany({
+    where: {
+      definition: {
+        contains: text,
+      },
+    },
+    select: {
+      entry: {
+        select: {
+          headword: true,
+        },
+      },
+      definition: true,
+      id: true,
+    },
   })
 }
 
