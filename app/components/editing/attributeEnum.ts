@@ -1,6 +1,6 @@
 export enum attributeEnum {
-  HEADWORD = 1,
-  SPELLING_VARIANT,
-  FIST_NOTE,
-  DAGGER,
+  HEADWORD = "Headword",
+  SPELLING_VARIANT = "SpellingVariant",
+  FIST_NOTE = "FistNote",
+  DAGGER = "Dagger",
 }
