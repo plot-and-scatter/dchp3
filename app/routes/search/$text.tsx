@@ -69,7 +69,7 @@ export default function EntryDetailsPage() {
   const params = useParams()
 
   return (
-    <div className="mt-3">
+    <div className="mt-3 flex w-4/6 flex-col justify-center align-middle">
       <h3 className="text-xl font-bold">
         <>
           Entries containing &ldquo;{params.text}&rdquo;: {data.entries.length}
@@ -113,23 +113,32 @@ export default function EntryDetailsPage() {
           {data.meanings.length}
         </>
       </h3>
-      {data.meanings.map((e: any) => {
-        return (
-          <div key={"MeaningDiv" + e.id}>
-            <p key={"meaningHeadword: " + e.id}>
-              <Link
-                to={`/entries/${e.entry.headword}`}
-                className="font-bold text-red-600 hover:text-red-400"
-              >
-                {e.entry.headword}
-              </Link>
-            </p>
+      <div className="max-w-4xl">
+        {data.meanings.map((e: any) => {
+          return (
+            <div key={"MeaningDiv" + e.id}>
+              <p key={"meaningHeadword: " + e.id}>
+                <Link
+                  to={`/entries/${e.entry.headword}`}
+                  className="font-bold text-red-600 hover:text-red-400"
+                >
+                  {e.entry.headword}
+                </Link>
+              </p>
 
+<<<<<<< HEAD
             <p key={"meaning: " + e.id}>{e.definition}</p>
           </div>
         )
       })}
 >>>>>>> Working meaning search
+=======
+              <p key={"meaning: " + e.id}>{e.definition}</p>
+            </div>
+          )
+        })}
+      </div>
+>>>>>>> minor revisions
     </div>
   )
 }
