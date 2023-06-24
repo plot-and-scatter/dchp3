@@ -186,9 +186,9 @@ export async function updateEntryHeadword(entryId: number, newValue: string) {
   await prisma.entry.update({
     where: { id: entryId },
     data: { headword: newValue },
-  }
+  })
 }
-    
+
 export function getSearchResultsFromMeanings(
   text: string,
   caseSensitive: boolean = false

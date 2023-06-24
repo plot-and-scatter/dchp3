@@ -10,13 +10,8 @@ import {
 import invariant from "tiny-invariant"
 
 import {
-<<<<<<< HEAD
   getEntriesByBasicTextSearchAndPage,
-  getSearchResultsFromFistNotes,
-=======
-  getEntriesByBasicTextSearch,
   getSearchResultsFromMeanings,
->>>>>>> Working meaning search
 } from "~/models/entry.server"
 
 export async function action({ request, params }: ActionArgs) {
@@ -87,7 +82,6 @@ export default function EntryDetailsPage() {
           </p>
         )
       })}
-<<<<<<< HEAD
       <Form reloadDocument method="post">
         <button
           className="mx-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
@@ -106,7 +100,6 @@ export default function EntryDetailsPage() {
           Next Page
         </button>
       </Form>
-=======
       <h3 className="text-xl font-bold">
         <>
           Meanings containing &ldquo;{params.text}&rdquo;: &nbsp;
@@ -126,19 +119,11 @@ export default function EntryDetailsPage() {
                 </Link>
               </p>
 
-<<<<<<< HEAD
-            <p key={"meaning: " + e.id}>{e.definition}</p>
-          </div>
-        )
-      })}
->>>>>>> Working meaning search
-=======
               <p key={"meaning: " + e.id}>{e.definition}</p>
             </div>
           )
         })}
       </div>
->>>>>>> minor revisions
     </div>
   )
 }
