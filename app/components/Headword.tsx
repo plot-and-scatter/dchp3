@@ -1,7 +1,8 @@
-import React from "react"
 import DictionaryVersion from "./DictionaryVersion"
 import HandNoteBlock from "./HandNoteBlock"
 import SanitizedTextSpan from "./SanitizedTextSpan"
+import { attributeEnum } from "./editing/attributeEnum"
+import EditingPopover from "./editing/editingPopover"
 
 interface HeadwordProps {
   alternatives?: string
@@ -11,6 +12,7 @@ interface HeadwordProps {
   isLegacy: boolean
   isNonCanadian?: boolean
   word: string
+  id: number
 }
 
 const Headword = ({
@@ -21,11 +23,19 @@ const Headword = ({
   isLegacy,
   isNonCanadian,
   word,
+  id,
 }: HeadwordProps): JSX.Element => {
   return (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl leading-tight md:text-5xl">{word}</h1>
+        <div className="flex justify-center align-middle">
+          <h1 className="text-3xl leading-tight md:text-5xl">{word}</h1>
+          <EditingPopover
+            headword={word}
+            attributeType={attributeEnum.HEADWORD}
+            attributeID={id}
+          />
+        </div>
         <DictionaryVersion isLegacy={isLegacy} />
       </div>
       {alternatives && (

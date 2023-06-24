@@ -1,4 +1,5 @@
 import type { Entry } from "@prisma/client"
+import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
 import { isNonPositive } from "~/utils/numberUtils"
 
@@ -157,4 +158,33 @@ export function getEntriesByBasicTextSearch(
       (headword) LIKE (${searchWildcard}), 
       LOWER(headword) LIKE LOWER(${searchWildcard}))  
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
+}
+
+export async function updateRecordByAttributeAndType(
+  type: attributeEnum,
+  id: number,
+  value: string
+) {
+  if (isNaN(id)) {
+    throw new Error(`Error Parsing ID of element being edited`)
+  } else if (isNonPositive(id)) {
+    throw new Error(`Error Parsing Type and ID of element being edited`)
+  }
+
+  switch (type) {
+    case attributeEnum.HEADWORD:
+      updateEntryHeadword(id, value)
+      break
+    default:
+      throw new Error("Type of element being edited is not supported")
+  }
+}
+
+export async function updateEntryHeadword(entryId: number, newValue: string) {
+  console.log("UPDATING ENTRY")
+
+  await prisma.entry.update({
+    where: { id: entryId },
+    data: { headword: newValue },
+  })
 }
