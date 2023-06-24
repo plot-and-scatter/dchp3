@@ -1,5 +1,6 @@
 import { useMatches } from "@remix-run/react"
 import { useMemo } from "react"
+import { type attributeEnum } from "~/components/editing/attributeEnum"
 
 const DEFAULT_REDIRECT = "/"
 
@@ -53,4 +54,10 @@ export function getStringFromFormInput(formInput: FormDataEntryValue): string {
 export function getNumberFromFormInput(formInput: FormDataEntryValue) {
   const stringValue = formInput.toString()
   return parseInt(stringValue)
+}
+
+export function getAttributeEnumFromFormInput(formInput: FormDataEntryValue) {
+  const stringValue = formInput.toString()
+  const enumValue = stringValue as attributeEnum
+  return enumValue
 }

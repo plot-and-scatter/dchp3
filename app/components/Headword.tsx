@@ -31,6 +31,7 @@ const Headword = ({
         <div className="flex justify-center align-middle">
           <h1 className="text-3xl leading-tight md:text-5xl">{word}</h1>
           <EditingPopover
+            headword={word}
             attributeType={attributeEnum.HEADWORD}
             attributeID={id}
           />

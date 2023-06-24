@@ -145,13 +145,13 @@ export function getEntriesByBasicTextSearch(
 }
 
 export async function updateRecordByAttributeAndType(
-  type: number, // probably change this to enum
+  type: attributeEnum,
   id: number,
   value: string
 ) {
-  if (isNaN(type) || isNaN(id)) {
-    throw new Error(`Error Parsing Type and ID of element being edited`)
-  } else if (isNonPositive(type) || isNonPositive(id)) {
+  if (isNaN(id)) {
+    throw new Error(`Error Parsing ID of element being edited`)
+  } else if (isNonPositive(id)) {
     throw new Error(`Error Parsing Type and ID of element being edited`)
   }
 
