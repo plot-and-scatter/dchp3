@@ -7,6 +7,7 @@ import SearchResults from "~/components/SearchResults"
 import {} from "~/models/entry.server"
 import {
   getEntriesByBasicTextSearchAndPage,
+  getSearchResultsByPage,
   getSearchResultsFromMeanings,
 } from "~/models/search.server"
 
@@ -43,6 +44,14 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const meanings = await getSearchResultsFromMeanings(
     params.text,
+    undefined,
+    undefined,
+    caseSensitive
+  )
+
+  const everything = await getSearchResultsByPage(
+    params.text,
+    pageNumber,
     caseSensitive
   )
 
@@ -52,7 +61,7 @@ export async function loader({ request, params }: LoaderArgs) {
   if (!entries) {
     throw new Response("Not Found", { status: 404 })
   }
-  return json({ entries, meanings })
+  return json({ entries, meanings, everything })
 }
 
 export default function EntryDetailsPage() {

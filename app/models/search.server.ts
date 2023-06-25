@@ -1,10 +1,38 @@
+import { DEFAULT_PAGE_SIZE, calculatePageSkip } from "./entry.server"
 import type { Entry } from "@prisma/client"
 import { prisma } from "~/db.server"
+import { parsePageNumberOrError } from "~/utils/generalUtils"
 import { isNonPositive } from "~/utils/numberUtils"
 
 export type { Entry } from "@prisma/client"
 
-const DEFAULT_PAGE_SIZE = 100
+export function getSearchResultsByPage(
+  text: string,
+  page: string = "1",
+  caseSensitive: boolean = false
+) {
+  const pageNumber = parsePageNumberOrError(page)
+  const elementsToSkip = calculatePageSkip(pageNumber)
+  let elementsToGet = DEFAULT_PAGE_SIZE
+
+  // all functions here. TODO: properly type this array
+
+  const functionsToCall: {
+    (text: string, skip: number, take: number, caseSensitive: boolean): any
+  }[] = [getEntriesByBasicTextSearch, getSearchResultsFromMeanings]
+
+  functionsToCall.forEach((func) => {
+    return func("text", 4, 4, false)
+  })
+
+  return functionsToCall[0](text, 0, 100, caseSensitive)
+
+  // return a JSON with
+  // - entries
+  // - meanings
+  // - usage notes
+  // etc.
+}
 
 export function getEntriesByBasicTextSearchAndPage(
   text: string,
@@ -25,7 +53,7 @@ export function getEntriesByBasicTextSearchAndPage(
 export function getEntriesByBasicTextSearch(
   text: string,
   skip: number = 0,
-  take: number = 100,
+  take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
 ) {
   if (text.length === 0) {
@@ -44,6 +72,8 @@ export function getEntriesByBasicTextSearch(
 
 export function getSearchResultsFromMeanings(
   text: string,
+  skip: number = 0,
+  take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
 ) {
   if (text.length === 0) {

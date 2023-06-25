@@ -18,6 +18,19 @@ const SearchResults = ({
   // return near the top the LINKS that go to the pages
   return (
     <div className="mt-3 flex w-4/6 flex-col justify-center align-middle">
+      <h3 className="text-xl font-bold">EVERYTHING for testing</h3>
+      {data.everything.map((e: any) => {
+        return (
+          <p key={"Everything " + e.id}>
+            <Link
+              to={`/entries/${e.headword}`}
+              className="font-bold text-red-600 hover:text-red-400"
+            >
+              {e.headword}
+            </Link>
+          </p>
+        )
+      })}
       <h3 className="text-xl font-bold">
         <>
           Entries containing &ldquo;{text}&rdquo;: {data.entries.length}

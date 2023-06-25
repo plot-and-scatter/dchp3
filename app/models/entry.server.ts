@@ -5,7 +5,11 @@ import { isNonPositive } from "~/utils/numberUtils"
 
 export type { Entry } from "@prisma/client"
 
-const DEFAULT_PAGE_SIZE = 100
+export const DEFAULT_PAGE_SIZE = 100
+
+export function calculatePageSkip(pageNumber: number): number {
+  return (pageNumber - 1) * DEFAULT_PAGE_SIZE
+}
 
 export function getEntryById({ id }: Pick<Entry, "id">) {
   return prisma.entry.findUnique({
