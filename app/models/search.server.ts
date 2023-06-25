@@ -11,12 +11,6 @@ export async function getSearchResultsByPage(
   page: string = "1",
   caseSensitive: boolean = false
 ) {
-  const pageNumber = parsePageNumberOrError(page)
-  const elementsToSkip = calculatePageSkip(pageNumber)
-  let elementsToGet = DEFAULT_PAGE_SIZE
-
-  // all functions here. TODO: properly type this array
-
   interface entryAndFunctionMap {
     [key: string]: (
       text: string,
@@ -27,23 +21,35 @@ export async function getSearchResultsByPage(
   }
 
   // TODO: Extract these to be constant strings at the top of this file
+  // TODO: make better name
   let kvp: entryAndFunctionMap = {}
   kvp["entries"] = getEntriesByBasicTextSearch
   kvp["meanings"] = getSearchResultsFromMeanings
 
-  let entries: Pick<Entry, "id" | "headword">[] = []
-  let meanings: Meaning[] = []
+  type Result = Record<string, Array<any>>
+  let results: Result = {}
 
-  entries = await kvp["entries"](text, 0, 100, caseSensitive)
-  meanings = await kvp["meanings"](text, 0, 100, caseSensitive)
+  const pageNumber = parsePageNumberOrError(page)
+  const elementsToSkip = calculatePageSkip(pageNumber)
+  let elementsToGet = DEFAULT_PAGE_SIZE
 
-  // TODO: populate those with a for loop. I can kill the dictionary and use an array
+  for (const key in kvp) {
+    // get results
+    let resultValues: any[] = []
+    if (true) {
+      resultValues = await kvp[key](
+        text,
+        elementsToSkip,
+        elementsToGet,
+        caseSensitive
+      )
+    }
 
-  console.log("TEST VALUES")
-  console.log(meanings)
-  const result = { entries, meanings }
+    elementsToGet = elementsToGet - resultValues.length
+    results[key] = resultValues
+  }
 
-  return result
+  return results
 }
 
 export function getEntriesByBasicTextSearchAndPage(
@@ -107,5 +113,7 @@ export function getSearchResultsFromMeanings(
       definition: true,
       id: true,
     },
+    skip: skip,
+    take: take,
   })
 }

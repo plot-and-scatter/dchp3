@@ -8,7 +8,7 @@ interface SearchResultsProps {
   pageNumber: string | undefined
 }
 
-function getEntries(pageNumber: string, text: string, data: any) {
+function displayEntries(pageNumber: string, text: string, data: any) {
   return (
     <>
       <h3 className="text-xl font-bold">
@@ -32,7 +32,7 @@ function getEntries(pageNumber: string, text: string, data: any) {
   )
 }
 
-function getMeanings(pageNumber: string, text: string, data: any) {
+function displayMeanings(pageNumber: string, text: string, data: any) {
   return (
     <>
       <h3 className="text-xl font-bold">
@@ -71,8 +71,8 @@ const SearchResults = ({
   // return near the top the LINKS that go to the pages
   return (
     <div className="mt-3 flex w-4/6 flex-col justify-center align-middle">
-      {getEntries(page, text, data.everything)}
-      {getMeanings(page, text, data.everything)}
+      {displayEntries(page, text, data.everything)}
+      {displayMeanings(page, text, data.everything)}
     </div>
   )
 }
