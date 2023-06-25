@@ -1,18 +1,14 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 import { json, redirect } from "@remix-run/node"
-import {
-  Form,
-  Link,
-  useCatch,
-  useLoaderData,
-  useParams,
-} from "@remix-run/react"
+import { Form, useCatch, useLoaderData, useParams } from "@remix-run/react"
 import invariant from "tiny-invariant"
+import SearchResults from "~/components/SearchResults"
 
+import {} from "~/models/entry.server"
 import {
   getEntriesByBasicTextSearchAndPage,
   getSearchResultsFromMeanings,
-} from "~/models/entry.server"
+} from "~/models/search.server"
 
 export async function action({ request, params }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -62,26 +58,15 @@ export async function loader({ request, params }: LoaderArgs) {
 export default function EntryDetailsPage() {
   const data: any = useLoaderData<typeof loader>()
   const params = useParams()
+  invariant(params.text)
 
   return (
-    <div className="mt-3 flex w-4/6 flex-col justify-center align-middle">
-      <h3 className="text-xl font-bold">
-        <>
-          Entries containing &ldquo;{params.text}&rdquo;: {data.entries.length}
-        </>
-      </h3>
-      {data.entries.map((e: any) => {
-        return (
-          <p key={e.id}>
-            <Link
-              to={`/entries/${e.headword}`}
-              className="font-bold text-red-600 hover:text-red-400"
-            >
-              {e.headword}
-            </Link>
-          </p>
-        )
-      })}
+    <>
+      <SearchResults
+        data={data}
+        text={params.text}
+        pageNumber={params.pageNumber}
+      />
       <Form reloadDocument method="post">
         <button
           className="mx-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
@@ -100,31 +85,7 @@ export default function EntryDetailsPage() {
           Next Page
         </button>
       </Form>
-      <h3 className="text-xl font-bold">
-        <>
-          Meanings containing &ldquo;{params.text}&rdquo;: &nbsp;
-          {data.meanings.length}
-        </>
-      </h3>
-      <div className="max-w-4xl">
-        {data.meanings.map((e: any) => {
-          return (
-            <div key={"MeaningDiv" + e.id}>
-              <p key={"meaningHeadword: " + e.id}>
-                <Link
-                  to={`/entries/${e.entry.headword}`}
-                  className="font-bold text-red-600 hover:text-red-400"
-                >
-                  {e.entry.headword}
-                </Link>
-              </p>
-
-              <p key={"meaning: " + e.id}>{e.definition}</p>
-            </div>
-          )
-        })}
-      </div>
-    </div>
+    </>
   )
 }
 
