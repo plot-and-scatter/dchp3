@@ -1,12 +1,12 @@
 import { DEFAULT_PAGE_SIZE, calculatePageSkip } from "./entry.server"
-import type { Entry } from "@prisma/client"
+import type { Entry, Meaning } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { parsePageNumberOrError } from "~/utils/generalUtils"
 import { isNonPositive } from "~/utils/numberUtils"
 
 export type { Entry } from "@prisma/client"
 
-export function getSearchResultsByPage(
+export async function getSearchResultsByPage(
   text: string,
   page: string = "1",
   caseSensitive: boolean = false
@@ -17,21 +17,33 @@ export function getSearchResultsByPage(
 
   // all functions here. TODO: properly type this array
 
-  const functionsToCall: {
-    (text: string, skip: number, take: number, caseSensitive: boolean): any
-  }[] = [getEntriesByBasicTextSearch, getSearchResultsFromMeanings]
+  interface entryAndFunctionMap {
+    [key: string]: (
+      text: string,
+      skip: number,
+      take: number,
+      caseSensitive: boolean
+    ) => any
+  }
 
-  functionsToCall.forEach((func) => {
-    return func("text", 4, 4, false)
-  })
+  // TODO: Extract these to be constant strings at the top of this file
+  let kvp: entryAndFunctionMap = {}
+  kvp["entries"] = getEntriesByBasicTextSearch
+  kvp["meanings"] = getSearchResultsFromMeanings
 
-  return functionsToCall[0](text, 0, 100, caseSensitive)
+  let entries: Pick<Entry, "id" | "headword">[] = []
+  let meanings: Meaning[] = []
 
-  // return a JSON with
-  // - entries
-  // - meanings
-  // - usage notes
-  // etc.
+  entries = await kvp["entries"](text, 0, 100, caseSensitive)
+  meanings = await kvp["meanings"](text, 0, 100, caseSensitive)
+
+  // populate those with a for loop. I can kill the dictionary and use an array
+
+  console.log("TEST VALUES")
+  console.log(meanings)
+  const result = { entries, meanings }
+
+  return result
 }
 
 export function getEntriesByBasicTextSearchAndPage(

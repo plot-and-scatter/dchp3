@@ -8,6 +8,29 @@ interface SearchResultsProps {
   pageNumber: string | undefined
 }
 
+function getEntries(pageNumber: string, data: any) {
+  return null
+}
+
+function getMeanings(pageNumber: string, data: any) {
+  return (
+    <>
+      {data.meanings.map((e: any) => {
+        return (
+          <p key={"Everything " + e.id}>
+            <Link
+              to={`/entries/${e.entry.headword}`}
+              className="font-bold text-red-600 hover:text-red-400"
+            >
+              {e.entry.headword}
+            </Link>
+          </p>
+        )
+      })}
+    </>
+  )
+}
+
 const SearchResults = ({
   data,
   text,
@@ -19,18 +42,8 @@ const SearchResults = ({
   return (
     <div className="mt-3 flex w-4/6 flex-col justify-center align-middle">
       <h3 className="text-xl font-bold">EVERYTHING for testing</h3>
-      {data.everything.map((e: any) => {
-        return (
-          <p key={"Everything " + e.id}>
-            <Link
-              to={`/entries/${e.headword}`}
-              className="font-bold text-red-600 hover:text-red-400"
-            >
-              {e.headword}
-            </Link>
-          </p>
-        )
-      })}
+      {getEntries(page, data.everything)}
+      {getMeanings(page, data.everything)}
       <h3 className="text-xl font-bold">
         <>
           Entries containing &ldquo;{text}&rdquo;: {data.entries.length}
