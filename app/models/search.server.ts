@@ -37,7 +37,7 @@ export async function getSearchResultsByPage(
   entries = await kvp["entries"](text, 0, 100, caseSensitive)
   meanings = await kvp["meanings"](text, 0, 100, caseSensitive)
 
-  // populate those with a for loop. I can kill the dictionary and use an array
+  // TODO: populate those with a for loop. I can kill the dictionary and use an array
 
   console.log("TEST VALUES")
   console.log(meanings)
