@@ -6,11 +6,19 @@ import { type attributeEnum } from "./attributeEnum"
 
 interface Props {
   headword: string
+  currentValue: string | undefined
   attributeType: attributeEnum
   attributeID: number
 }
 
-const EditingPopover = ({ headword, attributeType, attributeID }: Props) => {
+const EditingPopover = ({
+  headword,
+  currentValue,
+  attributeType,
+  attributeID,
+}: Props) => {
+  const [initialValue, setInputValue] = useState(currentValue)
+
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
   const [popperElement, setPopperElement] = useState<HTMLElement | null>()
   const inputElement = useRef<HTMLInputElement>(null)
@@ -41,8 +49,14 @@ const EditingPopover = ({ headword, attributeType, attributeID }: Props) => {
             method="post"
           >
             <label>
-              hi!
-              <input ref={inputElement} className="p-2" name="newValue" />
+              input:
+              <input
+                ref={inputElement}
+                onChange={(e) => setInputValue(e.target.value)}
+                className="m-2 p-2"
+                value={initialValue}
+                name="newValue"
+              />
             </label>
             <input type="hidden" name="attributeType" value={attributeType} />
             <input type="hidden" name="attributeID" value={attributeID} />
