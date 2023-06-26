@@ -1,15 +1,11 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 import { json, redirect } from "@remix-run/node"
-import {
-  Form,
-  Link,
-  useCatch,
-  useLoaderData,
-  useParams,
-} from "@remix-run/react"
+import { Form, useCatch, useLoaderData, useParams } from "@remix-run/react"
 import invariant from "tiny-invariant"
+import SearchResults from "~/components/SearchResults"
 
-import { getEntriesByBasicTextSearchAndPage } from "~/models/entry.server"
+import {} from "~/models/entry.server"
+import { getSearchResultsByPage } from "~/models/search.server"
 
 export async function action({ request, params }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -36,41 +32,30 @@ export async function loader({ request, params }: LoaderArgs) {
   const pageNumber: string | undefined =
     url.searchParams.get("pageNumber") ?? undefined
 
-  const entries = await getEntriesByBasicTextSearchAndPage(
+  const everything = await getSearchResultsByPage(
     params.text,
     pageNumber,
     caseSensitive
   )
 
-  if (!entries) {
+  if (!everything) {
     throw new Response("Not Found", { status: 404 })
   }
-  return json({ entries })
+  return json({ everything })
 }
 
 export default function EntryDetailsPage() {
-  const data = useLoaderData<typeof loader>()
+  const data: any = useLoaderData<typeof loader>()
   const params = useParams()
+  invariant(params.text)
 
   return (
-    <div className="mt-3">
-      <h3 className="text-xl font-bold">
-        <>
-          Entries containing &ldquo;{params.text}&rdquo;: {data.entries.length}
-        </>
-      </h3>
-      {data.entries.map((e) => {
-        return (
-          <p key={e.id}>
-            <Link
-              to={`/entries/${e.headword}`}
-              className="font-bold text-red-600 hover:text-red-400"
-            >
-              {e.headword}
-            </Link>
-          </p>
-        )
-      })}
+    <>
+      <SearchResults
+        data={data}
+        text={params.text}
+        pageNumber={params.pageNumber}
+      />
       <Form reloadDocument method="post">
         <button
           className="mx-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
@@ -89,7 +74,7 @@ export default function EntryDetailsPage() {
           Next Page
         </button>
       </Form>
-    </div>
+    </>
   )
 }
 

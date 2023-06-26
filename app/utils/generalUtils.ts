@@ -1,6 +1,7 @@
 import { useMatches } from "@remix-run/react"
 import { useMemo } from "react"
 import { type attributeEnum } from "~/components/editing/attributeEnum"
+import { isNonPositive } from "./numberUtils"
 
 const DEFAULT_REDIRECT = "/"
 
@@ -60,4 +61,15 @@ export function getAttributeEnumFromFormInput(formInput: FormDataEntryValue) {
   const stringValue = formInput.toString()
   const enumValue = stringValue as attributeEnum
   return enumValue
+}
+
+export function parsePageNumberOrError(page: string): number {
+  const pageNumber = parseInt(page)
+  if (isNaN(pageNumber)) {
+    throw new Error(`Page Number ("${page}") must be a number`)
+  } else if (isNonPositive(pageNumber)) {
+    throw new Error(`Page Number ("${page}") must be greater than zero`)
+  }
+
+  return pageNumber
 }
