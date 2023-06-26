@@ -1,5 +1,5 @@
 import { DEFAULT_PAGE_SIZE, calculatePageSkip } from "./entry.server"
-import type { Entry, Meaning } from "@prisma/client"
+import type { Entry } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { parsePageNumberOrError } from "~/utils/generalUtils"
 import { isNonPositive } from "~/utils/numberUtils"
@@ -88,10 +88,10 @@ export async function getSearchResultsByPage(
 
     results[attribute] = resultsForCurrentPage
 
-    // TODO: handle undefined attributes.
-    /*if (maxTake === 0) {
+    // maxTake is now zero-- no possibility of adding further items
+    if (maxTake === 0) {
       break
-    }*/
+    }
   }
 
   return results

@@ -9,6 +9,10 @@ interface SearchResultsProps {
 }
 
 function displayEntries(pageNumber: string, text: string, data: any) {
+  if (data.entries === undefined || data.entries.length === 0) {
+    return null
+  }
+
   return (
     <>
       <h3 className="text-xl font-bold">
@@ -33,6 +37,10 @@ function displayEntries(pageNumber: string, text: string, data: any) {
 }
 
 function displayMeanings(pageNumber: string, text: string, data: any) {
+  if (data.meanings === undefined || data.meanings.length === 0) {
+    return null
+  }
+
   return (
     <>
       <h3 className="text-xl font-bold">

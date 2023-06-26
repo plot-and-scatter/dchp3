@@ -1,21 +1,11 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 import { json, redirect } from "@remix-run/node"
-import {
-  Form,
-  Link,
-  useCatch,
-  useLoaderData,
-  useParams,
-} from "@remix-run/react"
+import { Form, useCatch, useLoaderData, useParams } from "@remix-run/react"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
 
 import {} from "~/models/entry.server"
-import {
-  getEntriesByBasicTextSearchAndPage,
-  getSearchResultsByPage,
-  getSearchResultsFromMeanings,
-} from "~/models/search.server"
+import { getSearchResultsByPage } from "~/models/search.server"
 
 export async function action({ request, params }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -42,29 +32,16 @@ export async function loader({ request, params }: LoaderArgs) {
   const pageNumber: string | undefined =
     url.searchParams.get("pageNumber") ?? undefined
 
-  const entries = await getEntriesByBasicTextSearchAndPage(
-    params.text,
-    pageNumber,
-    caseSensitive
-  )
-
-  const meanings = await getSearchResultsFromMeanings(
-    params.text,
-    undefined,
-    undefined,
-    caseSensitive
-  )
-
   const everything = await getSearchResultsByPage(
     params.text,
     pageNumber,
     caseSensitive
   )
 
-  if (!entries) {
+  if (!everything) {
     throw new Response("Not Found", { status: 404 })
   }
-  return json({ entries, meanings, everything })
+  return json({ everything })
 }
 
 export default function EntryDetailsPage() {
