@@ -141,7 +141,13 @@ export async function updateRecordByAttributeAndType(
 
   switch (type) {
     case attributeEnum.HEADWORD:
-      updateEntryHeadword(id, value)
+      await updateEntryHeadword(id, value)
+      break
+    case attributeEnum.ETYMOLOGY:
+      await updateEntryEtymology(id, value)
+      break
+    case attributeEnum.LABLES:
+      await updateEntryLables(id, value)
       break
     default:
       throw new Error("Type of element being edited is not supported")
@@ -149,10 +155,22 @@ export async function updateRecordByAttributeAndType(
 }
 
 export async function updateEntryHeadword(entryId: number, newValue: string) {
-  console.log("UPDATING ENTRY")
-
   await prisma.entry.update({
     where: { id: entryId },
     data: { headword: newValue },
+  })
+}
+
+export async function updateEntryEtymology(entryId: number, newValue: string) {
+  await prisma.entry.update({
+    where: { id: entryId },
+    data: { etymology: newValue },
+  })
+}
+
+export async function updateEntryLables(entryId: number, newValue: string) {
+  await prisma.entry.update({
+    where: { id: entryId },
+    data: { general_labels: newValue },
   })
 }

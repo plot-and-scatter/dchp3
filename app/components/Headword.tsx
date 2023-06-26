@@ -32,6 +32,7 @@ const Headword = ({
           <h1 className="text-3xl leading-tight md:text-5xl">{word}</h1>
           <EditingPopover
             headword={word}
+            currentValue={word}
             attributeType={attributeEnum.HEADWORD}
             attributeID={id}
           />
@@ -46,18 +47,34 @@ const Headword = ({
           </span>
         </h2>
       )}
-      <p>
-        {etymology && (
-          <span className="mr-1">
-            <SanitizedTextSpan text={etymology} />
-          </span>
-        )}
-        {generalLabels && (
-          <span className="mr-1 italic">
-            <SanitizedTextSpan text={generalLabels} />
-          </span>
-        )}
-      </p>
+      <div className="flex flex-row">
+        <p>
+          {etymology && (
+            <span className="">
+              <SanitizedTextSpan text={etymology} />
+            </span>
+          )}
+        </p>
+        <EditingPopover
+          headword={word}
+          currentValue={etymology}
+          attributeType={attributeEnum.ETYMOLOGY}
+          attributeID={id}
+        />
+        <p>
+          {generalLabels && (
+            <span className="ml-3 italic">
+              <SanitizedTextSpan text={generalLabels} />
+            </span>
+          )}
+        </p>
+        <EditingPopover
+          headword={word}
+          currentValue={generalLabels}
+          attributeType={attributeEnum.LABLES}
+          attributeID={id}
+        />
+      </div>
       {handNote && (
         <HandNoteBlock className="text-xs text-slate-500 md:text-lg">
           {handNote}

@@ -32,8 +32,10 @@ export async function action({ request }: ActionArgs) {
   const type = getAttributeEnumFromFormInput(data.attributeType)
   const id = getNumberFromFormInput(data.attributeID)
 
-  updateRecordByAttributeAndType(type, id, newValue)
+  // await so you refresh page only after entry updated
+  await updateRecordByAttributeAndType(type, id, newValue)
 
+  // old headword invalid-- redirect to updated headword
   if (type === attributeEnum.HEADWORD) {
     return redirect(`/entries/${newValue}`)
   }
