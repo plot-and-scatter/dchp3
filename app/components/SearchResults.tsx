@@ -1,6 +1,7 @@
 import { Link } from "@remix-run/react"
 import React from "react"
 import type JSXNode from "~/types/JSXNode"
+import SanitizedTextSpan from "./SanitizedTextSpan"
 
 interface SearchResultsProps {
   data: any
@@ -51,7 +52,7 @@ function displayMeanings(pageNumber: string, text: string, data: any) {
       </h3>
       {data.meanings.map((e: any) => {
         return (
-          <div key={"MeaningDiv" + e.id}>
+          <div className="m-1" key={"MeaningDiv" + e.id}>
             <p key={"meaningHeadword: " + e.id}>
               <Link
                 to={`/entries/${e.entry.headword}`}
@@ -60,8 +61,9 @@ function displayMeanings(pageNumber: string, text: string, data: any) {
                 {e.entry.headword}
               </Link>
             </p>
-
-            <p key={"meaning: " + e.id}>{e.definition}</p>
+            <p key={"meaning: " + e.id}>
+              <SanitizedTextSpan text={e.definition} />
+            </p>
           </div>
         )
       })}
