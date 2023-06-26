@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 interface Props {
   name: string
   label: string
-  value: string
+  value: string | undefined
   type?: string | undefined
 }
 
@@ -52,6 +52,8 @@ const EditableTextInput = (name: string, value: string) => {
 }
 
 const EditablePopoverInput = ({ name, label, value, type }: Props) => {
+  value = value ?? ""
+
   if (type === "textArea") {
     return (
       <label>
