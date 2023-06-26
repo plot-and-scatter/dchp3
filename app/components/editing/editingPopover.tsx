@@ -1,8 +1,9 @@
 import { Popover } from "@headlessui/react"
 import { usePopper } from "react-popper"
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import { Form } from "@remix-run/react"
 import { type attributeEnum } from "./attributeEnum"
+import EditablePopoverInput from "./editablePopoverInput"
 
 interface Props {
   headword: string
@@ -17,16 +18,10 @@ const EditingPopover = ({
   attributeType,
   attributeID,
 }: Props) => {
-  const [initialValue, setInputValue] = useState(currentValue)
-
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
   const [popperElement, setPopperElement] = useState<HTMLElement | null>()
-  const inputElement = useRef<HTMLInputElement>(null)
   const { styles, attributes } = usePopper(referenceElement, popperElement)
 
-  useEffect(() => {
-    inputElement?.current?.focus()
-  }, [attributes.popper]) // TODO: Choose specific attribute
   return (
     <Popover className="relative ml-2 inline-block">
       <Popover.Button
@@ -44,20 +39,15 @@ const EditingPopover = ({
       >
         <div className="grid grid-cols-1">
           <Form
-            reloadDocument={true} // TODO: reloading to kill popper on post
+            reloadDocument={true} // reloading to kill popper on post
             action={`/entries/${headword}`}
             method="post"
           >
-            <label>
-              input:
-              <input
-                ref={inputElement}
-                onChange={(e) => setInputValue(e.target.value)}
-                className="m-2 p-2"
-                value={initialValue}
-                name="newValue"
-              />
-            </label>
+            <EditablePopoverInput
+              name="newValue"
+              value={currentValue ?? ""}
+              label="input: "
+            />
             <input type="hidden" name="attributeType" value={attributeType} />
             <input type="hidden" name="attributeID" value={attributeID} />
           </Form>
