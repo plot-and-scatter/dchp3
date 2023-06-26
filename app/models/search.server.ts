@@ -8,12 +8,8 @@ export type { Entry } from "@prisma/client"
 
 const MAX_RESULTS = 1000
 
-export async function getSearchResultsByPage(
-  text: string,
-  page: string = "1",
-  caseSensitive: boolean = false
-) {
-  interface entryAndFunctionMap {
+function getAttributeFunctionMap() {
+  interface AttributeFunctionMap {
     [key: string]: (
       text: string,
       skip: number,
@@ -22,51 +18,80 @@ export async function getSearchResultsByPage(
     ) => any
   }
 
-  console.log("page number here: " + page)
+  let attributeFunctionMap: AttributeFunctionMap = {}
+  attributeFunctionMap["entries"] = getEntriesByBasicTextSearch
+  attributeFunctionMap["meanings"] = getSearchResultsFromMeanings
 
-  // TODO: Extract these to be constant strings at the top of this file
-  // TODO: make better name
-  let kvp: entryAndFunctionMap = {}
-  kvp["entries"] = getEntriesByBasicTextSearch
-  kvp["meanings"] = getSearchResultsFromMeanings
+  return attributeFunctionMap
+}
 
+function getElementsAfterApplyingSkipAndTake(
+  values: any[],
+  length: number,
+  skip: number,
+  take: number
+) {
+  return length > skip ? values.slice(skip, skip + take) : []
+}
+
+function calculateNewSkip(length: number, skip: number) {
+  return (skip = length <= skip ? skip - length : 0)
+}
+
+function calculateElementsRemaining(remaining: number, gotten: number) {
+  return remaining - gotten
+}
+
+export async function getSearchResultsByPage(
+  text: string,
+  page: string = "1",
+  caseSensitive: boolean = false
+) {
   type Result = Record<string, Array<any>>
   let results: Result = {}
 
+  const attributeFunctionMap = getAttributeFunctionMap()
+
   const pageNumber = parsePageNumberOrError(page)
-  // TODO: Toggle stuff below. Causes a bug. Search "Za"
-
   let elementsToSkip = calculatePageSkip(pageNumber)
-  let elementsRemaining = DEFAULT_PAGE_SIZE
+  let maxTake = DEFAULT_PAGE_SIZE
 
-  for (const key in kvp) {
-    // get results
-    let resultValues: any[] = await kvp[key](
+  /**
+   * attribute: Entry, Meaning, etc.
+   *
+   * elementsToSkip: We want to skip a certain number of elements based
+   *  on the page number. We need to keep track of this between different
+   *  attributes. If there are 40 headwords and 70 meanings, then page 2
+   *  should skip the first hundred elements and return the last 10 meanings
+   *
+   * maxTake: we want to return to the user maximum 100 entries. So
+   *  as we obtain more data,
+   */
+  for (const attribute in attributeFunctionMap) {
+    let allAttributeValues: any[] = await attributeFunctionMap[attribute](
       text,
       0,
       MAX_RESULTS,
       caseSensitive
     )
+    let resultLength = allAttributeValues.length
 
-    let resultLength = resultValues.length
+    let resultsForCurrentPage: any[] = getElementsAfterApplyingSkipAndTake(
+      allAttributeValues,
+      resultLength,
+      elementsToSkip,
+      maxTake
+    )
 
-    if (resultLength > elementsToSkip) {
-      resultValues = resultValues.slice(
-        elementsToSkip,
-        elementsToSkip + elementsRemaining
-      )
-      elementsToSkip = 0
-      // add the first 100 values in resultValues to results
-      // you want to then subtract this from the elementsToGet
-    } else {
-      resultValues = []
-      elementsToSkip = elementsToSkip - resultLength
-    }
+    elementsToSkip = calculateNewSkip(resultLength, elementsToSkip)
+    maxTake = calculateElementsRemaining(maxTake, resultsForCurrentPage.length)
 
-    results[key] = resultValues
-    elementsRemaining -= results[key].length
+    results[attribute] = resultsForCurrentPage
 
-    console.log(resultValues.length)
+    // TODO: handle undefined attributes.
+    /*if (maxTake === 0) {
+      break
+    }*/
   }
 
   return results

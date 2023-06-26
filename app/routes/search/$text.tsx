@@ -42,7 +42,6 @@ export async function loader({ request, params }: LoaderArgs) {
   const pageNumber: string | undefined =
     url.searchParams.get("pageNumber") ?? undefined
 
-  console.log("PAGE NUMBER: " + pageNumber)
   const entries = await getEntriesByBasicTextSearchAndPage(
     params.text,
     pageNumber,
@@ -56,16 +55,11 @@ export async function loader({ request, params }: LoaderArgs) {
     caseSensitive
   )
 
-  console.log("page number: " + pageNumber)
-
   const everything = await getSearchResultsByPage(
     params.text,
     pageNumber,
     caseSensitive
   )
-
-  console.log("LIST OF MEANIGNS")
-  console.log(meanings.length)
 
   if (!entries) {
     throw new Response("Not Found", { status: 404 })
