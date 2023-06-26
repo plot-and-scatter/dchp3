@@ -6,6 +6,8 @@ import { isNonPositive } from "~/utils/numberUtils"
 
 export type { Entry } from "@prisma/client"
 
+const MAX_RESULTS = 1000
+
 export async function getSearchResultsByPage(
   text: string,
   page: string = "1",
@@ -20,6 +22,8 @@ export async function getSearchResultsByPage(
     ) => any
   }
 
+  console.log("page number here: " + page)
+
   // TODO: Extract these to be constant strings at the top of this file
   // TODO: make better name
   let kvp: entryAndFunctionMap = {}
@@ -30,23 +34,39 @@ export async function getSearchResultsByPage(
   let results: Result = {}
 
   const pageNumber = parsePageNumberOrError(page)
-  const elementsToSkip = calculatePageSkip(pageNumber)
-  let elementsToGet = DEFAULT_PAGE_SIZE
+  // TODO: Toggle stuff below. Causes a bug. Search "Za"
+
+  let elementsToSkip = calculatePageSkip(pageNumber)
+  let elementsRemaining = DEFAULT_PAGE_SIZE
 
   for (const key in kvp) {
     // get results
-    let resultValues: any[] = []
-    if (true) {
-      resultValues = await kvp[key](
-        text,
+    let resultValues: any[] = await kvp[key](
+      text,
+      0,
+      MAX_RESULTS,
+      caseSensitive
+    )
+
+    let resultLength = resultValues.length
+
+    if (resultLength > elementsToSkip) {
+      resultValues = resultValues.slice(
         elementsToSkip,
-        elementsToGet,
-        caseSensitive
+        elementsToSkip + elementsRemaining
       )
+      elementsToSkip = 0
+      // add the first 100 values in resultValues to results
+      // you want to then subtract this from the elementsToGet
+    } else {
+      resultValues = []
+      elementsToSkip = elementsToSkip - resultLength
     }
 
-    elementsToGet = elementsToGet - resultValues.length
     results[key] = resultValues
+    elementsRemaining -= results[key].length
+
+    console.log(resultValues.length)
   }
 
   return results

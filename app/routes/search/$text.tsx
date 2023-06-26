@@ -1,6 +1,12 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 import { json, redirect } from "@remix-run/node"
-import { Form, useCatch, useLoaderData, useParams } from "@remix-run/react"
+import {
+  Form,
+  Link,
+  useCatch,
+  useLoaderData,
+  useParams,
+} from "@remix-run/react"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
 
@@ -36,6 +42,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const pageNumber: string | undefined =
     url.searchParams.get("pageNumber") ?? undefined
 
+  console.log("PAGE NUMBER: " + pageNumber)
   const entries = await getEntriesByBasicTextSearchAndPage(
     params.text,
     pageNumber,
@@ -48,6 +55,8 @@ export async function loader({ request, params }: LoaderArgs) {
     undefined,
     caseSensitive
   )
+
+  console.log("page number: " + pageNumber)
 
   const everything = await getSearchResultsByPage(
     params.text,
