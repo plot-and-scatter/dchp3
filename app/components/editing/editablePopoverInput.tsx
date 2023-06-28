@@ -1,5 +1,5 @@
-import EditableTextInput from "./editableTextInput"
 import EditableTextArea from "./EditableTextArea"
+import EditableTextInput from "./EditableTextInput"
 
 interface Props {
   name: string

@@ -2,8 +2,8 @@ import DictionaryVersion from "./DictionaryVersion"
 import HandNoteBlock from "./HandNoteBlock"
 import SanitizedTextSpan from "./SanitizedTextSpan"
 import { attributeEnum } from "./editing/attributeEnum"
-import { editablePopoverInputTypes } from "./editing/editablePopoverInput"
-import EditingPopover from "./editing/editingPopover"
+import { editablePopoverInputTypes } from "./editing/EditablePopoverInput"
+import EditingPopover from "./editing/EditingPopover"
 
 interface HeadwordProps {
   alternatives?: string

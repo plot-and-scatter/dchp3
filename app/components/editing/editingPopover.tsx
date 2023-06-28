@@ -5,7 +5,7 @@ import { Form } from "@remix-run/react"
 import { type attributeEnum } from "./attributeEnum"
 import EditablePopoverInput, {
   type editablePopoverInputTypes,
-} from "./editablePopoverInput"
+} from "./EditablePopoverInput"
 
 interface Props {
   headword: string
