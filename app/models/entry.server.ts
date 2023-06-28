@@ -146,8 +146,8 @@ export async function updateRecordByAttributeAndType(
     case attributeEnum.ETYMOLOGY:
       await updateEntryEtymology(id, value)
       break
-    case attributeEnum.LABLES:
-      await updateEntryLables(id, value)
+    case attributeEnum.LABELS:
+      await updateEntryLabels(id, value)
       break
     default:
       throw new Error("Type of element being edited is not supported")
@@ -168,7 +168,7 @@ export async function updateEntryEtymology(entryId: number, newValue: string) {
   })
 }
 
-export async function updateEntryLables(entryId: number, newValue: string) {
+export async function updateEntryLabels(entryId: number, newValue: string) {
   await prisma.entry.update({
     where: { id: entryId },
     data: { general_labels: newValue },

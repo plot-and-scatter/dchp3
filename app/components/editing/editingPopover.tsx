@@ -3,13 +3,16 @@ import { usePopper } from "react-popper"
 import { useState } from "react"
 import { Form } from "@remix-run/react"
 import { type attributeEnum } from "./attributeEnum"
-import EditablePopoverInput from "./editablePopoverInput"
+import EditablePopoverInput, {
+  type editablePopoverInputTypes,
+} from "./editablePopoverInput"
 
 interface Props {
   headword: string
   currentValue: string | undefined
   attributeType: attributeEnum
   attributeID: number
+  type?: editablePopoverInputTypes
 }
 
 const EditingPopover = ({
@@ -17,6 +20,7 @@ const EditingPopover = ({
   currentValue,
   attributeType,
   attributeID,
+  type,
 }: Props) => {
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
   const [popperElement, setPopperElement] = useState<HTMLElement | null>()
@@ -47,6 +51,7 @@ const EditingPopover = ({
               name="newValue"
               value={currentValue ?? ""}
               label="input: "
+              type={type}
             />
             <input type="hidden" name="attributeType" value={attributeType} />
             <input type="hidden" name="attributeID" value={attributeID} />

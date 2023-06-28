@@ -2,7 +2,7 @@ export enum attributeEnum {
   HEADWORD = "Headword",
   SPELLING_VARIANT = "SpellingVariant",
   ETYMOLOGY = "Etymology",
-  LABLES = "Lables",
+  LABELS = "Labels",
   FIST_NOTE = "FistNote",
   DAGGER = "Dagger",
 }

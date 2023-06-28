@@ -2,6 +2,7 @@ import DictionaryVersion from "./DictionaryVersion"
 import HandNoteBlock from "./HandNoteBlock"
 import SanitizedTextSpan from "./SanitizedTextSpan"
 import { attributeEnum } from "./editing/attributeEnum"
+import { editablePopoverInputTypes } from "./editing/editablePopoverInput"
 import EditingPopover from "./editing/editingPopover"
 
 interface HeadwordProps {
@@ -60,6 +61,7 @@ const Headword = ({
           currentValue={etymology}
           attributeType={attributeEnum.ETYMOLOGY}
           attributeID={id}
+          type={editablePopoverInputTypes.TEXTAREA}
         />
         <p>
           {generalLabels && (
@@ -71,7 +73,7 @@ const Headword = ({
         <EditingPopover
           headword={word}
           currentValue={generalLabels}
-          attributeType={attributeEnum.LABLES}
+          attributeType={attributeEnum.LABELS}
           attributeID={id}
         />
       </div>

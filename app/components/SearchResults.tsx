@@ -4,12 +4,16 @@ import type JSXNode from "~/types/JSXNode"
 import SanitizedTextSpan from "./SanitizedTextSpan"
 
 interface SearchResultsProps {
-  data: any
+  data: Record<string, any[]>
   text: string
   pageNumber: string | undefined
 }
 
-function displayEntries(pageNumber: string, text: string, data: any) {
+function displayEntries(
+  pageNumber: string,
+  text: string,
+  data: Record<string, any[]>
+) {
   if (data.entries === undefined || data.entries.length === 0) {
     return null
   }
@@ -21,7 +25,7 @@ function displayEntries(pageNumber: string, text: string, data: any) {
           Entries containing &ldquo;{text}&rdquo;: {data.entries.length}
         </>
       </h3>
-      {data.entries.map((e: any) => {
+      {data.entries.map((e) => {
         return (
           <p key={e.id}>
             <Link
@@ -37,7 +41,11 @@ function displayEntries(pageNumber: string, text: string, data: any) {
   )
 }
 
-function displayMeanings(pageNumber: string, text: string, data: any) {
+function displayMeanings(
+  pageNumber: string,
+  text: string,
+  data: Record<string, any[]>
+) {
   if (data.meanings === undefined || data.meanings.length === 0) {
     return null
   }
@@ -50,7 +58,7 @@ function displayMeanings(pageNumber: string, text: string, data: any) {
           {data.meanings.length}
         </>
       </h3>
-      {data.meanings.map((e: any) => {
+      {data.meanings.map((e) => {
         return (
           <div className="m-1" key={"MeaningDiv" + e.id}>
             <p key={"meaningHeadword: " + e.id}>
@@ -81,8 +89,8 @@ const SearchResults = ({
   // return near the top the LINKS that go to the pages
   return (
     <div className="mt-3 flex w-4/6 flex-col justify-center align-middle">
-      {displayEntries(page, text, data.everything)}
-      {displayMeanings(page, text, data.everything)}
+      {displayEntries(page, text, data)}
+      {displayMeanings(page, text, data)}
     </div>
   )
 }

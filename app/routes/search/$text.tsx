@@ -1,5 +1,5 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
-import { json, redirect } from "@remix-run/node"
+import { redirect } from "@remix-run/node"
 import { Form, useCatch, useLoaderData, useParams } from "@remix-run/react"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
@@ -41,11 +41,11 @@ export async function loader({ request, params }: LoaderArgs) {
   if (!everything) {
     throw new Response("Not Found", { status: 404 })
   }
-  return json({ everything })
+  return everything
 }
 
 export default function EntryDetailsPage() {
-  const data: any = useLoaderData<typeof loader>()
+  const data: Record<string, any[]> = useLoaderData<typeof loader>()
   const params = useParams()
   invariant(params.text)
 
