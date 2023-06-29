@@ -1,10 +1,15 @@
+import { attributeEnum } from "~/components/editing/attributeEnum"
 import type { Entry } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { isNonPositive } from "~/utils/numberUtils"
 
 export type { Entry } from "@prisma/client"
 
-const DEFAULT_PAGE_SIZE = 100
+export const DEFAULT_PAGE_SIZE = 100
+
+export function calculatePageSkip(pageNumber: number): number {
+  return (pageNumber - 1) * DEFAULT_PAGE_SIZE
+}
 
 export function getEntryById({ id }: Pick<Entry, "id">) {
   return prisma.entry.findUnique({
@@ -123,38 +128,49 @@ export function getEntriesByInitialLetters(
   >`SELECT id, headword FROM det_entries WHERE LOWER(headword) LIKE LOWER(${initialLettersWildcard}) ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
-export function getEntriesByBasicTextSearchAndPage(
-  text: string,
-  page: string = "1",
-  caseSensitive: boolean = false
+export async function updateRecordByAttributeAndType(
+  type: attributeEnum,
+  id: number,
+  value: string
 ) {
-  const pageNumber = parseInt(page)
-  if (isNaN(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be a number`)
-  } else if (isNonPositive(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be greater than zero`)
+  if (isNaN(id)) {
+    throw new Error(`Error Parsing ID of element being edited`)
+  } else if (isNonPositive(id)) {
+    throw new Error(`Error Parsing Type and ID of element being edited`)
   }
 
-  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
-  return getEntriesByBasicTextSearch(text, skip, undefined, caseSensitive)
+  switch (type) {
+    case attributeEnum.HEADWORD:
+      await updateEntryHeadword(id, value)
+      break
+    case attributeEnum.ETYMOLOGY:
+      await updateEntryEtymology(id, value)
+      break
+    case attributeEnum.LABELS:
+      await updateEntryLabels(id, value)
+      break
+    default:
+      throw new Error("Type of element being edited is not supported")
+  }
 }
 
-export function getEntriesByBasicTextSearch(
-  text: string,
-  skip: number = 0,
-  take: number = 100,
-  caseSensitive: boolean = false
-) {
-  if (text.length === 0) {
-    throw new Error(`Text ("${text}") length must be greater than zero`)
-  }
-  const searchWildcard = `%${text}%`
+export async function updateEntryHeadword(entryId: number, newValue: string) {
+  await prisma.entry.update({
+    where: { id: entryId },
+    data: { headword: newValue },
+  })
+}
 
-  return prisma.$queryRaw<
-    Pick<Entry, "id" | "headword">[]
-  >`SELECT id, headword FROM det_entries 
-    WHERE IF(${caseSensitive}, 
-      (headword) LIKE (${searchWildcard}), 
-      LOWER(headword) LIKE LOWER(${searchWildcard}))  
-    ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
+export async function updateEntryEtymology(entryId: number, newValue: string) {
+  await prisma.entry.update({
+    where: { id: entryId },
+    data: { etymology: newValue },
+  })
+}
+
+export async function updateEntryLabels(entryId: number, newValue: string) {
+  await prisma.entry.update({
+    where: { id: entryId },
+    data: { general_labels: newValue },
+  })
 }

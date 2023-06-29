@@ -26,6 +26,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
         <div>
           <Headword
             word={data.headword}
+            id={data.id}
             alternatives={data.spelling_variants || ""}
             generalLabels={data.general_labels || ""}
             handNote={data.fist_note || ""}
