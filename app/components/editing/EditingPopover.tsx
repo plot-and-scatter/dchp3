@@ -32,7 +32,7 @@ const EditingPopover = ({
         className="text-red-400 focus:border-red-600"
         ref={setReferenceElement}
       >
-        <i className="fa-regular fa-book-open-cover cursor-pointer hover:text-red-600"></i>
+        <i className="fa-solid fa-pen-to-square cursor-pointer hover:text-red-600"></i>
       </Popover.Button>
 
       <Popover.Panel

@@ -26,11 +26,11 @@ export default function SearchPage() {
       <Header />
       <Nav />
       <Main>
-        <div className="flex flex-col">
+        <div className="flex max-w-4xl flex-col">
           <h1 className="text-2xl font-bold">Search entries</h1>
           <p>Enter search text to find headwords containing that text.</p>
           <Form method="post">
-            <div className="flex flex-col gap-3 p-1">
+            <div className="flex w-4/5 flex-col gap-3 p-1">
               <input
                 type="text"
                 placeholder="Search text"
