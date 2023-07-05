@@ -5,7 +5,11 @@ import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
 
 import {} from "~/models/entry.server"
-import { getSearchResultsByPage } from "~/models/search.server"
+import {
+  getSearchResults,
+  getSearchResultsByPage,
+} from "~/models/search.server"
+import { SearchResultEnum } from "./searchResultEnum"
 
 export async function action({ request, params }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -32,6 +36,15 @@ export async function loader({ request, params }: LoaderArgs) {
     url.searchParams.get("caseSensitive") === "true"
   const pageNumber: string | undefined =
     url.searchParams.get("pageNumber") ?? undefined
+  const attribute: string =
+    url.searchParams.get("attribute") ?? SearchResultEnum.HEADWORD
+
+  const searchResults = await getSearchResults(
+    params.text,
+    pageNumber,
+    caseSensitive,
+    attribute
+  )
 
   const everything = await getSearchResultsByPage(
     params.text,

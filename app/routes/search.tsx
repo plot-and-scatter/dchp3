@@ -4,6 +4,7 @@ import { useState } from "react"
 import Header from "~/components/elements/Header"
 import Main from "~/components/elements/Main"
 import Nav from "~/components/elements/Nav"
+import { SearchResultEnum } from "./search/searchResultEnum"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -62,10 +63,10 @@ export default function SearchPage() {
               </button>
             </div>
             <div className="ml-5 flex flex-col [&>*]:m-1 [&>*]:self-start">
-              <button name="attribute" value="headword">
+              <button name="attribute" value={SearchResultEnum.HEADWORD}>
                 Headword
               </button>
-              <button name="attribute" value="meaning">
+              <button name="attribute" value={SearchResultEnum.MEANING}>
                 Meaning
               </button>
               <button name="attribute" value="other">
