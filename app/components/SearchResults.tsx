@@ -88,7 +88,7 @@ const SearchResults = ({
 
   // return near the top the LINKS that go to the pages
   return (
-    <div className="mt-3 flex w-4/6 flex-col justify-center align-middle">
+    <div className="mt-3 w-4/5 align-middle">
       {displayEntries(page, text, data)}
       {displayMeanings(page, text, data)}
     </div>
