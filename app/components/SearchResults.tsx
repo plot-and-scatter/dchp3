@@ -88,7 +88,11 @@ const SearchResults = ({
 
   // return near the top the LINKS that go to the pages
   return (
+<<<<<<< HEAD
     <div className="mt-3 w-4/5 align-middle">
+=======
+    <div className="mt-3 flex max-w-3xl flex-col justify-center align-middle">
+>>>>>>> Add links to various attributes which have yet to be implemented
       {displayEntries(page, text, data)}
       {displayMeanings(page, text, data)}
     </div>

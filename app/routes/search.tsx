@@ -1,4 +1,4 @@
-import { Form, Link, Outlet, useParams } from "@remix-run/react"
+import { Form, Outlet, useParams } from "@remix-run/react"
 import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import { useState } from "react"
 import Header from "~/components/elements/Header"
@@ -8,13 +8,16 @@ import Nav from "~/components/elements/Nav"
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
 
-  const mainUrl = `/search/${data.searchText}`
-  const checkboxParameter = data.caseSensitive
-    ? "?caseSensitive=" + data.caseSensitive
-    : ""
+  const base = new URL(request.url)
+  const url = new URL(`/search/${data.searchText}`, base)
 
-  const redirectUrl = mainUrl + checkboxParameter
-  return redirect(redirectUrl)
+  const caseSensitive = data.caseSensitive ? "true" : "false"
+  const attribute = data.attribute ? data.attribute : "headword"
+
+  url.searchParams.set("caseSensitive", caseSensitive)
+  url.searchParams.set("attribute", attribute.toString())
+
+  return redirect(url.toString())
 }
 
 export default function SearchPage() {
@@ -26,49 +29,58 @@ export default function SearchPage() {
       <Header />
       <Nav />
       <Main>
-        <div className="flex max-w-4xl flex-col">
+        <div className="flex flex-col justify-center">
           <h1 className="text-2xl font-bold">Search entries</h1>
-          <p>Enter search text to find headwords containing that text.</p>
-          <div className="flex flex-row justify-around">
-            <Form method="post">
-              <div className="flex flex-col gap-3 p-1">
-                <input
-                  type="text"
-                  placeholder="Search text"
-                  className="border border-slate-700 p-2"
-                  name="searchText"
-                  value={text}
-                  onChange={(e) => {
-                    setText(e.target.value)
-                  }}
-                />
-
-                <div className="ml-2 flex justify-around">
-                  <label>
-                    Case-sensitive:
-                    <input
-                      className="ml-3"
-                      name="caseSensitive"
-                      type="checkbox"
-                      value="true"
-                    />
-                  </label>
-                </div>
-
-                <button className="ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400">
-                  <i className="fas fa-search mr-2"></i>
-                  Search
-                </button>
+          <p className="justify-center">
+            Enter search text to find headwords containing that text.
+          </p>
+          <Form className="flex flex-row p-4" method="post">
+            <div className="flex flex-col gap-3 p-1">
+              <input
+                type="text"
+                placeholder="Search text"
+                className="w-96 border border-slate-700 p-2"
+                name="searchText"
+                value={text}
+                onChange={(e) => {
+                  setText(e.target.value)
+                }}
+              />
+              <div>
+                <label>
+                  Case-sensitive:
+                  <input
+                    className="ml-3 max-w-sm"
+                    name="caseSensitive"
+                    type="checkbox"
+                    value="true"
+                  />
+                </label>
               </div>
-            </Form>
-            <div className="flex flex-col pl-5">
-              <Link to="hi"> hi </Link>
-              <Link to="hi"> hi </Link>
-              <Link to="hi"> hi </Link>
-              <Link to="hi"> hi </Link>
-              <Link to="hi"> hi </Link>
+
+              <button className="ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400">
+                <i className="fas fa-search mr-2"></i>
+                Search
+              </button>
             </div>
-          </div>
+            <div className="ml-5 flex flex-col [&>*]:m-1 [&>*]:self-start">
+              <button name="attribute" value="headword">
+                Headword
+              </button>
+              <button name="attribute" value="meaning">
+                Meaning
+              </button>
+              <button name="attribute" value="other">
+                hi
+              </button>
+              <button name="attribute" value="other">
+                hi
+              </button>
+              <button name="attribute" value="other">
+                hi
+              </button>
+            </div>
+          </Form>
           <Outlet />
         </div>
       </Main>

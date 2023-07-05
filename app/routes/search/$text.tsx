@@ -12,6 +12,7 @@ export async function action({ request, params }: ActionArgs) {
   const pageIncrement = data.nextPage === "true" ? 1 : -1
 
   const url = new URL(request.url)
+  console.log(url.toString())
 
   const pageNumber: string = url.searchParams.get("pageNumber") ?? "1"
 
