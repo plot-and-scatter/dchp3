@@ -31,9 +31,7 @@ export default function SearchPage() {
       <Main>
         <div className="flex flex-col justify-center">
           <h1 className="text-2xl font-bold">Search entries</h1>
-          <p className="justify-center">
-            Enter search text to find headwords containing that text.
-          </p>
+          <p>Enter search text to find headwords containing that text.</p>
           <Form className="flex flex-row p-4" method="post">
             <div className="flex flex-col gap-3 p-1">
               <input
