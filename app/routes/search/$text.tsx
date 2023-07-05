@@ -69,6 +69,7 @@ export default function EntryDetailsPage() {
         data={data}
         text={params.text}
         pageNumber={params.pageNumber}
+        searchAttribute={params.attribute}
       />
       <Form reloadDocument method="post">
         <button

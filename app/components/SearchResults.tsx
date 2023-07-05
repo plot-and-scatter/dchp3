@@ -2,11 +2,22 @@ import { Link } from "@remix-run/react"
 import React from "react"
 import type JSXNode from "~/types/JSXNode"
 import SanitizedTextSpan from "./SanitizedTextSpan"
+import { SearchResultEnum } from "~/routes/search/searchResultEnum"
 
 interface SearchResultsProps {
   data: Record<string, any[]>
   text: string
   pageNumber: string | undefined
+  searchAttribute: string | undefined
+}
+
+function getSearchResults(
+  pageNumber: string,
+  text: string,
+  data: Record<string, any[]>,
+  attribute: string
+) {
+  return displayMeanings(pageNumber, text, data)
 }
 
 function displayEntries(
@@ -83,14 +94,17 @@ const SearchResults = ({
   data,
   text,
   pageNumber,
+  searchAttribute,
 }: SearchResultsProps): JSXNode => {
   const page = pageNumber ? pageNumber : "1"
+  const attribute: string = searchAttribute
+    ? searchAttribute
+    : SearchResultEnum.HEADWORD
 
   // return near the top the LINKS that go to the pages
   return (
     <div className="mt-3 flex max-w-3xl flex-col justify-center align-middle">
-      {displayEntries(page, text, data)}
-      {displayMeanings(page, text, data)}
+      {getSearchResults(page, text, data, attribute)}
     </div>
   )
 }

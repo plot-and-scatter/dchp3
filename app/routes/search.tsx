@@ -13,7 +13,7 @@ export async function action({ request }: ActionArgs) {
   const url = new URL(`/search/${data.searchText}`, base)
 
   const caseSensitive = data.caseSensitive ? "true" : "false"
-  const attribute = data.attribute ? data.attribute : "headword"
+  const attribute = data.attribute ? data.attribute : SearchResultEnum.HEADWORD
 
   url.searchParams.set("caseSensitive", caseSensitive)
   url.searchParams.set("attribute", attribute.toString())
