@@ -4,6 +4,7 @@ import Headword from "~/components/Headword"
 import Meanings from "~/components/Meanings"
 import type { LoadedDataType } from "~/routes/entries/$headword"
 import QuickLinks from "./quicklinks/QuickLinks"
+import EntryImages from "./EntryImages"
 
 interface EntryProps {
   data: LoadedDataType
@@ -25,6 +26,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
         <div>
           <Headword
             word={data.headword}
+            id={data.id}
             alternatives={data.spelling_variants || ""}
             generalLabels={data.general_labels || ""}
             handNote={data.fist_note || ""}
@@ -33,6 +35,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
             isNonCanadian={data.no_cdn_conf}
           />
           <Meanings meanings={data.meanings} />
+          <EntryImages data={data} />
         </div>
       </div>
     </>

@@ -1,4 +1,3 @@
-import React from "react"
 import SanitizedTextSpan from "~/components/SanitizedTextSpan"
 import type { MeaningType } from "./Meaning"
 

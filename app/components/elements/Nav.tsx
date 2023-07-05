@@ -11,25 +11,25 @@ const Nav = (): JSX.Element => {
     <div className="">Project History &amp; Team</div>
   </div> */}
       <div className="flex w-full max-w-6xl items-center justify-between">
-        <div className="flex items-center gap-8">
-          <div className="">
-            <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> About
-            <span className="hidden md:inline"> the DCHP-3</span>
-          </div>
+        <Link to="/about">
+          <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> About
+          <span className="hidden md:inline"> the DCHP-3</span>
+        </Link>
+        <Link to="/insertEntry">
+          <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> Insert
+          <span className="hidden md:inline"> entries </span>
+        </Link>
+        <div className="font-bold">
+          <Link to="/entries">
+            <i className="fa-regular fa-books mr-1 sm:mr-2"></i> Browse
+            <span className="hidden md:inline"> entries</span>
+          </Link>
         </div>
-        <div className="flex items-center gap-4 md:gap-8">
-          <div className="font-bold">
-            <Link to="/entries">
-              <i className="fa-regular fa-books mr-1 sm:mr-2"></i> Browse
-              <span className="hidden md:inline"> entries</span>
-            </Link>
-          </div>
-          <div className="font-bold">
-            <Link to="/search">
-              <i className="fa-regular fa-search mr-1 sm:mr-2"></i> Search
-              <span className="hidden md:inline"> entries</span>
-            </Link>
-          </div>
+        <div className="font-bold">
+          <Link to="/search">
+            <i className="fa-regular fa-search mr-1 sm:mr-2"></i> Search
+            <span className="hidden md:inline"> entries</span>
+          </Link>
         </div>
       </div>
     </nav>
