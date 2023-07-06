@@ -15,18 +15,19 @@ function getSearchResults(
   pageNumber: string,
   text: string,
   data: any[],
-  attribute: string
+  attribute: string | null
 ) {
   switch (attribute) {
     case SearchResultEnum.HEADWORD:
-      return displayEntries(pageNumber, text, data)
+      return displayEntries(text, data)
     case SearchResultEnum.MEANING:
-      return displayMeanings(pageNumber, text, data)
+      return displayMeanings(text, data)
     default:
+      throw new Error(`attribute ${attribute} is invalid`)
   }
 }
 
-function displayEntries(pageNumber: string, text: string, data: any[]) {
+function displayEntries(text: string, data: any[]) {
   if (data === undefined || data.length === 0) {
     return null
   }
@@ -54,7 +55,7 @@ function displayEntries(pageNumber: string, text: string, data: any[]) {
   )
 }
 
-function displayMeanings(pageNumber: string, text: string, data: any[]) {
+function displayMeanings(text: string, data: any[]) {
   if (data === undefined || data.length === 0) {
     return null
   }
@@ -95,11 +96,10 @@ const SearchResults = ({
   searchAttribute,
 }: SearchResultsProps): JSXNode => {
   const page = pageNumber ? pageNumber : "1"
-  const attribute: string = searchAttribute ? searchAttribute : "NULL ATTRIBUTE"
 
   return (
     <div className="mt-3 flex max-w-3xl flex-col justify-center align-middle">
-      {getSearchResults(page, text, data, attribute)}
+      {getSearchResults(page, text, data, searchAttribute)}
     </div>
   )
 }

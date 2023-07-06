@@ -3,7 +3,6 @@ import type { Entry } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { SearchResultEnum } from "~/routes/search/searchResultEnum"
 import { parsePageNumberOrError } from "~/utils/generalUtils"
-import { isNonPositive } from "~/utils/numberUtils"
 
 export type { Entry } from "@prisma/client"
 
@@ -59,7 +58,7 @@ export async function getSearchResults(
   }
 }
 
-// TODO: Delete this
+// TODO: Delete this function and related
 export async function getSearchResultsByPage(
   text: string,
   page: string = "1",
@@ -120,13 +119,7 @@ export function getEntriesByBasicTextSearchAndPage(
   page: string = "1",
   caseSensitive: boolean = false
 ) {
-  const pageNumber = parseInt(page)
-  if (isNaN(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be a number`)
-  } else if (isNonPositive(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be greater than zero`)
-  }
-
+  const pageNumber = parsePageNumberOrError(page)
   const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
   return getEntriesByBasicTextSearch(text, skip, undefined, caseSensitive)
 }
@@ -156,16 +149,9 @@ export function getSearchResultsFromMeaningsAndPage(
   page: string = "1",
   caseSensitive: boolean = false
 ) {
-  const pageNumber = parseInt(page)
-  if (isNaN(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be a number`)
-  } else if (isNonPositive(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be greater than zero`)
-  }
-
+  const pageNumber = parsePageNumberOrError(page)
   const skip = calculatePageSkip(pageNumber)
-  const take = DEFAULT_PAGE_SIZE
-  return getSearchResultsFromMeanings(text, skip, take, caseSensitive)
+  return getSearchResultsFromMeanings(text, skip, undefined, caseSensitive)
 }
 
 // TODO: refactor to use Case Sensitive
