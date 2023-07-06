@@ -25,6 +25,8 @@ export default function SearchPage() {
   const params = useParams()
   const [text, setText] = useState(params?.text)
 
+  const buttonCss = "w-24 underline hover:bg-blue-200 m-0.5 self-start"
+
   return (
     <div className="relative">
       <Header />
@@ -56,27 +58,34 @@ export default function SearchPage() {
                   />
                 </label>
               </div>
-
               <button className="ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400">
                 <i className="fas fa-search mr-2"></i>
                 Search
               </button>
             </div>
-            <div className="ml-5 flex flex-col [&>*]:m-1 [&>*]:self-start">
-              <button name="attribute" value={SearchResultEnum.HEADWORD}>
+            <div className="ml-5 flex flex-col">
+              <button
+                className={buttonCss}
+                name="attribute"
+                value={SearchResultEnum.HEADWORD}
+              >
                 Headword
               </button>
-              <button name="attribute" value={SearchResultEnum.MEANING}>
+              <button
+                className={buttonCss}
+                name="attribute"
+                value={SearchResultEnum.MEANING}
+              >
                 Meaning
               </button>
-              <button name="attribute" value="other">
-                hi
+              <button className={buttonCss} name="attribute" value="other">
+                other
               </button>
-              <button name="attribute" value="other">
-                hi
+              <button className={buttonCss} name="attribute" value="other">
+                other
               </button>
-              <button name="attribute" value="other">
-                hi
+              <button className={buttonCss} name="attribute" value="other">
+                other
               </button>
             </div>
           </Form>

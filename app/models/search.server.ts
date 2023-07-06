@@ -49,8 +49,6 @@ export async function getSearchResults(
   caseSensitive: boolean = false,
   attribute: string = SearchResultEnum.HEADWORD
 ) {
-  console.log("attribute new:" + attribute)
-
   switch (attribute) {
     case SearchResultEnum.HEADWORD:
       return getEntriesByBasicTextSearchAndPage(text, page, caseSensitive)
@@ -61,7 +59,7 @@ export async function getSearchResults(
   }
 }
 
-// TODO: Delete
+// TODO: Delete this
 export async function getSearchResultsByPage(
   text: string,
   page: string = "1",

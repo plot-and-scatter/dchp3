@@ -11,10 +11,7 @@ import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
 
 import {} from "~/models/entry.server"
-import {
-  getSearchResults,
-  getSearchResultsByPage,
-} from "~/models/search.server"
+import { getSearchResults } from "~/models/search.server"
 import { SearchResultEnum } from "./searchResultEnum"
 
 export async function action({ request, params }: ActionArgs) {
@@ -22,7 +19,6 @@ export async function action({ request, params }: ActionArgs) {
   const pageIncrement = data.nextPage === "true" ? 1 : -1
 
   const url = new URL(request.url)
-  console.log(url.toString())
 
   const pageNumber: string = url.searchParams.get("pageNumber") ?? "1"
 
@@ -63,10 +59,6 @@ export default function EntryDetailsPage() {
   const params = useParams()
   const [searchParams] = useSearchParams()
   invariant(params.text)
-
-  console.log(searchParams)
-
-  console.log("attribute" + searchParams)
 
   return (
     <>

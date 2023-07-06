@@ -97,8 +97,6 @@ const SearchResults = ({
   const page = pageNumber ? pageNumber : "1"
   const attribute: string = searchAttribute ? searchAttribute : "NULL ATTRIBUTE"
 
-  console.log(attribute)
-
   return (
     <div className="mt-3 flex max-w-3xl flex-col justify-center align-middle">
       {getSearchResults(page, text, data, attribute)}
