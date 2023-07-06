@@ -1,6 +1,12 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 import { redirect } from "@remix-run/node"
-import { Form, useCatch, useLoaderData, useParams } from "@remix-run/react"
+import {
+  Form,
+  useCatch,
+  useLoaderData,
+  useParams,
+  useSearchParams,
+} from "@remix-run/react"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
 
@@ -61,7 +67,12 @@ export async function loader({ request, params }: LoaderArgs) {
 export default function EntryDetailsPage() {
   const data: Record<string, any[]> = useLoaderData<typeof loader>()
   const params = useParams()
+  const [searchParams] = useSearchParams()
   invariant(params.text)
+
+  console.log(searchParams)
+
+  console.log("attribute" + searchParams)
 
   return (
     <>
@@ -69,7 +80,7 @@ export default function EntryDetailsPage() {
         data={data}
         text={params.text}
         pageNumber={params.pageNumber}
-        searchAttribute={params.attribute}
+        searchAttribute={searchParams.get("attribute")}
       />
       <Form reloadDocument method="post">
         <button

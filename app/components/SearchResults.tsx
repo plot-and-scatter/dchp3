@@ -8,7 +8,7 @@ interface SearchResultsProps {
   data: Record<string, any[]>
   text: string
   pageNumber: string | undefined
-  searchAttribute: string | undefined
+  searchAttribute: string | null
 }
 
 function getSearchResults(
@@ -17,7 +17,13 @@ function getSearchResults(
   data: Record<string, any[]>,
   attribute: string
 ) {
-  return displayMeanings(pageNumber, text, data)
+  switch (attribute) {
+    case SearchResultEnum.HEADWORD:
+      return displayEntries(pageNumber, text, data)
+    case SearchResultEnum.MEANING:
+      return displayMeanings(pageNumber, text, data)
+    default:
+  }
 }
 
 function displayEntries(
@@ -97,11 +103,10 @@ const SearchResults = ({
   searchAttribute,
 }: SearchResultsProps): JSXNode => {
   const page = pageNumber ? pageNumber : "1"
-  const attribute: string = searchAttribute
-    ? searchAttribute
-    : SearchResultEnum.HEADWORD
+  const attribute: string = searchAttribute ? searchAttribute : "NULL ATTRIBUTE"
 
-  // return near the top the LINKS that go to the pages
+  console.log(attribute)
+
   return (
     <div className="mt-3 flex max-w-3xl flex-col justify-center align-middle">
       {getSearchResults(page, text, data, attribute)}
