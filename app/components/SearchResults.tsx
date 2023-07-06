@@ -5,7 +5,7 @@ import SanitizedTextSpan from "./SanitizedTextSpan"
 import { SearchResultEnum } from "~/routes/search/searchResultEnum"
 
 interface SearchResultsProps {
-  data: Record<string, any[]>
+  data: any[]
   text: string
   pageNumber: string | undefined
   searchAttribute: string | null
@@ -14,7 +14,7 @@ interface SearchResultsProps {
 function getSearchResults(
   pageNumber: string,
   text: string,
-  data: Record<string, any[]>,
+  data: any[],
   attribute: string
 ) {
   switch (attribute) {
@@ -26,12 +26,8 @@ function getSearchResults(
   }
 }
 
-function displayEntries(
-  pageNumber: string,
-  text: string,
-  data: Record<string, any[]>
-) {
-  if (data.entries === undefined || data.entries.length === 0) {
+function displayEntries(pageNumber: string, text: string, data: any[]) {
+  if (data === undefined || data.length === 0) {
     return null
   }
 
@@ -39,10 +35,10 @@ function displayEntries(
     <>
       <h3 className="text-xl font-bold">
         <>
-          Entries containing &ldquo;{text}&rdquo;: {data.entries.length}
+          Entries containing &ldquo;{text}&rdquo;: {data.length}
         </>
       </h3>
-      {data.entries.map((e) => {
+      {data.map((e) => {
         return (
           <p key={e.id}>
             <Link
@@ -58,12 +54,8 @@ function displayEntries(
   )
 }
 
-function displayMeanings(
-  pageNumber: string,
-  text: string,
-  data: Record<string, any[]>
-) {
-  if (data.meanings === undefined || data.meanings.length === 0) {
+function displayMeanings(pageNumber: string, text: string, data: any[]) {
+  if (data === undefined || data.length === 0) {
     return null
   }
 
@@ -72,10 +64,10 @@ function displayMeanings(
       <h3 className="text-xl font-bold">
         <>
           Meanings containing &ldquo;{text}&rdquo;: &nbsp;
-          {data.meanings.length}
+          {data.length}
         </>
       </h3>
-      {data.meanings.map((e) => {
+      {data.map((e) => {
         return (
           <div className="m-1" key={"MeaningDiv" + e.id}>
             <p key={"meaningHeadword: " + e.id}>

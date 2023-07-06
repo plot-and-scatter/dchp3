@@ -52,20 +52,14 @@ export async function loader({ request, params }: LoaderArgs) {
     attribute
   )
 
-  const everything = await getSearchResultsByPage(
-    params.text,
-    pageNumber,
-    caseSensitive
-  )
-
-  if (!everything) {
+  if (!searchResults) {
     throw new Response("Not Found", { status: 404 })
   }
-  return everything
+  return searchResults
 }
 
 export default function EntryDetailsPage() {
-  const data: Record<string, any[]> = useLoaderData<typeof loader>()
+  const data: any[] = useLoaderData<typeof loader>()
   const params = useParams()
   const [searchParams] = useSearchParams()
   invariant(params.text)
