@@ -40,14 +40,23 @@ const Headword = ({
         </div>
         <DictionaryVersion isLegacy={isLegacy} />
       </div>
-      {alternatives && (
-        <h2 className="leading-tight text-slate-700 md:text-xl">
-          <span className="text-slate-500">Spelling variants:</span>{" "}
-          <span className="italic">
-            <SanitizedTextSpan text={alternatives} />
-          </span>
-        </h2>
-      )}
+      <div className="flex flex-row">
+        {alternatives && (
+          <h2 className="leading-tight text-slate-700 md:text-xl">
+            <span className="text-slate-500">Spelling variants:</span>{" "}
+            <span className="italic">
+              <SanitizedTextSpan text={alternatives} />
+            </span>
+          </h2>
+        )}
+        <EditingPopover
+          headword={word}
+          currentValue={alternatives}
+          attributeType={attributeEnum.SPELLING_VARIANT}
+          attributeID={id}
+          type={editablePopoverInputTypes.TEXTAREA}
+        />
+      </div>
       <div className="flex flex-row">
         <p>
           {etymology && (
@@ -77,11 +86,20 @@ const Headword = ({
           attributeID={id}
         />
       </div>
-      {handNote && (
-        <HandNoteBlock className="text-xs text-slate-500 md:text-lg">
-          {handNote}
-        </HandNoteBlock>
-      )}
+      <div className="flex flex-row">
+        {handNote && (
+          <HandNoteBlock className="text-xs text-slate-500 md:text-lg">
+            {handNote}
+          </HandNoteBlock>
+        )}
+        <EditingPopover
+          headword={word}
+          currentValue={handNote}
+          attributeType={attributeEnum.FIST_NOTE}
+          attributeID={id}
+          type={editablePopoverInputTypes.TEXTAREA}
+        />
+      </div>
       {isNonCanadian && (
         <div className="border border-red-300 bg-red-200 p-3 font-bold">
           Non-Canadianism
