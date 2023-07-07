@@ -1,11 +1,18 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 import { redirect } from "@remix-run/node"
-import { Form, useCatch, useLoaderData, useParams } from "@remix-run/react"
+import {
+  Form,
+  useCatch,
+  useLoaderData,
+  useParams,
+  useSearchParams,
+} from "@remix-run/react"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
 
 import {} from "~/models/entry.server"
-import { getSearchResultsByPage } from "~/models/search.server"
+import { getSearchResults } from "~/models/search.server"
+import { SearchResultEnum } from "./searchResultEnum"
 
 export async function action({ request, params }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -31,22 +38,26 @@ export async function loader({ request, params }: LoaderArgs) {
     url.searchParams.get("caseSensitive") === "true"
   const pageNumber: string | undefined =
     url.searchParams.get("pageNumber") ?? undefined
+  const attribute: string =
+    url.searchParams.get("attribute") ?? SearchResultEnum.HEADWORD
 
-  const everything = await getSearchResultsByPage(
+  const searchResults = await getSearchResults(
     params.text,
     pageNumber,
-    caseSensitive
+    caseSensitive,
+    attribute
   )
 
-  if (!everything) {
+  if (!searchResults) {
     throw new Response("Not Found", { status: 404 })
   }
-  return everything
+  return searchResults
 }
 
 export default function EntryDetailsPage() {
-  const data: Record<string, any[]> = useLoaderData<typeof loader>()
+  const data: any[] = useLoaderData<typeof loader>()
   const params = useParams()
+  const [searchParams] = useSearchParams()
   invariant(params.text)
 
   return (
@@ -55,6 +66,7 @@ export default function EntryDetailsPage() {
         data={data}
         text={params.text}
         pageNumber={params.pageNumber}
+        searchAttribute={searchParams.get("attribute")}
       />
       <Form reloadDocument method="post">
         <button

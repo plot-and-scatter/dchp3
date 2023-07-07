@@ -2,19 +2,33 @@ import { Link } from "@remix-run/react"
 import React from "react"
 import type JSXNode from "~/types/JSXNode"
 import SanitizedTextSpan from "./SanitizedTextSpan"
+import { SearchResultEnum } from "~/routes/search/searchResultEnum"
 
 interface SearchResultsProps {
-  data: Record<string, any[]>
+  data: any[]
   text: string
   pageNumber: string | undefined
+  searchAttribute: string | null
 }
 
-function displayEntries(
+function getSearchResults(
   pageNumber: string,
   text: string,
-  data: Record<string, any[]>
+  data: any[],
+  attribute: string | null
 ) {
-  if (data.entries === undefined || data.entries.length === 0) {
+  switch (attribute) {
+    case SearchResultEnum.HEADWORD:
+      return displayEntries(text, data)
+    case SearchResultEnum.MEANING:
+      return displayMeanings(text, data)
+    default:
+      throw new Error(`attribute ${attribute} is invalid`)
+  }
+}
+
+function displayEntries(text: string, data: any[]) {
+  if (data === undefined || data.length === 0) {
     return null
   }
 
@@ -22,10 +36,10 @@ function displayEntries(
     <>
       <h3 className="text-xl font-bold">
         <>
-          Entries containing &ldquo;{text}&rdquo;: {data.entries.length}
+          Entries containing &ldquo;{text}&rdquo;: {data.length}
         </>
       </h3>
-      {data.entries.map((e) => {
+      {data.map((e) => {
         return (
           <p key={e.id}>
             <Link
@@ -41,12 +55,8 @@ function displayEntries(
   )
 }
 
-function displayMeanings(
-  pageNumber: string,
-  text: string,
-  data: Record<string, any[]>
-) {
-  if (data.meanings === undefined || data.meanings.length === 0) {
+function displayMeanings(text: string, data: any[]) {
+  if (data === undefined || data.length === 0) {
     return null
   }
 
@@ -55,10 +65,10 @@ function displayMeanings(
       <h3 className="text-xl font-bold">
         <>
           Meanings containing &ldquo;{text}&rdquo;: &nbsp;
-          {data.meanings.length}
+          {data.length}
         </>
       </h3>
-      {data.meanings.map((e) => {
+      {data.map((e) => {
         return (
           <div className="m-1" key={"MeaningDiv" + e.id}>
             <p key={"meaningHeadword: " + e.id}>
@@ -83,14 +93,13 @@ const SearchResults = ({
   data,
   text,
   pageNumber,
+  searchAttribute,
 }: SearchResultsProps): JSXNode => {
   const page = pageNumber ? pageNumber : "1"
 
-  // return near the top the LINKS that go to the pages
   return (
-    <div className="mt-3 w-4/5 align-middle">
-      {displayEntries(page, text, data)}
-      {displayMeanings(page, text, data)}
+    <div className="mt-3 flex max-w-3xl flex-col justify-center align-middle">
+      {getSearchResults(page, text, data, searchAttribute)}
     </div>
   )
 }
