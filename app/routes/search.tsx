@@ -1,4 +1,4 @@
-import { Form, Outlet, useParams } from "@remix-run/react"
+import { Form, Outlet, useParams, useSearchParams } from "@remix-run/react"
 import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import { useState } from "react"
 import Header from "~/components/elements/Header"
@@ -24,6 +24,10 @@ export async function action({ request }: ActionArgs) {
 export default function SearchPage() {
   const params = useParams()
   const [text, setText] = useState(params?.text)
+
+  const [searchParams] = useSearchParams()
+  const currentAttribute =
+    searchParams.get("attribute") ?? SearchResultEnum.HEADWORD
 
   const buttonCss = "w-24 underline hover:bg-blue-200 m-0.5 self-start"
 
@@ -58,7 +62,11 @@ export default function SearchPage() {
                   />
                 </label>
               </div>
-              <button className="ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400">
+              <button
+                className="ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
+                name="attribute"
+                value={currentAttribute}
+              >
                 <i className="fas fa-search mr-2"></i>
                 Search
               </button>
