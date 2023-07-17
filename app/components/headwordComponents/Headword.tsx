@@ -1,9 +1,11 @@
-import DictionaryVersion from "./DictionaryVersion"
-import HandNoteBlock from "./HandNoteBlock"
-import SanitizedTextSpan from "./SanitizedTextSpan"
-import { attributeEnum } from "./editing/attributeEnum"
-import { editablePopoverInputTypes } from "./editing/EditablePopoverInput"
-import EditingPopover from "./editing/EditingPopover"
+import DictionaryVersion from "../DictionaryVersion"
+import HandNoteBlock from "../HandNoteBlock"
+import { attributeEnum } from "../editing/attributeEnum"
+import { editablePopoverInputTypes } from "../editing/EditablePopoverInput"
+import EditingPopover from "../editing/EditingPopover"
+import GeneralLabels from "./GeneralLabels"
+import Etymology from "./Etymology"
+import Alternatives from "./Alternatives"
 
 interface HeadwordProps {
   alternatives?: string
@@ -46,14 +48,7 @@ const Headword = ({
         <DictionaryVersion isLegacy={isLegacy} />
       </div>
       <div className="flex flex-row">
-        {alternatives && (
-          <h2 className="leading-tight text-slate-700 md:text-xl">
-            <span className="text-slate-500">Spelling variants:</span>{" "}
-            <span className="italic">
-              <SanitizedTextSpan text={alternatives} />
-            </span>
-          </h2>
-        )}
+        <Alternatives alternatives={alternatives} />
         <EditingPopover
           headword={word}
           currentValue={alternatives}
@@ -63,13 +58,7 @@ const Headword = ({
         />
       </div>
       <div className="flex flex-row">
-        <p>
-          {etymology && (
-            <span className="">
-              <SanitizedTextSpan text={etymology} />
-            </span>
-          )}
-        </p>
+        <Etymology etymology={etymology} />
         <EditingPopover
           headword={word}
           currentValue={etymology}
@@ -77,13 +66,7 @@ const Headword = ({
           attributeID={id}
           type={editablePopoverInputTypes.TEXTAREA}
         />
-        <p>
-          {generalLabels && (
-            <span className="ml-3 italic">
-              <SanitizedTextSpan text={generalLabels} />
-            </span>
-          )}
-        </p>
+        <GeneralLabels generalLabels={generalLabels} />
         <EditingPopover
           headword={word}
           currentValue={generalLabels}

@@ -1,6 +1,6 @@
 import React from "react"
 
-import Headword from "~/components/Headword"
+import Headword from "~/components/headwordComponents/Headword"
 import Meanings from "~/components/Meanings"
 import type { LoadedDataType } from "~/routes/entries/$headword"
 import QuickLinks from "./quicklinks/QuickLinks"
