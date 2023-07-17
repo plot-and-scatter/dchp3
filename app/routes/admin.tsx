@@ -1,16 +1,9 @@
 import { json, type LoaderArgs } from "@remix-run/server-runtime"
+import { redirectIfUserNotLoggedIn } from "~/services/auth/session.server"
 import LogoutButton from "~/components/auth/LogoutButton"
-import {
-  isUserLoggedIn,
-  redirectIfUserNotLoggedIn,
-} from "~/services/auth/session.server"
 
 export const loader = async ({ request }: LoaderArgs) => {
   await redirectIfUserNotLoggedIn(request)
-
-  console.log("request", request)
-
-  console.log(isUserLoggedIn(request))
 
   return json({})
 }

@@ -1,8 +1,6 @@
-// app/routes/auth/logout.ts
-
 import { useSubmit } from "@remix-run/react"
 import type { ActionArgs } from "@remix-run/server-runtime"
-import { json, redirect } from "@remix-run/server-runtime"
+import { redirect } from "@remix-run/server-runtime"
 import { useEffect } from "react"
 import { getBaseDeploymentUrl } from "utils/api.server"
 import {
@@ -39,9 +37,5 @@ export default function Logout() {
     return () => clearTimeout(timer)
   }, [submit])
 
-  return (
-    <>
-      <>Logging out...</>
-    </>
-  )
+  return <>Logging out...</>
 }

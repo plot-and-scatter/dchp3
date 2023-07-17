@@ -7,7 +7,3 @@ export let loader = () => redirect("/admin")
 export let action = ({ request }: ActionArgs) => {
   return authenticator().authenticate("auth0", request)
 }
-
-export default function Authy() {
-  return <>Authy</>
-}

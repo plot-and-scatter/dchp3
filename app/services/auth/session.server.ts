@@ -1,21 +1,20 @@
-// app/services/session.server.ts
 import { createCookieSessionStorage, redirect } from "@remix-run/node"
 import { LOGIN_PATH } from "utils/paths"
 import type { Session } from "@remix-run/node"
 
 // export the whole sessionStorage object
 export const sessionStorage = createCookieSessionStorage({
+  // See documentation at https://github.com/sergiodxa/remix-auth
   cookie: {
-    name: "_session", // use any name you want here
-    sameSite: "lax", // this helps with CSRF
-    path: "/", // remember to add this so the cookie will work in all routes
-    httpOnly: true, // for security reasons, make this cookie http only
-    secrets: ["s3cr3t"], // replace this with an actual secret
-    secure: process.env.NODE_ENV === "production", // enable this in prod only
+    name: "_session",
+    sameSite: "lax",
+    path: "/",
+    httpOnly: true,
+    secrets: [process.env.COOKIE_SECRET!],
+    secure: process.env.NODE_ENV === "production",
   },
 })
 
-// you can also export the methods individually for your own usage
 export const { commitSession, destroySession } = sessionStorage
 
 export const getCookieSession = async (request: Request) => {
