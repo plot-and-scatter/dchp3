@@ -3,10 +3,9 @@ import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node"
 import { useCatch, useLoaderData } from "@remix-run/react"
 import invariant from "tiny-invariant"
 
-import {
-  getEntryByHeadword,
-  updateRecordByAttributeAndType,
-} from "~/models/entry.server"
+import { getEntryByHeadword } from "~/models/entry.server"
+import { updateRecordByAttributeAndType } from "~/models/update.server"
+
 import Entry from "~/components/Entry"
 import {
   getAttributeEnumFromFormInput,

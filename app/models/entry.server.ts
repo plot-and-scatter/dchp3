@@ -1,4 +1,3 @@
-import { attributeEnum } from "~/components/editing/attributeEnum"
 import type { Entry } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { isNonPositive } from "~/utils/numberUtils"
@@ -126,51 +125,4 @@ export function getEntriesByInitialLetters(
   return prisma.$queryRaw<
     Pick<Entry, "id" | "headword">[]
   >`SELECT id, headword FROM det_entries WHERE LOWER(headword) LIKE LOWER(${initialLettersWildcard}) ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
-}
-
-export async function updateRecordByAttributeAndType(
-  type: attributeEnum,
-  id: number,
-  value: string
-) {
-  if (isNaN(id)) {
-    throw new Error(`Error Parsing ID of element being edited`)
-  } else if (isNonPositive(id)) {
-    throw new Error(`Error Parsing Type and ID of element being edited`)
-  }
-
-  switch (type) {
-    case attributeEnum.HEADWORD:
-      await updateEntryHeadword(id, value)
-      break
-    case attributeEnum.ETYMOLOGY:
-      await updateEntryEtymology(id, value)
-      break
-    case attributeEnum.LABELS:
-      await updateEntryLabels(id, value)
-      break
-    default:
-      throw new Error("Type of element being edited is not supported")
-  }
-}
-
-export async function updateEntryHeadword(entryId: number, newValue: string) {
-  await prisma.entry.update({
-    where: { id: entryId },
-    data: { headword: newValue },
-  })
-}
-
-export async function updateEntryEtymology(entryId: number, newValue: string) {
-  await prisma.entry.update({
-    where: { id: entryId },
-    data: { etymology: newValue },
-  })
-}
-
-export async function updateEntryLabels(entryId: number, newValue: string) {
-  await prisma.entry.update({
-    where: { id: entryId },
-    data: { general_labels: newValue },
-  })
 }

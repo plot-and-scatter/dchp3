@@ -1,6 +1,6 @@
 import React from "react"
 
-import Headword from "~/components/Headword"
+import Headword from "~/components/headwordComponents/Headword"
 import Meanings from "~/components/Meanings"
 import type { LoadedDataType } from "~/routes/entries/$headword"
 import QuickLinks from "./quicklinks/QuickLinks"
@@ -30,6 +30,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
             alternatives={data.spelling_variants || ""}
             generalLabels={data.general_labels || ""}
             handNote={data.fist_note || ""}
+            hasDagger={data.dagger}
             etymology={data.etymology || ""}
             isLegacy={data.is_legacy}
             isNonCanadian={data.no_cdn_conf}
