@@ -30,6 +30,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
             alternatives={data.spelling_variants || ""}
             generalLabels={data.general_labels || ""}
             handNote={data.fist_note || ""}
+            hasDagger={data.dagger}
             etymology={data.etymology || ""}
             isLegacy={data.is_legacy}
             isNonCanadian={data.no_cdn_conf}

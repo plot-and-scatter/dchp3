@@ -10,6 +10,7 @@ interface HeadwordProps {
   etymology?: string
   generalLabels?: string
   handNote?: string
+  hasDagger?: boolean
   isLegacy: boolean
   isNonCanadian?: boolean
   word: string
@@ -21,6 +22,7 @@ const Headword = ({
   etymology,
   generalLabels,
   handNote,
+  hasDagger,
   isLegacy,
   isNonCanadian,
   word,
@@ -30,7 +32,10 @@ const Headword = ({
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
       <div className="flex items-center justify-between">
         <div className="flex justify-center align-middle">
-          <h1 className="text-3xl leading-tight md:text-5xl">{word}</h1>
+          <h1 className="text-3xl leading-tight md:text-5xl">
+            {word}
+            {hasDagger && <span className="align-super">&dagger;</span>}
+          </h1>
           <EditingPopover
             headword={word}
             currentValue={word}
