@@ -31,6 +31,12 @@ const Nav = (): JSX.Element => {
             <span className="hidden md:inline"> entries</span>
           </Link>
         </div>
+        <div className="text-sm">
+          <Link to="/login">
+            <i className="fa-regular fa-key mr-1 sm:mr-2"></i> Admin
+            <span className="hidden md:inline"> login</span>
+          </Link>
+        </div>
       </div>
     </nav>
   )
