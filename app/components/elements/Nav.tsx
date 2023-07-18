@@ -1,4 +1,3 @@
-import React from "react"
 import { Link } from "react-router-dom"
 
 const Nav = (): JSX.Element => {
@@ -33,6 +32,12 @@ const Nav = (): JSX.Element => {
           <Link to="/search">
             <i className="fa-regular fa-search mr-1 sm:mr-2"></i> Search
             <span className="hidden md:inline"> entries</span>
+          </Link>
+        </div>
+        <div className="text-sm">
+          <Link to="/login">
+            <i className="fa-regular fa-key mr-1 sm:mr-2"></i> Admin
+            <span className="hidden md:inline"> login</span>
           </Link>
         </div>
       </div>
