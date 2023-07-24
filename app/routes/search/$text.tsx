@@ -42,7 +42,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const attribute: string =
     url.searchParams.get("attribute") ?? SearchResultEnum.HEADWORD
 
-  const searchResults = await getSearchResults(
+  const searchResults: any[] = await getSearchResults(
     text,
     pageNumber,
     caseSensitive,

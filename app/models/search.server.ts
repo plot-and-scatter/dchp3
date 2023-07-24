@@ -47,7 +47,7 @@ export async function getSearchResults(
   page: string = "1",
   caseSensitive: boolean = false,
   attribute: string = SearchResultEnum.HEADWORD
-) {
+): Promise<any[]> {
   switch (attribute) {
     case SearchResultEnum.HEADWORD:
       return getEntriesByBasicTextSearchAndPage(text, page, caseSensitive)
