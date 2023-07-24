@@ -32,6 +32,7 @@ export async function action({ request, params }: ActionArgs) {
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.text, "text not found")
+  const text = params.text
 
   const url = new URL(request.url)
   const caseSensitive: boolean =
@@ -42,14 +43,14 @@ export async function loader({ request, params }: LoaderArgs) {
     url.searchParams.get("attribute") ?? SearchResultEnum.HEADWORD
 
   const searchResults = await getSearchResults(
-    params.text,
+    text,
     pageNumber,
     caseSensitive,
     attribute
   )
 
-  if (!searchResults) {
-    throw new Response("Not Found", { status: 404 })
+  if (!searchResults || searchResults.length === 0) {
+    throw new Error(`No Results Found for ${attribute} "${text}"`)
   }
   return searchResults
 }
