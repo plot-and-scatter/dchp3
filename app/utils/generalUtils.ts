@@ -48,6 +48,16 @@ export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@")
 }
 
+export function parseBooleanOrError(text: string) {
+  if (text === "true") {
+    return true
+  } else if (text === "false") {
+    return false
+  }
+
+  throw new Error(`text "${text}" cannot be parsed into boolean value`)
+}
+
 export function stripHtml(text: string) {
   return text.replace(/<\/?[^>]+(>|$)/g, "")
 }
