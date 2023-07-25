@@ -9,22 +9,26 @@ import SeeAlso from "~/components/SeeAlso"
 import DisplayEditorToggle from "./meaningComponents/DisplayEditorToggle"
 import MeaningHeader from "./meaningComponents/MeaningHeader"
 import { Form } from "@remix-run/react"
+import { parseBooleanOrError } from "~/utils/generalUtils"
+import { attributeEnum } from "./editing/attributeEnum"
 
 export type MeaningType = LoadedDataType["meanings"][0]
 
 interface MeaningProps {
+  word: string
   meaning: MeaningType
 }
 
-const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
+const Meaning = ({ word, meaning }: MeaningProps): JSX.Element => {
   const {
     order: number,
     partofspeech: partOfSpeech,
     usage: usageNote,
-    dagger,
+    dagger: daggerValue,
   } = meaning
 
   const [editable, setEditable] = useState(false)
+  const [dagger, setDagger] = useState(daggerValue)
 
   return (
     <>
@@ -33,13 +37,32 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
         className="-mx-3 my-3 border-l-8 border-slate-200 md:my-8 md:text-lg"
         id={`meaning-${meaning.id}`}
       >
-        <Form>
-          <input type="checkbox" />
-          <button>submit</button>
+        <Form
+          action={`/entries/${word}`}
+          method="post"
+          className="bg-slate-200 py-5"
+        >
+          <label>
+            Dagger:
+            <input
+              checked={dagger}
+              name="dagger"
+              onChange={(e) => setDagger(e.target.checked)}
+              type="checkbox"
+            />
+          </label>
+          <input type="hidden" name="newValue" value="hi" />
+          <input type="hidden" name="attributeID" value={meaning.id} />
+          <input
+            type="hidden"
+            name="attributeType"
+            value={attributeEnum.MEANING_HEADER}
+          />
+          <button type="submit">submit</button>
         </Form>
         <MeaningHeader
           number={number}
-          dagger={dagger}
+          dagger={daggerValue}
           partOfSpeech={partOfSpeech}
           usageNote={usageNote}
         />

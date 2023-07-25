@@ -9,6 +9,7 @@ const ENTRY_TYPE_MAP = {
   [attributeEnum.SPELLING_VARIANT]: "spelling_variants",
   [attributeEnum.FIST_NOTE]: "fist_note",
   [attributeEnum.DAGGER]: "dagger",
+  [attributeEnum.MEANING_HEADER]: "meaning_header",
 }
 
 export async function updateRecordByAttributeAndType(
@@ -17,6 +18,9 @@ export async function updateRecordByAttributeAndType(
   value: string
 ) {
   assertIsValidId(id)
+  if (type === attributeEnum.MEANING_HEADER) {
+    throw new Error("Task failed as intended")
+  }
   await updateEntry(id, type, value)
 }
 

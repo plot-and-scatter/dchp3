@@ -5,4 +5,5 @@ export enum attributeEnum {
   LABELS = "Labels",
   FIST_NOTE = "FistNote",
   DAGGER = "Dagger",
+  MEANING_HEADER = "MeaningHeader",
 }

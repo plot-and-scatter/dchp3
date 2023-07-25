@@ -35,7 +35,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
             isLegacy={data.is_legacy}
             isNonCanadian={data.no_cdn_conf}
           />
-          <Meanings meanings={data.meanings} />
+          <Meanings word={data.headword} meanings={data.meanings} />
           <EntryImages data={data} />
         </div>
       </div>
