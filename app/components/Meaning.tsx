@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import type { LoadedDataType } from "~/routes/entries/$headword"
 import Definition from "./Definition"
 import HandNoteBlock from "~/components/HandNoteBlock"
@@ -21,11 +21,32 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
     dagger,
   } = meaning
 
+  const [editable, setEditable] = useState("false")
+  const changeEditable = (val: string) => {
+    const nextVal = val === "true" ? "false" : "true"
+    setEditable(nextVal)
+  }
+
   return (
     <div
       className="-mx-3 my-3 border-l-8 border-slate-200 md:my-8 md:text-lg"
       id={`meaning-${meaning.id}`}
     >
+      <div className="h-10 bg-slate-200">
+        <label className="mx-5">
+          Editable
+          <input
+            name="editable"
+            value={editable}
+            onChange={(e) => {
+              changeEditable(e.target.value)
+            }}
+            className="mx-5 border bg-slate-100"
+            type="checkbox"
+          />
+        </label>
+        <p>{editable}</p>
+      </div>
       {((number && number !== "0") || dagger || partOfSpeech || usageNote) && (
         <div className="mb-2 bg-slate-100 p-2 leading-none shadow-sm shadow-slate-300 md:p-4 md:px-6">
           {number && number !== "0" && (
