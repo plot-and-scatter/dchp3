@@ -48,6 +48,10 @@ export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@")
 }
 
+export function stripHtml(text: string) {
+  return text.replace(/<\/?[^>]+(>|$)/g, "")
+}
+
 export function getStringFromFormInput(formInput: FormDataEntryValue): string {
   return formInput.toString()
 }

@@ -1,5 +1,5 @@
-import { attributeEnum } from "~/components/editing/attributeEnum"
 import type { Entry } from "@prisma/client"
+import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
 import { isNonPositive } from "~/utils/numberUtils"
 

@@ -1,4 +1,3 @@
-import React from "react"
 import { Link } from "react-router-dom"
 
 const Nav = (): JSX.Element => {
@@ -15,6 +14,10 @@ const Nav = (): JSX.Element => {
           <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> About
           <span className="hidden md:inline"> the DCHP-3</span>
         </Link>
+        <Link to="/reference">
+          <i className="fa-regular fa-book mr-1 sm:mr-2"></i>
+          <span className="hidden md:inline">References</span>
+        </Link>
         <Link to="/insertEntry">
           <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> Insert
           <span className="hidden md:inline"> entries </span>
@@ -29,6 +32,12 @@ const Nav = (): JSX.Element => {
           <Link to="/search">
             <i className="fa-regular fa-search mr-1 sm:mr-2"></i> Search
             <span className="hidden md:inline"> entries</span>
+          </Link>
+        </div>
+        <div className="text-sm">
+          <Link to="/login">
+            <i className="fa-regular fa-key mr-1 sm:mr-2"></i> Admin
+            <span className="hidden md:inline"> login</span>
           </Link>
         </div>
       </div>
