@@ -8,9 +8,7 @@ import Citations from "./Citations"
 import SeeAlso from "~/components/SeeAlso"
 import DisplayEditorToggle from "./meaningComponents/DisplayEditorToggle"
 import MeaningHeader from "./meaningComponents/MeaningHeader"
-import { Form } from "@remix-run/react"
-import { parseBooleanOrError } from "~/utils/generalUtils"
-import { attributeEnum } from "./editing/attributeEnum"
+import MeaningHeaderForm from "./meaningComponents/MeaningHeaderForm"
 
 export type MeaningType = LoadedDataType["meanings"][0]
 
@@ -32,34 +30,18 @@ const Meaning = ({ word, meaning }: MeaningProps): JSX.Element => {
 
   return (
     <>
-      <DisplayEditorToggle editable={editable} setEditable={setEditable} />
       <div
         className="-mx-3 my-3 border-l-8 border-slate-200 md:my-8 md:text-lg"
         id={`meaning-${meaning.id}`}
       >
-        <Form
-          action={`/entries/${word}`}
-          method="post"
-          className="bg-slate-200 py-5"
-        >
-          <label>
-            Dagger:
-            <input
-              checked={dagger}
-              name="dagger"
-              onChange={(e) => setDagger(e.target.checked)}
-              type="checkbox"
-            />
-          </label>
-          <input type="hidden" name="newValue" value="hi" />
-          <input type="hidden" name="attributeID" value={meaning.id} />
-          <input
-            type="hidden"
-            name="attributeType"
-            value={attributeEnum.MEANING_HEADER}
-          />
-          <button type="submit">submit</button>
-        </Form>
+        <DisplayEditorToggle editable={editable} setEditable={setEditable} />
+        <MeaningHeaderForm
+          shouldDisplay={editable}
+          word={word}
+          meaning={meaning}
+          dagger={dagger}
+          setDagger={setDagger}
+        />
         <MeaningHeader
           number={number}
           dagger={daggerValue}

@@ -6,7 +6,7 @@ interface Props {
 const DisplayEditorToggle = ({ editable, setEditable }: Props) => {
   return (
     <div className="mt-5 h-10 bg-slate-200">
-      <label className="m-5">
+      <label className="">
         Display Editing Fields
         <input
           name="editable"

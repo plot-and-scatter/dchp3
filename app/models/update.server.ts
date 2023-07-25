@@ -18,10 +18,18 @@ export async function updateRecordByAttributeAndType(
   value: string
 ) {
   assertIsValidId(id)
-  if (type === attributeEnum.MEANING_HEADER) {
-    throw new Error("Task failed as intended")
-  }
   await updateEntry(id, type, value)
+}
+
+export async function updateMeaningHeaderById(
+  id: number,
+  data: {
+    [k: string]: FormDataEntryValue
+  }
+) {
+  assertIsValidId(id)
+  const dagger = data.dagger ? true : false
+  await prisma.meaning.update({ where: { id: id }, data: { dagger: dagger } })
 }
 
 async function updateEntry(
