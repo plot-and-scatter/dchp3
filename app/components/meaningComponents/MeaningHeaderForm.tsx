@@ -2,13 +2,13 @@ import { Form } from "@remix-run/react"
 import { attributeEnum } from "../editing/attributeEnum"
 import { type MeaningType } from "../Meaning"
 import type JSXNode from "~/types/JSXNode"
+import { useState } from "react"
 
 interface MeaningHeaderFormProps {
   shouldDisplay: boolean
   word: string
   meaning: MeaningType
   dagger: boolean
-  setDagger: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const MeaningHeaderForm = ({
@@ -16,8 +16,9 @@ const MeaningHeaderForm = ({
   word,
   meaning,
   dagger,
-  setDagger,
 }: MeaningHeaderFormProps): JSXNode => {
+  const [daggerValue, setDagger] = useState(dagger)
+
   if (!shouldDisplay) {
     return null
   }
@@ -31,7 +32,7 @@ const MeaningHeaderForm = ({
       <label className="col-span-1">
         Dagger:
         <input
-          checked={dagger}
+          checked={daggerValue}
           name="dagger"
           onChange={(e) => setDagger(e.target.checked)}
           type="checkbox"

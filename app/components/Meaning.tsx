@@ -22,11 +22,10 @@ const Meaning = ({ word, meaning }: MeaningProps): JSX.Element => {
     order: number,
     partofspeech: partOfSpeech,
     usage: usageNote,
-    dagger: daggerValue,
+    dagger,
   } = meaning
 
   const [editable, setEditable] = useState(false)
-  const [dagger, setDagger] = useState(daggerValue)
 
   return (
     <>
@@ -40,11 +39,10 @@ const Meaning = ({ word, meaning }: MeaningProps): JSX.Element => {
           word={word}
           meaning={meaning}
           dagger={dagger}
-          setDagger={setDagger}
         />
         <MeaningHeader
           number={number}
-          dagger={daggerValue}
+          dagger={dagger}
           partOfSpeech={partOfSpeech}
           usageNote={usageNote}
         />

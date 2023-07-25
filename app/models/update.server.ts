@@ -13,12 +13,12 @@ const ENTRY_TYPE_MAP = {
   [attributeEnum.SPELLING_VARIANT]: "spelling_variants",
   [attributeEnum.FIST_NOTE]: "fist_note",
   [attributeEnum.DAGGER]: "dagger",
-  [attributeEnum.MEANING_HEADER]: "meaning_header",
+  [attributeEnum.MEANING_HEADER]: "null", // type map must be exhaustive
 }
 
 export async function updateRecordByAttributeAndType(
   type: attributeEnum,
-  data: any
+  data: { [k: string]: FormDataEntryValue }
 ) {
   const id = getNumberFromFormInput(data.attributeID)
   const value = getStringFromFormInput(data.newValue)
@@ -26,7 +26,7 @@ export async function updateRecordByAttributeAndType(
   await updateEntry(id, type, value)
 }
 
-export async function updateMeaningHeaderById(data: {
+export async function updateMeaningHeader(data: {
   [k: string]: FormDataEntryValue
 }) {
   const id = getNumberFromFormInput(data.attributeID)
