@@ -1,5 +1,9 @@
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
+import {
+  getNumberFromFormInput,
+  getStringFromFormInput,
+} from "~/utils/generalUtils"
 import { assertIsValidId } from "~/utils/numberUtils"
 
 const ENTRY_TYPE_MAP = {
@@ -14,19 +18,18 @@ const ENTRY_TYPE_MAP = {
 
 export async function updateRecordByAttributeAndType(
   type: attributeEnum,
-  id: number,
-  value: string
+  data: any
 ) {
+  const id = getNumberFromFormInput(data.attributeID)
+  const value = getStringFromFormInput(data.newValue)
   assertIsValidId(id)
   await updateEntry(id, type, value)
 }
 
-export async function updateMeaningHeaderById(
-  id: number,
-  data: {
-    [k: string]: FormDataEntryValue
-  }
-) {
+export async function updateMeaningHeaderById(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const id = getNumberFromFormInput(data.attributeID)
   assertIsValidId(id)
   const dagger = data.dagger ? true : false
   await prisma.meaning.update({ where: { id: id }, data: { dagger: dagger } })

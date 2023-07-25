@@ -53,7 +53,6 @@ export default function SearchPage() {
                   />
                 </label>
               </div>
-
               <button className="ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400">
                 <i className="fas fa-search mr-2"></i>
                 Search
