@@ -13,11 +13,10 @@ import MeaningHeaderForm from "./meaningComponents/MeaningHeaderForm"
 export type MeaningType = LoadedDataType["meanings"][0]
 
 interface MeaningProps {
-  word: string
   meaning: MeaningType
 }
 
-const Meaning = ({ word, meaning }: MeaningProps): JSX.Element => {
+const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
   const {
     order: number,
     partofspeech: partOfSpeech,
@@ -36,7 +35,6 @@ const Meaning = ({ word, meaning }: MeaningProps): JSX.Element => {
         <DisplayEditorToggle editable={editable} setEditable={setEditable} />
         <MeaningHeaderForm
           shouldDisplay={editable}
-          word={word}
           meaning={meaning}
           dagger={dagger}
         />

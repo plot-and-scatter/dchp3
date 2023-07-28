@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react"
+import { Form, useParams } from "@remix-run/react"
 import { attributeEnum } from "../editing/attributeEnum"
 import { type MeaningType } from "../Meaning"
 import type JSXNode from "~/types/JSXNode"
@@ -6,18 +6,18 @@ import { useState } from "react"
 
 interface MeaningHeaderFormProps {
   shouldDisplay: boolean
-  word: string
   meaning: MeaningType
   dagger: boolean
 }
 
 const MeaningHeaderForm = ({
   shouldDisplay,
-  word,
   meaning,
   dagger,
 }: MeaningHeaderFormProps): JSXNode => {
   const [daggerValue, setDagger] = useState(dagger)
+  const params = useParams()
+  const headword = params.headword
 
   if (!shouldDisplay) {
     return null
@@ -25,7 +25,7 @@ const MeaningHeaderForm = ({
 
   return (
     <Form
-      action={`/entries/${word}`}
+      action={`/entries/${headword}`}
       method="post"
       className="grid grid-cols-7 grid-rows-2 bg-slate-200 py-5"
     >
