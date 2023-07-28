@@ -14,6 +14,15 @@ export async function getReferenceById(id: number) {
   })
 }
 
+export async function addReference(
+  shortDisplay: string,
+  referenceText: string
+) {
+  await prisma.det_references.create({
+    data: { short_display: shortDisplay, reference_text: referenceText },
+  })
+}
+
 export async function updateReferenceById(
   id: number,
   shortDisplay: string,
