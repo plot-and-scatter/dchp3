@@ -53,6 +53,9 @@ export async function getSearchResults(
       return getEntriesByBasicTextSearchAndPage(text, page, caseSensitive)
     case SearchResultEnum.MEANING:
       return getSearchResultsFromMeaningsAndPage(text, page, caseSensitive)
+    case SearchResultEnum.USAGE_NOTE:
+      return getSearchResultsFromUsageNotesAndPage(text, page, caseSensitive)
+
     default:
       throw new Error(`attribute ${attribute} must be a valid search result`)
   }
@@ -183,4 +186,43 @@ export function getSearchResultsFromMeanings(
     skip: skip,
     take: take,
   })
+}
+
+export function getSearchResultsFromUsageNotesAndPage(
+  text: string,
+  page: string = "1",
+  caseSensitive: boolean = false
+) {
+  const pageNumber = parsePageNumberOrError(page)
+  const skip = calculatePageSkip(pageNumber)
+  return getSearchResultsFromUsageNotes(text, skip, undefined, caseSensitive)
+}
+
+export interface UsageNote {
+  headword: string
+  usage: string
+  id: number
+}
+
+// TODO: refactor to be case sensitive
+export function getSearchResultsFromUsageNotes(
+  text: string,
+  skip: number = 0,
+  take: number = DEFAULT_PAGE_SIZE,
+  caseSensitive: boolean = false
+) {
+  if (text.length === 0) {
+    throw new Error(`Text ("${text}") length must be greater than zero`)
+  }
+
+  const searchWildcard = `%${text}%`
+
+  return prisma.$queryRaw<UsageNote[]>`SELECT det_entries.headword as headword,
+  det_meanings.usage, det_meanings.id
+  FROM det_meanings, det_entries
+  WHERE det_meanings.entry_id = det_entries.id AND
+  IF(${caseSensitive}, 
+    (det_meanings.usage) LIKE (${searchWildcard}), 
+    LOWER(det_meanings.usage) LIKE LOWER(${searchWildcard}))  
+  ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
