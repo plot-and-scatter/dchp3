@@ -6,14 +6,13 @@ import {
 } from "~/utils/generalUtils"
 import { assertIsValidId } from "~/utils/numberUtils"
 
-const ENTRY_TYPE_MAP = {
+const ENTRY_TYPE_MAP: Partial<Record<attributeEnum, string>> = {
   [attributeEnum.HEADWORD]: "headword",
   [attributeEnum.ETYMOLOGY]: "etymology",
   [attributeEnum.LABELS]: "general_labels",
   [attributeEnum.SPELLING_VARIANT]: "spelling_variants",
   [attributeEnum.FIST_NOTE]: "fist_note",
   [attributeEnum.DAGGER]: "dagger",
-  [attributeEnum.MEANING_HEADER]: "null", // type map must be exhaustive
 }
 
 export async function updateRecordByAttributeAndType(
@@ -40,8 +39,13 @@ async function updateEntry(
   type: attributeEnum,
   newValue: string
 ) {
+  const fieldName = ENTRY_TYPE_MAP[type]
+
+  // If we don't know the fieldName, this is a no-op.
+  if (!fieldName) return
+
   await prisma.entry.update({
     where: { id: entryId },
-    data: { [ENTRY_TYPE_MAP[type]]: newValue },
+    data: { [fieldName]: newValue },
   })
 }
