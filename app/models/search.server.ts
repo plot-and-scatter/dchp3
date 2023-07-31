@@ -204,7 +204,6 @@ export interface UsageNote {
   id: number
 }
 
-// TODO: refactor to be case sensitive
 export function getSearchResultsFromUsageNotes(
   text: string,
   skip: number = 0,

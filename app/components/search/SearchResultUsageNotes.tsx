@@ -24,7 +24,7 @@ const SearchResultUsageNotes = ({ text, data }: Props): JSXNode => {
         return (
           <div className="my-2 flex flex-col" key={e.id}>
             <Link
-              to={`/entries/${e.id}`}
+              to={`/entries/${e.headword}`}
               className="font-bold text-red-600 hover:text-red-400"
             >
               {e.headword}
