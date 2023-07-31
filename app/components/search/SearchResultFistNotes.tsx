@@ -3,12 +3,12 @@ import React from "react"
 import type JSXNode from "~/types/JSXNode"
 import SanitizedTextSpan from "../SanitizedTextSpan"
 
-interface Props {
+interface SearchResultProps {
   text: string
   data: any[]
 }
 
-const SearchResultFistNotes = ({ text, data }: Props): JSXNode => {
+const SearchResultFistNotes = ({ text, data }: SearchResultProps): JSXNode => {
   if (data === undefined || data.length === 0) {
     return null
   }

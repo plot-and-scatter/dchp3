@@ -3,12 +3,12 @@ import React from "react"
 import type JSXNode from "~/types/JSXNode"
 import SanitizedTextSpan from "../SanitizedTextSpan"
 
-interface Props {
+interface SearchResultProps {
   text: string
   data: any[]
 }
 
-const SearchResultUsageNotes = ({ text, data }: Props): JSXNode => {
+const SearchResultUsageNotes = ({ text, data }: SearchResultProps): JSXNode => {
   if (data === undefined || data.length === 0) {
     return null
   }
@@ -29,7 +29,7 @@ const SearchResultUsageNotes = ({ text, data }: Props): JSXNode => {
             >
               {e.headword}
             </Link>
-            <SanitizedTextSpan text={e.usage} />
+            <SanitizedTextSpan text={e.partofspeech + " \u2014 " + e.usage} />
           </div>
         )
       })}

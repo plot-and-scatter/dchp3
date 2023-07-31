@@ -207,6 +207,7 @@ export function getSearchResultCanadianisms(
 
 export interface UsageNote {
   headword: string
+  partOfSpeech: string
   usage: string
   id: number
 }
@@ -225,7 +226,7 @@ export function getSearchResultUsageNotes(
   const searchWildcard = `%${text}%`
 
   return prisma.$queryRaw<UsageNote[]>`SELECT det_entries.headword as headword,
-  det_meanings.usage, det_meanings.id
+  det_meanings.usage, det_meanings.partofspeech, det_meanings.id
   FROM det_meanings, det_entries
   WHERE det_meanings.entry_id = det_entries.id AND
   IF(${caseSensitive}, 
