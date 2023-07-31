@@ -89,6 +89,13 @@ export default function SearchPage() {
               <button
                 className={buttonCss}
                 name="attribute"
+                value={SearchResultEnum.CANADIANISM}
+              >
+                Canadianism
+              </button>
+              <button
+                className={buttonCss}
+                name="attribute"
                 value={SearchResultEnum.USAGE_NOTE}
               >
                 Usage Note

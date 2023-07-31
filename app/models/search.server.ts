@@ -53,6 +53,8 @@ export async function getSearchResults(
       return getEntriesByBasicTextSearchAndPage(text, page, caseSensitive)
     case SearchResultEnum.MEANING:
       return getSearchResultsFromMeaningsAndPage(text, page, caseSensitive)
+    case SearchResultEnum.CANADIANISM:
+      return getSearchResultsFromCanadianismAndPage(text, page, caseSensitive)
     case SearchResultEnum.USAGE_NOTE:
       return getSearchResultsFromUsageNotesAndPage(text, page, caseSensitive)
 
@@ -186,6 +188,45 @@ export function getSearchResultsFromMeanings(
     skip: skip,
     take: take,
   })
+}
+export function getSearchResultsFromCanadianismAndPage(
+  text: string,
+  page: string = "1",
+  caseSensitive: boolean = false
+) {
+  const pageNumber = parsePageNumberOrError(page)
+  const skip = calculatePageSkip(pageNumber)
+  return getSearchResultsFromCanadianism(text, skip, undefined, caseSensitive)
+}
+
+export interface Canadianism {
+  headword: string
+  usage: string
+  id: number
+}
+
+export function getSearchResultsFromCanadianism(
+  text: string,
+  skip: number = 0,
+  take: number = DEFAULT_PAGE_SIZE,
+  caseSensitive: boolean = false
+) {
+  if (text.length === 0) {
+    throw new Error(`Text ("${text}") length must be greater than zero`)
+  }
+
+  const searchWildcard = `%${text}%`
+
+  return prisma.$queryRaw<
+    Canadianism[]
+  >`SELECT det_entries.headword as headword,
+  det_meanings.canadianism_type_comment, det_meanings.id
+  FROM det_meanings, det_entries
+  WHERE det_meanings.entry_id = det_entries.id AND
+  IF(${caseSensitive}, 
+    (det_meanings.canadianism_type_comment) LIKE (${searchWildcard}), 
+    LOWER(det_meanings.canadianism_type_comment) LIKE LOWER(${searchWildcard}))  
+  ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
 export function getSearchResultsFromUsageNotesAndPage(
