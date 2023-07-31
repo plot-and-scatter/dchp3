@@ -57,6 +57,8 @@ export async function getSearchResults(
       return getSearchResultsFromCanadianismAndPage(text, page, caseSensitive)
     case SearchResultEnum.USAGE_NOTE:
       return getSearchResultsFromUsageNotesAndPage(text, page, caseSensitive)
+    case SearchResultEnum.FIST_NOTE:
+      return getSearchResultsFromFistNoteAndPage(text, page, caseSensitive)
 
     default:
       throw new Error(`attribute ${attribute} must be a valid search result`)
@@ -201,10 +203,11 @@ export function getSearchResultsFromCanadianismAndPage(
 
 export interface Canadianism {
   headword: string
-  usage: string
+  canadianismDescription: string
   id: number
 }
 
+// case sensitivity not working; check collation
 export function getSearchResultsFromCanadianism(
   text: string,
   skip: number = 0,
@@ -245,6 +248,7 @@ export interface UsageNote {
   id: number
 }
 
+// case sensitivity not working; check collation
 export function getSearchResultsFromUsageNotes(
   text: string,
   skip: number = 0,
@@ -265,4 +269,43 @@ export function getSearchResultsFromUsageNotes(
     (det_meanings.usage) LIKE (${searchWildcard}), 
     LOWER(det_meanings.usage) LIKE LOWER(${searchWildcard}))  
   ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
+}
+
+export function getSearchResultsFromFistNoteAndPage(
+  text: string,
+  page: string = "1",
+  caseSensitive: boolean = false
+) {
+  const pageNumber = parsePageNumberOrError(page)
+  const skip = calculatePageSkip(pageNumber)
+  return getSearchResultsFromFistNote(text, skip, undefined, caseSensitive)
+}
+
+// TODO: change this
+export interface FistNote {
+  headword: string
+  usage: string
+  id: number
+}
+
+// case sensitivity not working; check collation
+export function getSearchResultsFromFistNote(
+  text: string,
+  skip: number = 0,
+  take: number = DEFAULT_PAGE_SIZE,
+  caseSensitive: boolean = false
+) {
+  if (text.length === 0) {
+    throw new Error(`Text ("${text}") length must be greater than zero`)
+  }
+
+  const searchWildcard = `%${text}%`
+
+  // TODO: Change this
+  return prisma.$queryRaw<FistNote[]>`SELECT headword, fist_note, id
+  FROM det_entries
+  WHERE IF(${caseSensitive}, 
+    (fist_note) LIKE (${searchWildcard}), 
+    LOWER(fist_note) LIKE LOWER(${searchWildcard}))  
+  ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }

@@ -100,8 +100,12 @@ export default function SearchPage() {
               >
                 Usage Note
               </button>
-              <button className={buttonCss} name="attribute" value="other">
-                other
+              <button
+                className={buttonCss}
+                name="attribute"
+                value={SearchResultEnum.FIST_NOTE}
+              >
+                Fist Note
               </button>
               <button className={buttonCss} name="attribute" value="other">
                 other
