@@ -20,7 +20,7 @@ function getAttributeFunctionMap() {
 
   let attributeFunctionMap: AttributeFunctionMap = {}
   attributeFunctionMap["entries"] = getEntriesByBasicTextSearch
-  attributeFunctionMap["meanings"] = getSearchResultsFromMeanings
+  attributeFunctionMap["meanings"] = getSearchResultMeanings
 
   return attributeFunctionMap
 }
@@ -48,18 +48,20 @@ export async function getSearchResults(
   caseSensitive: boolean = false,
   attribute: string = SearchResultEnum.HEADWORD
 ): Promise<any[]> {
+  const pageNumber = parsePageNumberOrError(page)
+  const skip: number = calculatePageSkip(pageNumber)
+
   switch (attribute) {
     case SearchResultEnum.HEADWORD:
-      return getEntriesByBasicTextSearchAndPage(text, page, caseSensitive)
+      return getEntriesByBasicTextSearch(text, skip, undefined, caseSensitive)
     case SearchResultEnum.MEANING:
-      return getSearchResultsFromMeaningsAndPage(text, page, caseSensitive)
+      return getSearchResultMeanings(text, skip, undefined, caseSensitive)
     case SearchResultEnum.CANADIANISM:
-      return getSearchResultsFromCanadianismAndPage(text, page, caseSensitive)
+      return getSearchResultCanadianisms(text, skip, undefined, caseSensitive)
     case SearchResultEnum.USAGE_NOTE:
-      return getSearchResultsFromUsageNotesAndPage(text, page, caseSensitive)
+      return getSearchResultUsageNotes(text, skip, undefined, caseSensitive)
     case SearchResultEnum.FIST_NOTE:
-      return getSearchResultsFromFistNoteAndPage(text, page, caseSensitive)
-
+      return getSearchResultFistNotes(text, skip, undefined, caseSensitive)
     default:
       throw new Error(`attribute ${attribute} must be a valid search result`)
   }
@@ -121,16 +123,6 @@ export async function getSearchResultsByPage(
   return results
 }
 
-export function getEntriesByBasicTextSearchAndPage(
-  text: string,
-  page: string = "1",
-  caseSensitive: boolean = false
-) {
-  const pageNumber = parsePageNumberOrError(page)
-  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
-  return getEntriesByBasicTextSearch(text, skip, undefined, caseSensitive)
-}
-
 export function getEntriesByBasicTextSearch(
   text: string,
   skip: number = 0,
@@ -151,18 +143,8 @@ export function getEntriesByBasicTextSearch(
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
 }
 
-export function getSearchResultsFromMeaningsAndPage(
-  text: string,
-  page: string = "1",
-  caseSensitive: boolean = false
-) {
-  const pageNumber = parsePageNumberOrError(page)
-  const skip = calculatePageSkip(pageNumber)
-  return getSearchResultsFromMeanings(text, skip, undefined, caseSensitive)
-}
-
 // TODO: refactor to use Case Sensitive
-export function getSearchResultsFromMeanings(
+export function getSearchResultMeanings(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
@@ -191,15 +173,6 @@ export function getSearchResultsFromMeanings(
     take: take,
   })
 }
-export function getSearchResultsFromCanadianismAndPage(
-  text: string,
-  page: string = "1",
-  caseSensitive: boolean = false
-) {
-  const pageNumber = parsePageNumberOrError(page)
-  const skip = calculatePageSkip(pageNumber)
-  return getSearchResultsFromCanadianism(text, skip, undefined, caseSensitive)
-}
 
 export interface Canadianism {
   headword: string
@@ -208,7 +181,7 @@ export interface Canadianism {
 }
 
 // case sensitivity not working; check collation
-export function getSearchResultsFromCanadianism(
+export function getSearchResultCanadianisms(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
@@ -232,16 +205,6 @@ export function getSearchResultsFromCanadianism(
   ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
-export function getSearchResultsFromUsageNotesAndPage(
-  text: string,
-  page: string = "1",
-  caseSensitive: boolean = false
-) {
-  const pageNumber = parsePageNumberOrError(page)
-  const skip = calculatePageSkip(pageNumber)
-  return getSearchResultsFromUsageNotes(text, skip, undefined, caseSensitive)
-}
-
 export interface UsageNote {
   headword: string
   usage: string
@@ -249,7 +212,7 @@ export interface UsageNote {
 }
 
 // case sensitivity not working; check collation
-export function getSearchResultsFromUsageNotes(
+export function getSearchResultUsageNotes(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
@@ -271,25 +234,14 @@ export function getSearchResultsFromUsageNotes(
   ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
-export function getSearchResultsFromFistNoteAndPage(
-  text: string,
-  page: string = "1",
-  caseSensitive: boolean = false
-) {
-  const pageNumber = parsePageNumberOrError(page)
-  const skip = calculatePageSkip(pageNumber)
-  return getSearchResultsFromFistNote(text, skip, undefined, caseSensitive)
-}
-
-// TODO: change this
 export interface FistNote {
   headword: string
-  usage: string
+  fistNote: string
   id: number
 }
 
 // case sensitivity not working; check collation
-export function getSearchResultsFromFistNote(
+export function getSearchResultFistNotes(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,

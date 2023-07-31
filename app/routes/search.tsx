@@ -107,8 +107,12 @@ export default function SearchPage() {
               >
                 Fist Note
               </button>
-              <button className={buttonCss} name="attribute" value="other">
-                other
+              <button
+                className={buttonCss}
+                name="attribute"
+                value={SearchResultEnum.QUOTATION}
+              >
+                Quotation
               </button>
             </div>
           </Form>
