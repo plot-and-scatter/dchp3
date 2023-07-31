@@ -18,7 +18,9 @@ export const sessionStorage = createCookieSessionStorage({
 export const { commitSession, destroySession } = sessionStorage
 
 export const getCookieSession = async (request: Request) => {
-  const session = await sessionStorage.getSession(request.headers.get("Cookie"))
+  const session = await sessionStorage?.getSession(
+    request.headers?.get("Cookie")
+  )
   return session
 }
 
@@ -48,13 +50,13 @@ export const getReturnHeadersForCookieSession = async ({
 
 export const getUserNameFromSession = async (request: Request) => {
   const session = await getCookieSession(request)
-  const name: string | undefined = session.data?.user?.name
+  const name: string | undefined = session?.data?.user?.name
   return name
 }
 
 export const getEmailFromSession = async (request: Request) => {
   const session = await getCookieSession(request)
-  const email: string | undefined = session.data?.user?.email
+  const email: string | undefined = session?.data?.user?.email
   return email
 }
 

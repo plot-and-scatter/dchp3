@@ -9,6 +9,7 @@ type LoggedInUser = {
   email: string
   isAdmin: boolean
   name: string
+  accessToken: string
 }
 
 let _authenticator: Authenticator<LoggedInUser>
@@ -29,7 +30,15 @@ export const authenticator = () => {
 
   const auth0Strategy = new Auth0Strategy(
     strategy,
-    async ({ profile }): Promise<LoggedInUser> => {
+    async (foo): Promise<LoggedInUser> => {
+      console.log("foo", foo)
+      console.log("-----")
+
+      const { profile, accessToken } = foo
+
+      console.log("profile", profile)
+      console.log("accessToken -->", accessToken)
+
       const name = profile.displayName || "No name set in profile"
 
       const isAdmin = getIsAdmin(profile)
@@ -42,6 +51,7 @@ export const authenticator = () => {
         email,
         isAdmin,
         name,
+        accessToken,
       }
     }
   )
