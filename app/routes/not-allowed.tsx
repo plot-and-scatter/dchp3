@@ -5,13 +5,12 @@ import { useLoaderData } from "@remix-run/react"
 import LogoutButton from "~/components/auth/LogoutButton"
 import type { AuthRole } from "~/services/auth/AuthRole"
 import { getPermissionsMap } from "~/services/auth/AuthRole"
+import { PageHeader } from "~/components/elements/PageHeader"
 
 export const loader = async ({ request }: LoaderArgs) => {
   const loggedIn = await isUserLoggedIn(request)
   const roles = await getUserRoles(request)
   const permissionMap = await getPermissionsMap(roles)
-
-  console.log("ROLES", roles)
 
   return json({ loggedIn, roles, permissionMap })
 }
@@ -19,11 +18,9 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function Admin() {
   const { loggedIn, permissionMap } = useLoaderData<typeof loader>()
 
-  console.log(permissionMap)
-
   return (
-    <>
-      <h1>Not allowed</h1>
+    <div className="p-12">
+      <PageHeader>Not allowed</PageHeader>
       <p>You do not have the permission required for this action.</p>
       {permissionMap && Object.keys(permissionMap).length > 0 && (
         <table>
@@ -67,6 +64,6 @@ export default function Admin() {
           </div>
         </>
       )}
-    </>
+    </div>
   )
 }

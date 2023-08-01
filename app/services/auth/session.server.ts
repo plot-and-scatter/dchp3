@@ -7,6 +7,7 @@ import {
   type AuthRole,
   getPermissionsMap,
 } from "./AuthRole"
+import type { LoggedInUser } from "./auth.server"
 
 // export the whole sessionStorage object
 export const sessionStorage = createCookieSessionStorage({
@@ -52,15 +53,20 @@ export const getReturnHeadersForCookieSession = async ({
   }
 }
 
-export const getUserNameFromSession = async (request: Request) => {
+export const getUserFromSession = async (request: Request) => {
   const session = await getCookieSession(request)
-  const name: string | undefined = session.data?.user?.name
+  return session?.data?.user as LoggedInUser | undefined
+}
+
+export const getUserNameFromSession = async (request: Request) => {
+  const user = await getUserFromSession(request)
+  const name: string | undefined = user?.name
   return name
 }
 
 export const getEmailFromSession = async (request: Request) => {
-  const session = await getCookieSession(request)
-  const email: string | undefined = session.data?.user?.email
+  const user = await getUserFromSession(request)
+  const email: string | undefined = user?.email
   return email
 }
 
@@ -72,8 +78,8 @@ export const isUserLoggedIn = async (request: Request) => {
 }
 
 export const getUserRoles = async (request: Request): Promise<AuthRole[]> => {
-  const session = await getCookieSession(request)
-  const roles = session.data?.user?.roles as AuthRole[]
+  const user = await getUserFromSession(request)
+  const roles = user?.roles as AuthRole[]
   return roles || []
 }
 

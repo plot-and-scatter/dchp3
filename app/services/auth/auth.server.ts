@@ -6,7 +6,7 @@ import { sessionStorage } from "./session.server"
 import { getEmail, getIsAdmin } from "utils/user.server"
 import type { AuthRole } from "./AuthRole"
 
-type LoggedInUser = {
+export type LoggedInUser = {
   email: string
   isAdmin: boolean
   name: string
@@ -32,8 +32,6 @@ export const authenticator = () => {
   const auth0Strategy = new Auth0Strategy(
     strategy,
     async ({ profile }): Promise<LoggedInUser> => {
-      console.log("profile", profile)
-
       const name = profile.displayName || "No name set in profile"
 
       const roles = (profile._json as any)["https://dchp.ca/roles"]
