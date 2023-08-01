@@ -1,6 +1,12 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node"
-import { LOGIN_PATH } from "utils/paths"
+import { LOGIN_PATH, NOT_ALLOWED_PATH } from "utils/paths"
 import type { Session } from "@remix-run/node"
+import {
+  rolesContainPermission,
+  type AuthPermission,
+  type AuthRole,
+  getPermissionsMap,
+} from "./AuthRole"
 
 // export the whole sessionStorage object
 export const sessionStorage = createCookieSessionStorage({
@@ -65,6 +71,41 @@ export const isUserLoggedIn = async (request: Request) => {
   return name !== undefined
 }
 
+export const getUserRoles = async (request: Request): Promise<AuthRole[]> => {
+  const session = await getCookieSession(request)
+  const roles = session.data?.user?.roles as AuthRole[]
+  return roles || []
+}
+
+export const getUserPermissions = async (request: Request) => {
+  const roles = await getUserRoles(request)
+  return getPermissionsMap(roles)
+}
+
+export const userHasRole = async (
+  request: Request,
+  role: AuthRole
+): Promise<boolean> => {
+  const roles = await getUserRoles(request)
+  return roles.includes(role)
+}
+
+export const userHasPermission = async (
+  request: Request,
+  permission: AuthPermission
+): Promise<boolean> => {
+  const roles = await getUserRoles(request)
+  return rolesContainPermission(roles, permission)
+}
+
 export const redirectIfUserNotLoggedIn = async (request: Request) => {
   if (!(await isUserLoggedIn(request))) throw redirect(`${LOGIN_PATH}`)
+}
+
+export const redirectIfUserLacksPermission = async (
+  request: Request,
+  permission: AuthPermission
+) => {
+  if (!(await userHasPermission(request, permission)))
+    throw redirect(`${NOT_ALLOWED_PATH}`)
 }

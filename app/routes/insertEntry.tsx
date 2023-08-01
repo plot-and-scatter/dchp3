@@ -1,15 +1,23 @@
+import type { LoaderArgs } from "@remix-run/node"
 import { type ActionArgs, redirect } from "@remix-run/node"
 import { Form } from "@remix-run/react"
 import Header from "~/components/elements/Header"
 import Main from "~/components/elements/Main"
 import Nav from "~/components/elements/Nav"
 import { insertEntry } from "~/models/entry.server"
+import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
   console.log(data)
   insertEntry(data)
   return redirect(`/entries/${data.headword}`)
+}
+
+export async function loader({ request }: LoaderArgs) {
+  await redirectIfUserLacksPermission(request, "det:createDraft")
+
+  return {}
 }
 
 export default function Index() {
