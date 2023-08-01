@@ -1,5 +1,5 @@
-import { attributeEnum } from "~/components/editing/attributeEnum"
 import type { Entry } from "@prisma/client"
+import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
 import { isNonPositive } from "~/utils/numberUtils"
 
@@ -61,6 +61,7 @@ export function getEntriesByInitialLettersAndPage(
   initialLetters: string,
   page: string
 ) {
+  // TODO: Refactor stuff like this out
   const pageNumber = parseInt(page)
   if (isNaN(pageNumber)) {
     throw new Error(`Page Number ("${page}") must be a number`)
@@ -133,6 +134,7 @@ export async function updateRecordByAttributeAndType(
   id: number,
   value: string
 ) {
+  // TODO: Factor
   if (isNaN(id)) {
     throw new Error(`Error Parsing ID of element being edited`)
   } else if (isNonPositive(id)) {
