@@ -5,6 +5,7 @@ import Header from "~/components/elements/Header"
 import Main from "~/components/elements/Main"
 import Nav from "~/components/elements/Nav"
 import { SearchResultEnum } from "./search/searchResultEnum"
+import Button from "~/components/elements/Button"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -70,6 +71,9 @@ export default function SearchPage() {
                 <i className="fas fa-search mr-2"></i>
                 Search
               </button>
+              <Button className="ml-3 border w-40 h-52 border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400">
+                <i>Hi</i>
+              </Button>
             </div>
             <div className="ml-5 flex flex-col">
               <button
