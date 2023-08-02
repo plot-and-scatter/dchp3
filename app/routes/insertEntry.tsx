@@ -4,6 +4,7 @@ import Header from "~/components/elements/Header"
 import Main from "~/components/elements/Main"
 import Nav from "~/components/elements/Nav"
 import { insertEntry } from "~/models/entry.server"
+import Button from "~/components/elements/Button"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -132,13 +133,9 @@ export default function Index() {
               </label>
             </div>
 
-            <button
-              className="mx-auto my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
-              type="submit"
-              name="submitButton"
-            >
+            <Button className={"mx-auto my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"} type="submit" name="submitButton">
               Submit
-            </button>
+            </Button>
           </Form>
         </div>
       </Main>

@@ -63,17 +63,10 @@ export default function SearchPage() {
                   />
                 </label>
               </div>
-              <button
-                className="ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
-                name="attribute"
-                value={currentAttribute}
-              >
-                <i className="fas fa-search mr-2"></i>
-                Search
-              </button>
-              <Button className="ml-3 border w-40 h-52 border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400">
-                <i>Hi</i>
+              <Button className={"ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"} >
+                search
               </Button>
+
             </div>
             <div className="ml-5 flex flex-col">
               <button
@@ -83,13 +76,9 @@ export default function SearchPage() {
               >
                 Headword
               </button>
-              <button
-                className={buttonCss}
-                name="attribute"
-                value={SearchResultEnum.MEANING}
-              >
+              <Button className={buttonCss} name="attribute" value={SearchResultEnum.MEANING}>
                 Meaning
-              </button>
+              </Button>
               <button className={buttonCss} name="attribute" value="other">
                 other
               </button>
