@@ -3,14 +3,15 @@ import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node"
 import { useCatch, useLoaderData } from "@remix-run/react"
 import invariant from "tiny-invariant"
 
+import { getEntryByHeadword } from "~/models/entry.server"
 import {
-  getEntryByHeadword,
+  updateMeaningHeader,
   updateRecordByAttributeAndType,
-} from "~/models/entry.server"
+} from "~/models/update.server"
+
 import Entry from "~/components/Entry"
 import {
   getAttributeEnumFromFormInput,
-  getNumberFromFormInput,
   getStringFromFormInput,
 } from "~/utils/generalUtils"
 import { attributeEnum } from "~/components/editing/attributeEnum"
@@ -27,17 +28,21 @@ export async function loader({ params }: LoaderArgs) {
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
-
-  const newValue = getStringFromFormInput(data.newValue)
   const type = getAttributeEnumFromFormInput(data.attributeType)
-  const id = getNumberFromFormInput(data.attributeID)
 
-  // await so you refresh page only after entry updated
-  await updateRecordByAttributeAndType(type, id, newValue)
+  switch (type) {
+    case attributeEnum.MEANING_HEADER:
+      await updateMeaningHeader(data)
+      break
+    default:
+      await updateRecordByAttributeAndType(type, data)
+      break
+  }
 
   // old headword invalid-- redirect to updated headword
   if (type === attributeEnum.HEADWORD) {
-    return redirect(`/entries/${newValue}`)
+    const headword = getStringFromFormInput(data.newValue)
+    return redirect(`/entries/${headword}`)
   }
 
   return null

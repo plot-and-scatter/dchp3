@@ -1,8 +1,8 @@
 import { DEFAULT_PAGE_SIZE, calculatePageSkip } from "./entry.server"
 import type { Entry } from "@prisma/client"
 import { prisma } from "~/db.server"
+import { SearchResultEnum } from "~/routes/search/searchResultEnum"
 import { parsePageNumberOrError } from "~/utils/generalUtils"
-import { isNonPositive } from "~/utils/numberUtils"
 
 export type { Entry } from "@prisma/client"
 
@@ -42,6 +42,23 @@ function calculateElementsRemaining(remaining: number, gotten: number) {
   return remaining - gotten
 }
 
+export async function getSearchResults(
+  text: string,
+  page: string = "1",
+  caseSensitive: boolean = false,
+  attribute: string = SearchResultEnum.HEADWORD
+): Promise<any[]> {
+  switch (attribute) {
+    case SearchResultEnum.HEADWORD:
+      return getEntriesByBasicTextSearchAndPage(text, page, caseSensitive)
+    case SearchResultEnum.MEANING:
+      return getSearchResultsFromMeaningsAndPage(text, page, caseSensitive)
+    default:
+      throw new Error(`attribute ${attribute} must be a valid search result`)
+  }
+}
+
+// TODO: Delete this function and related
 export async function getSearchResultsByPage(
   text: string,
   page: string = "1",
@@ -102,13 +119,7 @@ export function getEntriesByBasicTextSearchAndPage(
   page: string = "1",
   caseSensitive: boolean = false
 ) {
-  const pageNumber = parseInt(page)
-  if (isNaN(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be a number`)
-  } else if (isNonPositive(pageNumber)) {
-    throw new Error(`Page Number ("${page}") must be greater than zero`)
-  }
-
+  const pageNumber = parsePageNumberOrError(page)
   const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
   return getEntriesByBasicTextSearch(text, skip, undefined, caseSensitive)
 }
@@ -133,6 +144,17 @@ export function getEntriesByBasicTextSearch(
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
 }
 
+export function getSearchResultsFromMeaningsAndPage(
+  text: string,
+  page: string = "1",
+  caseSensitive: boolean = false
+) {
+  const pageNumber = parsePageNumberOrError(page)
+  const skip = calculatePageSkip(pageNumber)
+  return getSearchResultsFromMeanings(text, skip, undefined, caseSensitive)
+}
+
+// TODO: refactor to use Case Sensitive
 export function getSearchResultsFromMeanings(
   text: string,
   skip: number = 0,
