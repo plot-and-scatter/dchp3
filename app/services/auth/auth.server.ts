@@ -4,11 +4,13 @@ import { getBaseDeploymentUrl } from "utils/api.server"
 import { json } from "@remix-run/server-runtime"
 import { sessionStorage } from "./session.server"
 import { getEmail, getIsAdmin } from "utils/user.server"
+import type { AuthRole } from "./AuthRole"
 
-type LoggedInUser = {
+export type LoggedInUser = {
   email: string
   isAdmin: boolean
   name: string
+  roles: AuthRole[]
 }
 
 let _authenticator: Authenticator<LoggedInUser>
@@ -32,6 +34,8 @@ export const authenticator = () => {
     async ({ profile }): Promise<LoggedInUser> => {
       const name = profile.displayName || "No name set in profile"
 
+      const roles = (profile._json as any)["https://dchp.ca/roles"]
+
       const isAdmin = getIsAdmin(profile)
       const email = getEmail(profile)
 
@@ -42,6 +46,7 @@ export const authenticator = () => {
         email,
         isAdmin,
         name,
+        roles,
       }
     }
   )
