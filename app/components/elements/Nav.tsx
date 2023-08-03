@@ -14,6 +14,10 @@ const Nav = (): JSX.Element => {
           <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> About
           <span className="hidden md:inline"> the DCHP-3</span>
         </Link>
+        <Link to="/Foreword">
+          <i className="fa-regular fa-book mr-1 sm:mr-2"></i>Foreword
+          <span className="hidden md:inline"></span>
+        </Link>
         <Link to="/reference">
           <i className="fa-regular fa-book mr-1 sm:mr-2"></i>
           <span className="hidden md:inline">References</span>

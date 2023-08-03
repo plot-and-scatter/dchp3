@@ -76,9 +76,9 @@ export default function SearchPage() {
               >
                 Headword
               </button>
-              <Button className={buttonCss} name="attribute" value={SearchResultEnum.MEANING}>
+              <button className={buttonCss} name="attribute" value={SearchResultEnum.MEANING}>
                 Meaning
-              </Button>
+              </button>
               <button className={buttonCss} name="attribute" value="other">
                 other
               </button>
