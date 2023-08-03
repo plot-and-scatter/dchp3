@@ -86,14 +86,33 @@ export default function SearchPage() {
               >
                 Meaning
               </button>
-              <button className={buttonCss} name="attribute" value="other">
-                other
+              <button
+                className={buttonCss}
+                name="attribute"
+                value={SearchResultEnum.CANADIANISM}
+              >
+                Canadianism
               </button>
-              <button className={buttonCss} name="attribute" value="other">
-                other
+              <button
+                className={buttonCss}
+                name="attribute"
+                value={SearchResultEnum.USAGE_NOTE}
+              >
+                Usage Note
               </button>
-              <button className={buttonCss} name="attribute" value="other">
-                other
+              <button
+                className={buttonCss}
+                name="attribute"
+                value={SearchResultEnum.FIST_NOTE}
+              >
+                Fist Note
+              </button>
+              <button
+                className={buttonCss}
+                name="attribute"
+                value={SearchResultEnum.QUOTATION}
+              >
+                Quotation
               </button>
             </div>
           </Form>
