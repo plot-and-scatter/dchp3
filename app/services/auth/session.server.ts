@@ -6,7 +6,7 @@ import {
   type AuthPermission,
   type AuthRole,
   getPermissionsMap,
-} from "./AuthRole"
+} from "~/services/auth/AuthRole"
 import type { LoggedInUser } from "./auth.server"
 
 // export the whole sessionStorage object
