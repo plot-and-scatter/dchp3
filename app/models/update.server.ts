@@ -46,6 +46,21 @@ export async function updateMeaningHeader(data: {
   })
 }
 
+export async function updateMeaningDefinition(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const id = getNumberFromFormInput(data.attributeID)
+  assertIsValidId(id)
+  const definition = getStringFromFormInput(data.newValue)
+
+  await prisma.meaning.update({
+    where: { id: id },
+    data: {
+      definition: definition,
+    },
+  })
+}
+
 async function updateEntry(
   entryId: number,
   type: attributeEnum,

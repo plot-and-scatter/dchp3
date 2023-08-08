@@ -39,7 +39,6 @@ const Headword = ({
             {hasDagger && <span className="align-super">&dagger;</span>}
           </h1>
           <EditingPopover
-            headword={word}
             currentValue={word}
             attributeType={attributeEnum.HEADWORD}
             attributeID={id}
@@ -50,7 +49,6 @@ const Headword = ({
       <div className="flex flex-row">
         <Alternatives alternatives={alternatives} />
         <EditingPopover
-          headword={word}
           currentValue={alternatives}
           attributeType={attributeEnum.SPELLING_VARIANT}
           attributeID={id}
@@ -60,7 +58,6 @@ const Headword = ({
       <div className="flex flex-row">
         <Etymology etymology={etymology} />
         <EditingPopover
-          headword={word}
           currentValue={etymology}
           attributeType={attributeEnum.ETYMOLOGY}
           attributeID={id}
@@ -68,7 +65,6 @@ const Headword = ({
         />
         <GeneralLabels generalLabels={generalLabels} />
         <EditingPopover
-          headword={word}
           currentValue={generalLabels}
           attributeType={attributeEnum.LABELS}
           attributeID={id}
@@ -81,7 +77,6 @@ const Headword = ({
           </HandNoteBlock>
         )}
         <EditingPopover
-          headword={word}
           currentValue={handNote}
           attributeType={attributeEnum.FIST_NOTE}
           attributeID={id}
