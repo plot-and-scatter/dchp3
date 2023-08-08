@@ -36,7 +36,10 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
         <MeaningHeaderForm
           shouldDisplay={editable}
           meaning={meaning}
+          number={number}
           dagger={dagger}
+          partOfSpeech={partOfSpeech}
+          usageNote={usageNote}
         />
         <MeaningHeader
           number={number}
