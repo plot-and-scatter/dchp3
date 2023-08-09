@@ -10,23 +10,27 @@ interface Props {
 
 export enum editablePopoverInputTypes {
   TEXTAREA = "TextArea",
+  SEEALSO = "SeeAlso",
 }
 
 const EditablePopoverInput = ({ name, label, value, type }: Props) => {
   value = value ?? ""
 
-  if (type === editablePopoverInputTypes.TEXTAREA) {
-    return (
-      <label>
-        {label} <EditableTextArea name={name} value={value} />
-      </label>
-    )
-  } else {
-    return (
-      <label>
-        {label} <EditableTextInput name={name} value={value} />
-      </label>
-    )
+  switch (type) {
+    case editablePopoverInputTypes.TEXTAREA:
+      return (
+        <label>
+          {label} <EditableTextArea name={name} value={value} />
+        </label>
+      )
+    case editablePopoverInputTypes.SEEALSO:
+      return <></>
+    default:
+      return (
+        <label>
+          {label} <EditableTextInput name={name} value={value} />
+        </label>
+      )
   }
 }
 

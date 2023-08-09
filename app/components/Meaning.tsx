@@ -9,6 +9,7 @@ import SeeAlso from "~/components/SeeAlso"
 import DisplayEditorToggle from "./meaningComponents/DisplayEditorToggle"
 import MeaningHeader from "./meaningComponents/MeaningHeader"
 import MeaningHeaderForm from "./meaningComponents/MeaningHeaderForm"
+import SeeAlsoAdder from "./editing/SeeAlsoAdder"
 
 export type MeaningType = LoadedDataType["meanings"][0]
 
@@ -47,7 +48,10 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
         <div className="flex flex-col gap-2 p-2 md:p-4 md:px-6">
           <Definition meaning={meaning} />
           <Canadianism meaning={meaning} />
-          <SeeAlso seeAlso={meaning.seeAlso} />
+          <div className="flex flex-row">
+            <SeeAlso seeAlso={meaning.seeAlso} />
+            <SeeAlsoAdder meaningId={meaning.id} />
+          </div>
           {meaning.usageNotes.length > 0 &&
             meaning.usageNotes.map((usageNote) => (
               <HandNoteBlock key={`usage-note-${usageNote.id}`}>
