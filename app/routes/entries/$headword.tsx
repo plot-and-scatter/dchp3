@@ -5,6 +5,7 @@ import invariant from "tiny-invariant"
 
 import { getEntryByHeadword } from "~/models/entry.server"
 import {
+  addSeeAlso,
   updateMeaningHeader,
   updateRecordByAttributeAndType,
 } from "~/models/update.server"
@@ -33,6 +34,9 @@ export async function action({ request }: ActionArgs) {
   switch (type) {
     case attributeEnum.MEANING_HEADER:
       await updateMeaningHeader(data)
+      break
+    case attributeEnum.SEE_ALSO:
+      await addSeeAlso(data)
       break
     default:
       await updateRecordByAttributeAndType(type, data)

@@ -49,3 +49,29 @@ async function updateEntry(
     data: { [fieldName]: newValue },
   })
 }
+
+export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
+  const meaningId = getNumberFromFormInput(data.attributeID)
+  const headword = getStringFromFormInput(data.headword)
+  const linkNote = getStringFromFormInput(data.linkNote)
+
+  const entry = await prisma.entry.findUnique({
+    where: {
+      headword: headword,
+    },
+  })
+
+  if (entry === null) {
+    throw new Error(`Entry "${headword}" could not be found`)
+  }
+
+  const entryId = entry.id
+
+  await prisma.seeAlso.create({
+    data: {
+      meaning_id: meaningId,
+      entry_id: entryId,
+      linknote: linkNote,
+    },
+  })
+}

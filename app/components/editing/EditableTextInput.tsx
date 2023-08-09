@@ -13,13 +13,16 @@ const EditableTextInput = ({ name, value }: Props) => {
   }, [])
 
   return (
-    <input
-      ref={inputElement}
-      className="m-2 p-2"
-      name={name}
-      onChange={(e) => setInputValue(e.target.value)}
-      value={initialValue}
-    />
+    <label>
+      Input:
+      <input
+        ref={inputElement}
+        className="m-2 p-2"
+        name={name}
+        onChange={(e) => setInputValue(e.target.value)}
+        value={initialValue}
+      />
+    </label>
   )
 }
 

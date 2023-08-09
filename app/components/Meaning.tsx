@@ -9,7 +9,9 @@ import SeeAlso from "~/components/SeeAlso"
 import DisplayEditorToggle from "./meaningComponents/DisplayEditorToggle"
 import MeaningHeader from "./meaningComponents/MeaningHeader"
 import MeaningHeaderForm from "./meaningComponents/MeaningHeaderForm"
-import SeeAlsoAdder from "./editing/SeeAlsoAdder"
+import { editablePopoverInputTypes } from "./editing/EditablePopoverInput"
+import EditingPopover from "./editing/EditingPopover"
+import { attributeEnum } from "./editing/attributeEnum"
 
 export type MeaningType = LoadedDataType["meanings"][0]
 
@@ -50,7 +52,13 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
           <Canadianism meaning={meaning} />
           <div className="flex flex-row">
             <SeeAlso seeAlso={meaning.seeAlso} />
-            <SeeAlsoAdder meaningId={meaning.id} />
+            <EditingPopover
+              headword={"hi"}
+              type={editablePopoverInputTypes.SEE_ALSO}
+              attributeType={attributeEnum.SEE_ALSO}
+              attributeID={meaning.id}
+              icon="add"
+            />
           </div>
           {meaning.usageNotes.length > 0 &&
             meaning.usageNotes.map((usageNote) => (
