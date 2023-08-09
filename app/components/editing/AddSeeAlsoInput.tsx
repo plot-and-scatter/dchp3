@@ -1,12 +1,7 @@
 import { useEffect, useRef } from "react"
 import { attributeEnum } from "./attributeEnum"
 
-interface Props {
-  name: string
-  value: string
-}
-
-const AddSeeAlsoInput = ({ name, value }: Props) => {
+const AddSeeAlsoInput = () => {
   const inputElement = useRef<HTMLInputElement>(null)
   useEffect(() => {
     inputElement?.current?.focus()

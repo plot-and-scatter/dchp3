@@ -65,12 +65,10 @@ export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
     throw new Error(`Entry "${headword}" could not be found`)
   }
 
-  const entryId = entry.id
-
   await prisma.seeAlso.create({
     data: {
       meaning_id: meaningId,
-      entry_id: entryId,
+      entry_id: entry.id,
       linknote: linkNote,
     },
   })

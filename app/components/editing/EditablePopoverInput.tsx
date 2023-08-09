@@ -20,7 +20,7 @@ const EditablePopoverInput = ({ name, value, type }: Props) => {
     case editablePopoverInputTypes.TEXTAREA:
       return <EditableTextArea name={name} value={value} />
     case editablePopoverInputTypes.SEE_ALSO:
-      return <AddSeeAlsoInput name={name} value={value} />
+      return <AddSeeAlsoInput />
     default:
       return <EditableTextInput name={name} value={value} />
   }
