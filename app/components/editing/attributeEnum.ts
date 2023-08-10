@@ -10,4 +10,5 @@ export enum attributeEnum {
   MEANING_HEADER = "MeaningHeader",
   SEE_ALSO = "SeeAlso",
   CANADIANISM = "Canadianism",
+  DEFINITION = "Definition",
 }

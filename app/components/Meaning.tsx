@@ -43,7 +43,10 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
         <MeaningHeaderForm
           shouldDisplay={editable}
           meaning={meaning}
+          number={number}
           dagger={dagger}
+          partOfSpeech={partOfSpeech}
+          usageNote={usageNote}
         />
         <MeaningHeader
           number={number}
@@ -52,7 +55,15 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
           usageNote={usageNote}
         />
         <div className="flex flex-col gap-2 p-2 md:p-4 md:px-6">
-          <Definition meaning={meaning} />
+          <div className="flex flex-row">
+            <Definition meaning={meaning} />
+            <EditingPopover
+              currentValue={meaning.definition}
+              attributeType={attributeEnum.DEFINITION}
+              attributeID={meaning.id}
+              type={editablePopoverInputTypes.TEXTAREA}
+            />
+          </div>
           <Canadianism meaning={meaning} />
           <EditingPopover
             headword={headword ?? ""}

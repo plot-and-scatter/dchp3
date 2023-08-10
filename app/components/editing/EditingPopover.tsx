@@ -1,7 +1,7 @@
 import { Popover } from "@headlessui/react"
 import { usePopper } from "react-popper"
 import { useState } from "react"
-import { Form } from "@remix-run/react"
+import { Form, useParams } from "@remix-run/react"
 import { type attributeEnum } from "./attributeEnum"
 import EditablePopoverInput, {
   type editablePopoverInputTypes,
@@ -9,7 +9,7 @@ import EditablePopoverInput, {
 
 interface Props {
   headword: string
-  currentValue?: string
+  currentValue: string | undefined
   attributeType: attributeEnum
   attributeID: number
   type?: editablePopoverInputTypes
@@ -28,7 +28,6 @@ function getIcon(icon: string | undefined) {
 }
 
 const EditingPopover = ({
-  headword,
   currentValue,
   attributeType,
   attributeID,
@@ -38,6 +37,9 @@ const EditingPopover = ({
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
   const [popperElement, setPopperElement] = useState<HTMLElement | null>()
   const { styles, attributes } = usePopper(referenceElement, popperElement)
+
+  const params = useParams()
+  const headword = params.headword
 
   return (
     <Popover className="relative ml-2 inline-block">

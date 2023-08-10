@@ -7,6 +7,7 @@ import { getEntryByHeadword } from "~/models/entry.server"
 import {
   addSeeAlso,
   updateCanadianism,
+  updateMeaningDefinition,
   updateMeaningHeader,
   updateRecordByAttributeAndType,
 } from "~/models/update.server"
@@ -41,6 +42,9 @@ export async function action({ request }: ActionArgs) {
       break
     case attributeEnum.CANADIANISM:
       await updateCanadianism(data)
+      break
+    case attributeEnum.DEFINITION:
+      await updateMeaningDefinition(data)
       break
     default:
       await updateRecordByAttributeAndType(type, data)
