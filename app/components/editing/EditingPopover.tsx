@@ -8,10 +8,23 @@ import EditablePopoverInput, {
 } from "./EditablePopoverInput"
 
 interface Props {
+  headword: string
   currentValue: string | undefined
   attributeType: attributeEnum
   attributeID: number
   type?: editablePopoverInputTypes
+  icon?: "edit" | "add"
+}
+
+function getIcon(icon: string | undefined) {
+  switch (icon) {
+    case "edit":
+      return "fa-solid fa-pen-to-square"
+    case "add":
+      return "fa-solid fa-circle-plus fa-sm"
+    default:
+      return "fa-solid fa-pen-to-square"
+  }
 }
 
 const EditingPopover = ({
@@ -19,6 +32,7 @@ const EditingPopover = ({
   attributeType,
   attributeID,
   type,
+  icon,
 }: Props) => {
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
   const [popperElement, setPopperElement] = useState<HTMLElement | null>()
@@ -30,10 +44,10 @@ const EditingPopover = ({
   return (
     <Popover className="relative ml-2 inline-block">
       <Popover.Button
-        className="text-red-400 focus:border-red-600"
+        className={`text-red-400 focus:border-red-600`}
         ref={setReferenceElement}
       >
-        <i className="fa-solid fa-pen-to-square cursor-pointer hover:text-red-600"></i>
+        <i className={`${getIcon(icon)} cursor-pointer hover:text-red-600`}></i>
       </Popover.Button>
 
       <Popover.Panel
@@ -51,7 +65,6 @@ const EditingPopover = ({
             <EditablePopoverInput
               name="newValue"
               value={currentValue ?? ""}
-              label="input: "
               type={type}
             />
             <input type="hidden" name="attributeType" value={attributeType} />

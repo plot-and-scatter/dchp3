@@ -8,5 +8,7 @@ export enum attributeEnum {
   // Note: MEANING_HEADER does not directly correspond to any individual entry field
   // TODO: Is there a cleaner way to handle this situation?
   MEANING_HEADER = "MeaningHeader",
+  SEE_ALSO = "SeeAlso",
+  CANADIANISM = "Canadianism",
   DEFINITION = "Definition",
 }

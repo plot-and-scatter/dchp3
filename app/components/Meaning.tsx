@@ -9,9 +9,10 @@ import SeeAlso from "~/components/SeeAlso"
 import DisplayEditorToggle from "./meaningComponents/DisplayEditorToggle"
 import MeaningHeader from "./meaningComponents/MeaningHeader"
 import MeaningHeaderForm from "./meaningComponents/MeaningHeaderForm"
-import EditingPopover from "./editing/EditingPopover"
 import { editablePopoverInputTypes } from "./editing/EditablePopoverInput"
+import EditingPopover from "./editing/EditingPopover"
 import { attributeEnum } from "./editing/attributeEnum"
+import { useParams } from "@remix-run/react"
 
 export type MeaningType = LoadedDataType["meanings"][0]
 
@@ -28,6 +29,9 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
   } = meaning
 
   const [editable, setEditable] = useState(false)
+
+  const params = useParams()
+  const headword = params.headword
 
   return (
     <>
@@ -61,7 +65,24 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
             />
           </div>
           <Canadianism meaning={meaning} />
-          <SeeAlso seeAlso={meaning.seeAlso} />
+          <EditingPopover
+            headword={headword ?? ""}
+            currentValue={meaning.canadianism_type_comment ?? ""}
+            type={editablePopoverInputTypes.TEXTAREA}
+            attributeType={attributeEnum.CANADIANISM}
+            attributeID={meaning.id}
+            icon="edit"
+          />
+          <div className="flex flex-row">
+            <SeeAlso seeAlso={meaning.seeAlso} />
+            <EditingPopover
+              headword={headword ?? ""}
+              type={editablePopoverInputTypes.SEE_ALSO}
+              attributeType={attributeEnum.SEE_ALSO}
+              attributeID={meaning.id}
+              icon="add"
+            />
+          </div>
           {meaning.usageNotes.length > 0 &&
             meaning.usageNotes.map((usageNote) => (
               <HandNoteBlock key={`usage-note-${usageNote.id}`}>
