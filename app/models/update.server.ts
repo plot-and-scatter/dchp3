@@ -31,7 +31,34 @@ export async function updateMeaningHeader(data: {
   const id = getNumberFromFormInput(data.attributeID)
   assertIsValidId(id)
   const dagger = data.dagger ? true : false
-  await prisma.meaning.update({ where: { id: id }, data: { dagger: dagger } })
+  const order = getStringFromFormInput(data.order)
+  const partOfSpeech = getStringFromFormInput(data.partOfSpeech)
+  const usageNote = getStringFromFormInput(data.usageNote)
+
+  await prisma.meaning.update({
+    where: { id: id },
+    data: {
+      dagger: dagger,
+      order: order,
+      partofspeech: partOfSpeech,
+      usage: usageNote,
+    },
+  })
+}
+
+export async function updateMeaningDefinition(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const id = getNumberFromFormInput(data.attributeID)
+  assertIsValidId(id)
+  const definition = getStringFromFormInput(data.newValue)
+
+  await prisma.meaning.update({
+    where: { id: id },
+    data: {
+      definition: definition,
+    },
+  })
 }
 
 async function updateEntry(
