@@ -20,9 +20,11 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
     : ""
 
   return (
-    <>
+    <div className="mx-auto flex max-w-6xl flex-row">
       <QuickLinks data={data} />
-      <div className={`md:max-w-xl lg:max-w-3xl ${bgColor} pl-4 pr-5 pt-1`}>
+      <div
+        className={`w-full md:max-w-xl lg:max-w-3xl ${bgColor} pl-4 pr-5 pt-1`}
+      >
         <div>
           <Headword
             word={data.headword}
@@ -39,7 +41,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
           <EntryImages data={data} />
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

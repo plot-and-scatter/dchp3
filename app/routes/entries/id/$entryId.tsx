@@ -19,7 +19,7 @@ export default function EntryDetailsPage() {
   const data = useLoaderData<typeof loader>()
 
   return (
-    <div>
+    <div className="flex flex-row">
       <h3 className="text-2xl font-bold">{data.entry.id}</h3>
       <p className="py-6">{data.entry.headword}</p>
     </div>
