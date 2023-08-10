@@ -50,6 +50,20 @@ async function updateEntry(
   })
 }
 
+export async function updateCanadianism(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const meaningId = getNumberFromFormInput(data.attributeID)
+  const newTypeComment = getStringFromFormInput(data.newValue)
+
+  await prisma.meaning.update({
+    where: {
+      id: meaningId,
+    },
+    data: { canadianism_type_comment: newTypeComment },
+  })
+}
+
 export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
   const meaningId = getNumberFromFormInput(data.attributeID)
   const headword = getStringFromFormInput(data.headword)

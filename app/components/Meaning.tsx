@@ -12,6 +12,7 @@ import MeaningHeaderForm from "./meaningComponents/MeaningHeaderForm"
 import { editablePopoverInputTypes } from "./editing/EditablePopoverInput"
 import EditingPopover from "./editing/EditingPopover"
 import { attributeEnum } from "./editing/attributeEnum"
+import { useParams } from "@remix-run/react"
 
 export type MeaningType = LoadedDataType["meanings"][0]
 
@@ -28,6 +29,9 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
   } = meaning
 
   const [editable, setEditable] = useState(false)
+
+  const params = useParams()
+  const headword = params.headword
 
   return (
     <>
@@ -50,10 +54,18 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
         <div className="flex flex-col gap-2 p-2 md:p-4 md:px-6">
           <Definition meaning={meaning} />
           <Canadianism meaning={meaning} />
+          <EditingPopover
+            headword={headword ?? ""}
+            currentValue={meaning.canadianism_type_comment ?? ""}
+            type={editablePopoverInputTypes.TEXTAREA}
+            attributeType={attributeEnum.CANADIANISM}
+            attributeID={meaning.id}
+            icon="edit"
+          />
           <div className="flex flex-row">
             <SeeAlso seeAlso={meaning.seeAlso} />
             <EditingPopover
-              headword={"hi"}
+              headword={headword ?? ""}
               type={editablePopoverInputTypes.SEE_ALSO}
               attributeType={attributeEnum.SEE_ALSO}
               attributeID={meaning.id}
