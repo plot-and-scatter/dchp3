@@ -1,18 +1,19 @@
-import { json, type LoaderArgs } from "@remix-run/server-runtime"
-import { redirectIfUserNotLoggedIn } from "~/services/auth/session.server"
-import LogoutButton from "~/components/auth/LogoutButton"
 import { Link } from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
+import { redirectIfUserNotLoggedIn } from "~/services/auth/session.server"
+import { type LoaderArgs } from "@remix-run/server-runtime"
+import LogoutButton from "~/components/auth/LogoutButton"
+import Main from "~/components/elements/Main"
 
 export const loader = async ({ request }: LoaderArgs) => {
   await redirectIfUserNotLoggedIn(request)
 
-  return json({})
+  return null
 }
 
 export default function Admin() {
   return (
-    <div className="p-12">
+    <Main>
       <PageHeader>Admin</PageHeader>
       <p>You are logged in.</p>
       <p>
@@ -23,6 +24,6 @@ export default function Admin() {
       <div>
         <LogoutButton />
       </div>
-    </div>
+    </Main>
   )
 }
