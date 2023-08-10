@@ -14,15 +14,17 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function Admin() {
   return (
     <Main>
-      <PageHeader>Admin</PageHeader>
-      <p>You are logged in.</p>
-      <p>
-        <Link to="/" className="font-semibold text-blue-500">
-          Home
-        </Link>
-      </p>
       <div>
-        <LogoutButton />
+        <PageHeader>Admin</PageHeader>
+        <p>You are logged in.</p>
+        <p>
+          <Link to="/" className="font-semibold text-blue-500">
+            Home
+          </Link>
+        </p>
+        <div>
+          <LogoutButton />
+        </div>
       </div>
     </Main>
   )

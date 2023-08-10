@@ -18,7 +18,6 @@ const Nav = ({ user }: NavProps): JSX.Element => {
         <NavLink to="/about">
           <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> About
           <span className="hidden md:inline"> the DCHP-3</span>
-
         </NavLink>
         <NavLink to="/reference">
           <i className="fa-regular fa-book mr-1 sm:mr-2"></i>
@@ -26,7 +25,7 @@ const Nav = ({ user }: NavProps): JSX.Element => {
         </NavLink>
         <NavLink to="/insertEntry">
           <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> Insert
-          <span className="hidden md:inline"> entries </span>
+          <span className="hidden md:inline"> entry </span>
         </NavLink>
         <div className="font-bold">
           <NavLink to="/entries">
