@@ -33,7 +33,10 @@ export default function OwnCitations() {
         return (
           <div key={citation.id} className="mb-4">
             <div className="text-lg font-bold">
-              <NavLink to={`/bank/${citation.id}`} className="text-blue-500">
+              <NavLink
+                to={`/bank/edit/${citation.id}`}
+                className="text-blue-500"
+              >
                 {citation.headword}
               </NavLink>
             </div>
