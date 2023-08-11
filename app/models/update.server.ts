@@ -114,3 +114,9 @@ export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
     },
   })
 }
+
+export async function updateEditingStatus(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  throw new Error("not done yet")
+}
