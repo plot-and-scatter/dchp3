@@ -25,7 +25,9 @@ export const sessionStorage = createCookieSessionStorage({
 export const { commitSession, destroySession } = sessionStorage
 
 export const getCookieSession = async (request: Request) => {
-  const session = await sessionStorage.getSession(request.headers.get("Cookie"))
+  const session = await sessionStorage?.getSession(
+    request.headers?.get("Cookie")
+  )
   return session
 }
 

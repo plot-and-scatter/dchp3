@@ -31,7 +31,15 @@ export const authenticator = () => {
 
   const auth0Strategy = new Auth0Strategy(
     strategy,
-    async ({ profile }): Promise<LoggedInUser> => {
+    async (foo): Promise<LoggedInUser> => {
+      console.log("foo", foo)
+      console.log("-----")
+
+      const { profile, accessToken } = foo
+
+      console.log("profile", profile)
+      console.log("accessToken -->", accessToken)
+
       const name = profile.displayName || "No name set in profile"
 
       const roles = (profile._json as any)["https://dchp.ca/roles"]
