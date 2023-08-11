@@ -63,7 +63,7 @@ export default function SearchPage() {
                   />
                 </label>
               </div>
-              <Button className={"ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"} >
+              <Button size="large">
                 search
               </Button>
 
@@ -76,9 +76,9 @@ export default function SearchPage() {
               >
                 Headword
               </button>
-              <button className={buttonCss} name="attribute" value={SearchResultEnum.MEANING}>
-                Meaning
-              </button>
+              <Button appearance="linkbutton">
+                meaning
+              </Button>
               <button className={buttonCss} name="attribute" value="other">
                 other
               </button>
