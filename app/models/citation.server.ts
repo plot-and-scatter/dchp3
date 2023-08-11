@@ -7,6 +7,12 @@ import { getUserIdByEmail } from "./user.server"
 //   }>`SELECT id, headword FROM det_entries WHERE LOWER(headword) LIKE LOWER(${initialLettersWildcard}) ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 // }
 
+export async function getWordCount() {
+  const result = prisma.$queryRaw`SELECT description,
+sum(LENGTH(text) - LENGTH(REPLACE(text, ' ', '')) + 1)
+FROM citation`
+}
+
 export async function getOwnCitations(
   email: string,
   skip?: number,
