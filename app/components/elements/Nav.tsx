@@ -24,8 +24,8 @@ const Nav = ({ user }: NavProps): JSX.Element => {
           <span className="hidden md:inline">References</span>
         </NavLink>
         <NavLink to="/bank">
-          <i className="fa-brands fa-canadian-maple-leaf mr-1 sm:mr-2"></i>
-          <span className="hidden md:inline">Bank</span>
+          <i className="fa-solid fa-leaf-maple mr-1 sm:mr-2"></i>
+          BCE
         </NavLink>
         <NavLink to="/insertEntry">
           <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> Insert
