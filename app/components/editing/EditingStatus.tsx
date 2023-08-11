@@ -20,7 +20,7 @@ export enum EditingStatusType {
 
 const EditingStatus = ({ data }: EditingStatusProps) => {
   return (
-    <Form action={`/entries/${data.headword}`} method="post">
+    <Form reloadDocument action={`/entries/${data.headword}`} method="post">
       <div className="flex flex-col">
         <h3 className="my-3 text-lg underline">Editing Status</h3>
         <label className="mx-2">
@@ -101,6 +101,7 @@ const EditingStatus = ({ data }: EditingStatusProps) => {
         name="attributeType"
         value={attributeEnum.EDITING_STATUS}
       />
+      <input type="hidden" name="headword" value={data.headword} />
       <button className="w-56 border bg-slate-500 hover:bg-slate-300">
         hi
       </button>
