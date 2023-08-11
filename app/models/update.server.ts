@@ -31,7 +31,34 @@ export async function updateMeaningHeader(data: {
   const id = getNumberFromFormInput(data.attributeID)
   assertIsValidId(id)
   const dagger = data.dagger ? true : false
-  await prisma.meaning.update({ where: { id: id }, data: { dagger: dagger } })
+  const order = getStringFromFormInput(data.order)
+  const partOfSpeech = getStringFromFormInput(data.partOfSpeech)
+  const usageNote = getStringFromFormInput(data.usageNote)
+
+  await prisma.meaning.update({
+    where: { id: id },
+    data: {
+      dagger: dagger,
+      order: order,
+      partofspeech: partOfSpeech,
+      usage: usageNote,
+    },
+  })
+}
+
+export async function updateMeaningDefinition(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const id = getNumberFromFormInput(data.attributeID)
+  assertIsValidId(id)
+  const definition = getStringFromFormInput(data.newValue)
+
+  await prisma.meaning.update({
+    where: { id: id },
+    data: {
+      definition: definition,
+    },
+  })
 }
 
 async function updateEntry(
@@ -47,5 +74,43 @@ async function updateEntry(
   await prisma.entry.update({
     where: { id: entryId },
     data: { [fieldName]: newValue },
+  })
+}
+
+export async function updateCanadianism(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const meaningId = getNumberFromFormInput(data.attributeID)
+  const newTypeComment = getStringFromFormInput(data.newValue)
+
+  await prisma.meaning.update({
+    where: {
+      id: meaningId,
+    },
+    data: { canadianism_type_comment: newTypeComment },
+  })
+}
+
+export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
+  const meaningId = getNumberFromFormInput(data.attributeID)
+  const headword = getStringFromFormInput(data.headword)
+  const linkNote = getStringFromFormInput(data.linkNote)
+
+  const entry = await prisma.entry.findUnique({
+    where: {
+      headword: headword,
+    },
+  })
+
+  if (entry === null) {
+    throw new Error(`Entry "${headword}" could not be found`)
+  }
+
+  await prisma.seeAlso.create({
+    data: {
+      meaning_id: meaningId,
+      entry_id: entry.id,
+      linknote: linkNote,
+    },
   })
 }
