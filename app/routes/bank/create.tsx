@@ -1,21 +1,16 @@
 import type { LoaderArgs } from "@remix-run/node"
 import { type ActionArgs } from "@remix-run/node"
-import { Form } from "@remix-run/react"
-import Header from "~/components/elements/Header"
 import Main from "~/components/elements/Main"
-import Nav from "~/components/elements/Nav"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
   console.log(data)
-  // return redirect(`/bank/${data.headword}`)
   return { data }
 }
 
 export async function loader({ request }: LoaderArgs) {
-  // TODO: Restore
-  // await redirectIfUserLacksPermission(request, "det:createDraft")
+  await redirectIfUserLacksPermission(request, "det:createDraft")
 
   return {}
 }
