@@ -8,8 +8,8 @@ import EditablePopoverInput, {
 } from "./EditablePopoverInput"
 
 interface Props {
-  headword: string
-  currentValue: string | undefined
+  headword?: string
+  currentValue?: string
   attributeType: attributeEnum
   attributeID: number
   type?: editablePopoverInputTypes
