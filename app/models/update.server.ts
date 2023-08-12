@@ -124,7 +124,7 @@ const EditingStatusMap: Record<EditingStatusType, string> = {
   [EditingStatusType.CHIEF_EDITOR_OK]: "chief_editor_ok",
   [EditingStatusType.NO_CDN_SUSP]: "no_cdn_susp",
   [EditingStatusType.NO_CDN_CONF]: "no_cdn_conf",
-  [EditingStatusType.COPY_EDITED]: "final_proofing", // TODO: Confirm this
+  [EditingStatusType.COPY_EDITED]: "final_proofing", // TODO: Confirm this with old codebase
   [EditingStatusType.PROOF_READING]: "proofread", // TODO: Also confirm this with above
 }
 

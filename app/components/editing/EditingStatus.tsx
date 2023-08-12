@@ -1,6 +1,7 @@
 import { Form } from "@remix-run/react"
 import { type LoadedDataType } from "~/routes/entries/$headword"
 import { attributeEnum } from "./attributeEnum"
+import { useState } from "react"
 
 interface EditingStatusProps {
   data: LoadedDataType
@@ -18,83 +19,18 @@ export enum EditingStatusType {
   PROOF_READING = "proofReading",
 }
 
+interface grouping {
+  type: EditingStatusType
+  label: string
+  checked: boolean
+}
+
 const EditingStatus = ({ data }: EditingStatusProps) => {
   return (
     <Form reloadDocument action={`/entries/${data.headword}`} method="post">
       <div className="flex flex-col">
         <h3 className="my-3 text-lg underline">Editing Status</h3>
-        <label className="mx-2">
-          First Draft
-          <input
-            name={EditingStatusType.FIRST_DRAFT}
-            className="m-2"
-            type="checkbox"
-          />
-        </label>
-        <label className="mx-2">
-          Revised Draft
-          <input
-            name={EditingStatusType.REVISED_DRAFT}
-            className="m-2"
-            type="checkbox"
-          />
-        </label>
-        <label className="mx-2">
-          Semant Revised
-          <input
-            name={EditingStatusType.SEMANT_REVISED}
-            className="m-2"
-            type="checkbox"
-          />
-        </label>
-        <label className="mx-2">
-          Edited For Style
-          <input
-            name={EditingStatusType.EDITED_FOR_STYLE}
-            className="m-2"
-            type="checkbox"
-          />
-        </label>
-        <label className="mx-2">
-          Chief Editor OK
-          <input
-            name={EditingStatusType.CHIEF_EDITOR_OK}
-            className="m-2"
-            type="checkbox"
-          />
-        </label>
-        <label className="mx-2">
-          No Cdn Susp.
-          <input
-            name={EditingStatusType.NO_CDN_SUSP}
-            className="m-2"
-            type="checkbox"
-          />
-        </label>
-        <label className="mx-2">
-          No Cdn Conf.
-          <input
-            name={EditingStatusType.NO_CDN_CONF}
-            className="m-2"
-            type="checkbox"
-          />
-        </label>
-        <label className="mx-2">
-          Copy-edited
-          <input
-            name={EditingStatusType.COPY_EDITED}
-            className="m-2"
-            type="checkbox"
-          />
-        </label>
-        <label className="mx-2">
-          Proofreading
-          <input
-            name={EditingStatusType.PROOF_READING}
-            className="m-2"
-            type="checkbox"
-          />
-        </label>
+        {getEditingStatusInputs(data)}
       </div>
       <input
         type="hidden"
@@ -110,3 +46,90 @@ const EditingStatus = ({ data }: EditingStatusProps) => {
 }
 
 export default EditingStatus
+function getEditingStatusInputs(data: LoadedDataType) {
+  const firstDraft: grouping = {
+    type: EditingStatusType.FIRST_DRAFT,
+    label: "First Draft",
+    checked: data.first_draft,
+  }
+
+  const revisedDraft: grouping = {
+    type: EditingStatusType.REVISED_DRAFT,
+    label: "Revised Draft",
+    checked: data.revised_draft,
+  }
+
+  const semanticallyRevised: grouping = {
+    type: EditingStatusType.SEMANT_REVISED,
+    label: "Semantically Revised",
+    checked: data.semantically_revised,
+  }
+
+  const editedForStyle: grouping = {
+    type: EditingStatusType.EDITED_FOR_STYLE,
+    label: "Edited For Style",
+    checked: data.edited_for_style,
+  }
+
+  const chiefEditorOk: grouping = {
+    type: EditingStatusType.CHIEF_EDITOR_OK,
+    label: "Chief Editor OK",
+    checked: data.chief_editor_ok,
+  }
+
+  const noCdnSusp: grouping = {
+    type: EditingStatusType.NO_CDN_SUSP,
+    label: "No Cdn Susp",
+    checked: data.no_cdn_susp,
+  }
+
+  const noCdnConf: grouping = {
+    type: EditingStatusType.NO_CDN_CONF,
+    label: "No Cdn Conf",
+    checked: data.no_cdn_conf,
+  }
+
+  const copyEdited: grouping = {
+    type: EditingStatusType.COPY_EDITED,
+    label: "Copy-Edited",
+    checked: data.final_proofing, // TODO: Verify this is the same as what we want
+  }
+
+  const proofReading: grouping = {
+    type: EditingStatusType.PROOF_READING,
+    label: "Proof-reading",
+    checked: data.proofread, // verify this is what we want
+  }
+
+  let inputs: Array<grouping> = []
+  inputs.push(firstDraft)
+  inputs.push(revisedDraft)
+  inputs.push(semanticallyRevised)
+  inputs.push(editedForStyle)
+  inputs.push(chiefEditorOk)
+  inputs.push(noCdnSusp)
+  inputs.push(noCdnConf)
+  inputs.push(copyEdited)
+  inputs.push(proofReading)
+
+  const inputsJsx = inputs.map((inputGrouping) => {
+    const [checked, setChecked] = useState(inputGrouping.checked)
+
+    return (
+      <label key={"Editing Status - " + inputGrouping.label} className="mx-2">
+        {inputGrouping.label}
+        <input
+          name={inputGrouping.type}
+          className="m-2"
+          type="checkbox"
+          checked={checked}
+          onChange={(e) => {
+            setChecked(e.target.checked)
+          }}
+        />
+      </label>
+    )
+  })
+
+  return inputsJsx
+}
