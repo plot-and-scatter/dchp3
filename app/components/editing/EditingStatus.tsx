@@ -103,7 +103,7 @@ const EditingStatus = ({ data }: EditingStatusProps) => {
       />
       <input type="hidden" name="headword" value={data.headword} />
       <button className="w-56 border bg-slate-500 hover:bg-slate-300">
-        hi
+        submit
       </button>
     </Form>
   )

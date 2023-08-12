@@ -6,6 +6,7 @@ import type { LoadedDataType } from "~/routes/entries/$headword"
 import QuickLinks from "./quicklinks/QuickLinks"
 import EntryImages from "./EntryImages"
 import EditingStatus from "./editing/EditingStatus"
+import EditingTools from "./editing/EditingTools"
 
 interface EntryProps {
   data: LoadedDataType
@@ -25,6 +26,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
       <div className="mt-2 mr-5 hidden w-96 shrink-0 overflow-hidden  md:block">
         <div className="fixed w-96 overflow-hidden ">
           <QuickLinks data={data} />
+          <EditingTools data={data} />
           <EditingStatus data={data} />
         </div>
       </div>

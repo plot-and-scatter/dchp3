@@ -53,7 +53,7 @@ export function stripHtml(text: string) {
 }
 
 export function getStringFromFormInput(formInput: FormDataEntryValue): string {
-  return formInput.toString()
+  return formInput?.toString() || ""
 }
 
 export function getNumberFromFormInput(formInput: FormDataEntryValue) {

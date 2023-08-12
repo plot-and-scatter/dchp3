@@ -8,6 +8,7 @@ import {
   addSeeAlso,
   updateCanadianism,
   updateEditingStatus,
+  updateEditingTools,
   updateMeaningDefinition,
   updateMeaningHeader,
   updateRecordByAttributeAndType,
@@ -46,6 +47,9 @@ export async function action({ request }: ActionArgs) {
       break
     case attributeEnum.DEFINITION:
       await updateMeaningDefinition(data)
+      break
+    case attributeEnum.EDITING_TOOLS:
+      await updateEditingTools(data)
       break
     case attributeEnum.EDITING_STATUS:
       await updateEditingStatus(data)

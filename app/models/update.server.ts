@@ -153,7 +153,7 @@ async function updateSingleEditingStatus(
   value: FormDataEntryValue
 ) {
   const fieldName = EditingStatusMap[editingStatus as EditingStatusType]
-  const bool = getValueAsBoolean(value)
+  const bool = getCheckboxValueAsBoolean(value)
 
   // no-op if fieldname somehow doesn't exist
   if (!fieldName) return null
@@ -168,7 +168,25 @@ async function updateSingleEditingStatus(
   })
 }
 
-function getValueAsBoolean(value: FormDataEntryValue) {
+export async function updateEditingTools(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const headword = getStringFromFormInput(data.headword)
+  const isPublic = getCheckboxValueAsBoolean(data.isPublic)
+  const isLegacy = getCheckboxValueAsBoolean(data.isLegacy)
+
+  await prisma.entry.update({
+    where: {
+      headword: headword,
+    },
+    data: {
+      is_public: isPublic,
+      is_legacy: isLegacy,
+    },
+  })
+}
+
+function getCheckboxValueAsBoolean(value: FormDataEntryValue) {
   const result = getStringFromFormInput(value)
   return result === "on"
 }
