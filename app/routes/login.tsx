@@ -1,5 +1,6 @@
-import { Form } from "@remix-run/react"
 import LoginButton from "~/components/auth/LoginButton"
+import { PageHeader } from "~/components/elements/PageHeader"
+import TextPageMain from "~/components/elements/TextPageMain"
 
 export default function Login() {
   // TODO: Upgrade Remix and restore useNavigation() step
@@ -14,8 +15,11 @@ export default function Login() {
   //   : children
 
   return (
-    <div className="mx-auto my-10 text-center">
-      <LoginButton />
-    </div>
+    <TextPageMain>
+      <PageHeader>Log in</PageHeader>
+      <div className="my-10">
+        <LoginButton />
+      </div>
+    </TextPageMain>
   )
 }
