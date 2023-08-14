@@ -1,6 +1,9 @@
-import { Link } from "@remix-run/react"
+import { Link, useLoaderData } from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
-import { redirectIfUserNotLoggedIn } from "~/services/auth/session.server"
+import {
+  getEmailFromSession,
+  redirectIfUserNotLoggedIn,
+} from "~/services/auth/session.server"
 import { type LoaderArgs } from "@remix-run/server-runtime"
 import LogoutButton from "~/components/auth/LogoutButton"
 import Main from "~/components/elements/Main"
@@ -8,15 +11,19 @@ import Main from "~/components/elements/Main"
 export const loader = async ({ request }: LoaderArgs) => {
   await redirectIfUserNotLoggedIn(request)
 
-  return null
+  const email = await getEmailFromSession(request)
+
+  return email
 }
 
 export default function Admin() {
+  const email = useLoaderData<typeof loader>()
+
   return (
     <Main>
       <div>
         <PageHeader>Admin</PageHeader>
-        <p>You are logged in.</p>
+        <p>You are logged in (email: {email})</p>
         <p>
           <Link to="/" className="font-semibold text-blue-500">
             Home
