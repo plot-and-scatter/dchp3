@@ -1,11 +1,10 @@
 import type { LoaderArgs } from "@remix-run/node"
 import { type ActionArgs, redirect } from "@remix-run/node"
 import { Form } from "@remix-run/react"
-import Header from "~/components/elements/Header"
 import Main from "~/components/elements/Main"
-import Nav from "~/components/elements/Nav"
 import { PageHeader } from "~/components/elements/PageHeader"
 import { insertEntry } from "~/models/entry.server"
+import Button from "~/components/elements/Button"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 export async function action({ request }: ActionArgs) {
@@ -137,13 +136,13 @@ export default function Index() {
           </label>
         </div>
 
-        <button
+        <Button
           className="mx-auto my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
           type="submit"
           name="submitButton"
         >
           Submit
-        </button>
+        </Button>
       </Form>
     </Main>
   )

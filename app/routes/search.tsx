@@ -4,6 +4,8 @@ import { SearchResultEnum } from "./search/searchResultEnum"
 import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import { useState } from "react"
 import Main from "~/components/elements/Main"
+import Nav from "~/components/elements/Nav"
+import Button from "~/components/elements/Button"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -27,8 +29,6 @@ export default function SearchPage() {
   const [searchParams] = useSearchParams()
   const currentAttribute =
     searchParams.get("attribute") ?? SearchResultEnum.HEADWORD
-
-  const buttonCss = "w-24 underline hover:bg-blue-200 m-0.5 self-start"
 
   return (
     <Main>
@@ -57,58 +57,52 @@ export default function SearchPage() {
               />
             </label>
           </div>
-          <button
-            className="ml-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
-            name="attribute"
-            value={currentAttribute}
-          >
-            <i className="fas fa-search mr-2"></i>
-            Search
-          </button>
+          <Button size="large">search</Button>
         </div>
         <div className="ml-5 flex flex-col">
-          <button
-            className={buttonCss}
+          <Button
+            appearance="linkbutton"
             name="attribute"
             value={SearchResultEnum.HEADWORD}
           >
             Headword
-          </button>
-          <button
-            className={buttonCss}
+          </Button>
+
+          <Button
+            appearance="linkbutton"
             name="attribute"
             value={SearchResultEnum.MEANING}
           >
             Meaning
-          </button>
-          <button
-            className={buttonCss}
+          </Button>
+          <Button
+            appearance="linkbutton"
             name="attribute"
             value={SearchResultEnum.CANADIANISM}
           >
             Canadianism
-          </button>
-          <button
-            className={buttonCss}
+          </Button>
+          <Button
+            appearance="linkbutton"
             name="attribute"
             value={SearchResultEnum.USAGE_NOTE}
           >
             Usage Note
-          </button>
-          <button
-            className={buttonCss}
+          </Button>
+          <Button
+            appearance="linkbutton"
             name="attribute"
             value={SearchResultEnum.FIST_NOTE}
           >
             Fist Note
-          </button>
-          <button
-            className={buttonCss}
+          </Button>
+          <Button
+            appearance="linkbutton"
             name="attribute"
             value={SearchResultEnum.QUOTATION}
           >
             Quotation
-          </button>
+          </Button>
         </div>
       </Form>
       <Outlet />
