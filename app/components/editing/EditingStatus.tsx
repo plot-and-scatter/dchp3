@@ -120,7 +120,7 @@ function getEditingStatusInputs(data: LoadedDataType) {
         {inputGrouping.label}
         <input
           name={inputGrouping.type}
-          className="m-2"
+          className="m-1"
           type="checkbox"
           checked={checked}
           onChange={(e) => {

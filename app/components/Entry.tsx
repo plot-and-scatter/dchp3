@@ -23,8 +23,8 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
 
   return (
     <>
-      <div className="mt-2 mr-5 hidden w-96 shrink-0 overflow-hidden  md:block">
-        <div className="fixed w-96 overflow-hidden ">
+      <div className="mt-2 mr-5 hidden w-96 shrink-0 overflow-x-hidden overflow-y-visible md:block">
+        <div className="fixed h-3/4 w-96 overflow-y-auto overflow-x-hidden">
           <QuickLinks data={data} />
           <EditingTools data={data} />
           <EditingStatus data={data} />

@@ -14,12 +14,12 @@ const EditingTools = ({ data }: EditingToolsProps) => {
   return (
     <Form reloadDocument action={`/entries/${data.headword}`} method="post">
       <div className="flex flex-col">
-        <h3 className="my-3 text-lg underline">Editing Tools</h3>
+        <h3 className="my-2 text-lg underline">Editing Tools</h3>
         <label className="mx-2">
           Publically Visible
           <input
             name="isPublic"
-            className="m-2"
+            className="m-1"
             type="checkbox"
             checked={isPublic}
             onChange={(e) => setIsPublic(e.target.checked)}
@@ -29,7 +29,7 @@ const EditingTools = ({ data }: EditingToolsProps) => {
           Is Legacy
           <input
             name="isLegacy"
-            className="m-2"
+            className="m-1"
             type="checkbox"
             checked={isLegacy}
             onChange={(e) => setIsLegacy(e.target.checked)}
