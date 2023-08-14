@@ -1,3 +1,4 @@
+import type { LoaderArgs } from "@remix-run/node"
 import { type ActionArgs, redirect } from "@remix-run/node"
 import { Form } from "@remix-run/react"
 import Header from "~/components/elements/Header"
@@ -5,12 +6,19 @@ import Main from "~/components/elements/Main"
 import Nav from "~/components/elements/Nav"
 import { insertEntry } from "~/models/entry.server"
 import Button from "~/components/elements/Button"
+import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
   console.log(data)
   insertEntry(data)
   return redirect(`/entries/${data.headword}`)
+}
+
+export async function loader({ request }: LoaderArgs) {
+  await redirectIfUserLacksPermission(request, "det:createDraft")
+
+  return {}
 }
 
 export default function Index() {
@@ -133,7 +141,13 @@ export default function Index() {
               </label>
             </div>
 
-            <Button className={"mx-auto my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"} type="submit" name="submitButton">
+            <Button
+              className={
+                "mx-auto my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
+              }
+              type="submit"
+              name="submitButton"
+            >
               Submit
             </Button>
           </Form>

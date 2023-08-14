@@ -20,7 +20,7 @@ function getAttributeFunctionMap() {
 
   let attributeFunctionMap: AttributeFunctionMap = {}
   attributeFunctionMap["entries"] = getEntriesByBasicTextSearch
-  attributeFunctionMap["meanings"] = getSearchResultsFromMeanings
+  attributeFunctionMap["meanings"] = getSearchResultMeanings
 
   return attributeFunctionMap
 }
@@ -48,11 +48,20 @@ export async function getSearchResults(
   caseSensitive: boolean = false,
   attribute: string = SearchResultEnum.HEADWORD
 ): Promise<any[]> {
+  const pageNumber = parsePageNumberOrError(page)
+  const skip: number = calculatePageSkip(pageNumber)
+
   switch (attribute) {
     case SearchResultEnum.HEADWORD:
-      return getEntriesByBasicTextSearchAndPage(text, page, caseSensitive)
+      return getEntriesByBasicTextSearch(text, skip, undefined, caseSensitive)
     case SearchResultEnum.MEANING:
-      return getSearchResultsFromMeaningsAndPage(text, page, caseSensitive)
+      return getSearchResultMeanings(text, skip, undefined, caseSensitive)
+    case SearchResultEnum.CANADIANISM:
+      return getSearchResultCanadianisms(text, skip, undefined, caseSensitive)
+    case SearchResultEnum.USAGE_NOTE:
+      return getSearchResultUsageNotes(text, skip, undefined, caseSensitive)
+    case SearchResultEnum.FIST_NOTE:
+      return getSearchResultFistNotes(text, skip, undefined, caseSensitive)
     default:
       throw new Error(`attribute ${attribute} must be a valid search result`)
   }
@@ -114,16 +123,6 @@ export async function getSearchResultsByPage(
   return results
 }
 
-export function getEntriesByBasicTextSearchAndPage(
-  text: string,
-  page: string = "1",
-  caseSensitive: boolean = false
-) {
-  const pageNumber = parsePageNumberOrError(page)
-  const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
-  return getEntriesByBasicTextSearch(text, skip, undefined, caseSensitive)
-}
-
 export function getEntriesByBasicTextSearch(
   text: string,
   skip: number = 0,
@@ -144,18 +143,8 @@ export function getEntriesByBasicTextSearch(
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
 }
 
-export function getSearchResultsFromMeaningsAndPage(
-  text: string,
-  page: string = "1",
-  caseSensitive: boolean = false
-) {
-  const pageNumber = parsePageNumberOrError(page)
-  const skip = calculatePageSkip(pageNumber)
-  return getSearchResultsFromMeanings(text, skip, undefined, caseSensitive)
-}
-
 // TODO: refactor to use Case Sensitive
-export function getSearchResultsFromMeanings(
+export function getSearchResultMeanings(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
@@ -183,4 +172,93 @@ export function getSearchResultsFromMeanings(
     skip: skip,
     take: take,
   })
+}
+
+export interface Canadianism {
+  headword: string
+  canadianismDescription: string
+  id: number
+}
+
+// case sensitivity not working; check collation
+export function getSearchResultCanadianisms(
+  text: string,
+  skip: number = 0,
+  take: number = DEFAULT_PAGE_SIZE,
+  caseSensitive: boolean = false
+) {
+  if (text.length === 0) {
+    throw new Error(`Text ("${text}") length must be greater than zero`)
+  }
+
+  const searchWildcard = `%${text}%`
+
+  return prisma.$queryRaw<
+    Canadianism[]
+  >`SELECT det_entries.headword as headword,
+  det_meanings.canadianism_type_comment, det_meanings.id
+  FROM det_meanings, det_entries
+  WHERE det_meanings.entry_id = det_entries.id AND
+  IF(${caseSensitive}, 
+    (det_meanings.canadianism_type_comment) LIKE (${searchWildcard}), 
+    LOWER(det_meanings.canadianism_type_comment) LIKE LOWER(${searchWildcard}))  
+  ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
+}
+
+export interface UsageNote {
+  headword: string
+  partOfSpeech: string
+  usage: string
+  id: number
+}
+
+// case sensitivity not working; check collation
+export function getSearchResultUsageNotes(
+  text: string,
+  skip: number = 0,
+  take: number = DEFAULT_PAGE_SIZE,
+  caseSensitive: boolean = false
+) {
+  if (text.length === 0) {
+    throw new Error(`Text ("${text}") length must be greater than zero`)
+  }
+
+  const searchWildcard = `%${text}%`
+
+  return prisma.$queryRaw<UsageNote[]>`SELECT det_entries.headword as headword,
+  det_meanings.usage, det_meanings.partofspeech, det_meanings.id
+  FROM det_meanings, det_entries
+  WHERE det_meanings.entry_id = det_entries.id AND
+  IF(${caseSensitive}, 
+    (det_meanings.usage) LIKE (${searchWildcard}), 
+    LOWER(det_meanings.usage) LIKE LOWER(${searchWildcard}))  
+  ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
+}
+
+export interface FistNote {
+  headword: string
+  fistNote: string
+  id: number
+}
+
+// case sensitivity not working; check collation
+export function getSearchResultFistNotes(
+  text: string,
+  skip: number = 0,
+  take: number = DEFAULT_PAGE_SIZE,
+  caseSensitive: boolean = false
+) {
+  if (text.length === 0) {
+    throw new Error(`Text ("${text}") length must be greater than zero`)
+  }
+
+  const searchWildcard = `%${text}%`
+
+  // TODO: Change this
+  return prisma.$queryRaw<FistNote[]>`SELECT headword, fist_note, id
+  FROM det_entries
+  WHERE IF(${caseSensitive}, 
+    (fist_note) LIKE (${searchWildcard}), 
+    LOWER(fist_note) LIKE LOWER(${searchWildcard}))  
+  ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }

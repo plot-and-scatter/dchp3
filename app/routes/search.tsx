@@ -30,8 +30,6 @@ export default function SearchPage() {
   const currentAttribute =
     searchParams.get("attribute") ?? SearchResultEnum.HEADWORD
 
-  const buttonCss = "w-24 underline hover:bg-blue-200 m-0.5 self-start"
-
   return (
     <div className="relative">
       <Header />
@@ -63,31 +61,52 @@ export default function SearchPage() {
                   />
                 </label>
               </div>
-              <Button size="large">
-                search
-              </Button>
-
+              <Button size="large">search</Button>
             </div>
             <div className="ml-5 flex flex-col">
-              <button
-                className={buttonCss}
+              <Button
+                appearance="linkbutton"
                 name="attribute"
                 value={SearchResultEnum.HEADWORD}
               >
                 Headword
-              </button>
-              <Button appearance="linkbutton">
-                meaning
               </Button>
-              <button className={buttonCss} name="attribute" value="other">
-                other
-              </button>
-              <button className={buttonCss} name="attribute" value="other">
-                other
-              </button>
-              <button className={buttonCss} name="attribute" value="other">
-                other
-              </button>
+
+              <Button
+                appearance="linkbutton"
+                name="attribute"
+                value={SearchResultEnum.MEANING}
+              >
+                Meaning
+              </Button>
+              <Button
+                appearance="linkbutton"
+                name="attribute"
+                value={SearchResultEnum.CANADIANISM}
+              >
+                Canadianism
+              </Button>
+              <Button
+                appearance="linkbutton"
+                name="attribute"
+                value={SearchResultEnum.USAGE_NOTE}
+              >
+                Usage Note
+              </Button>
+              <Button
+                appearance="linkbutton"
+                name="attribute"
+                value={SearchResultEnum.FIST_NOTE}
+              >
+                Fist Note
+              </Button>
+              <Button
+                appearance="linkbutton"
+                name="attribute"
+                value={SearchResultEnum.QUOTATION}
+              >
+                Quotation
+              </Button>
             </div>
           </Form>
           <Outlet />

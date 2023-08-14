@@ -1,6 +1,11 @@
-import { Link } from "react-router-dom"
+import { NavLink } from "@remix-run/react"
+import type { LoggedInUser } from "~/services/auth/auth.server"
 
-const Nav = (): JSX.Element => {
+interface NavProps {
+  user?: LoggedInUser
+}
+
+const Nav = ({ user }: NavProps): JSX.Element => {
   return (
     <nav className="fixed top-12 z-50 flex h-8 w-full cursor-pointer items-center  justify-center border-b border-slate-500 bg-slate-100 p-3 text-sm text-red-600 shadow-md md:top-16 md:h-16 md:text-xl">
       {/* <div className="flex items-center gap-4 text-base">
@@ -10,39 +15,45 @@ const Nav = (): JSX.Element => {
     <div className="">Project History &amp; Team</div>
   </div> */}
       <div className="flex w-full max-w-6xl items-center justify-between">
-        <Link to="/about">
+        <NavLink to="/about">
           <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> About
           <span className="hidden md:inline"> the DCHP-3</span>
-        </Link>
-        <Link to="/Foreword">
+        </NavLink>
+        <NavLink to="/Foreword">
           <i className="fa-regular fa-book mr-1 sm:mr-2"></i>Foreword
           <span className="hidden md:inline"></span>
-        </Link>
-        <Link to="/reference">
+        </NavLink>
+        <NavLink to="/reference">
           <i className="fa-regular fa-book mr-1 sm:mr-2"></i>
           <span className="hidden md:inline">References</span>
-        </Link>
-        <Link to="/insertEntry">
+        </NavLink>
+        <NavLink to="/insertEntry">
           <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> Insert
           <span className="hidden md:inline"> entries </span>
-        </Link>
+        </NavLink>
         <div className="font-bold">
-          <Link to="/entries">
+          <NavLink to="/entries">
             <i className="fa-regular fa-books mr-1 sm:mr-2"></i> Browse
             <span className="hidden md:inline"> entries</span>
-          </Link>
+          </NavLink>
         </div>
         <div className="font-bold">
-          <Link to="/search">
+          <NavLink to="/search">
             <i className="fa-regular fa-search mr-1 sm:mr-2"></i> Search
             <span className="hidden md:inline"> entries</span>
-          </Link>
+          </NavLink>
         </div>
         <div className="text-sm">
-          <Link to="/login">
-            <i className="fa-regular fa-key mr-1 sm:mr-2"></i> Admin
-            <span className="hidden md:inline"> login</span>
-          </Link>
+          {user ? (
+            <NavLink to="/admin">
+              <i className="fa-regular fa-key mr-1 sm:mr-2"></i> Admin screen
+            </NavLink>
+          ) : (
+            <NavLink to="/login">
+              <i className="fa-regular fa-key mr-1 sm:mr-2"></i> Admin
+              <span className="hidden md:inline"> login</span>
+            </NavLink>
+          )}
         </div>
       </div>
     </nav>
