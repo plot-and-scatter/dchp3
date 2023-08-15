@@ -32,80 +32,82 @@ export default function SearchPage() {
 
   return (
     <Main>
-      <PageHeader>Search entries</PageHeader>
-      <p>Enter search text to find headwords containing that text.</p>
-      <Form className="flex flex-row p-4" method="post">
-        <div className="flex flex-col gap-3 p-1">
-          <input
-            type="text"
-            placeholder="Search text"
-            className="w-96 border border-slate-700 p-2"
-            name="searchText"
-            value={text}
-            onChange={(e) => {
-              setText(e.target.value)
-            }}
-          />
-          <div>
-            <label>
-              Case-sensitive:
-              <input
-                className="ml-3 max-w-sm"
-                name="caseSensitive"
-                type="checkbox"
-                value="true"
-              />
-            </label>
+      <div className="flex flex-col">
+        <PageHeader>Search entries</PageHeader>
+        <p>Enter search text to find headwords containing that text.</p>
+        <Form className="flex flex-row p-4" method="post">
+          <div className="flex flex-col gap-3 p-1">
+            <input
+              type="text"
+              placeholder="Search text"
+              className="w-96 border border-slate-700 p-2"
+              name="searchText"
+              value={text}
+              onChange={(e) => {
+                setText(e.target.value)
+              }}
+            />
+            <div>
+              <label>
+                Case-sensitive:
+                <input
+                  className="ml-3 max-w-sm"
+                  name="caseSensitive"
+                  type="checkbox"
+                  value="true"
+                />
+              </label>
+            </div>
+            <Button size="large">search</Button>
           </div>
-          <Button size="large">search</Button>
-        </div>
-        <div className="ml-5 flex flex-col">
-          <Button
-            appearance="linkbutton"
-            name="attribute"
-            value={SearchResultEnum.HEADWORD}
-          >
-            Headword
-          </Button>
+          <div className="ml-5 flex flex-col">
+            <Button
+              appearance="linkbutton"
+              name="attribute"
+              value={SearchResultEnum.HEADWORD}
+            >
+              Headword
+            </Button>
 
-          <Button
-            appearance="linkbutton"
-            name="attribute"
-            value={SearchResultEnum.MEANING}
-          >
-            Meaning
-          </Button>
-          <Button
-            appearance="linkbutton"
-            name="attribute"
-            value={SearchResultEnum.CANADIANISM}
-          >
-            Canadianism
-          </Button>
-          <Button
-            appearance="linkbutton"
-            name="attribute"
-            value={SearchResultEnum.USAGE_NOTE}
-          >
-            Usage Note
-          </Button>
-          <Button
-            appearance="linkbutton"
-            name="attribute"
-            value={SearchResultEnum.FIST_NOTE}
-          >
-            Fist Note
-          </Button>
-          <Button
-            appearance="linkbutton"
-            name="attribute"
-            value={SearchResultEnum.QUOTATION}
-          >
-            Quotation
-          </Button>
-        </div>
-      </Form>
-      <Outlet />
+            <Button
+              appearance="linkbutton"
+              name="attribute"
+              value={SearchResultEnum.MEANING}
+            >
+              Meaning
+            </Button>
+            <Button
+              appearance="linkbutton"
+              name="attribute"
+              value={SearchResultEnum.CANADIANISM}
+            >
+              Canadianism
+            </Button>
+            <Button
+              appearance="linkbutton"
+              name="attribute"
+              value={SearchResultEnum.USAGE_NOTE}
+            >
+              UsageNote
+            </Button>
+            <Button
+              appearance="linkbutton"
+              name="attribute"
+              value={SearchResultEnum.FIST_NOTE}
+            >
+              FistNote
+            </Button>
+            <Button
+              appearance="linkbutton"
+              name="attribute"
+              value={SearchResultEnum.QUOTATION}
+            >
+              Quotation
+            </Button>
+          </div>
+        </Form>
+        <Outlet />
+      </div>
     </Main>
   )
 }
