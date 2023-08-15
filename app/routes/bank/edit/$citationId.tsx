@@ -8,28 +8,47 @@ import BankNumericInput from "~/components/bank/BankNumericInput"
 import BankTextArea from "~/components/bank/BankTextArea"
 import LabelledField from "~/components/bank/LabelledField"
 import { PageHeader } from "~/components/elements/PageHeader"
-import { getCitationById } from "~/models/citation.server"
+import {
+  getAuthorBySourceId,
+  getCitationById,
+  getPlaceBySourceId,
+  getTitleBySourceId,
+  getUtteranceBySourceId,
+} from "~/models/citation.server"
 
 export const loader = async ({ params }: LoaderArgs) => {
   const citationId = params.citationId
   invariant(citationId, `citationId not found`)
 
-  const citation = await getCitationById(citationId).then(
-    (response) => response[0] // Get first item
-  )
+  const citation = await getCitationById(citationId)
   if (!citation) {
     throw new Response(`No citation found with id ${citationId}`, {
       status: 404,
     })
   }
 
-  return citation
+  const sourceId = `${citation.source_id}`
+
+  const { title, place, author, utterance } = await Promise.all([
+    getTitleBySourceId(sourceId),
+    getPlaceBySourceId(sourceId),
+    getAuthorBySourceId(sourceId),
+    getUtteranceBySourceId(sourceId),
+  ]).then((responses) => {
+    return {
+      title: responses[0].name,
+      place: responses[1].name,
+      author: responses[2].name,
+      utterance: responses[3],
+    }
+  })
+
+  return { citation, title, place, author, utterance }
 }
 
 export default function EditCitationId() {
-  const citation = useLoaderData<typeof loader>()
-
-  console.log("citation", citation)
+  const { citation, title, place, author, utterance } =
+    useLoaderData<typeof loader>()
 
   const [clipStart, setClipStart] = useState(citation.clip_start)
   const [clipEnd, setClipEnd] = useState(citation.clip_end)
@@ -146,35 +165,37 @@ export default function EditCitationId() {
           />
           <LabelledField
             label={`Author`}
-            field={<BankInput name={``} defaultValue={``} />}
+            field={<BankInput name={``} defaultValue={author} />}
           />
           <LabelledField
             label={`Editor`}
-            field={<BankInput name={``} defaultValue={``} />}
+            field={<BankInput name={``} defaultValue={utterance.editor} />}
           />
           <LabelledField
             label={`Title`}
-            field={<BankInput name={``} defaultValue={``} />}
+            field={<BankTextArea name={``} defaultValue={title} rows={3} />}
           />
           <LabelledField
             label={`Place`}
-            field={<BankInput name={``} defaultValue={``} />}
+            field={<BankInput name={``} defaultValue={place} />}
           />
           <LabelledField
             label={`Publisher`}
-            field={<BankInput name={``} defaultValue={``} />}
+            field={<BankInput name={``} defaultValue={utterance.publisher} />}
           />
           <LabelledField
             label={`URL`}
-            field={<BankInput name={``} defaultValue={``} />}
+            field={<BankInput name={``} defaultValue={utterance.url} />}
           />
           <LabelledField
             label={`URL Acc. Date`}
-            field={<BankInput name={``} defaultValue={``} />}
+            field={
+              <BankInput name={``} defaultValue={utterance.url_access_date} />
+            }
           />
           <LabelledField
             label={`Page`}
-            field={<BankInput name={``} defaultValue={``} />}
+            field={<BankInput name={``} defaultValue={citation.page} />}
           />
         </div>
       </div>
