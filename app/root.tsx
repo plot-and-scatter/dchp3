@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node"
+import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node"
 import {
   Links,
   LiveReload,
@@ -6,6 +6,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react"
 
 import smartquotes from "smartquotes"
@@ -13,6 +14,10 @@ import { useEffect } from "react"
 
 import tailwindStylesheetUrl from "./styles/tailwind.css"
 import additionalStylesUrl from "./styles/additional.css"
+import Header from "./components/elements/Header"
+import Nav from "./components/elements/Nav"
+import Main from "./components/elements/Main"
+import { getUserFromSession } from "./services/auth/session.server"
 
 export const links: LinksFunction = () => {
   return [
@@ -27,7 +32,14 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 })
 
+export async function loader({ request }: LoaderArgs) {
+  const user = await getUserFromSession(request)
+  return { user }
+}
+
 export default function App() {
+  const { user } = useLoaderData<typeof loader>()
+
   useEffect(() => {
     smartquotes().listen()
   }, [])
@@ -43,7 +55,11 @@ export default function App() {
         ></script>
       </head>
       <body className="h-full">
-        <Outlet />
+        <div className="relative">
+          <Header />
+          <Nav user={user} />
+          <Outlet />
+        </div>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

@@ -6,7 +6,7 @@ import {
   type AuthPermission,
   type AuthRole,
   getPermissionsMap,
-} from "./AuthRole"
+} from "~/services/auth/AuthRole"
 import type { LoggedInUser } from "./auth.server"
 
 // export the whole sessionStorage object
@@ -25,7 +25,9 @@ export const sessionStorage = createCookieSessionStorage({
 export const { commitSession, destroySession } = sessionStorage
 
 export const getCookieSession = async (request: Request) => {
-  const session = await sessionStorage.getSession(request.headers.get("Cookie"))
+  const session = await sessionStorage?.getSession(
+    request.headers?.get("Cookie")
+  )
   return session
 }
 
@@ -114,4 +116,10 @@ export const redirectIfUserLacksPermission = async (
 ) => {
   if (!(await userHasPermission(request, permission)))
     throw redirect(`${NOT_ALLOWED_PATH}`)
+}
+
+export const getUserId = async (request: Request) => {
+  const user = await getUserFromSession(request)
+  const email = user?.email
+  if (!email) throw new Error(`No email for user`)
 }

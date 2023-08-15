@@ -1,15 +1,11 @@
-import Header from "~/components/elements/Header"
-import Main from "~/components/elements/Main"
-import Nav from "~/components/elements/Nav"
+import { PageHeader } from "~/components/elements/PageHeader"
+import TextPageMain from "~/components/elements/TextPageMain"
 
-export default function Index() {
-    return (
-        <div className="relative">
-            <Header />
-            <Nav />
-            <Main>
-                <p>About page.</p>
-            </Main>
-        </div>
-    )
+export default function About() {
+  return (
+    <TextPageMain>
+      <PageHeader>About</PageHeader>
+      <p>About page.</p>
+    </TextPageMain>
+  )
 }

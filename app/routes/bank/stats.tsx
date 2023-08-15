@@ -1,27 +1,18 @@
 import type { LoaderArgs } from "@remix-run/node"
-import { json } from "@remix-run/node"
 import { useCatch, useLoaderData } from "@remix-run/react"
-import invariant from "tiny-invariant"
-
-import { getEntryById } from "~/models/entry.server"
 
 export async function loader({ request, params }: LoaderArgs) {
-  invariant(params.entryId, "entryId not found")
-
-  const entry = await getEntryById({ id: parseInt(params.entryId) })
-  if (!entry) {
-    throw new Response("Not Found", { status: 404 })
-  }
-  return json({ entry })
+  return {}
 }
 
-export default function EntryDetailsPage() {
+export default function BankStatistics() {
   const data = useLoaderData<typeof loader>()
 
+  console.log("data", data)
+
   return (
-    <div className="flex flex-row">
-      <h3 className="text-2xl font-bold">{data.entry.id}</h3>
-      <p className="py-6">{data.entry.headword}</p>
+    <div>
+      <h3 className="text-2xl font-bold">Bank Statistics</h3>
     </div>
   )
 }
