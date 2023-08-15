@@ -1,13 +1,13 @@
 import { prisma } from "~/db.server"
 import { getUserIdByEmail } from "./user.server"
-import type { UtteranceType } from "./citation.types.server"
+import type { UtteranceType } from "./citation.types"
 import {
   type AuthorNameType,
   type GetCitationByIdType,
   type GetOwnCitationType,
   type PlaceNameType,
   type TitleNameType,
-} from "./citation.types.server"
+} from "./citation.types"
 
 // export function getBankStats() {
 //   return prisma.$queryRaw<{

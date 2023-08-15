@@ -2,9 +2,9 @@ import { useLoaderData } from "@remix-run/react"
 import type { LoaderArgs } from "@remix-run/server-runtime"
 import { useState } from "react"
 import invariant from "tiny-invariant"
-import { sourceTypeToText } from "utils/citation"
 import BankInput from "~/components/bank/BankInput"
 import BankNumericInput from "~/components/bank/BankNumericInput"
+import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
 import BankTextArea from "~/components/bank/BankTextArea"
 import LabelledField from "~/components/bank/LabelledField"
 import { PageHeader } from "~/components/elements/PageHeader"
@@ -47,8 +47,9 @@ export const loader = async ({ params }: LoaderArgs) => {
 }
 
 export default function EditCitationId() {
-  const { citation, title, place, author, utterance } =
-    useLoaderData<typeof loader>()
+  const data = useLoaderData<typeof loader>()
+
+  const { citation } = data
 
   const [clipStart, setClipStart] = useState(citation.clip_start)
   const [clipEnd, setClipEnd] = useState(citation.clip_end)
@@ -116,6 +117,8 @@ export default function EditCitationId() {
           <LabelledField
             label={`Clipped Text`}
             field={
+              // TODO: Put this elsewhere. We are using the <code> tag because
+              // the smartquotes feature does not apply to it.
               <code style={{ fontFamily: "Charter, Georgia, serif" }}>
                 {citation.text.substring(0, clipStart)}
                 <span className="bg-red-300">
@@ -148,55 +151,7 @@ export default function EditCitationId() {
           />
         </div>
         <div className="flex w-1/2 flex-col gap-y-4">
-          <div className="text-lg font-bold">
-            {sourceTypeToText(citation.type_id)}
-          </div>
-          <LabelledField
-            label={`Year Pub`}
-            field={
-              <BankInput name={``} defaultValue={citation.year_published} />
-            }
-          />
-          <LabelledField
-            label={`Year Comp`}
-            field={
-              <BankInput name={``} defaultValue={citation.year_composed} />
-            }
-          />
-          <LabelledField
-            label={`Author`}
-            field={<BankInput name={``} defaultValue={author} />}
-          />
-          <LabelledField
-            label={`Editor`}
-            field={<BankInput name={``} defaultValue={utterance.editor} />}
-          />
-          <LabelledField
-            label={`Title`}
-            field={<BankTextArea name={``} defaultValue={title} rows={3} />}
-          />
-          <LabelledField
-            label={`Place`}
-            field={<BankInput name={``} defaultValue={place} />}
-          />
-          <LabelledField
-            label={`Publisher`}
-            field={<BankInput name={``} defaultValue={utterance.publisher} />}
-          />
-          <LabelledField
-            label={`URL`}
-            field={<BankInput name={``} defaultValue={utterance.url} />}
-          />
-          <LabelledField
-            label={`URL Acc. Date`}
-            field={
-              <BankInput name={``} defaultValue={utterance.url_access_date} />
-            }
-          />
-          <LabelledField
-            label={`Page`}
-            field={<BankInput name={``} defaultValue={citation.page} />}
-          />
+          <BankSourcePanel {...data} />
         </div>
       </div>
       <div className="mx-auto w-48">

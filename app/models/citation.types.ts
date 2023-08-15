@@ -1,3 +1,10 @@
+export enum SourceTypeEnum {
+  "Book" = 0,
+  "Periodical" = 1,
+  "Site/Flier" = 2,
+  "Spoken Language" = 3,
+}
+
 export type GetOwnCitationType = {
   user_id: number
   last_modified_user_id: number
@@ -36,7 +43,7 @@ export type GetCitationByIdType = {
   source_id: number
   year_published: string
   year_composed: string
-  type_id: number
+  type_id: SourceTypeEnum
   page: string
   email: string
 }
