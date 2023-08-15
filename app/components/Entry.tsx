@@ -22,7 +22,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
     : ""
 
   return (
-    <>
+    <div className="mx-auto flex max-w-6xl flex-row">
       <div className="mx-auto mt-2 mr-5  hidden w-96 max-w-6xl shrink-0 overflow-x-hidden overflow-y-visible md:block">
         <div className="fixed h-3/4 w-96 overflow-y-auto overflow-x-hidden">
           <QuickLinks data={data} />
@@ -47,7 +47,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
           <EntryImages data={data} />
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
