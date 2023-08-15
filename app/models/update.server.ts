@@ -2,6 +2,7 @@ import { EditingStatusType } from "~/components/editing/EditingStatus"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
 import {
+  getCheckboxValueAsBoolean,
   getNumberFromFormInput,
   getStringFromFormInput,
 } from "~/utils/generalUtils"
@@ -184,9 +185,4 @@ export async function updateEditingTools(data: {
       is_legacy: isLegacy,
     },
   })
-}
-
-function getCheckboxValueAsBoolean(value: FormDataEntryValue) {
-  const result = getStringFromFormInput(value)
-  return result === "on"
 }
