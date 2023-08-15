@@ -52,8 +52,14 @@ export function stripHtml(text: string) {
   return text.replace(/<\/?[^>]+(>|$)/g, "")
 }
 
+export function getCheckboxValueAsBoolean(value: FormDataEntryValue) {
+  const result = getStringFromFormInput(value)
+  return result === "on"
+}
+
+
 export function getStringFromFormInput(formInput: FormDataEntryValue): string {
-  return formInput.toString()
+  return formInput?.toString() || ""
 }
 
 export function getNumberFromFormInput(formInput: FormDataEntryValue) {
@@ -74,6 +80,7 @@ export function parsePageNumberOrError(page: string): number {
   } else if (isNonPositive(pageNumber)) {
     throw new Error(`Page Number ("${page}") must be greater than zero`)
   }
+  
 
   return pageNumber
 }

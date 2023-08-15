@@ -11,4 +11,6 @@ export enum attributeEnum {
   SEE_ALSO = "SeeAlso",
   CANADIANISM = "Canadianism",
   DEFINITION = "Definition",
+  EDITING_TOOLS = "EditingTools",
+  EDITING_STATUS = "EditingStatus",
 }
