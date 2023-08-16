@@ -1,16 +1,15 @@
 import React from "react"
 
 interface MainProps {
-  align?: "left" | "center"
+  center?: boolean
   children: React.ReactNode
 }
 
-const Main = ({ children }: MainProps): JSX.Element => {
-  const className =
-    {
-      left: "w-full md:mt-36",
-      center: "mx-auto flex w-fit flex-col align-middle",
-    }["center"] ?? "w-full"
+const Main = ({ center = false, children }: MainProps): JSX.Element => {
+  let className = "w-full"
+  if (center) {
+    className = "mx-auto flex w-fit flex-col align-middle"
+  }
 
   return (
     <main className={className + " relative mt-20 p-3 md:mt-36"}>
