@@ -1,17 +1,12 @@
-export type SelectOptionValueType = string | number
+import type { BankInputOption, BankInputOptionType } from "./BankInputOption"
 
-export type SelectOption<T extends SelectOptionValueType> = {
-  name: string
-  value: T
-}
-
-interface BankSelectProps<T extends SelectOptionValueType> {
-  options: SelectOption<T>[]
+interface BankSelectProps<T extends BankInputOptionType> {
+  options: BankInputOption<T>[]
   defaultValue?: T
   name: string
 }
 
-export default function BankSelect<T extends SelectOptionValueType>({
+export default function BankSelect<T extends BankInputOptionType>({
   name,
   options,
   defaultValue,

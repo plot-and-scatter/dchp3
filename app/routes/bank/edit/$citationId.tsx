@@ -4,6 +4,7 @@ import { useState } from "react"
 import invariant from "tiny-invariant"
 import BankInput from "~/components/bank/BankInput"
 import BankNumericInput from "~/components/bank/BankNumericInput"
+import BankRadio from "~/components/bank/BankRadio"
 import BankSelect from "~/components/bank/BankSelect"
 import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
 import BankTextArea from "~/components/bank/BankTextArea"
@@ -160,7 +161,18 @@ export default function EditCitationId() {
           />
           <LabelledField
             label={`Incomplete?`}
-            field={citation.is_incomplete ? "true" : "false"}
+            field={
+              <BankRadio
+                className={`flex gap-x-4`}
+                optionSetClassName={`flex gap-x-2`}
+                name={`incomplete`}
+                options={[
+                  { name: `Yes`, value: `true` },
+                  { name: `No`, value: `false` },
+                ]}
+                defaultValue={citation.is_incomplete ? "true" : "false"}
+              />
+            }
           />
         </div>
         <div className="flex w-1/2 flex-col gap-y-4">
