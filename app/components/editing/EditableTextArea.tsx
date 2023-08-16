@@ -17,7 +17,7 @@ const EditableTextArea = ({ name, value }: Props) => {
       <label>
         Input:
         <textarea
-          className="m-2 p-2"
+          className="m-2 h-40 p-2"
           name={name}
           ref={textAreaElement}
           onChange={(e) => setInputValue(e.target.value)}

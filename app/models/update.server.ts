@@ -93,6 +93,20 @@ export async function updateCanadianism(data: {
   })
 }
 
+export async function updateDefinitionFistNote(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const usageNoteId = getNumberFromFormInput(data.attributeID)
+  const usageNoteText = getStringFromFormInput(data.newValue)
+
+  await prisma.usageNote.update({
+    where: {
+      id: usageNoteId,
+    },
+    data: { text: usageNoteText },
+  })
+}
+
 export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
   const meaningId = getNumberFromFormInput(data.attributeID)
   const headword = getStringFromFormInput(data.headword)

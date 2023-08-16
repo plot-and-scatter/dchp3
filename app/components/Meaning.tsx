@@ -85,9 +85,21 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
           </div>
           {meaning.usageNotes.length > 0 &&
             meaning.usageNotes.map((usageNote) => (
-              <HandNoteBlock key={`usage-note-${usageNote.id}`}>
-                <SanitizedTextSpan text={usageNote.text} />
-              </HandNoteBlock>
+              <div
+                className="flex flex-row"
+                key={`usage-note-div-${usageNote.id}`}
+              >
+                <HandNoteBlock key={`usage-note-${usageNote.id}`}>
+                  <SanitizedTextSpan text={usageNote.text} />
+                </HandNoteBlock>
+                <EditingPopover
+                  type={editablePopoverInputTypes.TEXTAREA}
+                  currentValue={usageNote.text}
+                  attributeType={attributeEnum.DEFINITION_FIST_NOTE}
+                  attributeID={usageNote.id}
+                  icon="edit"
+                />
+              </div>
             ))}
           <Citations meaning={meaning} />
         </div>
