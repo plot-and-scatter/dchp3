@@ -37,6 +37,7 @@ export async function action({ request }: ActionArgs) {
 
   switch (type) {
     case attributeEnum.MEANING_HEADER:
+      console.log(data)
       await updateMeaningHeader(data)
       break
     case attributeEnum.SEE_ALSO:

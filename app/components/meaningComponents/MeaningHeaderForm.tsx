@@ -3,6 +3,7 @@ import { attributeEnum } from "../editing/attributeEnum"
 import { type MeaningType } from "../Meaning"
 import type JSXNode from "~/types/JSXNode"
 import { useState } from "react"
+import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
 
 interface MeaningHeaderFormProps {
   shouldDisplay: boolean
@@ -10,6 +11,7 @@ interface MeaningHeaderFormProps {
   number: string | null
   dagger: boolean
   partOfSpeech: string
+  canadianismType: string | null // todo change this
   usageNote: string
 }
 
@@ -19,11 +21,13 @@ const MeaningHeaderForm = ({
   number,
   dagger,
   partOfSpeech,
+  canadianismType,
   usageNote,
 }: MeaningHeaderFormProps): JSXNode => {
   const [orderValue, setOrder] = useState(number ?? "")
   const [daggerValue, setDagger] = useState(dagger)
   const [partOfSpeechValue, setPartOfSpeech] = useState(partOfSpeech)
+  const [canadianismTypeValue, setCanadianismType] = useState(canadianismType)
   const [usageNoteValue, setUsageNote] = useState(usageNote)
 
   const params = useParams()
@@ -37,7 +41,7 @@ const MeaningHeaderForm = ({
     <Form
       action={`/entries/${headword}`}
       method="post"
-      className="grid grid-cols-7 grid-rows-2 bg-slate-200 py-5"
+      className="grid grid-cols-7 grid-rows-2 gap-3 bg-slate-200 py-5"
     >
       <label className="col-span-1">
         Dagger:
@@ -59,15 +63,32 @@ const MeaningHeaderForm = ({
           onChange={(e) => setOrder(e.target.value)}
         />
       </label>
-      <label className="col-span-3">
+      <label className="col-span-4">
         Part Of Speech{" "}
         <input
           type="text"
           name="partOfSpeech"
           value={partOfSpeechValue}
           onChange={(e) => setPartOfSpeech(e.target.value)}
-          className=""
+          className="mx-2"
         />
+      </label>
+      <label className="col-span-7">
+        Canadianism Type
+        <select
+          name="canadianismType"
+          value={canadianismTypeValue ?? ""}
+          onChange={(e) => setCanadianismType(e.target.value)}
+          className="mx-2"
+        >
+          <option value={""}>{"None"}</option>
+          <option>{CanadianismTypeEnum.ONE_ORIGIN}</option>
+          <option>{CanadianismTypeEnum.TWO_PRESERVATION}</option>
+          <option>{CanadianismTypeEnum.THREE_SEMANTIC_CHANGE}</option>
+          <option>{CanadianismTypeEnum.FOUR_CULTURALLY_SIGNIFICANT}</option>
+          <option>{CanadianismTypeEnum.FIVE_FREQUENCY}</option>
+          <option>{CanadianismTypeEnum.SIX_MEMORIAL}</option>
+        </select>
       </label>
       <label className="col-span-5">
         Usage Note:
