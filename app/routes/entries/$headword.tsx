@@ -8,7 +8,7 @@ import {
   addDefinitionFistNote,
   addSeeAlso,
   updateCanadianism,
-  updateDefinitionFistNote,
+  updateOrDeleteDefinitionFistNote,
   updateEditingStatus,
   updateEditingTools,
   updateMeaningDefinition,
@@ -51,7 +51,7 @@ export async function action({ request }: ActionArgs) {
       await updateMeaningDefinition(data)
       break
     case attributeEnum.DEFINITION_FIST_NOTE:
-      await updateDefinitionFistNote(data)
+      await updateOrDeleteDefinitionFistNote(data)
       break
     case attributeEnum.ADD_DEFINITION_FIST_NOTE:
       await addDefinitionFistNote(data)

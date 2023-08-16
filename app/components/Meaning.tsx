@@ -81,6 +81,7 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
               attributeType={attributeEnum.SEE_ALSO}
               attributeID={meaning.id}
               icon="add"
+              buttonLabel={meaning.seeAlso.length > 0 || "Add See Also"}
             />
           </div>
           {meaning.usageNotes.length > 0 &&
@@ -106,6 +107,7 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
             attributeType={attributeEnum.ADD_DEFINITION_FIST_NOTE}
             attributeID={meaning.id}
             icon="add"
+            buttonLabel="Add Fist Note"
           />
           <Citations meaning={meaning} />
         </div>

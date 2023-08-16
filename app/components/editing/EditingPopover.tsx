@@ -14,6 +14,7 @@ interface Props {
   attributeID: number
   type?: editablePopoverInputTypes
   icon?: "edit" | "add"
+  buttonLabel?: React.ReactNode
 }
 
 function getIcon(icon: string | undefined) {
@@ -33,6 +34,7 @@ const EditingPopover = ({
   attributeID,
   type,
   icon,
+  buttonLabel,
 }: Props) => {
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
   const [popperElement, setPopperElement] = useState<HTMLElement | null>()
@@ -47,7 +49,14 @@ const EditingPopover = ({
         className={`text-red-400 focus:border-red-600`}
         ref={setReferenceElement}
       >
-        <i className={`${getIcon(icon)} cursor-pointer hover:text-red-600`}></i>
+        <div className="flex flex-row items-center">
+          <p>{buttonLabel}</p>
+          <i
+            className={`${getIcon(
+              icon
+            )} mx-2 mb-4 cursor-pointer hover:text-red-600`}
+          ></i>
+        </div>
       </Popover.Button>
 
       <Popover.Panel
