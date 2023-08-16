@@ -117,6 +117,20 @@ export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
   })
 }
 
+export async function deleteSeeAlso(data: { [k: string]: FormDataEntryValue }) {
+  const meaningId = getNumberFromFormInput(data.attributeID)
+  const entryId = getNumberFromFormInput(data.entryId)
+
+  await prisma.seeAlso.delete({
+    where: {
+      meaning_id_entry_id: {
+        meaning_id: meaningId,
+        entry_id: entryId,
+      },
+    },
+  })
+}
+
 const EditingStatusMap: Record<EditingStatusType, string> = {
   [EditingStatusType.FIRST_DRAFT]: "first_draft",
   [EditingStatusType.REVISED_DRAFT]: "revised_draft",
