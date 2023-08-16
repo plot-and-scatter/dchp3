@@ -107,6 +107,20 @@ export async function updateDefinitionFistNote(data: {
   })
 }
 
+export async function addDefinitionFistNote(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const meaningId = getNumberFromFormInput(data.attributeID)
+  const fistNoteText = getStringFromFormInput(data.newValue)
+
+  await prisma.usageNote.create({
+    data: {
+      meaning_id: meaningId,
+      text: fistNoteText,
+    },
+  })
+}
+
 export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
   const meaningId = getNumberFromFormInput(data.attributeID)
   const headword = getStringFromFormInput(data.headword)

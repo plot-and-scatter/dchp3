@@ -101,6 +101,12 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
                 />
               </div>
             ))}
+          <EditingPopover
+            type={editablePopoverInputTypes.TEXTAREA}
+            attributeType={attributeEnum.ADD_DEFINITION_FIST_NOTE}
+            attributeID={meaning.id}
+            icon="add"
+          />
           <Citations meaning={meaning} />
         </div>
       </div>

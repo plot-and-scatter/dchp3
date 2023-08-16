@@ -12,6 +12,7 @@ export enum attributeEnum {
   CANADIANISM = "Canadianism",
   DEFINITION = "Definition",
   DEFINITION_FIST_NOTE = "DefintionFistNote",
+  ADD_DEFINITION_FIST_NOTE = "AddDefintionFistNote",
   EDITING_TOOLS = "EditingTools",
   EDITING_STATUS = "EditingStatus",
 }

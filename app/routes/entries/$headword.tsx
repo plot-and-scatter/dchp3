@@ -5,6 +5,7 @@ import invariant from "tiny-invariant"
 
 import { getEntryByHeadword } from "~/models/entry.server"
 import {
+  addDefinitionFistNote,
   addSeeAlso,
   updateCanadianism,
   updateDefinitionFistNote,
@@ -51,6 +52,9 @@ export async function action({ request }: ActionArgs) {
       break
     case attributeEnum.DEFINITION_FIST_NOTE:
       await updateDefinitionFistNote(data)
+      break
+    case attributeEnum.ADD_DEFINITION_FIST_NOTE:
+      await addDefinitionFistNote(data)
       break
     case attributeEnum.EDITING_TOOLS:
       await updateEditingTools(data)
