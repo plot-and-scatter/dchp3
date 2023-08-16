@@ -11,7 +11,7 @@ interface MeaningHeaderFormProps {
   number: string | null
   dagger: boolean
   partOfSpeech: string
-  canadianismType: string | null // todo change this
+  canadianismType: string | null
   usageNote: string
 }
 
