@@ -17,7 +17,9 @@ export default function BankTextArea({
     <textarea
       name={name}
       defaultValue={showField !== false ? defaultValue : undefined}
-      className={`${className || ""} w-full border border-slate-700 px-4 py-2`}
+      className={`${
+        className || ""
+      } w-full rounded border border-slate-700 px-4 py-2`}
       rows={rows}
     />
   )

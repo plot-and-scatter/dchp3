@@ -1,8 +1,8 @@
-import { NavLink, useLoaderData } from "@remix-run/react"
+import { getOwnCitations } from "~/models/bank.server"
 import { json, type LoaderArgs } from "@remix-run/server-runtime"
-import { sourceTypeToText } from "utils/citation"
+import { NavLink, useLoaderData } from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
-import { getOwnCitations } from "~/models/citation.server"
+import { sourceTypeToText } from "utils/source"
 import {
   getEmailFromSession,
   redirectIfUserLacksPermission,

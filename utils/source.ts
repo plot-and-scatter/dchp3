@@ -1,4 +1,4 @@
-import type { SourceTypeEnum } from "~/models/citation.types"
+import type { SourceTypeEnum } from "~/models/bank.types"
 
 export function sourceTypeToText(sourceType: SourceTypeEnum): string {
   switch (sourceType) {

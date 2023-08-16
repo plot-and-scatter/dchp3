@@ -1,14 +1,12 @@
 import { useState } from "react"
 import { sourceTypeToText } from "utils/source"
-import type {
-  GetCitationByIdType,
-  UtteranceType,
-} from "~/models/citation.types"
-import { SourceTypeEnum } from "~/models/citation.types"
+import type { GetCitationByIdType, UtteranceType } from "~/models/bank.types"
+import { SourceTypeEnum } from "~/models/bank.types"
 import BookPanel from "./BookPanel"
 import PeriodicalPanel from "./PeriodicalPanel"
 import SiteFlierPanel from "./SiteFlierPanel"
 import SpokenLanguagePanel from "./SpokenLanguagePanel"
+import ActiveSourcePicker from "./ActiveSourcePicker"
 
 export interface BankSourcePanelProps {
   citation: GetCitationByIdType
@@ -23,13 +21,12 @@ export default function BankSourcePanel(props: BankSourcePanelProps) {
     props.citation.type_id
   )
 
-  console.log(activeSourceType, SourceTypeEnum.Book)
-
   return (
     <>
-      <div className="text-lg font-bold">
-        {sourceTypeToText(props.citation.type_id)}
-      </div>
+      <ActiveSourcePicker
+        activeSourceType={activeSourceType}
+        setActiveSourceType={setActiveSourceType}
+      />
       {activeSourceType === SourceTypeEnum.Book && <BookPanel {...props} />}
       {activeSourceType === SourceTypeEnum.Periodical && (
         <PeriodicalPanel {...props} />

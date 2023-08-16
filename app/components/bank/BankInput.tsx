@@ -16,7 +16,7 @@ export default function BankInput({
       type="text"
       name={name}
       defaultValue={showField !== false ? defaultValue : undefined}
-      className="w-full border border-slate-700 px-4 py-2"
+      className="w-full rounded border border-slate-700 px-4 py-2"
       onChange={onChange}
     />
   )

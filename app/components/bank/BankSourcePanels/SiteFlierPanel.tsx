@@ -1,4 +1,4 @@
-import { SourceTypeEnum } from "~/models/citation.types"
+import { SourceTypeEnum } from "~/models/bank.types"
 import BankInput from "../BankInput"
 import LabelledField from "../LabelledField"
 import type { BankSourcePanelProps } from "./BankSourcePanel"

@@ -4,9 +4,11 @@ import { useState } from "react"
 import invariant from "tiny-invariant"
 import BankInput from "~/components/bank/BankInput"
 import BankNumericInput from "~/components/bank/BankNumericInput"
+import BankSelect from "~/components/bank/BankSelect"
 import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
 import BankTextArea from "~/components/bank/BankTextArea"
 import LabelledField from "~/components/bank/LabelledField"
+import Button from "~/components/elements/Button"
 import { PageHeader } from "~/components/elements/PageHeader"
 import {
   getAuthorBySourceId,
@@ -14,7 +16,9 @@ import {
   getPlaceBySourceId,
   getTitleBySourceId,
   getUtteranceBySourceId,
-} from "~/models/citation.server"
+} from "~/models/bank.server"
+import { LegacyTypeEnum } from "~/models/bank.types"
+import { enumToSelectOptions } from "~/utils/inputUtils"
 
 export const loader = async ({ params }: LoaderArgs) => {
   const citationId = params.citationId
@@ -144,7 +148,16 @@ export default function EditCitationId() {
             label={`Memo`}
             field={<BankTextArea name={`memo`} defaultValue={citation.memo} />}
           />
-          <LabelledField label={`Data Type`} field={citation.type_id} />
+          <LabelledField
+            label={`Data Type`}
+            field={
+              <BankSelect
+                name={`legacy_id`}
+                defaultValue={citation.legacy_id}
+                options={enumToSelectOptions(LegacyTypeEnum)}
+              />
+            }
+          />
           <LabelledField
             label={`Incomplete?`}
             field={citation.is_incomplete ? "true" : "false"}
@@ -152,12 +165,19 @@ export default function EditCitationId() {
         </div>
         <div className="flex w-1/2 flex-col gap-y-4">
           <BankSourcePanel {...data} />
+          <div className="mx-auto mt-12 flex items-center gap-x-12">
+            <div>
+              <Button appearance="success" size="large">
+                <i className="fa-solid fa-download mr-2" /> Save citation
+              </Button>
+            </div>
+            <div>
+              <Button appearance="danger">
+                <i className="fa-solid fa-xmark mr-2" /> Delete citation
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="mx-auto w-48">
-        <button className="rounded border border-blue-500 px-4 py-2 text-blue-500 transition-colors hover:bg-blue-50 hover:text-blue-600">
-          Save citation
-        </button>
       </div>
     </>
   )

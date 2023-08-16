@@ -1,3 +1,13 @@
+export enum LegacyTypeEnum {
+  "Avis" = 1,
+  "MacDonald" = 2,
+  "DCHP-1" = 3,
+  "Paper Files" = 4,
+  "DCHP-2" = 5,
+  "Teach" = 6,
+  "DCHP-3" = 7,
+}
+
 export enum SourceTypeEnum {
   "Book" = 0,
   "Periodical" = 1,
@@ -37,7 +47,7 @@ export type GetCitationByIdType = {
   created: string
   last_modified: string
   part_of_speech: string
-  legacy_id: string
+  legacy_id: LegacyTypeEnum
   is_incomplete: string
   headword: string
   source_id: number
