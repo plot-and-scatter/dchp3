@@ -1,3 +1,15 @@
+export enum POSEnum {
+  "Other" = "..",
+  "Adjective" = "adj.",
+  "Adverb" = "adv.",
+  "Noun" = "n.",
+  "Verb" = "v.",
+  "Preposition" = "prep.",
+  "Expression" = "exp.",
+  "Pragmatic Marker" = "prag.",
+  "Interjection" = "int.",
+}
+
 export enum LegacyTypeEnum {
   "Avis" = 1,
   "MacDonald" = 2,
@@ -55,6 +67,15 @@ export type GetCitationByIdType = {
   year_composed: string
   type_id: SourceTypeEnum
   page: string
+  email: string
+}
+
+export type CitationsByHeadwordAndUserIdType = {
+  id: number
+  headword_id: number
+  headword: string
+  name: string
+  year_published: string
   email: string
 }
 
