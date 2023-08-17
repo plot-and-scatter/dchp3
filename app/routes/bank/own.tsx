@@ -1,8 +1,8 @@
-import { NavLink, useLoaderData } from "@remix-run/react"
+import { getOwnCitations } from "~/models/bank.server"
 import { json, type LoaderArgs } from "@remix-run/server-runtime"
-import { sourceTypeToText } from "utils/citation"
+import { NavLink, useLoaderData } from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
-import { getOwnCitations } from "~/models/citation.server"
+import { sourceTypeToText } from "utils/source"
 import {
   getEmailFromSession,
   redirectIfUserLacksPermission,
@@ -12,9 +12,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   await redirectIfUserLacksPermission(request, "bank:create")
 
   const email = await getEmailFromSession(request)
-
-  console.log("email", email)
-
   if (!email) throw json({ message: `No email on user` }, { status: 500 })
   const citations = await getOwnCitations(email)
 
@@ -33,7 +30,10 @@ export default function OwnCitations() {
         return (
           <div key={citation.id} className="mb-4">
             <div className="text-lg font-bold">
-              <NavLink to={`/bank/${citation.id}`} className="text-blue-500">
+              <NavLink
+                to={`/bank/edit/${citation.id}`}
+                className="text-blue-500"
+              >
                 {citation.headword}
               </NavLink>
             </div>
