@@ -4,7 +4,7 @@ import LabelledField from "../LabelledField"
 import type { EditCitationProps } from "../EditCitationProps"
 
 export default function SiteFlierPanel(props: EditCitationProps) {
-  const showField = props.citation.type_id === BankSourceTypeEnum["Site/Flier"]
+  const showField = props.citation?.type_id === BankSourceTypeEnum["Site/Flier"]
 
   return (
     <>
@@ -14,7 +14,7 @@ export default function SiteFlierPanel(props: EditCitationProps) {
           <BankInput
             name={`source.year_published`}
             showField={showField}
-            defaultValue={props.citation.year_published}
+            defaultValue={props.citation?.year_published}
           />
         }
       />
@@ -24,7 +24,7 @@ export default function SiteFlierPanel(props: EditCitationProps) {
           <BankInput
             name={`source.year_composed`}
             showField={showField}
-            defaultValue={props.citation.year_composed}
+            defaultValue={props.citation?.year_composed}
           />
         }
       />
@@ -44,7 +44,7 @@ export default function SiteFlierPanel(props: EditCitationProps) {
           <BankInput
             name={`source.periodical_date`}
             showField={showField}
-            defaultValue={props.source.periodical_date}
+            defaultValue={props.source?.periodical_date}
           />
         }
       />
@@ -75,7 +75,7 @@ export default function SiteFlierPanel(props: EditCitationProps) {
           <BankInput
             name={`source.url`}
             showField={showField}
-            defaultValue={props.source.url}
+            defaultValue={props.source?.url}
           />
         }
       />
@@ -85,7 +85,7 @@ export default function SiteFlierPanel(props: EditCitationProps) {
           <BankInput
             name={`source.url_access_date`}
             showField={showField}
-            defaultValue={props.source.url_access_date}
+            defaultValue={props.source?.url_access_date}
           />
         }
       />
@@ -95,7 +95,7 @@ export default function SiteFlierPanel(props: EditCitationProps) {
           <BankInput
             name={`source.evidence`}
             showField={showField}
-            defaultValue={props.source.evidence}
+            defaultValue={props.source?.evidence}
           />
         }
       />

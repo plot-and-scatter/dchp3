@@ -6,8 +6,9 @@ import BankNumericInput from "./BankNumericInput"
 import BankInput from "./BankInput"
 
 export default function CitationTextAndClip({ citation }: EditCitationProps) {
-  const [clipStart, setClipStart] = useState(citation.clip_start)
-  const [clipEnd, setClipEnd] = useState(citation.clip_end)
+  const [clipStart, setClipStart] = useState(citation?.clip_start || 0)
+  const [clipEnd, setClipEnd] = useState(citation?.clip_end || 0)
+  const [citationText, setCitationText] = useState(citation?.text || "")
 
   return (
     <>
@@ -16,8 +17,14 @@ export default function CitationTextAndClip({ citation }: EditCitationProps) {
         field={
           <BankTextArea
             name="citation.text"
-            defaultValue={citation.text}
+            defaultValue={citation?.text}
             rows={10}
+            onChange={(e) => {
+              setCitationText(e.target.value)
+              if (clipStart === 0 || clipEnd === 0) {
+                setClipEnd(e.target.value.length)
+              }
+            }}
           />
         }
       />
@@ -28,14 +35,23 @@ export default function CitationTextAndClip({ citation }: EditCitationProps) {
             <div>Start:</div>
             <BankNumericInput
               name="citation.clip_start"
-              defaultValue={citation.clip_start}
-              onChange={(e) => setClipStart(parseInt(e.target.value))}
+              defaultValue={clipStart}
+              onChange={(e) => {
+                setClipStart(parseInt(e.target.value))
+                if (parseInt(e.target.value) > clipEnd) {
+                  setClipEnd(parseInt(e.target.value))
+                }
+              }}
+              min={0}
+              max={citationText.length}
             />
             <div>End:</div>
             <BankNumericInput
               name="citation.clip_end"
-              defaultValue={citation.clip_end}
+              defaultValue={clipEnd}
               onChange={(e) => setClipEnd(parseInt(e.target.value))}
+              min={clipStart}
+              max={citationText.length}
             />
           </div>
         }
@@ -49,14 +65,14 @@ export default function CitationTextAndClip({ citation }: EditCitationProps) {
             <BankInput
               name={`citation.clipped_text`}
               hidden
-              value={citation.text.substring(clipStart, clipEnd)}
+              value={citationText.substring(clipStart, clipEnd)}
             />
             <code style={{ fontFamily: "Charter, Georgia, serif" }}>
-              {citation.text.substring(0, clipStart)}
+              {citationText.substring(0, clipStart)}
               <span className="bg-red-300">
-                {citation.text.substring(clipStart, clipEnd)}
+                {citationText.substring(clipStart, clipEnd)}
               </span>
-              {citation.text.substring(clipEnd)}
+              {citationText.substring(clipEnd)}
             </code>
           </>
         }

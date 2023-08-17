@@ -13,13 +13,13 @@ export default function BankEditCitationFields(props: EditCitationProps) {
 
   return (
     <>
-      <LabelledField label={`ID`} field={citation.id} />
+      {citation?.id && <LabelledField label={`ID`} field={citation.id} />}
       <LabelledField
         label={`Headword`}
         field={
           <BankInput
             name="citation.headword"
-            defaultValue={citation.headword}
+            defaultValue={citation?.headword}
           />
         }
       />
@@ -28,7 +28,7 @@ export default function BankEditCitationFields(props: EditCitationProps) {
         field={
           <BankTextArea
             name="citation.short_meaning"
-            defaultValue={citation.short_meaning}
+            defaultValue={citation?.short_meaning}
           />
         }
       />
@@ -37,7 +37,7 @@ export default function BankEditCitationFields(props: EditCitationProps) {
         field={
           <BankInput
             name="citation.spelling_variant"
-            defaultValue={citation.spelling_variant}
+            defaultValue={citation?.spelling_variant}
           />
         }
       />
@@ -46,28 +46,32 @@ export default function BankEditCitationFields(props: EditCitationProps) {
         field={
           <BankSelect
             name={`citation.part_of_speech`}
-            defaultValue={citation.part_of_speech}
+            defaultValue={citation?.part_of_speech}
             options={enumToSelectOptions(BankPosEnum)}
           />
         }
       />
       <CitationTextAndClip {...props} />
-      <LabelledField
-        label={`Time Added`}
-        field={
-          <>
-            {citation.created} by {citation.email}
-          </>
-        }
-      />
-      <LabelledField
-        label={`Last Modified`}
-        field={<>{citation.last_modified}</>}
-      />
+      {citation && (
+        <>
+          <LabelledField
+            label={`Time Added`}
+            field={
+              <>
+                {citation.created} by {citation.email}
+              </>
+            }
+          />
+          <LabelledField
+            label={`Last Modified`}
+            field={<>{citation.last_modified}</>}
+          />
+        </>
+      )}
       <LabelledField
         label={`Memo`}
         field={
-          <BankTextArea name={`citation.memo`} defaultValue={citation.memo} />
+          <BankTextArea name={`citation.memo`} defaultValue={citation?.memo} />
         }
       />
       <LabelledField
@@ -75,7 +79,7 @@ export default function BankEditCitationFields(props: EditCitationProps) {
         field={
           <BankSelect
             name={`citation.legacy_id`}
-            defaultValue={citation.legacy_id}
+            defaultValue={citation?.legacy_id || BankLegacyTypeEnum["DCHP-3"]}
             options={enumToSelectOptions(BankLegacyTypeEnum)}
           />
         }
@@ -91,7 +95,9 @@ export default function BankEditCitationFields(props: EditCitationProps) {
               { name: `Yes`, value: `true` },
               { name: `No`, value: `false` },
             ]}
-            defaultValue={citation.is_incomplete ? "true" : "false"}
+            defaultValue={
+              citation ? (citation.is_incomplete ? "true" : "false") : "false"
+            }
           />
         }
       />

@@ -6,6 +6,8 @@ import type {
   BankSource,
   BankCitationUpdate,
   BankSourceUpdate,
+  BankCitationCreate,
+  BankSourceCreate,
 } from "./bank.types"
 import {
   type BankAuthorName,
@@ -151,4 +153,12 @@ export async function updateSource(sourceFields: BankSourceUpdate) {
     where: { id: sourceFields.id },
     data: sourceFields,
   })
+}
+
+export async function createCitation(citationFields: BankCitationCreate) {
+  return await prisma.bankCitation.create({ data: citationFields })
+}
+
+export async function createSource(sourceFields: BankSourceCreate) {
+  return await prisma.bankSource.create({ data: sourceFields })
 }

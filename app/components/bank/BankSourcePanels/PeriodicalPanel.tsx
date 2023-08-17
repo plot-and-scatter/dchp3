@@ -5,7 +5,7 @@ import LabelledField from "../LabelledField"
 import type { EditCitationProps } from "../EditCitationProps"
 
 export default function PeriodicalPanel(props: EditCitationProps) {
-  const showField = props.citation.type_id === BankSourceTypeEnum.Periodical
+  const showField = props.citation?.type_id === BankSourceTypeEnum.Periodical
 
   return (
     <>
@@ -15,7 +15,7 @@ export default function PeriodicalPanel(props: EditCitationProps) {
           <BankInput
             name={`source.year_published`}
             showField={showField}
-            defaultValue={props.citation.year_published}
+            defaultValue={props.citation?.year_published}
           />
         }
       />
@@ -25,7 +25,7 @@ export default function PeriodicalPanel(props: EditCitationProps) {
           <BankInput
             name={`source.year_composed`}
             showField={showField}
-            defaultValue={props.citation.year_composed}
+            defaultValue={props.citation?.year_composed}
           />
         }
       />
@@ -56,7 +56,7 @@ export default function PeriodicalPanel(props: EditCitationProps) {
           <BankInput
             name={`source.periodical_date`}
             showField={showField}
-            defaultValue={props.source.periodical_date}
+            defaultValue={props.source?.periodical_date}
           />
         }
       />
@@ -76,7 +76,7 @@ export default function PeriodicalPanel(props: EditCitationProps) {
           <BankInput
             name={`source.dateline`}
             showField={showField}
-            defaultValue={props.source.dateline}
+            defaultValue={props.source?.dateline}
           />
         }
       />
@@ -86,7 +86,7 @@ export default function PeriodicalPanel(props: EditCitationProps) {
           <BankInput
             name={`source.volume_issue`}
             showField={showField}
-            defaultValue={props.source.volume_issue}
+            defaultValue={props.source?.volume_issue}
           />
         }
       />
@@ -96,7 +96,7 @@ export default function PeriodicalPanel(props: EditCitationProps) {
           <BankInput
             name={`source.url`}
             showField={showField}
-            defaultValue={props.source.url}
+            defaultValue={props.source?.url}
           />
         }
       />
@@ -106,7 +106,7 @@ export default function PeriodicalPanel(props: EditCitationProps) {
           <BankInput
             name={`source.url_access_date`}
             showField={showField}
-            defaultValue={props.source.url_access_date}
+            defaultValue={props.source?.url_access_date}
           />
         }
       />
@@ -116,7 +116,7 @@ export default function PeriodicalPanel(props: EditCitationProps) {
           <BankInput
             name={`source.page`}
             showField={showField}
-            defaultValue={props.citation.page}
+            defaultValue={props.citation?.page}
           />
         }
       />

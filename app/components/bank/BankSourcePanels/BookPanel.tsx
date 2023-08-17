@@ -5,7 +5,7 @@ import LabelledField from "../LabelledField"
 import type { EditCitationProps } from "../EditCitationProps"
 
 export default function BookPanel(props: EditCitationProps) {
-  const showField = props.citation.type_id === BankSourceTypeEnum.Book
+  const showField = props.citation?.type_id === BankSourceTypeEnum.Book
 
   return (
     <>
@@ -15,7 +15,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.year_published`}
             showField={showField}
-            defaultValue={props.citation.year_published}
+            defaultValue={props.citation?.year_published}
           />
         }
       />
@@ -25,7 +25,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.year_composed`}
             showField={showField}
-            defaultValue={props.citation.year_composed}
+            defaultValue={props.citation?.year_composed}
           />
         }
       />
@@ -45,7 +45,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.editor`}
             showField={showField}
-            defaultValue={props.source.editor}
+            defaultValue={props.source?.editor}
           />
         }
       />
@@ -76,7 +76,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.publisher`}
             showField={showField}
-            defaultValue={props.source.publisher}
+            defaultValue={props.source?.publisher}
           />
         }
       />
@@ -86,7 +86,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.url`}
             showField={showField}
-            defaultValue={props.source.url}
+            defaultValue={props.source?.url}
           />
         }
       />
@@ -96,7 +96,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.url_access_date`}
             showField={showField}
-            defaultValue={props.source.url_access_date}
+            defaultValue={props.source?.url_access_date}
           />
         }
       />
@@ -106,7 +106,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.page`}
             showField={showField}
-            defaultValue={props.citation.page}
+            defaultValue={props.citation?.page}
           />
         }
       />

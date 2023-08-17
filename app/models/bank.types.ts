@@ -136,3 +136,10 @@ export type BankCitationUpdate = Pick<
 >
 
 export type BankSourceUpdate = PrismaBankSource
+
+export type BankCitationCreate = Omit<
+  BankCitation,
+  "id" | "last_modified" | "last_modified_user_id"
+>
+
+export type BankSourceCreate = Omit<BankSourceUpdate, "id">

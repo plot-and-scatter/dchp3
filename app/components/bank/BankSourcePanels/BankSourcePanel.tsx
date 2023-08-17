@@ -10,7 +10,7 @@ import BankInput from "../BankInput"
 
 export default function BankSourcePanel(props: EditCitationProps) {
   const [activeSourceType, setActiveSourceType] = useState<BankSourceTypeEnum>(
-    props.citation.type_id
+    props.citation?.type_id || 0
   )
 
   return (
@@ -20,7 +20,7 @@ export default function BankSourcePanel(props: EditCitationProps) {
         setActiveSourceType={setActiveSourceType}
       />
       <BankInput name={`source.type_id`} value={activeSourceType} hidden />
-      <BankInput name={`source.id`} value={props.citation.source_id} hidden />
+      <BankInput name={`source.id`} value={props.citation?.source_id} hidden />
       {activeSourceType === BankSourceTypeEnum.Book && <BookPanel {...props} />}
       {activeSourceType === BankSourceTypeEnum.Periodical && (
         <PeriodicalPanel {...props} />
