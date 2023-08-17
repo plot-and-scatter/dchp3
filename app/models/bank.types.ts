@@ -1,4 +1,9 @@
-export enum POSEnum {
+import type {
+  BankCitation,
+  BankSource as PrismaBankSource,
+} from "@prisma/client"
+
+export enum BankPosEnum {
   "Other" = "..",
   "Adjective" = "adj.",
   "Adverb" = "adv.",
@@ -10,7 +15,7 @@ export enum POSEnum {
   "Interjection" = "int.",
 }
 
-export enum LegacyTypeEnum {
+export enum BankLegacyTypeEnum {
   "Avis" = 1,
   "MacDonald" = 2,
   "DCHP-1" = 3,
@@ -20,14 +25,14 @@ export enum LegacyTypeEnum {
   "DCHP-3" = 7,
 }
 
-export enum SourceTypeEnum {
+export enum BankSourceTypeEnum {
   "Book" = 0,
   "Periodical" = 1,
   "Site/Flier" = 2,
   "Spoken Language" = 3,
 }
 
-export type GetOwnCitationType = {
+export type BankGetOwnCitation = {
   user_id: number
   last_modified_user_id: number
   text: string
@@ -45,7 +50,7 @@ export type GetOwnCitationType = {
   email: string
 }
 
-export type GetCitationByIdType = {
+export type BankCitationById = {
   memo: string
   user_id: number
   last_modified_user_id: number
@@ -59,18 +64,18 @@ export type GetCitationByIdType = {
   created: string
   last_modified: string
   part_of_speech: string
-  legacy_id: LegacyTypeEnum
+  legacy_id: BankLegacyTypeEnum
   is_incomplete: string
   headword: string
   source_id: number
   year_published: string
   year_composed: string
-  type_id: SourceTypeEnum
+  type_id: BankSourceTypeEnum
   page: string
   email: string
 }
 
-export type CitationsByHeadwordAndUserIdType = {
+export type BankCitationsByHeadwordAndUserId = {
   id: number
   headword_id: number
   headword: string
@@ -79,19 +84,19 @@ export type CitationsByHeadwordAndUserIdType = {
   email: string
 }
 
-export type TitleNameType = {
+export type BankTitleName = {
   name: string
 }
 
-export type PlaceNameType = {
+export type BankPlaceName = {
   name: string
 }
 
-export type AuthorNameType = {
+export type BankAuthorName = {
   name: string
 }
 
-export type UtteranceType = {
+export type BankSource = {
   uttered: string
   utterance_witness: string
   utterance_time: string
@@ -107,3 +112,27 @@ export type UtteranceType = {
   editor: string
   year_composed: string
 }
+
+export type BankPrimaryKey = {
+  id: number
+}
+
+export type BankCitationUpdate = Pick<
+  BankCitation,
+  | "id"
+  | "memo"
+  | "headword_id"
+  | "short_meaning"
+  | "spelling_variant"
+  | "part_of_speech"
+  | "text"
+  | "clip_start"
+  | "clip_end"
+  | "clipped_text"
+  | "last_modified"
+  | "last_modified_user_id"
+  | "legacy_id"
+  | "is_incomplete"
+>
+
+export type BankSourceUpdate = PrismaBankSource

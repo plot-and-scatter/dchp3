@@ -1,10 +1,11 @@
-import { SourceTypeEnum } from "~/models/bank.types"
+import { BankSourceTypeEnum } from "~/models/bank.types"
 import BankInput from "../BankInput"
 import LabelledField from "../LabelledField"
 import type { EditCitationProps } from "../EditCitationProps"
 
 export default function SpokenLanguagePanel(props: EditCitationProps) {
-  const showField = props.citation.type_id === SourceTypeEnum["Spoken Language"]
+  const showField =
+    props.citation.type_id === BankSourceTypeEnum["Spoken Language"]
 
   return (
     <>
@@ -12,7 +13,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
         label={`Year Heard`}
         field={
           <BankInput
-            name={``}
+            name={`source.year_published`}
             showField={showField}
             defaultValue={props.citation.year_published}
           />
@@ -22,7 +23,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
         label={`Year Recorded`}
         field={
           <BankInput
-            name={``}
+            name={`source.year_composed`}
             showField={showField}
             defaultValue={props.citation.year_composed}
           />
@@ -32,7 +33,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
         label={`Uttered By:`}
         field={
           <BankInput
-            name={``}
+            name={`author`}
             showField={showField}
             defaultValue={props.author}
           />
@@ -42,9 +43,9 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
         label={`Media Name:`}
         field={
           <BankInput
-            name={``}
+            name={`source.utterance_media`}
             showField={showField}
-            defaultValue={props.utterance.utterance_media}
+            defaultValue={props.source.utterance_media}
           />
         }
       />
@@ -52,9 +53,9 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
         label={`Broadcast Name:`}
         field={
           <BankInput
-            name={``}
+            name={`source.utterance_broadcast`}
             showField={showField}
-            defaultValue={props.utterance.utterance_broadcast}
+            defaultValue={props.source.utterance_broadcast}
           />
         }
       />
@@ -62,9 +63,9 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
         label={`Date of Utterance:`}
         field={
           <BankInput
-            name={``}
+            name={`source.periodical_date`}
             showField={showField}
-            defaultValue={props.utterance.periodical_date}
+            defaultValue={props.source.periodical_date}
           />
         }
       />
@@ -72,9 +73,9 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
         label={`Time Apx.:`}
         field={
           <BankInput
-            name={``}
+            name={`source.utterance_time`}
             showField={showField}
-            defaultValue={props.utterance.utterance_time}
+            defaultValue={props.source.utterance_time}
           />
         }
       />
@@ -82,7 +83,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
         label={`Place:`}
         field={
           <BankInput
-            name={``}
+            name={`place`}
             showField={showField}
             defaultValue={props.place}
           />
@@ -92,9 +93,9 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
         label={`Witnessed by:`}
         field={
           <BankInput
-            name={``}
+            name={`source.utterance_witness`}
             showField={showField}
-            defaultValue={props.utterance.utterance_witness}
+            defaultValue={props.source.utterance_witness}
           />
         }
       />
@@ -102,9 +103,9 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
         label={`URL`}
         field={
           <BankInput
-            name={``}
+            name={`source.url`}
             showField={showField}
-            defaultValue={props.utterance.url}
+            defaultValue={props.source.url}
           />
         }
       />
@@ -112,9 +113,9 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
         label={`URL Acc. Date`}
         field={
           <BankInput
-            name={``}
+            name={`source.url_access_date`}
             showField={showField}
-            defaultValue={props.utterance.url_access_date}
+            defaultValue={props.source.url_access_date}
           />
         }
       />

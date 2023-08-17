@@ -1,9 +1,9 @@
-import type { CitationsByHeadwordAndUserIdType } from "~/models/bank.types"
+import type { BankCitationsByHeadwordAndUserId } from "~/models/bank.types"
 import BankSelect from "./BankSelect"
 import { useNavigate } from "@remix-run/react"
 
 interface BankHeadwordCitationSelectProps {
-  citations: CitationsByHeadwordAndUserIdType[]
+  citations: BankCitationsByHeadwordAndUserId[]
   currentCitationId: number
   currentEmail: string
 }

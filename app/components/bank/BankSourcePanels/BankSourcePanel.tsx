@@ -1,14 +1,15 @@
 import { useState } from "react"
-import { SourceTypeEnum } from "~/models/bank.types"
+import { BankSourceTypeEnum } from "~/models/bank.types"
 import BookPanel from "./BookPanel"
 import PeriodicalPanel from "./PeriodicalPanel"
 import SiteFlierPanel from "./SiteFlierPanel"
 import SpokenLanguagePanel from "./SpokenLanguagePanel"
 import ActiveSourcePicker from "./ActiveSourcePicker"
 import type { EditCitationProps } from "../EditCitationProps"
+import BankInput from "../BankInput"
 
 export default function BankSourcePanel(props: EditCitationProps) {
-  const [activeSourceType, setActiveSourceType] = useState<SourceTypeEnum>(
+  const [activeSourceType, setActiveSourceType] = useState<BankSourceTypeEnum>(
     props.citation.type_id
   )
 
@@ -18,14 +19,16 @@ export default function BankSourcePanel(props: EditCitationProps) {
         activeSourceType={activeSourceType}
         setActiveSourceType={setActiveSourceType}
       />
-      {activeSourceType === SourceTypeEnum.Book && <BookPanel {...props} />}
-      {activeSourceType === SourceTypeEnum.Periodical && (
+      <BankInput name={`source.type_id`} value={activeSourceType} hidden />
+      <BankInput name={`source.id`} value={props.citation.source_id} hidden />
+      {activeSourceType === BankSourceTypeEnum.Book && <BookPanel {...props} />}
+      {activeSourceType === BankSourceTypeEnum.Periodical && (
         <PeriodicalPanel {...props} />
       )}
-      {activeSourceType === SourceTypeEnum["Site/Flier"] && (
+      {activeSourceType === BankSourceTypeEnum["Site/Flier"] && (
         <SiteFlierPanel {...props} />
       )}
-      {activeSourceType === SourceTypeEnum["Spoken Language"] && (
+      {activeSourceType === BankSourceTypeEnum["Spoken Language"] && (
         <SpokenLanguagePanel {...props} />
       )}
     </>

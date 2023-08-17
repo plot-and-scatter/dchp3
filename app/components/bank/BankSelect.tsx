@@ -18,13 +18,10 @@ export default function BankSelect<T extends BankInputOptionType>({
       name={name}
       onChange={onChange}
       className={`rounded border border-slate-700 py-2 px-4`}
+      defaultValue={defaultValue}
     >
       {options.map((o) => (
-        <option
-          key={o.value}
-          value={o.value}
-          selected={o.value === defaultValue}
-        >
+        <option key={o.value} value={o.value}>
           {o.name}
         </option>
       ))}

@@ -1,8 +1,8 @@
-import type { GetCitationByIdType, UtteranceType } from "~/models/bank.types"
+import type { BankCitationById, BankSource } from "~/models/bank.types"
 
 export interface EditCitationProps {
-  citation: GetCitationByIdType
-  utterance: UtteranceType
+  citation: BankCitationById
+  source: BankSource
   place: string
   title: string
   author: string

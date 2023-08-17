@@ -3,6 +3,7 @@ import type { EditCitationProps } from "./EditCitationProps"
 import LabelledField from "./LabelledField"
 import BankTextArea from "./BankTextArea"
 import BankNumericInput from "./BankNumericInput"
+import BankInput from "./BankInput"
 
 export default function CitationTextAndClip({ citation }: EditCitationProps) {
   const [clipStart, setClipStart] = useState(citation.clip_start)
@@ -14,7 +15,7 @@ export default function CitationTextAndClip({ citation }: EditCitationProps) {
         label={`Citation`}
         field={
           <BankTextArea
-            name="citationText"
+            name="citation.text"
             defaultValue={citation.text}
             rows={10}
           />
@@ -26,13 +27,13 @@ export default function CitationTextAndClip({ citation }: EditCitationProps) {
           <div className="flex items-center gap-x-4">
             <div>Start:</div>
             <BankNumericInput
-              name="clipIndexStart"
+              name="citation.clip_start"
               defaultValue={citation.clip_start}
               onChange={(e) => setClipStart(parseInt(e.target.value))}
             />
             <div>End:</div>
             <BankNumericInput
-              name="clipIndexStart"
+              name="citation.clip_end"
               defaultValue={citation.clip_end}
               onChange={(e) => setClipEnd(parseInt(e.target.value))}
             />
@@ -44,13 +45,20 @@ export default function CitationTextAndClip({ citation }: EditCitationProps) {
         field={
           // TODO: Put this elsewhere. We are using the <code> tag because
           // the smartquotes feature does not apply to it.
-          <code style={{ fontFamily: "Charter, Georgia, serif" }}>
-            {citation.text.substring(0, clipStart)}
-            <span className="bg-red-300">
-              {citation.text.substring(clipStart, clipEnd)}
-            </span>
-            {citation.text.substring(clipEnd)}
-          </code>
+          <>
+            <BankInput
+              name={`citation.clipped_text`}
+              hidden
+              value={citation.text.substring(clipStart, clipEnd)}
+            />
+            <code style={{ fontFamily: "Charter, Georgia, serif" }}>
+              {citation.text.substring(0, clipStart)}
+              <span className="bg-red-300">
+                {citation.text.substring(clipStart, clipEnd)}
+              </span>
+              {citation.text.substring(clipEnd)}
+            </code>
+          </>
         }
       />
     </>

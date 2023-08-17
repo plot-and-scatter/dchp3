@@ -56,9 +56,22 @@ export function getStringFromFormInput(formInput: FormDataEntryValue): string {
   return formInput.toString()
 }
 
+export function getStringOrNullFromFormInput(
+  formInput: FormDataEntryValue
+): string | null {
+  return formInput?.toString() || null
+}
+
 export function getNumberFromFormInput(formInput: FormDataEntryValue) {
   const stringValue = formInput.toString()
   return parseInt(stringValue)
+}
+
+export function getBooleanFromFormInput(formInput: FormDataEntryValue) {
+  const stringValue = formInput.toString()
+  if (stringValue.toLowerCase().trim() === "true") return true
+  if (stringValue.toLowerCase().trim() === "false") return false
+  return Boolean(stringValue)
 }
 
 export function getAttributeEnumFromFormInput(formInput: FormDataEntryValue) {

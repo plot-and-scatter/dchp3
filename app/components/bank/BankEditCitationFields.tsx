@@ -1,24 +1,16 @@
 import { enumToSelectOptions } from "~/utils/inputUtils"
-import {
-  LegacyTypeEnum,
-  type GetCitationByIdType,
-  POSEnum,
-} from "~/models/bank.types"
-import { useState } from "react"
+import { BankLegacyTypeEnum, BankPosEnum } from "~/models/bank.types"
 import BankInput from "./BankInput"
-import BankNumericInput from "./BankNumericInput"
 import BankRadio from "./BankRadio"
 import BankSelect from "./BankSelect"
 import BankTextArea from "./BankTextArea"
 import LabelledField from "./LabelledField"
+import CitationTextAndClip from "./CitationTextAndClip"
+import type { EditCitationProps } from "./EditCitationProps"
 
-interface BankEditCitationFieldsProps {
-  citation: GetCitationByIdType
-}
+export default function BankEditCitationFields(props: EditCitationProps) {
+  const { citation } = props
 
-export default function BankEditCitationFields({
-  citation,
-}: BankEditCitationFieldsProps) {
   return (
     <>
       <LabelledField label={`ID`} field={citation.id} />
@@ -55,11 +47,11 @@ export default function BankEditCitationFields({
           <BankSelect
             name={`citation.part_of_speech`}
             defaultValue={citation.part_of_speech}
-            options={enumToSelectOptions(POSEnum)}
+            options={enumToSelectOptions(BankPosEnum)}
           />
         }
       />
-
+      <CitationTextAndClip {...props} />
       <LabelledField
         label={`Time Added`}
         field={
@@ -84,7 +76,7 @@ export default function BankEditCitationFields({
           <BankSelect
             name={`citation.legacy_id`}
             defaultValue={citation.legacy_id}
-            options={enumToSelectOptions(LegacyTypeEnum)}
+            options={enumToSelectOptions(BankLegacyTypeEnum)}
           />
         }
       />

@@ -12,9 +12,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   await redirectIfUserLacksPermission(request, "bank:create")
 
   const email = await getEmailFromSession(request)
-
-  console.log("email", email)
-
   if (!email) throw json({ message: `No email on user` }, { status: 500 })
   const citations = await getOwnCitations(email)
 

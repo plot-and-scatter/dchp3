@@ -1,26 +1,29 @@
 import { sourceTypeToText } from "utils/source"
 import Button from "~/components/elements/Button"
-import { SourceTypeEnum } from "~/models/bank.types"
+import { BankSourceTypeEnum } from "~/models/bank.types"
 
 interface ActiveSourcePickerProps {
-  activeSourceType: SourceTypeEnum
-  setActiveSourceType: (newSourceType: SourceTypeEnum) => void
+  activeSourceType: BankSourceTypeEnum
+  setActiveSourceType: (newSourceType: BankSourceTypeEnum) => void
 }
 
 export default function ActiveSourcePicker({
   activeSourceType,
   setActiveSourceType,
 }: ActiveSourcePickerProps) {
-  const buttons = Object.values(SourceTypeEnum)
+  const buttons = Object.values(BankSourceTypeEnum)
     .filter((enumMember) => Number.isInteger(enumMember))
     .map((sourceType) => {
       return (
         <Button
           key={sourceType}
           appearance={activeSourceType === sourceType ? "primary" : "secondary"}
-          onClick={() => setActiveSourceType(sourceType as SourceTypeEnum)}
+          onClick={(e) => {
+            setActiveSourceType(sourceType as BankSourceTypeEnum)
+          }}
+          type="button"
         >
-          {sourceTypeToText(sourceType as SourceTypeEnum)}
+          {sourceTypeToText(sourceType as BankSourceTypeEnum)}
         </Button>
       )
     })
