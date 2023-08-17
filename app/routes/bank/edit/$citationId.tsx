@@ -1,11 +1,11 @@
 import { PageHeader } from "~/components/elements/PageHeader"
-import { useLoaderData } from "@remix-run/react"
+import { Form, useLoaderData } from "@remix-run/react"
 import BankHeadwordCitationSelect from "~/components/bank/BankHeadwordCitationSelect"
 import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
 import Button from "~/components/elements/Button"
 import invariant from "tiny-invariant"
 import React from "react"
-import type { LoaderArgs } from "@remix-run/server-runtime"
+import type { ActionArgs, LoaderArgs } from "@remix-run/server-runtime"
 import {
   getAuthorBySourceId,
   getCitationById,
@@ -15,6 +15,15 @@ import {
   getUtteranceBySourceId,
 } from "~/models/bank.server"
 import BankEditCitationFields from "~/components/bank/BankEditCitationFields"
+
+export const action = async ({ request, params }: ActionArgs) => {
+  const data = Object.fromEntries(await request.formData())
+  // TODO: Use invariants + exception catchers
+
+  console.log("data", data)
+
+  return {}
+}
 
 export const loader = async ({ params }: LoaderArgs) => {
   const citationId = params.citationId
@@ -62,26 +71,28 @@ export default function EditCitationId() {
         currentEmail={citation.email}
       />
       <hr className="my-6" />
-      <div className="flex gap-x-12">
-        <div className="flex w-1/2 flex-col gap-y-4">
-          <BankEditCitationFields {...data} key={citation.id} />
-        </div>
-        <div className="flex w-1/2 flex-col gap-y-4">
-          <BankSourcePanel {...data} key={citation.id} />
-          <div className="mx-auto mt-12 flex items-center gap-x-12">
-            <div>
-              <Button appearance="success" size="large">
-                <i className="fa-solid fa-download mr-2" /> Save citation
-              </Button>
-            </div>
-            <div>
-              <Button appearance="danger">
-                <i className="fa-solid fa-xmark mr-2" /> Delete citation
-              </Button>
+      <Form action={`/bank/edit/${citation.id}`} method={`post`}>
+        <div className="flex gap-x-12">
+          <div className="flex w-1/2 flex-col gap-y-4">
+            <BankEditCitationFields {...data} key={citation.id} />
+          </div>
+          <div className="flex w-1/2 flex-col gap-y-4">
+            <BankSourcePanel {...data} key={citation.id} />
+            <div className="mx-auto mt-12 flex items-center gap-x-12">
+              <div>
+                <Button appearance="success" size="large">
+                  <i className="fa-solid fa-download mr-2" /> Save citation
+                </Button>
+              </div>
+              <div>
+                <Button appearance="danger">
+                  <i className="fa-solid fa-xmark mr-2" /> Delete citation
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Form>
     </React.Fragment>
   )
 }

@@ -1,9 +1,9 @@
 import { SourceTypeEnum } from "~/models/bank.types"
 import BankInput from "../BankInput"
 import LabelledField from "../LabelledField"
-import type { BankSourcePanelProps } from "./BankSourcePanel"
+import type { EditCitationProps } from "../EditCitationProps"
 
-export default function SiteFlierPanel(props: BankSourcePanelProps) {
+export default function SiteFlierPanel(props: EditCitationProps) {
   const showField = props.citation.type_id === SourceTypeEnum["Site/Flier"]
 
   return (

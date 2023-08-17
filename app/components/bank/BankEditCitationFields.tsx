@@ -19,21 +19,23 @@ interface BankEditCitationFieldsProps {
 export default function BankEditCitationFields({
   citation,
 }: BankEditCitationFieldsProps) {
-  const [clipStart, setClipStart] = useState(citation.clip_start)
-  const [clipEnd, setClipEnd] = useState(citation.clip_end)
-
   return (
     <>
       <LabelledField label={`ID`} field={citation.id} />
       <LabelledField
         label={`Headword`}
-        field={<BankInput name="headword" defaultValue={citation.headword} />}
+        field={
+          <BankInput
+            name="citation.headword"
+            defaultValue={citation.headword}
+          />
+        }
       />
       <LabelledField
         label={`Short Meaning`}
         field={
           <BankTextArea
-            name="shortMeaning"
+            name="citation.short_meaning"
             defaultValue={citation.short_meaning}
           />
         }
@@ -42,7 +44,7 @@ export default function BankEditCitationFields({
         label={`Spelling Variant`}
         field={
           <BankInput
-            name="spellingVariant"
+            name="citation.spelling_variant"
             defaultValue={citation.spelling_variant}
           />
         }
@@ -51,55 +53,13 @@ export default function BankEditCitationFields({
         label={`POS`}
         field={
           <BankSelect
-            name={`pos`}
+            name={`citation.part_of_speech`}
             defaultValue={citation.part_of_speech}
             options={enumToSelectOptions(POSEnum)}
           />
         }
       />
-      <LabelledField
-        label={`Citation`}
-        field={
-          <BankTextArea
-            name="citationText"
-            defaultValue={citation.text}
-            rows={10}
-          />
-        }
-      />
-      <LabelledField
-        label={`Clip Indices`}
-        field={
-          <div className="flex items-center gap-x-4">
-            <div>Start:</div>
-            <BankNumericInput
-              name="clipIndexStart"
-              defaultValue={citation.clip_start}
-              onChange={(e) => setClipStart(parseInt(e.target.value))}
-            />
-            <div>End:</div>
-            <BankNumericInput
-              name="clipIndexStart"
-              defaultValue={citation.clip_end}
-              onChange={(e) => setClipEnd(parseInt(e.target.value))}
-            />
-          </div>
-        }
-      />
-      <LabelledField
-        label={`Clipped Text`}
-        field={
-          // TODO: Put this elsewhere. We are using the <code> tag because
-          // the smartquotes feature does not apply to it.
-          <code style={{ fontFamily: "Charter, Georgia, serif" }}>
-            {citation.text.substring(0, clipStart)}
-            <span className="bg-red-300">
-              {citation.text.substring(clipStart, clipEnd)}
-            </span>
-            {citation.text.substring(clipEnd)}
-          </code>
-        }
-      />
+
       <LabelledField
         label={`Time Added`}
         field={
@@ -114,13 +74,15 @@ export default function BankEditCitationFields({
       />
       <LabelledField
         label={`Memo`}
-        field={<BankTextArea name={`memo`} defaultValue={citation.memo} />}
+        field={
+          <BankTextArea name={`citation.memo`} defaultValue={citation.memo} />
+        }
       />
       <LabelledField
         label={`Data Type`}
         field={
           <BankSelect
-            name={`legacy_id`}
+            name={`citation.legacy_id`}
             defaultValue={citation.legacy_id}
             options={enumToSelectOptions(LegacyTypeEnum)}
           />
@@ -132,7 +94,7 @@ export default function BankEditCitationFields({
           <BankRadio
             className={`flex gap-x-4`}
             optionSetClassName={`flex gap-x-2`}
-            name={`incomplete`}
+            name={`citation.is_incomplete`}
             options={[
               { name: `Yes`, value: `true` },
               { name: `No`, value: `false` },

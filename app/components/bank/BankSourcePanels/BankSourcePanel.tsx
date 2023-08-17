@@ -1,22 +1,13 @@
 import { useState } from "react"
-import { sourceTypeToText } from "utils/source"
-import type { GetCitationByIdType, UtteranceType } from "~/models/bank.types"
 import { SourceTypeEnum } from "~/models/bank.types"
 import BookPanel from "./BookPanel"
 import PeriodicalPanel from "./PeriodicalPanel"
 import SiteFlierPanel from "./SiteFlierPanel"
 import SpokenLanguagePanel from "./SpokenLanguagePanel"
 import ActiveSourcePicker from "./ActiveSourcePicker"
+import type { EditCitationProps } from "../EditCitationProps"
 
-export interface BankSourcePanelProps {
-  citation: GetCitationByIdType
-  utterance: UtteranceType
-  place: string
-  title: string
-  author: string
-}
-
-export default function BankSourcePanel(props: BankSourcePanelProps) {
+export default function BankSourcePanel(props: EditCitationProps) {
   const [activeSourceType, setActiveSourceType] = useState<SourceTypeEnum>(
     props.citation.type_id
   )

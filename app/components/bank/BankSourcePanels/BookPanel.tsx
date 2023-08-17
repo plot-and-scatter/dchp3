@@ -2,9 +2,9 @@ import { SourceTypeEnum } from "~/models/bank.types"
 import BankInput from "../BankInput"
 import BankTextArea from "../BankTextArea"
 import LabelledField from "../LabelledField"
-import type { BankSourcePanelProps } from "./BankSourcePanel"
+import type { EditCitationProps } from "../EditCitationProps"
 
-export default function BookPanel(props: BankSourcePanelProps) {
+export default function BookPanel(props: EditCitationProps) {
   const showField = props.citation.type_id === SourceTypeEnum.Book
 
   return (

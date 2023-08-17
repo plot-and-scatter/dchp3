@@ -1,9 +1,9 @@
 import { SourceTypeEnum } from "~/models/bank.types"
 import BankInput from "../BankInput"
 import LabelledField from "../LabelledField"
-import type { BankSourcePanelProps } from "./BankSourcePanel"
+import type { EditCitationProps } from "../EditCitationProps"
 
-export default function SpokenLanguagePanel(props: BankSourcePanelProps) {
+export default function SpokenLanguagePanel(props: EditCitationProps) {
   const showField = props.citation.type_id === SourceTypeEnum["Spoken Language"]
 
   return (

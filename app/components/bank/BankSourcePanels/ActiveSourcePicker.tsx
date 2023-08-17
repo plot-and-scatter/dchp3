@@ -18,6 +18,7 @@ export default function ActiveSourcePicker({
         <Button
           key={sourceType}
           appearance={activeSourceType === sourceType ? "primary" : "secondary"}
+          onClick={() => setActiveSourceType(sourceType as SourceTypeEnum)}
         >
           {sourceTypeToText(sourceType as SourceTypeEnum)}
         </Button>
