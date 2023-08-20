@@ -9,7 +9,6 @@ import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
-  console.log(data)
   insertEntry(data)
   return redirect(`/entries/${data.headword}`)
 }
@@ -72,7 +71,7 @@ export default function Index() {
           <label className="flex flex-col font-bold">
             Fistnote
             <textarea
-              name="testTextArea"
+              name="fistnote"
               className="h-28 w-1/2 border border-slate-400 p-1 font-normal"
             ></textarea>
           </label>
@@ -85,7 +84,7 @@ export default function Index() {
           </label>
           <label className="ml-3 pl-3 font-bold">
             is Non Canadian
-            <input className="ml-3 pl-3" type="checkbox" name="nonCanadian" />
+            <input className="ml-3 pl-3" type="checkbox" name="isNonCanadian" />
           </label>
         </div>
 
@@ -96,7 +95,7 @@ export default function Index() {
               className="ml-3 pl-3"
               type="radio"
               value="isLegacy"
-              name="testRadio"
+              name="dchpVersion"
             />
           </label>
           <label className="ml-3 pl-3 font-bold">
@@ -105,7 +104,7 @@ export default function Index() {
               className="ml-3 pl-3"
               type="radio"
               value="dchp2"
-              name="testRadio"
+              name="dchpVersion"
             />
           </label>
           <label className="ml-3 pl-3 font-bold">
@@ -114,7 +113,7 @@ export default function Index() {
               className="ml-3 pl-3"
               type="radio"
               value="dchp3"
-              name="testRadio"
+              name="dchpVersion"
             />
           </label>
         </div>

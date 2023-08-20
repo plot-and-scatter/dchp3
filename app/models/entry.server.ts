@@ -1,6 +1,10 @@
 import type { Entry } from "@prisma/client"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
+import {
+  getCheckboxValueAsBoolean,
+  getStringFromFormInput,
+} from "~/utils/generalUtils"
 import { isNonPositive } from "~/utils/numberUtils"
 
 export type { Entry } from "@prisma/client"
@@ -73,24 +77,31 @@ export function getEntriesByInitialLettersAndPage(
   return getEntriesByInitialLetters(initialLetters, skip)
 }
 
-export async function insertEntry(data: any) {
-  const headword = data.headword
+export async function insertEntry(data: { [k: string]: FormDataEntryValue }) {
+  const headword = getStringFromFormInput(data.headword)
+  const spelllingVariants = getStringFromFormInput(data.spellingVariants)
+  const etymology = getStringFromFormInput(data.etymology)
+  const generalLabels = getStringFromFormInput(data.generalLabels)
+  const fistnote = getStringFromFormInput(data.fistnote)
+  const dagger = getCheckboxValueAsBoolean(data.dagger)
+  const isNonCanadian = getCheckboxValueAsBoolean(data.isNonCanadian)
+  const isLegacy = getStringFromFormInput(data.dchpVersion) === "isLegacy"
 
   await prisma.entry.create({
     data: {
       id: undefined,
       headword: headword,
       first_field: "first field",
-      etymology: "etymology",
-      is_legacy: false,
+      etymology: etymology,
+      is_legacy: isLegacy, // TODO: should there be a dchp3 option?
       is_public: true,
-      spelling_variants: null,
+      spelling_variants: spelllingVariants,
       superscript: "Superscript",
-      dagger: false,
-      general_labels: null,
+      dagger: dagger,
+      general_labels: generalLabels,
       proofing_status: 1,
       proofing_user: null,
-      fist_note: null,
+      fist_note: fistnote,
       image_file_name: null,
       comment: null,
       first_draft: false,
@@ -101,8 +112,8 @@ export async function insertEntry(data: any) {
       chief_editor_ok: false,
       final_proofing: false,
       no_cdn_susp: false,
-      no_cdn_conf: false,
-      edit_status_comment: "this word is for testing",
+      no_cdn_conf: isNonCanadian, // TODO: should this be susp or conf?
+      edit_status_comment: null,
     },
   })
 }
