@@ -35,6 +35,7 @@ export async function updateMeaningHeader(data: {
   const dagger = data.dagger ? true : false
   const order = getStringFromFormInput(data.order)
   const partOfSpeech = getStringFromFormInput(data.partOfSpeech)
+  const canadianismType = getStringFromFormInput(data.canadianismType)
   const usageNote = getStringFromFormInput(data.usageNote)
 
   await prisma.meaning.update({
@@ -43,6 +44,7 @@ export async function updateMeaningHeader(data: {
       dagger: dagger,
       order: order,
       partofspeech: partOfSpeech,
+      canadianism_type: canadianismType,
       usage: usageNote,
     },
   })
