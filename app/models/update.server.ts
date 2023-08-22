@@ -95,6 +95,42 @@ export async function updateCanadianism(data: {
   })
 }
 
+export async function updateOrDeleteDefinitionFistNote(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const usageNoteId = getNumberFromFormInput(data.attributeID)
+  const usageNoteText = getStringFromFormInput(data.newValue)
+
+  if (usageNoteText === "") {
+    await prisma.usageNote.delete({
+      where: {
+        id: usageNoteId,
+      },
+    })
+  } else {
+    await prisma.usageNote.update({
+      where: {
+        id: usageNoteId,
+      },
+      data: { text: usageNoteText },
+    })
+  }
+}
+
+export async function addDefinitionFistNote(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const meaningId = getNumberFromFormInput(data.attributeID)
+  const fistNoteText = getStringFromFormInput(data.newValue)
+
+  await prisma.usageNote.create({
+    data: {
+      meaning_id: meaningId,
+      text: fistNoteText,
+    },
+  })
+}
+
 export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
   const meaningId = getNumberFromFormInput(data.attributeID)
   const headword = getStringFromFormInput(data.headword)

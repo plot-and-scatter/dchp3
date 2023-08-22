@@ -82,14 +82,34 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
               attributeType={attributeEnum.SEE_ALSO}
               attributeID={meaning.id}
               icon="add"
+              buttonLabel={meaning.seeAlso.length > 0 || "Add See Also"}
             />
           </div>
           {meaning.usageNotes.length > 0 &&
             meaning.usageNotes.map((usageNote) => (
-              <HandNoteBlock key={`usage-note-${usageNote.id}`}>
-                <SanitizedTextSpan text={usageNote.text} />
-              </HandNoteBlock>
+              <div
+                className="flex flex-row"
+                key={`usage-note-div-${usageNote.id}`}
+              >
+                <HandNoteBlock key={`usage-note-${usageNote.id}`}>
+                  <SanitizedTextSpan text={usageNote.text} />
+                </HandNoteBlock>
+                <EditingPopover
+                  type={editablePopoverInputTypes.TEXTAREA}
+                  currentValue={usageNote.text}
+                  attributeType={attributeEnum.DEFINITION_FIST_NOTE}
+                  attributeID={usageNote.id}
+                  icon="edit"
+                />
+              </div>
             ))}
+          <EditingPopover
+            type={editablePopoverInputTypes.TEXTAREA}
+            attributeType={attributeEnum.ADD_DEFINITION_FIST_NOTE}
+            attributeID={meaning.id}
+            icon="add"
+            buttonLabel="Add Fist Note"
+          />
           <Citations meaning={meaning} />
         </div>
       </div>
