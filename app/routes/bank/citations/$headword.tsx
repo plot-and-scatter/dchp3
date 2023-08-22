@@ -1,6 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node"
-import { json } from "@remix-run/node"
-import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react"
+import { useCatch, useLoaderData, useParams } from "@remix-run/react"
 import invariant from "tiny-invariant"
 import BankCitationResult from "~/components/bank/BankCitationResult"
 import { prisma } from "~/db.server"

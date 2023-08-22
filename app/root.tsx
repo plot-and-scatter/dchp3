@@ -16,7 +16,6 @@ import tailwindStylesheetUrl from "./styles/tailwind.css"
 import additionalStylesUrl from "./styles/additional.css"
 import Header from "./components/elements/Header"
 import Nav from "./components/elements/Nav"
-import Main from "./components/elements/Main"
 import { getUserFromSession } from "./services/auth/session.server"
 
 export const links: LinksFunction = () => {
