@@ -3,7 +3,7 @@ import Main from "~/components/elements/Main"
 
 export default function EntriesPage() {
   return (
-    <Main>
+    <Main center={true}>
       <Outlet />
     </Main>
   )

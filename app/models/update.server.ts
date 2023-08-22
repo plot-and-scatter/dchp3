@@ -1,6 +1,8 @@
+import { EditingStatusType } from "~/components/editing/EditingStatus"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
 import {
+  getCheckboxValueAsBoolean,
   getNumberFromFormInput,
   getStringFromFormInput,
 } from "~/utils/generalUtils"
@@ -33,6 +35,7 @@ export async function updateMeaningHeader(data: {
   const dagger = data.dagger ? true : false
   const order = getStringFromFormInput(data.order)
   const partOfSpeech = getStringFromFormInput(data.partOfSpeech)
+  const canadianismType = getStringFromFormInput(data.canadianismType)
   const usageNote = getStringFromFormInput(data.usageNote)
 
   await prisma.meaning.update({
@@ -41,6 +44,7 @@ export async function updateMeaningHeader(data: {
       dagger: dagger,
       order: order,
       partofspeech: partOfSpeech,
+      canadianism_type: canadianismType,
       usage: usageNote,
     },
   })
@@ -111,6 +115,90 @@ export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
       meaning_id: meaningId,
       entry_id: entry.id,
       linknote: linkNote,
+    },
+  })
+}
+
+export async function deleteSeeAlso(data: { [k: string]: FormDataEntryValue }) {
+  const meaningId = getNumberFromFormInput(data.attributeID)
+  const entryId = getNumberFromFormInput(data.entryId)
+
+  await prisma.seeAlso.delete({
+    where: {
+      meaning_id_entry_id: {
+        meaning_id: meaningId,
+        entry_id: entryId,
+      },
+    },
+  })
+}
+
+const EditingStatusMap: Record<EditingStatusType, string> = {
+  [EditingStatusType.FIRST_DRAFT]: "first_draft",
+  [EditingStatusType.REVISED_DRAFT]: "revised_draft",
+  [EditingStatusType.SEMANT_REVISED]: "semantically_revised",
+  [EditingStatusType.EDITED_FOR_STYLE]: "edited_for_style",
+  [EditingStatusType.CHIEF_EDITOR_OK]: "chief_editor_ok",
+  [EditingStatusType.NO_CDN_SUSP]: "no_cdn_susp",
+  [EditingStatusType.NO_CDN_CONF]: "no_cdn_conf",
+  [EditingStatusType.COPY_EDITED]: "final_proofing", // TODO: Confirm this with old codebase
+  [EditingStatusType.PROOF_READING]: "proofread", // TODO: Also confirm this with above
+}
+
+export async function updateEditingStatus(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const headword = getStringFromFormInput(data.headword)
+
+  // clear all values, because checkbox values aren't passed when not on
+  await resetAllEditingStatusValues(headword)
+  for (const key in data) {
+    await updateSingleEditingStatus(headword, key, data[key])
+  }
+}
+
+async function resetAllEditingStatusValues(headword: string) {
+  for (const key in EditingStatusMap) {
+    console.log(key)
+    await updateSingleEditingStatus(headword, key, "off")
+  }
+}
+
+async function updateSingleEditingStatus(
+  headword: string,
+  editingStatus: string,
+  value: FormDataEntryValue
+) {
+  const fieldName = EditingStatusMap[editingStatus as EditingStatusType]
+  const bool = getCheckboxValueAsBoolean(value)
+
+  // no-op if fieldname somehow doesn't exist
+  if (!fieldName) return null
+
+  await prisma.entry.update({
+    where: {
+      headword: headword,
+    },
+    data: {
+      [fieldName]: bool,
+    },
+  })
+}
+
+export async function updateEditingTools(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const headword = getStringFromFormInput(data.headword)
+  const isPublic = getCheckboxValueAsBoolean(data.isPublic)
+  const isLegacy = getCheckboxValueAsBoolean(data.isLegacy)
+
+  await prisma.entry.update({
+    where: {
+      headword: headword,
+    },
+    data: {
+      is_public: isPublic,
+      is_legacy: isLegacy,
     },
   })
 }

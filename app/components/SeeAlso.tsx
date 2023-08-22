@@ -1,6 +1,9 @@
 import { NavLink } from "@remix-run/react"
 import React from "react"
 import type { MeaningType } from "./Meaning"
+import EditingPopover from "./editing/EditingPopover"
+import { attributeEnum } from "./editing/attributeEnum"
+import { editablePopoverInputTypes } from "./editing/EditablePopoverInput"
 
 export type SeeAlsoType = MeaningType["seeAlso"]
 
@@ -35,6 +38,19 @@ const SeeAlso = ({ seeAlso }: SeeAlsoProps): JSX.Element => {
                 <span className="ml-1">{seeAlsoItem.linknote}</span>
               )}
             </span>
+            <EditingPopover
+              currentValue={seeAlsoItem.entry.headword}
+              type={editablePopoverInputTypes.DELETE}
+              attributeType={attributeEnum.DELETE_SEE_ALSO}
+              attributeID={seeAlsoItem.meaning_id}
+              icon="delete"
+            >
+              <input
+                type="hidden"
+                name="entryId"
+                value={seeAlsoItem.entry_id}
+              />
+            </EditingPopover>
           </React.Fragment>
         )
       })}

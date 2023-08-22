@@ -5,6 +5,8 @@ import Meanings from "~/components/Meanings"
 import type { LoadedDataType } from "~/routes/entries/$headword"
 import QuickLinks from "./quicklinks/QuickLinks"
 import EntryImages from "./EntryImages"
+import EditingStatus from "./editing/EditingStatus"
+import EditingTools from "./editing/EditingTools"
 
 interface EntryProps {
   data: LoadedDataType
@@ -21,10 +23,14 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
 
   return (
     <div className="mx-auto flex max-w-6xl flex-row">
-      <QuickLinks data={data} />
-      <div
-        className={`w-full md:max-w-xl lg:max-w-3xl ${bgColor} pl-4 pr-5 pt-1`}
-      >
+      <div className="mx-auto mt-2 mr-5  hidden w-96 max-w-6xl shrink-0 overflow-x-hidden overflow-y-visible md:block">
+        <div className="fixed h-3/4 w-96 overflow-y-auto overflow-x-hidden">
+          <QuickLinks data={data} />
+          <EditingTools data={data} />
+          <EditingStatus data={data} />
+        </div>
+      </div>
+      <div className={`md:max-w-xl lg:max-w-3xl ${bgColor} pl-4 pr-5 pt-1`}>
         <div>
           <Headword
             word={data.headword}
