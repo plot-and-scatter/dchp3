@@ -21,7 +21,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function Index() {
   return (
-    <Main>
+    <Main center={true}>
       <PageHeader>Insert entry</PageHeader>
       <p>Fill in the boxes to insert an entry into the database</p>
       <Form
