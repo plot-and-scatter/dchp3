@@ -1,29 +1,14 @@
 import { PageHeader } from "~/components/elements/PageHeader"
-import { Form, useLoaderData } from "@remix-run/react"
-import BankHeadwordCitationSelect from "~/components/bank/BankHeadwordCitationSelect"
+import { Form } from "@remix-run/react"
 import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
 import Button from "~/components/elements/Button"
 import invariant from "tiny-invariant"
-import React from "react"
+import { json, type ActionArgs, redirect } from "@remix-run/server-runtime"
 import {
-  json,
-  type ActionArgs,
-  type LoaderArgs,
-  redirect,
-} from "@remix-run/server-runtime"
-import {
-  getAuthorBySourceId,
-  getCitationById,
-  getCitationsByHeadwordAndUserId,
-  getPlaceBySourceId,
-  getTitleBySourceId,
-  getUtteranceBySourceId as getSourceBySourceId,
   findOrCreateHeadword,
-  updateCitation,
   findOrCreateAuthor,
   findOrCreatePlace,
   findOrCreateTitle,
-  updateSource,
   createCitation,
   createSource,
 } from "~/models/bank.server"
@@ -34,17 +19,11 @@ import {
   getStringFromFormInput,
   getStringOrNullFromFormInput,
 } from "~/utils/generalUtils"
-import type { BankCitation } from "@prisma/client"
 import { getUserIdByEmail } from "~/models/user.server"
 import { getEmailFromSession } from "~/services/auth/session.server"
-import type {
-  BankCitationCreate,
-  BankCitationUpdate,
-  BankSourceCreate,
-  BankSourceUpdate,
-} from "~/models/bank.types"
+import type { BankCitationCreate, BankSourceCreate } from "~/models/bank.types"
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request }: ActionArgs) => {
   const data = Object.fromEntries(await request.formData())
   const headword = getStringFromFormInput(data[`citation.headword`])
   invariant(headword)
@@ -130,13 +109,13 @@ export const action = async ({ request, params }: ActionArgs) => {
   return redirect(`/bank/edit/${citation.id}`)
 }
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async () => {
   return null
 }
 
 export default function EditCitationId() {
   return (
-    <React.Fragment>
+    <>
       <PageHeader>Create citation</PageHeader>
       <hr className="my-6" />
       <Form action={`/bank/create`} method={`post`}>
@@ -161,6 +140,6 @@ export default function EditCitationId() {
           </div>
         </div>
       </Form>
-    </React.Fragment>
+    </>
   )
 }
