@@ -352,7 +352,7 @@ model BankTitle {
   @@map("title")
 }
 
-model user {
+model User {
   id           Int     @id @default(autoincrement())
   student_id   Int?
   course       String? @db.VarChar(100)

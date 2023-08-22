@@ -1,9 +1,26 @@
+import type {
+  BankCitation,
+  BankHeadword,
+  BankPlace,
+  BankSource,
+} from "@prisma/client"
 import { NavLink } from "@remix-run/react"
 import { sourceTypeToText } from "utils/source"
-import type { BankGetOwnCitation } from "~/models/bank.types"
+
+export type BankCitationResultType = {
+  id: BankCitation["id"]
+  text: BankCitation["text"]
+  short_meaning: BankCitation["short_meaning"]
+  spelling_variant: BankCitation["spelling_variant"]
+  headword: BankHeadword["headword"]
+  type_id: BankSource["type_id"]
+  year_composed: BankSource["year_composed"]
+  year_published: BankSource["year_published"]
+  place_name: BankPlace["name"]
+}
 
 interface BankCitationResultProps {
-  citation: BankGetOwnCitation
+  citation: BankCitationResultType
 }
 
 export default function BankCitationResult({

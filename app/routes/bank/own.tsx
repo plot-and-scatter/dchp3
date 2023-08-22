@@ -1,4 +1,3 @@
-import { getOwnCitations } from "~/models/bank.server"
 import { json, type LoaderArgs } from "@remix-run/server-runtime"
 import { useCatch, useLoaderData } from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
@@ -7,14 +6,15 @@ import {
   redirectIfUserLacksPermission,
 } from "~/services/auth/session.server"
 import BankCitationResult from "~/components/bank/BankCitationResult"
+import getOwnCitations from "~/services/bank/getOwnCitations"
 
 export const loader = async ({ request }: LoaderArgs) => {
   await redirectIfUserLacksPermission(request, "bank:create")
 
   const email = await getEmailFromSession(request)
   if (!email) throw json({ message: `No email on user` }, { status: 500 })
-  const citations = await getOwnCitations(email)
 
+  const citations = await getOwnCitations(email)
   return citations
 }
 
