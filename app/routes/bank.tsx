@@ -17,7 +17,8 @@ export default function BankIndex() {
         <h2 className="my-8 text-xl font-bold">
           Links: <NavLink to="/bank/headword-list">Headword list</NavLink> •{" "}
           <NavLink to="/bank/create">New</NavLink> •{" "}
-          <NavLink to="/bank/own">Show own</NavLink>
+          <NavLink to="/bank/own">Show own</NavLink> •{" "}
+          <NavLink to="/bank/search">Search</NavLink>
         </h2>
       </nav>
       <div>
