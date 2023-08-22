@@ -3,7 +3,7 @@ import type {
   BankHeadword,
   BankPlace,
   BankSource,
-  user,
+  User,
 } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { getUserIdByEmail } from "~/models/user.server"
@@ -23,7 +23,7 @@ export type OwnCitation = Pick<
   Pick<BankHeadword, "headword"> &
   Pick<BankSource, "year_published" | "year_composed" | "type_id"> & {
     place_name: BankPlace["name"]
-  } & Pick<user, "email">
+  } & Pick<User, "email">
 
 export default async function (
   email: string,
