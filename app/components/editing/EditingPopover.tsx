@@ -13,6 +13,7 @@ interface Props {
   attributeType: attributeEnum
   attributeID: number
   type?: editablePopoverInputTypes
+  buttonLabel?: React.ReactNode
   icon?: "delete" | "edit" | "add"
   children?: React.ReactNode
 }
@@ -36,6 +37,7 @@ const EditingPopover = ({
   attributeID,
   type,
   icon,
+  buttonLabel,
   children: formChildren,
 }: Props) => {
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
@@ -51,7 +53,14 @@ const EditingPopover = ({
         className={`text-red-400 focus:border-red-600`}
         ref={setReferenceElement}
       >
-        <i className={`${getIcon(icon)} cursor-pointer hover:text-red-600`}></i>
+        <div className="flex flex-row items-center">
+          <p>{buttonLabel}</p>
+          <i
+            className={`${getIcon(
+              icon
+            )} mx-2 mb-4 cursor-pointer hover:text-red-600`}
+          ></i>
+        </div>
       </Popover.Button>
 
       <Popover.Panel
