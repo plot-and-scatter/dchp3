@@ -1,6 +1,6 @@
 import { getOwnCitations } from "~/models/bank.server"
 import { json, type LoaderArgs } from "@remix-run/server-runtime"
-import { useLoaderData } from "@remix-run/react"
+import { useCatch, useLoaderData } from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
 import {
   getEmailFromSession,
