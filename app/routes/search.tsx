@@ -4,7 +4,6 @@ import { SearchResultEnum } from "./search/searchResultEnum"
 import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import { useState } from "react"
 import Main from "~/components/elements/Main"
-import Nav from "~/components/elements/Nav"
 import Button from "~/components/elements/Button"
 
 export async function action({ request }: ActionArgs) {
@@ -31,7 +30,7 @@ export default function SearchPage() {
     searchParams.get("attribute") ?? SearchResultEnum.HEADWORD
 
   return (
-    <Main>
+    <Main center={true}>
       <PageHeader>Search entries</PageHeader>
       <p>Enter search text to find headwords containing that text.</p>
       <Form className="flex flex-row p-4" method="post">
@@ -57,7 +56,9 @@ export default function SearchPage() {
               />
             </label>
           </div>
-          <Button size="large">search</Button>
+          <Button size="large" name="attribute" value={currentAttribute}>
+            search
+          </Button>
         </div>
         <div className="ml-5 flex flex-col">
           <Button
@@ -87,14 +88,14 @@ export default function SearchPage() {
             name="attribute"
             value={SearchResultEnum.USAGE_NOTE}
           >
-            Usage Note
+            UsageNote
           </Button>
           <Button
             appearance="linkbutton"
             name="attribute"
             value={SearchResultEnum.FIST_NOTE}
           >
-            Fist Note
+            FistNote
           </Button>
           <Button
             appearance="linkbutton"

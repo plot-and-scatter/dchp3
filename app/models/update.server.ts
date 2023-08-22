@@ -35,6 +35,7 @@ export async function updateMeaningHeader(data: {
   const dagger = data.dagger ? true : false
   const order = getStringFromFormInput(data.order)
   const partOfSpeech = getStringFromFormInput(data.partOfSpeech)
+  const canadianismType = getStringFromFormInput(data.canadianismType)
   const usageNote = getStringFromFormInput(data.usageNote)
 
   await prisma.meaning.update({
@@ -43,6 +44,7 @@ export async function updateMeaningHeader(data: {
       dagger: dagger,
       order: order,
       partofspeech: partOfSpeech,
+      canadianism_type: canadianismType,
       usage: usageNote,
     },
   })
@@ -149,6 +151,20 @@ export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
       meaning_id: meaningId,
       entry_id: entry.id,
       linknote: linkNote,
+    },
+  })
+}
+
+export async function deleteSeeAlso(data: { [k: string]: FormDataEntryValue }) {
+  const meaningId = getNumberFromFormInput(data.attributeID)
+  const entryId = getNumberFromFormInput(data.entryId)
+
+  await prisma.seeAlso.delete({
+    where: {
+      meaning_id_entry_id: {
+        meaning_id: meaningId,
+        entry_id: entryId,
+      },
     },
   })
 }

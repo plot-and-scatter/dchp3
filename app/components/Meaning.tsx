@@ -46,6 +46,7 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
           number={number}
           dagger={dagger}
           partOfSpeech={partOfSpeech}
+          canadianismType={meaning.canadianism_type}
           usageNote={usageNote}
         />
         <MeaningHeader

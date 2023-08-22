@@ -1,4 +1,6 @@
-export function sourceTypeToText(sourceType: number): string {
+import type { BankSourceTypeEnum } from "~/models/bank.types"
+
+export function sourceTypeToText(sourceType: BankSourceTypeEnum): string {
   switch (sourceType) {
     case 0:
       return "Book"
@@ -9,5 +11,5 @@ export function sourceTypeToText(sourceType: number): string {
     case 3:
       return "Spoken Language"
   }
-  return "Unknown"
+  return "Unknown Source"
 }

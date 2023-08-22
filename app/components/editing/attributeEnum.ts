@@ -9,6 +9,7 @@ export enum attributeEnum {
   // TODO: Is there a cleaner way to handle this situation?
   MEANING_HEADER = "MeaningHeader",
   SEE_ALSO = "SeeAlso",
+  DELETE_SEE_ALSO = "DeleteSeeAlso",
   CANADIANISM = "Canadianism",
   DEFINITION = "Definition",
   DEFINITION_FIST_NOTE = "DefintionFistNote",
