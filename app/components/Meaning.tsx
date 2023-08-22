@@ -71,6 +71,7 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
             currentValue={meaning.canadianism_type_comment ?? ""}
             type={editablePopoverInputTypes.TEXTAREA}
             attributeType={attributeEnum.CANADIANISM}
+            buttonLabel={"Modify Canadianism Type Description"}
             attributeID={meaning.id}
             icon="edit"
           />

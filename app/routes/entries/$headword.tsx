@@ -15,6 +15,7 @@ import {
   updateMeaningDefinition,
   updateMeaningHeader,
   updateRecordByAttributeAndType,
+  addMeaningToEntry,
 } from "~/models/update.server"
 
 import Entry from "~/components/Entry"
@@ -39,6 +40,9 @@ export async function action({ request }: ActionArgs) {
   const type = getAttributeEnumFromFormInput(data.attributeType)
 
   switch (type) {
+    case attributeEnum.ADD_MEANING:
+      await addMeaningToEntry(data)
+      break
     case attributeEnum.MEANING_HEADER:
       await updateMeaningHeader(data)
       break

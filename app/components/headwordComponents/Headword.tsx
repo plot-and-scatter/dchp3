@@ -6,6 +6,8 @@ import EditingPopover from "../editing/EditingPopover"
 import GeneralLabels from "./GeneralLabels"
 import Etymology from "./Etymology"
 import Alternatives from "./Alternatives"
+import { Form } from "@remix-run/react"
+import Button from "../elements/Button"
 
 interface HeadwordProps {
   alternatives?: string
@@ -78,6 +80,7 @@ const Headword = ({
         )}
         <EditingPopover
           currentValue={handNote}
+          buttonLabel={"Add Headword Fist note"}
           attributeType={attributeEnum.FIST_NOTE}
           attributeID={id}
           type={editablePopoverInputTypes.TEXTAREA}
@@ -88,6 +91,15 @@ const Headword = ({
           Non-Canadianism
         </div>
       )}
+      <Form reloadDocument={true} action={`/entries/${word}`} method="post">
+        <Button>Add Meaning</Button>
+        <input
+          type="hidden"
+          name="attributeType"
+          value={attributeEnum.ADD_MEANING}
+        />
+        <input type="hidden" name="attributeID" value={id} />
+      </Form>
     </div>
   )
 }
