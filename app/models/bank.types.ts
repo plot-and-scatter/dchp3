@@ -143,3 +143,19 @@ export type BankCitationCreate = Omit<
 >
 
 export type BankSourceCreate = Omit<BankSourceUpdate, "id">
+
+// BEGIN: Fix error with serializing BigInt to JSON.
+// See https://github.com/prisma/studio/issues/614
+// TODO: Can this be removed one day...?
+
+declare global {
+  interface BigInt {
+    toJSON(): string
+  }
+}
+
+BigInt.prototype.toJSON = function () {
+  return String(this)
+}
+
+// END: Fix error with serializing BigInt to JSON.

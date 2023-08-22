@@ -15,7 +15,7 @@ export default function BankIndex() {
       <PageHeader>Bank of Canadian English</PageHeader>
       <nav className="bg-slate-100">
         <h2 className="my-8 text-xl font-bold">
-          Links: <NavLink to="/bank/stats">Statistics</NavLink> •{" "}
+          Links: <NavLink to="/bank/headword-list">Headword list</NavLink> •{" "}
           <NavLink to="/bank/create">New</NavLink> •{" "}
           <NavLink to="/bank/own">Show own</NavLink>
         </h2>
