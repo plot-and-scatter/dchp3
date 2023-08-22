@@ -13,11 +13,14 @@ interface Props {
   attributeType: attributeEnum
   attributeID: number
   type?: editablePopoverInputTypes
-  icon?: "edit" | "add"
+  icon?: "delete" | "edit" | "add"
+  children?: React.ReactNode
 }
 
 function getIcon(icon: string | undefined) {
   switch (icon) {
+    case "delete":
+      return "fa-solid fa-trash fa-xs"
     case "edit":
       return "fa-solid fa-pen-to-square"
     case "add":
@@ -33,6 +36,7 @@ const EditingPopover = ({
   attributeID,
   type,
   icon,
+  children: formChildren,
 }: Props) => {
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
   const [popperElement, setPopperElement] = useState<HTMLElement | null>()
@@ -67,6 +71,7 @@ const EditingPopover = ({
               value={currentValue ?? ""}
               type={type}
             />
+            {formChildren}
             <input type="hidden" name="attributeType" value={attributeType} />
             <input type="hidden" name="attributeID" value={attributeID} />
           </Form>

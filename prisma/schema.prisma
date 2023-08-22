@@ -3,40 +3,41 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model author {
+model BankAuthor {
   id       Int     @id @default(autoincrement())
   name     String? @db.VarChar(500)
   is_dchp1 Int?    @db.TinyInt
   is_teach Int?    @db.TinyInt
+
+  @@map("author")
 }
 
-// model Citation {
-//   id                    Int                @id @default(autoincrement())
-//   created               DateTime?          @db.DateTime(0)
-//   short_meaning         String?            @db.VarChar(200)
-//   part_of_speech        String?            @db.VarChar(50)
-//   spelling_variant      String?            @db.VarChar(200)
-//   text                  String?            @db.Text
-//   headword_id           Int?
-//   source_id             Int?
-//   user_id               Int?
-//   last_modified         DateTime?          @db.DateTime(0)
-//   last_modified_user_id Int?
-//   legacy_id             Int?
-//   is_incomplete         Int?
-//   memo                  String?            @db.Text
-//   is_dchp1              Int?               @db.TinyInt
-//   is_teach              Int?               @db.TinyInt
-//   clip_start            Int?
-//   clip_end              Int?
-//   clipped_text          String?            @db.Text
-//   meanings              MeaningCitations[]
+model BankCitation {
+  id                    Int                @id @default(autoincrement())
+  created               DateTime?          @db.DateTime(0)
+  short_meaning         String?            @db.VarChar(200)
+  part_of_speech        String?            @db.VarChar(50)
+  spelling_variant      String?            @db.VarChar(200)
+  text                  String?            @db.Text
+  headword_id           Int?
+  source_id             Int?
+  user_id               Int?
+  last_modified         DateTime?          @db.DateTime(0)
+  last_modified_user_id Int?
+  legacy_id             Int?
+  is_incomplete         Int?
+  memo                  String?            @db.Text
+  is_dchp1              Int?               @db.TinyInt
+  is_teach              Int?               @db.TinyInt
+  clip_start            Int?
+  clip_end              Int?
+  clipped_text          String?            @db.Text
 
-//   @@index([headword_id], map: "headword_id_idxfk")
-//   @@index([source_id], map: "source_id_idxfk")
-//   @@index([user_id], map: "user_id_idxfk")
-//   @@map("citation")
-// }
+  @@index([headword_id], map: "headword_id_idxfk")
+  @@index([source_id], map: "source_id_idxfk")
+  @@index([user_id], map: "user_id_idxfk")
+  @@map("citation")
+}
 
 // model Det {
 //   meaning_id  Int
@@ -250,7 +251,7 @@ model det_user_sessions {
   expires Int?
 }
 
-model headword {
+model BankHeadword {
   id       Int    @id @default(autoincrement())
   headword String @db.VarChar(400)
   is_dchp1 Int?   @db.TinyInt
@@ -258,13 +259,17 @@ model headword {
 
   @@index([headword(length: 333)], map: "headword")
   @@index([id], map: "headword_id_idxfk")
+
+  @@map("headword")
 }
 
-model place {
+model BankPlace {
   id       Int     @id @default(autoincrement())
   name     String? @db.VarChar(500)
   is_dchp1 Int?    @db.TinyInt
   is_teach Int?    @db.TinyInt
+
+  @@map("place")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
@@ -304,7 +309,7 @@ model sdt_sources {
   @@index([sourceid], map: "sdt_sources_sourceid_idxfk")
 }
 
-model source {
+model BankSource {
   id                  Int     @id @default(autoincrement()) @db.UnsignedInt
   type_id             Int?
   year_published      String? @db.VarChar(100)
@@ -333,14 +338,18 @@ model source {
   @@index([place_id], map: "place_id_idxfk")
   @@index([title_id], map: "title_id_idxfk")
   @@index([year_published], map: "year_published_idx")
+
+  @@map("source")
 }
 
-model title {
+model BankTitle {
   id         Int     @id @default(autoincrement())
   name       String? @db.Text
   short_name String? @db.MediumText
   is_dchp1   Int?    @db.TinyInt
   is_teach   Int?    @db.TinyInt
+
+  @@map("title")
 }
 
 model user {
