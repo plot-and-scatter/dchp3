@@ -1,12 +1,12 @@
 import { getOwnCitations } from "~/models/bank.server"
 import { json, type LoaderArgs } from "@remix-run/server-runtime"
-import { NavLink, useLoaderData } from "@remix-run/react"
+import { useCatch, useLoaderData } from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
-import { sourceTypeToText } from "utils/source"
 import {
   getEmailFromSession,
   redirectIfUserLacksPermission,
 } from "~/services/auth/session.server"
+import BankCitationResult from "~/components/bank/BankCitationResult"
 
 export const loader = async ({ request }: LoaderArgs) => {
   await redirectIfUserLacksPermission(request, "bank:create")
@@ -21,37 +21,28 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function OwnCitations() {
   const citations = useLoaderData<typeof loader>()
 
-  console.log("citations", citations)
-
   return (
     <>
       <PageHeader>Owned citations</PageHeader>
-      {citations.map((citation) => {
-        return (
-          <div key={citation.id} className="mb-4">
-            <div className="text-lg font-bold">
-              <NavLink
-                to={`/bank/edit/${citation.id}`}
-                className="text-blue-500"
-              >
-                {citation.headword}
-              </NavLink>
-            </div>
-            <div>
-              <strong>Meaning Short</strong>: {citation.short_meaning}
-              <br />
-              <strong>ID</strong>: {citation.id} | <strong>Year Pub</strong>:{" "}
-              {citation.year_published} | <strong>Year</strong>
-              <strong>Comp</strong>: {citation.year_composed} |{" "}
-              <strong>Place</strong>: {citation.place_name} |
-              <strong>Spelling Variations</strong>: {citation.spelling_variant}
-              <br />
-              <strong>Citation</strong>:[...] {citation.text} [..] (Source:{" "}
-              {sourceTypeToText(citation.type_id)})
-            </div>
-          </div>
-        )
-      })}
+      {citations.map((citation) => (
+        <BankCitationResult key={citation.id} citation={citation} />
+      ))}
     </>
   )
+}
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  console.error(error)
+
+  return <div>An unexpected error occurred: {error.message}</div>
+}
+
+export function CatchBoundary() {
+  const caught = useCatch()
+
+  if (caught.status === 404) {
+    return <div>Entry not found</div>
+  }
+
+  throw new Error(`Unexpected caught response with status: ${caught.status}`)
 }

@@ -16,7 +16,6 @@ import {
   type BankPlaceName,
   type BankTitleName,
 } from "./bank.types"
-import type { BankCitation } from "@prisma/client"
 
 // export function getBankStats() {
 //   return prisma.$queryRaw<{
@@ -28,6 +27,8 @@ export async function getWordCount() {
   const result = prisma.$queryRaw`SELECT description,
 sum(LENGTH(text) - LENGTH(REPLACE(text, ' ', '')) + 1)
 FROM citation`
+
+  return result
 }
 
 export async function getOwnCitations(

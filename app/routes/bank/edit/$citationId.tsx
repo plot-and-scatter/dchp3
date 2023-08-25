@@ -32,7 +32,6 @@ import {
   getStringFromFormInput,
   getStringOrNullFromFormInput,
 } from "~/utils/generalUtils"
-import type { BankCitation } from "@prisma/client"
 import { getUserIdByEmail } from "~/models/user.server"
 import { getEmailFromSession } from "~/services/auth/session.server"
 import type { BankCitationUpdate, BankSourceUpdate } from "~/models/bank.types"
@@ -75,7 +74,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       : 0,
   }
 
-  const updatedCitation = await updateCitation(citationFields)
+  await updateCitation(citationFields)
 
   const authorId = await findOrCreateAuthor(
     getStringFromFormInput(data[`author`])
