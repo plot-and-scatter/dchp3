@@ -27,6 +27,25 @@ export async function updateRecordByAttributeAndType(
   await updateEntry(id, type, value)
 }
 
+export async function addMeaningToEntry(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const id = getNumberFromFormInput(data.attributeID)
+  assertIsValidId(id)
+
+  await prisma.meaning.create({
+    data: {
+      entry_id: id,
+      partofspeech: "",
+      definition: "placeholder definition",
+      ordernum: 0,
+      orderletter: "",
+      usage: "",
+      dagger: false,
+    },
+  })
+}
+
 export async function updateMeaningHeader(data: {
   [k: string]: FormDataEntryValue
 }) {
