@@ -16,8 +16,6 @@ export async function loader({ params }: LoaderArgs) {
     }[]
   >`SELECT headword, count('c.id') AS count FROM citation c INNER JOIN headword h ON c.headword_id = h.id INNER JOIN user u ON c.user_id = u.id WHERE UPPER(headword) LIKE UPPER(${query}) GROUP BY UPPER(headword), h.id ORDER BY UPPER(headword)`
 
-  console.log("headwords", headwords)
-
   return { headwords }
 }
 
