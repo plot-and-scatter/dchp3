@@ -161,6 +161,10 @@ export async function updateRecordByAttributeAndType(
   }
 }
 
+export async function updateEntry(data: { [k: string]: FormDataEntryValue }) {
+  console.log("Update entry with data: " + data.headword)
+}
+
 export async function updateEntryHeadword(entryId: number, newValue: string) {
   await prisma.entry.update({
     where: { id: entryId },

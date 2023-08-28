@@ -3,7 +3,11 @@ import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node"
 import { Form, useCatch, useLoaderData } from "@remix-run/react"
 import invariant from "tiny-invariant"
 
-import { getEntryByHeadword } from "~/models/entry.server"
+import {
+  getEntryByHeadword,
+  updateEntry,
+  updateEntryHeadword,
+} from "~/models/entry.server"
 import {
   addDefinitionFistNote,
   addSeeAlso,
@@ -40,50 +44,8 @@ export async function loader({ params }: LoaderArgs) {
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
-  const type = getAttributeEnumFromFormInput(data.attributeType)
 
-  switch (type) {
-    case attributeEnum.ADD_MEANING:
-      await addMeaningToEntry(data)
-      break
-    case attributeEnum.MEANING_HEADER:
-      await updateMeaningHeader(data)
-      break
-    case attributeEnum.SEE_ALSO:
-      await addSeeAlso(data)
-      break
-    case attributeEnum.DELETE_SEE_ALSO:
-      await deleteSeeAlso(data)
-      break
-    case attributeEnum.CANADIANISM:
-      await updateCanadianism(data)
-      break
-    case attributeEnum.DEFINITION:
-      await updateMeaningDefinition(data)
-      break
-    case attributeEnum.DEFINITION_FIST_NOTE:
-      await updateOrDeleteDefinitionFistNote(data)
-      break
-    case attributeEnum.ADD_DEFINITION_FIST_NOTE:
-      await addDefinitionFistNote(data)
-      break
-    case attributeEnum.EDITING_TOOLS:
-      await updateEditingTools(data)
-      break
-    case attributeEnum.EDITING_STATUS:
-      await updateEditingStatus(data)
-      break
-    default:
-      await updateRecordByAttributeAndType(type, data)
-      break
-  }
-
-  // old headword invalid-- redirect to updated headword
-  if (type === attributeEnum.HEADWORD) {
-    const headword = getStringFromFormInput(data.newValue)
-    return redirect(`/entries/${headword}`)
-  }
-
+  await updateEntry(data)
   return null
 }
 
@@ -112,7 +74,7 @@ export function EditHeadwordInput({
         value={value}
         name={name}
         onChange={(e) => onChangeFunction(e.target.value)}
-        className="m-1 w-full border p-1"
+        className="m-1 h-24 w-full border p-1"
       ></textarea>
     ) : (
       <input
@@ -150,7 +112,7 @@ export default function EntryDetailsPage() {
   return (
     <div className="w-3/4">
       <PageHeader>Edit Headword: {data.headword}</PageHeader>
-      <Form>
+      <Form method="post">
         <div className="grid grid-cols-6">
           <EditHeadwordInput
             label="headword: "
