@@ -8,7 +8,7 @@ interface MainProps {
 const Main = ({ center = false, children }: MainProps): JSX.Element => {
   let className = "w-full"
   if (center) {
-    className = "mx-auto flex w-fit flex-col align-middle"
+    className = "mx-auto flex w-full flex-col justify-center items-center"
   }
 
   return (
