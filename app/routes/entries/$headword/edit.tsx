@@ -72,7 +72,6 @@ export default function EntryDetailsPage() {
         </Form>
       </div>
       <EntryEditingForm data={data} />
-
       <div id="definitions">
         {data.meanings
           .sort((a, b) => (a.order || "").localeCompare(b.order || ""))

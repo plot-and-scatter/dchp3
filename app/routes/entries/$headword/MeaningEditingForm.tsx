@@ -4,7 +4,7 @@ import { attributeEnum } from "~/components/editing/attributeEnum"
 import Button from "~/components/elements/Button"
 import { useState } from "react"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
-import { EditFormInput } from "./EntryEditingForm"
+import { EditFormInput } from "../../../components/editing/EditFormInput"
 
 interface MeaningEditingFormProps {
   headword: string
