@@ -5,6 +5,8 @@ import Button from "~/components/elements/Button"
 import { useState } from "react"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
 import { EditFormInput } from "../../../components/editing/EditFormInput"
+import SeeAlso from "~/components/SeeAlso"
+import AddSeeAlso from "./AddSeeAlso"
 
 interface MeaningEditingFormProps {
   headword: string
@@ -39,11 +41,6 @@ export default function MeaningEditingForm({
       <h3 className="text-4xl font-bold">Meaning: {meaning.order}</h3>
       <Form method="post" className="my-6">
         <div className="grid grid-cols-7">
-          <input
-            type="hidden"
-            name="attributeType"
-            value={attributeEnum.MEANING}
-          />
           <input type="hidden" name="id" value={meaning.id} />
           <input type="hidden" name="headword" value={headword} />
           <EditFormInput
@@ -103,9 +100,16 @@ export default function MeaningEditingForm({
             onChangeFunction={setCanadianismTypeComment}
             className="col-span-7"
           />
+          <div className="col-span-full">
+            <SeeAlso seeAlso={meaning.seeAlso} />
+          </div>
+          <AddSeeAlso headword={headword} meaningId={meaning.id} />
+
           <Button
             type="submit"
             size="medium"
+            name="attributeType"
+            value={attributeEnum.MEANING}
             className="col-span-1 col-start-4"
           >
             Update Meaning

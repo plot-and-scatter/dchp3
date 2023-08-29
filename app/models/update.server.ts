@@ -180,7 +180,7 @@ export async function addDefinitionFistNote(data: {
 
 export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
   const meaningId = getNumberFromFormInput(data.attributeID)
-  const headword = getStringFromFormInput(data.headword)
+  const headword = getStringFromFormInput(data.headwordToAdd)
   const linkNote = getStringFromFormInput(data.linkNote)
 
   const entry = await prisma.entry.findUnique({

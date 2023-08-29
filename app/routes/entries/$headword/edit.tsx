@@ -6,10 +6,15 @@ import { getAttributeEnumFromFormInput } from "~/utils/generalUtils"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { PageHeader } from "~/components/elements/PageHeader"
 import Button from "~/components/elements/Button"
-import MeaningEditingForm from "./MeaningEditingForm"
 import { type LoadedDataType } from "."
-import { addMeaningToEntry, updateMeaning } from "~/models/update.server"
+import {
+  addMeaningToEntry,
+  addSeeAlso,
+  deleteSeeAlso,
+  updateMeaning,
+} from "~/models/update.server"
 import EntryEditingForm from "./EntryEditingForm"
+import MeaningEditingForms from "./MeaningEditingForms"
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
@@ -34,6 +39,12 @@ export async function action({ request }: ActionArgs) {
       break
     case attributeEnum.MEANING:
       await updateMeaning(data)
+      break
+    case attributeEnum.SEE_ALSO:
+      await addSeeAlso(data)
+      break
+    case attributeEnum.DELETE_SEE_ALSO:
+      await deleteSeeAlso(data)
       break
     default:
       throw new Error("attribute enum unknown")
@@ -72,17 +83,7 @@ export default function EntryDetailsPage() {
         </Form>
       </div>
       <EntryEditingForm data={data} />
-      <div id="definitions">
-        {data.meanings
-          .sort((a, b) => (a.order || "").localeCompare(b.order || ""))
-          .map((meaning) => (
-            <MeaningEditingForm
-              key={meaning.id}
-              headword={headword}
-              meaning={meaning}
-            />
-          ))}
-      </div>
+      <MeaningEditingForms data={data} />
     </div>
   )
 }
