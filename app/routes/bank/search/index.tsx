@@ -1,22 +1,67 @@
+import { BankLegacyTypeEnum, BankSourceTypeEnum } from "~/models/bank.types"
+import { enumToSelectOptions } from "~/utils/inputUtils"
 import { Form } from "@remix-run/react"
+import { getStringFromFormInput } from "~/utils/generalUtils"
+import { json, redirect } from "@remix-run/server-runtime"
+import { PageHeader } from "~/components/elements/PageHeader"
 import BankCheckbox from "~/components/bank/BankCheckbox"
 import BankInput from "~/components/bank/BankInput"
 import BankNumericInput from "~/components/bank/BankNumericInput"
 import BankRadio from "~/components/bank/BankRadio"
 import BankSelect from "~/components/bank/BankSelect"
-import LabelledField from "~/components/bank/LabelledField"
 import Button from "~/components/elements/Button"
-import { PageHeader } from "~/components/elements/PageHeader"
-import { BankLegacyTypeEnum, BankSourceTypeEnum } from "~/models/bank.types"
-import { enumToSelectOptions } from "~/utils/inputUtils"
+import LabelledField from "~/components/bank/LabelledField"
+import type { ActionArgs } from "@remix-run/server-runtime"
 
-export const action = () => {}
+export const SEARCH_PARAMS = [
+  "exactPhrase",
+  "caseSensitive",
+  "searchField",
+  "dataType",
+  "sourceFloorYear",
+  "sourceCeilingYear",
+  "placeName",
+  "orderBy",
+  "orderDirection",
+  "horizon",
+]
+
+export const action = async ({ request }: ActionArgs) => {
+  const data = Object.fromEntries(await request.formData())
+
+  console.log("data", data)
+
+  const searchTerm = getStringFromFormInput(data["searchTerm"])
+  if (!searchTerm) throw json({ message: "Search term missing from search" })
+
+  const searchParams = SEARCH_PARAMS.map((key) => ({
+    key,
+    value: getStringFromFormInput(data[key]),
+  }))
+
+  const base = new URL(request.url)
+  const url = new URL(`/bank/search/${searchTerm}`, base)
+
+  searchParams.forEach((kv) => {
+    if (kv.value) url.searchParams.set(kv.key, kv.value)
+  })
+
+  return redirect(url.toString())
+}
+
+export const loader = async () => {
+  return null
+}
 
 export default function SearchIndex() {
   return (
     <>
       <PageHeader>Search</PageHeader>
-      <Form method="post" className="flex flex-col gap-y-4">
+      <Form
+        method="post"
+        className="flex flex-col gap-y-4"
+        action="/bank/search"
+      >
         <LabelledField
           label="Search term"
           field={<BankInput name="searchTerm" />}
@@ -24,15 +69,20 @@ export default function SearchIndex() {
         <LabelledField
           label="Select"
           field={
-            <BankCheckbox
-              name="select"
-              className="flex"
-              optionSetClassName="flex gap-x-2 mr-4"
-              options={[
-                { name: "Case sensitive", value: "caseSensitive" },
-                { name: "Exact phrase", value: "exactPhrase" },
-              ]}
-            />
+            <div className="flex">
+              <BankCheckbox
+                name="exactPhrase"
+                className="flex"
+                optionSetClassName="flex gap-x-2 mr-4"
+                options={[{ name: "Exact phrase", value: "exactPhrase" }]}
+              />
+              <BankCheckbox
+                name="caseSensitive"
+                className="flex"
+                optionSetClassName="flex gap-x-2 mr-4"
+                options={[{ name: "Case sensitive", value: "caseSensitive" }]}
+              />
+            </div>
           }
         />
         <LabelledField
@@ -73,24 +123,25 @@ export default function SearchIndex() {
         />
 
         <LabelledField
-          label="Source floor"
-          field={<BankNumericInput name="sourceFloor" />}
+          label="Source floor (year)"
+          field={<BankNumericInput name="sourceFloorYear" />}
         />
         <LabelledField
-          label="Source ceiling"
-          field={<BankNumericInput name="sourceCeiling" />}
+          label="Source ceiling (year)"
+          field={<BankNumericInput name="sourceCeilingYear" />}
         />
-        <LabelledField label="Place" field={<BankInput name="place" />} />
+        <LabelledField label="Place" field={<BankInput name="placeName" />} />
         <LabelledField
           label="Sort by"
           field={
             <BankRadio
               className="flex"
               optionSetClassName="flex gap-x-2 mr-4"
-              name="sortBy"
+              name="orderBy"
+              defaultValue={"dateAdded"}
               options={[
-                { name: "Year Published / Composed", value: "year" },
                 { name: "Date Added", value: "dateAdded" },
+                { name: "Year Published / Composed", value: "year" },
                 { name: "Place", value: "place" },
               ]}
             />
@@ -102,7 +153,8 @@ export default function SearchIndex() {
             <BankRadio
               className="flex"
               optionSetClassName="flex gap-x-2 mr-4"
-              name="order"
+              name="orderDirection"
+              defaultValue={"asc"}
               options={[
                 { name: "Ascending", value: "asc" },
                 { name: "Descending", value: "desc" },
@@ -117,6 +169,7 @@ export default function SearchIndex() {
               className="flex"
               optionSetClassName="flex gap-x-2 mr-4"
               name="horizon"
+              defaultValue="15"
               options={[
                 { name: "All", value: "all" },
                 { name: "5", value: "5" },
@@ -127,7 +180,12 @@ export default function SearchIndex() {
             />
           }
         />
-        <Button appearance="primary" className="w-fit" size="large">
+        <Button
+          appearance="primary"
+          className="w-fit"
+          size="large"
+          type="submit"
+        >
           <i className="fas fa-search mx-auto mr-4" />
           Search
         </Button>

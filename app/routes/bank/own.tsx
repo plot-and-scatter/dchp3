@@ -1,5 +1,5 @@
 import { json, type LoaderArgs } from "@remix-run/server-runtime"
-import { useCatch, useLoaderData } from "@remix-run/react"
+import { useLoaderData } from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
 import {
   getEmailFromSession,
@@ -7,9 +7,6 @@ import {
 } from "~/services/auth/session.server"
 import BankCitationResult from "~/components/bank/BankCitationResult"
 import getOwnCitations from "~/services/bank/getOwnCitations"
-import { prisma } from "~/db.server"
-import BankCitationResultAlt from "~/components/bank/BankCitationResultAlt"
-import { getUserIdByEmail } from "~/models/user.server"
 
 export const loader = async ({ request }: LoaderArgs) => {
   await redirectIfUserLacksPermission(request, "bank:create")
@@ -18,6 +15,8 @@ export const loader = async ({ request }: LoaderArgs) => {
   if (!email) throw json({ message: `No email on user` }, { status: 500 })
 
   const citations = await getOwnCitations(email)
+
+  console.log("citations", citations)
 
   // TODO: Leaving this here as an example of an alternative to the custom SQL.
   // const userId = await getUserIdByEmail({ email })
@@ -65,7 +64,7 @@ export default function OwnCitations() {
 
   return (
     <>
-      <PageHeader>Owned citations</PageHeader>
+      <PageHeader>Owned citations (temp limit 100)</PageHeader>
       {citations.map((citation) => (
         <BankCitationResult key={citation.id} citation={citation} />
       ))}
@@ -76,18 +75,18 @@ export default function OwnCitations() {
   )
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error)
+// export function ErrorBoundary({ error }: { error: Error }) {
+//   console.error(error)
 
-  return <div>An unexpected error occurred: {error.message}</div>
-}
+//   return <div>An unexpected error occurred: {error.message}</div>
+// }
 
-export function CatchBoundary() {
-  const caught = useCatch()
+// export function CatchBoundary() {
+//   const caught = useCatch()
 
-  if (caught.status === 404) {
-    return <div>Entry not found</div>
-  }
+//   if (caught.status === 404) {
+//     return <div>Entry not found</div>
+//   }
 
-  throw new Error(`Unexpected caught response with status: ${caught.status}`)
-}
+//   throw new Error(`Unexpected caught response with status: ${caught.status}`)
+// }

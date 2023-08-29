@@ -7,12 +7,10 @@ import type {
   BankSourceUpdate,
   BankCitationCreate,
   BankSourceCreate,
-} from "./bank.types"
-import {
-  type BankAuthorName,
-  type BankCitationById,
-  type BankPlaceName,
-  type BankTitleName,
+  BankAuthorName,
+  BankCitationById,
+  BankPlaceName,
+  BankTitleName,
 } from "./bank.types"
 
 // export function getBankStats() {

@@ -1,5 +1,3 @@
-import type { SerializeFrom } from "@remix-run/server-runtime"
-
 import type {
   BankCitation,
   BankHeadword,
@@ -8,7 +6,6 @@ import type {
 } from "@prisma/client"
 import { NavLink } from "@remix-run/react"
 import { sourceTypeToText } from "utils/source"
-import type { OwnCitationsLoaderData } from "~/routes/bank/own"
 
 export type BankCitationResultType = {
   id: BankCitation["id"]
