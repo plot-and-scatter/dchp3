@@ -100,6 +100,10 @@ async function updateEntry(
   })
 }
 
+export async function updateMeaning(data: { [k: string]: FormDataEntryValue }) {
+  console.log("Updating meaning")
+}
+
 export async function updateCanadianism(data: {
   [k: string]: FormDataEntryValue
 }) {

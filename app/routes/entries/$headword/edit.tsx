@@ -1,36 +1,15 @@
-import type { Prisma } from "@prisma/client"
 import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node"
 import { Form, useCatch, useLoaderData } from "@remix-run/react"
 import invariant from "tiny-invariant"
-
-import {
-  getEntryByHeadword,
-  updateEntry,
-  updateEntryHeadword,
-} from "~/models/entry.server"
-import {
-  addDefinitionFistNote,
-  addSeeAlso,
-  deleteSeeAlso,
-  updateCanadianism,
-  updateOrDeleteDefinitionFistNote,
-  updateEditingStatus,
-  updateEditingTools,
-  updateMeaningDefinition,
-  updateMeaningHeader,
-  updateRecordByAttributeAndType,
-  addMeaningToEntry,
-} from "~/models/update.server"
-
-import Entry from "~/components/Entry"
-import {
-  getAttributeEnumFromFormInput,
-  getStringFromFormInput,
-} from "~/utils/generalUtils"
+import { getEntryByHeadword, updateEntry } from "~/models/entry.server"
+import { getAttributeEnumFromFormInput } from "~/utils/generalUtils"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { PageHeader } from "~/components/elements/PageHeader"
 import React, { useState } from "react"
 import Button from "~/components/elements/Button"
+import MeaningEditingForm from "./meaningEditingForm"
+import { type LoadedDataType } from "."
+import { updateMeaning } from "~/models/update.server"
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
@@ -45,11 +24,21 @@ export async function loader({ params }: LoaderArgs) {
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
 
-  await updateEntry(data)
+  const type = getAttributeEnumFromFormInput(data.attributeType)
+
+  switch (type) {
+    case attributeEnum.ENTRY:
+      await updateEntry(data)
+      break
+    case attributeEnum.MEANING:
+      await updateMeaning(data)
+      break
+    default:
+      throw new Error("attribute enum unknown")
+  }
+
   return redirect(`/entries/${data.headword}`)
 }
-
-export type LoadedDataType = Prisma.PromiseReturnType<typeof loader>
 
 interface editHeadwordInputProps {
   label: string
@@ -115,6 +104,11 @@ export default function EntryDetailsPage() {
       <Form method="post">
         <div className="grid grid-cols-6">
           <input type="hidden" name="id" value={id} />
+          <input
+            type="hidden"
+            name="attributeType"
+            value={attributeEnum.ENTRY}
+          />
           <EditHeadwordInput
             label="headword: "
             name="headword"
@@ -190,6 +184,17 @@ export default function EntryDetailsPage() {
           </Button>
         </div>
       </Form>
+      <div id="definitions">
+        {data.meanings
+          .sort((a, b) => (a.order || "").localeCompare(b.order || ""))
+          .map((meaning) => (
+            <MeaningEditingForm
+              key={meaning.id}
+              headword={headword}
+              meaning={meaning}
+            />
+          ))}
+      </div>
     </div>
   )
 }
@@ -204,7 +209,7 @@ export function CatchBoundary() {
   const caught = useCatch()
 
   if (caught.status === 404) {
-    return <div>Entry not found</div>
+    return <div>Error</div>
   }
 
   throw new Error(`Unexpected caught response with status: ${caught.status}`)

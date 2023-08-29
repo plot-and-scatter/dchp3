@@ -1,4 +1,6 @@
 export enum attributeEnum {
+  ENTRY = "Entry",
+  MEANING = "Meaning",
   HEADWORD = "Headword",
   SPELLING_VARIANT = "SpellingVariant",
   ETYMOLOGY = "Etymology",
