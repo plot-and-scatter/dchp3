@@ -7,7 +7,7 @@ import { attributeEnum } from "~/components/editing/attributeEnum"
 import { PageHeader } from "~/components/elements/PageHeader"
 import React, { useState } from "react"
 import Button from "~/components/elements/Button"
-import MeaningEditingForm from "./meaningEditingForm"
+import MeaningEditingForm from "./MeaningEditingForm"
 import { type LoadedDataType } from "."
 import { updateMeaning } from "~/models/update.server"
 
@@ -44,35 +44,14 @@ interface editHeadwordInputProps {
   label: string
   value: string
   name: string
-  type?: "input" | "textarea"
+  type?: "input" | "textarea" | "dropdown"
   onChangeFunction: React.SetStateAction<any>
   className?: string
 }
 
-export function EditHeadwordInput({
-  label,
-  value,
-  name,
-  type,
-  onChangeFunction,
-  className,
-}: editHeadwordInputProps) {
-  let inputElm =
-    type === "textarea" ? (
-      <textarea
-        value={value}
-        name={name}
-        onChange={(e) => onChangeFunction(e.target.value)}
-        className="m-1 h-24 w-full border p-1"
-      ></textarea>
-    ) : (
-      <input
-        value={value}
-        name={name}
-        onChange={(e) => onChangeFunction(e.target.value)}
-        className="m-1 border p-1"
-      />
-    )
+export function EditFormInput(props: editHeadwordInputProps) {
+  let inputElm = getEditFormInput(props)
+  let { className, name, label } = props
 
   return (
     <div className={className}>
@@ -82,6 +61,35 @@ export function EditHeadwordInput({
       {inputElm}
     </div>
   )
+}
+
+function getEditFormInput({
+  value,
+  name,
+  type,
+  onChangeFunction,
+}: editHeadwordInputProps) {
+  switch (type) {
+    case "textarea":
+      return (
+        <textarea
+          value={value}
+          name={name}
+          onChange={(e) => onChangeFunction(e.target.value)}
+          className="m-1 h-24 w-full border p-1"
+        ></textarea>
+      )
+    default:
+      return (
+        <input
+          value={value}
+          name={name}
+          type={type}
+          onChange={(e) => onChangeFunction(e.target.value)}
+          className="m-1 border p-1"
+        />
+      )
+  }
 }
 
 export default function EntryDetailsPage() {
@@ -109,28 +117,28 @@ export default function EntryDetailsPage() {
             name="attributeType"
             value={attributeEnum.ENTRY}
           />
-          <EditHeadwordInput
+          <EditFormInput
             label="headword: "
             name="headword"
             value={headword}
             onChangeFunction={setHeadword}
             className="col-span-2"
           />
-          <EditHeadwordInput
+          <EditFormInput
             label="Spelling Variants: "
             name="spellingVariant"
             value={spellingVariant}
             onChangeFunction={setSpellingVariant}
             className="col-span-2"
           />
-          <EditHeadwordInput
+          <EditFormInput
             label="General Labels: "
             name="generalLabels"
             value={generalLabels}
             onChangeFunction={setGeneralLabels}
             className="col-span-2"
           />
-          <EditHeadwordInput
+          <EditFormInput
             label="Etymology: "
             name="etymology"
             value={etymology}
@@ -167,7 +175,7 @@ export default function EntryDetailsPage() {
               className="mx-3 border p-1"
             />
           </label>
-          <EditHeadwordInput
+          <EditFormInput
             label="Fist Note: "
             name="fistNote"
             value={handNote}

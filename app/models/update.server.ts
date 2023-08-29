@@ -101,7 +101,23 @@ async function updateEntry(
 }
 
 export async function updateMeaning(data: { [k: string]: FormDataEntryValue }) {
-  console.log("Updating meaning")
+  const id = getNumberFromFormInput(data.id)
+  assertIsValidId(id)
+
+  const order = getStringFromFormInput(data.order)
+  const partOfSpeech = getStringFromFormInput(data.partOfSpeech)
+  const canadianismType = getStringFromFormInput(data.canadianismType)
+
+  await prisma.meaning.update({
+    where: {
+      id: id,
+    },
+    data: {
+      order: order,
+      partofspeech: partOfSpeech,
+      canadianism_type: canadianismType,
+    },
+  })
 }
 
 export async function updateCanadianism(data: {
