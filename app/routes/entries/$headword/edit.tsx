@@ -46,7 +46,7 @@ export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
 
   await updateEntry(data)
-  return null
+  return redirect(`/entries/${data.headword}`)
 }
 
 export type LoadedDataType = Prisma.PromiseReturnType<typeof loader>
@@ -114,6 +114,7 @@ export default function EntryDetailsPage() {
       <PageHeader>Edit Headword: {data.headword}</PageHeader>
       <Form method="post">
         <div className="grid grid-cols-6">
+          <input type="hidden" name="id" value={id} />
           <EditHeadwordInput
             label="headword: "
             name="headword"

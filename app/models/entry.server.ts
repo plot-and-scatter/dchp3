@@ -3,6 +3,7 @@ import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
 import {
   getCheckboxValueAsBoolean,
+  getNumberFromFormInput,
   getStringFromFormInput,
 } from "~/utils/generalUtils"
 import { isNonPositive } from "~/utils/numberUtils"
@@ -162,7 +163,30 @@ export async function updateRecordByAttributeAndType(
 }
 
 export async function updateEntry(data: { [k: string]: FormDataEntryValue }) {
-  console.log("Update entry with data: " + data.headword)
+  const id = getNumberFromFormInput(data.id)
+  const headword = getStringFromFormInput(data.headword)
+  const spellingVariant = getStringFromFormInput(data.spellingVariant)
+  const generalLabels = getStringFromFormInput(data.generalLabels)
+  const etymology = getStringFromFormInput(data.etymology)
+  const fistNote = getStringFromFormInput(data.fistNote)
+
+  const dagger = getCheckboxValueAsBoolean(data.dagger)
+  const isLegacy = getCheckboxValueAsBoolean(data.isLegacy)
+  const isNonCanadian = getCheckboxValueAsBoolean(data.isNonCanadian)
+
+  await prisma.entry.update({
+    where: { id: id },
+    data: {
+      headword: headword,
+      spelling_variants: spellingVariant,
+      general_labels: generalLabels,
+      etymology: etymology,
+      fist_note: fistNote,
+      dagger: dagger,
+      is_legacy: isLegacy,
+      no_cdn_conf: isNonCanadian,
+    },
+  })
 }
 
 export async function updateEntryHeadword(entryId: number, newValue: string) {
