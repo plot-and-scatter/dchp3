@@ -1,6 +1,9 @@
 import type { Prisma } from "@prisma/client"
 import { prisma } from "~/db.server"
-import type { BankSourceTypeEnum } from "~/models/bank.types"
+import type {
+  BankLegacyTypeEnum,
+  BankSourceTypeEnum,
+} from "~/models/bank.types"
 
 export type SearchOptions = {
   exactPhrase?: boolean | null
@@ -12,6 +15,7 @@ export type SearchOptions = {
   sourceCeilingYear?: string | null
   sourceFloorYear?: string | null
   sourceType?: BankSourceTypeEnum | "all" | null
+  legacyType?: BankLegacyTypeEnum | "all" | null
 }
 
 export default async function (opts: SearchOptions) {
@@ -42,8 +46,15 @@ export default async function (opts: SearchOptions) {
       ? {}
       : { source: { type_id: opts.sourceType } }
 
+  const legacyType =
+    opts.legacyType === "all" ||
+    opts.legacyType === undefined ||
+    opts.legacyType === null
+      ? {}
+      : { legacy_id: parseInt(opts.legacyType as unknown as string) }
+
   const orderDirection: Prisma.SortOrder =
-    opts.orderDirection === "reverse" ? "asc" : "desc"
+    opts.orderDirection === "desc" ? "desc" : "asc"
 
   const orderBy =
     opts.orderBy === "year"
@@ -66,6 +77,7 @@ export default async function (opts: SearchOptions) {
       ...dates,
       ...place,
       ...sourceType,
+      ...legacyType,
       ...textSearch,
     },
     take: 10,
@@ -98,21 +110,4 @@ export default async function (opts: SearchOptions) {
   })
 
   return results
-
-  // if ($search_type == "1") {
-  //   //	$query = "SELECT * FROM dictiondata WHERE $access headword LIKE '%$searchword%' $places $dates";
-  //   $query =
-  //     "$generalSelect , u.course $generalFrom WHERE $access UCASE(h.headword) LIKE UCASE('%$searchword%') $dates $generalWhere $source_type ORDER BY $ordering $method"
-  // }
-  // if ($search_type == "2") {
-  //   //	$query = "SELECT * FROM dictiondata WHERE $access spellvar LIKE '%$searchword%' $places $dates";
-  //   $query =
-  //     "$generalSelect $generalFrom WHERE $access UCASE(c.spelling_variant) LIKE UCASE('%$searchword%') $dates $generalWhere $source_type ORDER BY $ordering $method"
-  // }
-  // if ($search_type == "3") {
-  //   //	$query = "SELECT *, MATCH(citation) AGAINST('$searchword' IN BOOLEAN MODE) AS score FROM dictiondata WHERE MATCH(citation) AGAINST ('$searchword' IN BOOLEAN MODE) ORDER BY score DESC, idtag DESC";
-  //   //$query = "$generalSelect , MATCH(c.text) AGAINST('$searchword' IN BOOLEAN MODE) AS score $generalFrom WHERE 1=1 $access $generalWhere AND MATCH(c.text) AGAINST ('$searchword' IN BOOLEAN MODE) ORDER BY score DESC, $ordering $method";
-  //   $query =
-  //     "$generalSelect $generalFrom WHERE 1=1 $access $generalWhere AND c.text LIKE UCASE('%$searchword%') ORDER BY $ordering $method"
-  // }
 }

@@ -17,7 +17,8 @@ export const SEARCH_PARAMS = [
   "exactPhrase",
   "caseSensitive",
   "searchField",
-  "dataType",
+  "legacyType",
+  "sourceType",
   "sourceFloorYear",
   "sourceCeilingYear",
   "placeName",
@@ -101,7 +102,7 @@ export default function SearchIndex() {
           label="Data type"
           field={
             <BankSelect
-              name="dataType"
+              name="legacyType"
               options={[
                 { name: "All", value: "all" },
                 ...enumToSelectOptions(BankLegacyTypeEnum),
@@ -113,7 +114,7 @@ export default function SearchIndex() {
           label="Source type"
           field={
             <BankSelect
-              name="dataType"
+              name="sourceType"
               options={[
                 { name: "All", value: "all" },
                 ...enumToSelectOptions(BankSourceTypeEnum),
@@ -138,7 +139,7 @@ export default function SearchIndex() {
               className="flex"
               optionSetClassName="flex gap-x-2 mr-4"
               name="orderBy"
-              defaultValue={"dateAdded"}
+              defaultValue={"year"}
               options={[
                 { name: "Date Added", value: "dateAdded" },
                 { name: "Year Published / Composed", value: "year" },
