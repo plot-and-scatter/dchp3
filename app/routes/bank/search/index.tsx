@@ -81,7 +81,12 @@ export default function SearchIndex() {
                 name="caseSensitive"
                 className="flex"
                 optionSetClassName="flex gap-x-2 mr-4"
-                options={[{ name: "Case sensitive", value: "caseSensitive" }]}
+                options={[
+                  {
+                    name: "Case sensitive [not implemented]",
+                    value: "caseSensitive",
+                  },
+                ]}
               />
             </div>
           }

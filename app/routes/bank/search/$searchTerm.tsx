@@ -38,7 +38,7 @@ export default function SearchIndex() {
 
   return (
     <>
-      <PageHeader>Search results for {searchTerm}</PageHeader>
+      <PageHeader>Search results for {searchTerm} (temp limit 100)</PageHeader>
       {citations.map((citation) => (
         // <BankCitationResult citation={citation} key={citation.id} />
         <BankSearchResult

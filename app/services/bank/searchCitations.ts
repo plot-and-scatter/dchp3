@@ -80,7 +80,7 @@ export default async function (opts: SearchOptions) {
       ...legacyType,
       ...textSearch,
     },
-    take: 10,
+    take: 100,
     orderBy,
     select: {
       user_id: true,
