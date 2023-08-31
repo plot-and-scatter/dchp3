@@ -39,7 +39,7 @@ export default function MeaningEditingForm({
   //   const [usageNoteValue, setUsageNote] = useState(usageNote)
 
   return (
-    <div className="my-16 bg-slate-100 p-5">
+    <div className="my-20 bg-slate-100 p-5">
       <div className="flex justify-between">
         <h3 className="text-4xl font-bold">Meaning: {meaning.order}</h3>
         <Form method="post" className="my-6">

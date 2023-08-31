@@ -37,7 +37,7 @@ export async function addMeaningToEntry(data: {
     data: {
       entry_id: id,
       partofspeech: "",
-      definition: "placeholder definition",
+      definition: "",
       ordernum: 0,
       orderletter: "",
       usage: "",

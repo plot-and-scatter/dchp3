@@ -1,4 +1,4 @@
-import { type ActionArgs, type LoaderArgs } from "@remix-run/node"
+import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node"
 import { Form, Link, useCatch, useLoaderData } from "@remix-run/react"
 import invariant from "tiny-invariant"
 import { getEntryByHeadword, updateEntry } from "~/models/entry.server"
@@ -60,6 +60,11 @@ export async function action({ request }: ActionArgs) {
       break
     default:
       throw new Error("attribute enum unknown")
+  }
+
+  // headword may have changed and data.headword exists-- so redirect
+  if (type === attributeEnum.ENTRY) {
+    return redirect(`/entries/${data.headword}/edit`)
   }
 
   return null

@@ -6,7 +6,7 @@ import {
   getNumberFromFormInput,
   getStringFromFormInput,
 } from "~/utils/generalUtils"
-import { isNonPositive } from "~/utils/numberUtils"
+import { assertIsValidId, isNonPositive } from "~/utils/numberUtils"
 
 export type { Entry } from "@prisma/client"
 
@@ -162,9 +162,38 @@ export async function updateRecordByAttributeAndType(
   }
 }
 
+async function assertNonDuplicateHeadword(
+  id: number,
+  incomingHeadword: string
+) {
+  const entry = await prisma.entry.findUniqueOrThrow({
+    where: { id: id },
+    select: { headword: true },
+  })
+
+  const currentHeadword = entry.headword
+  const incomingHeadwordEntry = await prisma.entry.findUnique({
+    where: { headword: incomingHeadword },
+  })
+
+  const headwordsAreDifferent = entry.headword !== incomingHeadword
+  const newHeadwordWouldBeDuplicate =
+    incomingHeadwordEntry !== undefined && incomingHeadwordEntry !== null
+
+  if (headwordsAreDifferent && newHeadwordWouldBeDuplicate) {
+    throw new Error(
+      `"${currentHeadword}" can't be changed to "${incomingHeadword}" as an Entry for "${incomingHeadword}" already exists`
+    )
+  }
+}
+
 export async function updateEntry(data: { [k: string]: FormDataEntryValue }) {
   const id = getNumberFromFormInput(data.id)
+  assertIsValidId(id)
+
   const headword = getStringFromFormInput(data.headword)
+  await assertNonDuplicateHeadword(id, headword)
+
   const spellingVariant = getStringFromFormInput(data.spellingVariant)
   const generalLabels = getStringFromFormInput(data.generalLabels)
   const etymology = getStringFromFormInput(data.etymology)
