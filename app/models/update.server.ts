@@ -128,6 +128,17 @@ export async function updateMeaning(data: { [k: string]: FormDataEntryValue }) {
   })
 }
 
+export async function deleteMeaning(data: { [k: string]: FormDataEntryValue }) {
+  const id = getNumberFromFormInput(data.id)
+  assertIsValidId(id)
+
+  await prisma.meaning.delete({
+    where: {
+      id: id,
+    },
+  })
+}
+
 export async function updateCanadianism(data: {
   [k: string]: FormDataEntryValue
 }) {

@@ -10,6 +10,7 @@ import { type LoadedDataType } from "."
 import {
   addMeaningToEntry,
   addSeeAlso,
+  deleteMeaning,
   deleteSeeAlso,
   updateMeaning,
 } from "~/models/update.server"
@@ -39,6 +40,9 @@ export async function action({ request }: ActionArgs) {
       break
     case attributeEnum.MEANING:
       await updateMeaning(data)
+      break
+    case attributeEnum.DELETE_MEANING:
+      await deleteMeaning(data)
       break
     case attributeEnum.SEE_ALSO:
       await addSeeAlso(data)
@@ -80,6 +84,7 @@ export default function EntryDetailsPage() {
             value={attributeEnum.ADD_MEANING}
           />
           <input type="hidden" name="attributeID" value={id} />
+          <input type="hidden" name="headword" value={headword} />
         </Form>
       </div>
       <EntryEditingForm data={data} />

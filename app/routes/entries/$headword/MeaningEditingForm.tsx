@@ -38,7 +38,21 @@ export default function MeaningEditingForm({
 
   return (
     <div className="my-16">
-      <h3 className="text-4xl font-bold">Meaning: {meaning.order}</h3>
+      <div className="flex justify-between">
+        <h3 className="text-4xl font-bold">Meaning: {meaning.order}</h3>
+        <Form method="post" className="my-6">
+          <input type="hidden" name="id" value={meaning.id} />
+          <input type="hidden" name="headword" value={headword} />
+          <Button
+            type="submit"
+            appearance="danger"
+            name="attributeType"
+            value={attributeEnum.DELETE_MEANING}
+          >
+            Delete
+          </Button>
+        </Form>
+      </div>
       <Form method="post" className="my-6">
         <div className="grid grid-cols-7">
           <input type="hidden" name="id" value={meaning.id} />
