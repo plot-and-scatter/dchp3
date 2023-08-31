@@ -214,7 +214,7 @@ export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
 }
 
 export async function deleteSeeAlso(data: { [k: string]: FormDataEntryValue }) {
-  const meaningId = getNumberFromFormInput(data.attributeID)
+  const meaningId = getNumberFromFormInput(data.meaningId)
   const entryId = getNumberFromFormInput(data.entryId)
 
   await prisma.seeAlso.delete({

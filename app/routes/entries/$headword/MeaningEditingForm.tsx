@@ -5,8 +5,9 @@ import Button from "~/components/elements/Button"
 import { useState } from "react"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
 import { EditFormInput } from "../../../components/editing/EditFormInput"
-import SeeAlso from "~/components/SeeAlso"
+import SeeAlsoItems from "~/components/SeeAlsoItems"
 import AddSeeAlso from "./AddSeeAlso"
+import SeeAlsoEditing from "./SeeAlsoEditing"
 
 interface MeaningEditingFormProps {
   headword: string
@@ -115,7 +116,10 @@ export default function MeaningEditingForm({
             className="col-span-7"
           />
           <div className="col-span-full">
-            <SeeAlso seeAlso={meaning.seeAlso} />
+            <SeeAlsoEditing
+              headword={headword}
+              seeAlsoItems={meaning.seeAlso}
+            />
           </div>
           <AddSeeAlso headword={headword} meaningId={meaning.id} />
 
