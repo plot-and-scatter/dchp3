@@ -1,32 +1,15 @@
-import type {
-  BankCitation,
-  BankHeadword,
-  BankPlace,
-  BankSource,
-} from "@prisma/client"
 import { NavLink } from "@remix-run/react"
 import { sourceTypeToText } from "utils/source"
+import type { OwnCitationsLoaderData } from "~/routes/bank/own"
+import type { SerializeFrom } from "@remix-run/server-runtime"
 
-export type BankCitationResultType = {
-  id: BankCitation["id"]
-  text: BankCitation["text"]
-  short_meaning: BankCitation["short_meaning"]
-  spelling_variant: BankCitation["spelling_variant"]
-  headword: BankHeadword["headword"]
-  type_id: BankSource["type_id"]
-  year_composed: BankSource["year_composed"]
-  year_published: BankSource["year_published"]
-  place_name: BankPlace["name"]
+interface BankOwnCitationResultProps {
+  citation: SerializeFrom<OwnCitationsLoaderData["citations"][0]>
 }
 
-interface BankCitationResultProps {
-  // citation: SerializeFrom<OwnCitationsLoaderData["myCitations"][0]>
-  citation: any
-}
-
-export default function BankCitationResultAlt({
+export default function BankOwnCitationResult({
   citation,
-}: BankCitationResultProps) {
+}: BankOwnCitationResultProps) {
   return (
     <div key={citation.id} className="mb-4">
       <div className="text-lg font-bold">
@@ -43,7 +26,7 @@ export default function BankCitationResultAlt({
         <strong>Place</strong>: {citation.source?.place?.name} |
         <strong>Spelling Variations</strong>: {citation.spelling_variant}
         <br />
-        <strong>Citation</strong>:[...] {citation.text} [..] (Source:{" "}
+        <strong>Citation</strong>:[...] {citation.text} [...] (Source:{" "}
         {sourceTypeToText(citation.source?.type_id)})
       </div>
     </div>

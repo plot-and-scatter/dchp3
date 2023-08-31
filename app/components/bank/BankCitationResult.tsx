@@ -42,7 +42,7 @@ export default function BankCitationResult({
         : {citation.place_name} |<strong>Spelling Variations</strong>:{" "}
         {citation.spelling_variant}
         <br />
-        <strong>Citation</strong>:[...] {citation.text} [..] (Source:{" "}
+        <strong>Citation</strong>:[...] {citation.text} [...] (Source:{" "}
         {sourceTypeToText(citation.type_id)})
       </div>
     </div>

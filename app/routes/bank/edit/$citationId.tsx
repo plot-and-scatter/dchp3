@@ -146,9 +146,9 @@ export const loader = async ({ params }: LoaderArgs) => {
     getCitationsByHeadwordAndUserId(citation.headword, citation.user_id),
   ]).then((responses) => {
     return {
-      title: responses[0].name,
-      place: responses[1].name,
-      author: responses[2].name,
+      title: responses[0]?.name,
+      place: responses[1]?.name,
+      author: responses[2]?.name,
       source: responses[3],
       headwordCitations: responses[4],
     }
@@ -156,6 +156,10 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   return { citation, ...response }
 }
+
+export type EditCitationIdLoaderData = Awaited<
+  Promise<ReturnType<typeof loader>>
+>
 
 export default function EditCitationId() {
   const data = useLoaderData<typeof loader>()

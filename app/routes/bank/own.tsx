@@ -1,92 +1,40 @@
-import { json, type LoaderArgs } from "@remix-run/server-runtime"
-import { useLoaderData } from "@remix-run/react"
-import { PageHeader } from "~/components/elements/PageHeader"
 import {
-  getEmailFromSession,
+  getUserId,
   redirectIfUserLacksPermission,
 } from "~/services/auth/session.server"
-import BankCitationResult from "~/components/bank/BankCitationResult"
-import getOwnCitations from "~/services/bank/getOwnCitations"
+import { DEFAULT_CITATION_SELECT } from "~/services/bank/defaultCitationSelect"
+import { json, type LoaderArgs } from "@remix-run/server-runtime"
+import { PageHeader } from "~/components/elements/PageHeader"
+import { prisma } from "~/db.server"
+import { useLoaderData } from "@remix-run/react"
+import BankOwnCitationResult from "~/components/bank/BankOwnCitationResult"
 
 export const loader = async ({ request }: LoaderArgs) => {
   await redirectIfUserLacksPermission(request, "bank:create")
 
-  const email = await getEmailFromSession(request)
-  if (!email) throw json({ message: `No email on user` }, { status: 500 })
+  const userId = await getUserId(request)
+  if (!userId) throw json({ message: `No userId on user` }, { status: 500 })
 
-  const citations = await getOwnCitations(email)
+  const citations = await prisma.bankCitation.findMany({
+    select: DEFAULT_CITATION_SELECT,
+    where: { OR: [{ user_id: userId }, { last_modified_user_id: userId }] },
+    take: 100,
+  })
 
-  console.log("citations", citations)
-
-  // TODO: Leaving this here as an example of an alternative to the custom SQL.
-  // const userId = await getUserIdByEmail({ email })
-  // const myCitations = await prisma.bankCitation.findMany({
-  //   where: { OR: [{ user_id: userId }, { last_modified_user_id: userId }] },
-  //   select: {
-  //     user_id: true,
-  //     last_modified_user_id: true,
-  //     text: true,
-  //     id: true,
-  //     short_meaning: true,
-  //     last_modified: true,
-  //     source_id: true,
-  //     spelling_variant: true,
-  //     headword: {
-  //       select: { headword: true },
-  //     },
-  //     source: {
-  //       select: {
-  //         year_published: true,
-  //         year_composed: true,
-  //         type_id: true,
-  //         place: {
-  //           select: {
-  //             name: true,
-  //           },
-  //         },
-  //       },
-  //     },
-  //   },
-  // })
-
-  // console.log("myCitations", myCitations)
-
-  return {
-    citations,
-    // myCitations,
-  } as const
+  return { citations }
 }
 
 export type OwnCitationsLoaderData = Awaited<Promise<ReturnType<typeof loader>>>
 
 export default function OwnCitations() {
-  const { citations /* myCitations */ } = useLoaderData<typeof loader>()
+  const { citations } = useLoaderData<typeof loader>()
 
   return (
     <>
       <PageHeader>Owned citations (temp limit 100)</PageHeader>
       {citations.map((citation) => (
-        <BankCitationResult key={citation.id} citation={citation} />
+        <BankOwnCitationResult key={citation.id} citation={citation} />
       ))}
-      {/* {myCitations.map((myCitation) => (
-        <BankCitationResultAlt key={myCitation.id} citation={myCitation} />
-      ))} */}
     </>
   )
 }
-
-// export function ErrorBoundary({ error }: { error: Error }) {
-//   console.error(error)
-
-//   return <div>An unexpected error occurred: {error.message}</div>
-// }
-
-// export function CatchBoundary() {
-//   const caught = useCatch()
-
-//   if (caught.status === 404) {
-//     return <div>Entry not found</div>
-//   }
-
-//   throw new Error(`Unexpected caught response with status: ${caught.status}`)
-// }

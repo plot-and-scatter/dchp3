@@ -57,15 +57,6 @@ export type BankCitationById = {
   email: string
 }
 
-export type BankCitationsByHeadwordAndUserId = {
-  id: number
-  headword_id: number
-  headword: string
-  name: string
-  year_published: string
-  email: string
-}
-
 export type BankTitleName = {
   name: string
 }

@@ -1,9 +1,10 @@
-import type { BankCitationsByHeadwordAndUserId } from "~/models/bank.types"
-import BankSelect from "./BankSelect"
 import { useNavigate } from "@remix-run/react"
+import BankSelect from "./BankSelect"
+import type { EditCitationIdLoaderData } from "~/routes/bank/edit/$citationId"
+import type { SerializeFrom } from "@remix-run/server-runtime"
 
 interface BankHeadwordCitationSelectProps {
-  citations: BankCitationsByHeadwordAndUserId[]
+  citations: SerializeFrom<EditCitationIdLoaderData["headwordCitations"][0]>[]
   currentCitationId: number
   currentEmail: string
 }
@@ -23,7 +24,9 @@ export default function BankHeadwordCitationSelect({
         defaultValue={currentCitationId}
         options={citations.map((c) => ({
           value: c.id,
-          name: `${c.headword} (${c.id}): ${c.name}, ${c.year_published}`,
+          name: `${c.headword} (${c.id}): ${
+            c.source?.place?.name || "[Place not entered]"
+          }, ${c.source?.year_published || "[Publishing year not entered]"}`,
         }))}
         onChange={(event) => navigate(`/bank/edit/${event.target.value}`)}
       />

@@ -1,13 +1,17 @@
+import { prisma } from "~/db.server"
 import { useCatch, useLoaderData, useParams } from "@remix-run/react"
-import BankCitationResult from "~/components/bank/BankCitationResult"
-import getCitationsByHeadword from "~/services/bank/getCitationsByHeadword"
+import BankOwnCitationResult from "~/components/bank/BankOwnCitationResult"
 import invariant from "tiny-invariant"
 import type { LoaderArgs } from "@remix-run/node"
+import { DEFAULT_CITATION_SELECT } from "~/services/bank/defaultCitationSelect"
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
 
-  const citations = await getCitationsByHeadword(params.headword)
+  const citations = await prisma.bankCitation.findMany({
+    select: DEFAULT_CITATION_SELECT,
+    where: { headword: { headword: params.headword } },
+  })
 
   return { citations }
 }
@@ -25,7 +29,7 @@ export default function EntryDetailsPage() {
       </h3>
       <div className="my-4 flex flex-col justify-center">
         {citations.map((c) => (
-          <BankCitationResult citation={c} key={c.id} />
+          <BankOwnCitationResult citation={c} key={c.id} />
         ))}
       </div>
     </div>
