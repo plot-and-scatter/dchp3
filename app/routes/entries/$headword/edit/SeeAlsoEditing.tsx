@@ -47,7 +47,7 @@ const SeeAlsoItems = ({
               ></input>
               <input type="hidden" name="headword" value={headword}></input>
               <Button size="small" appearance="danger">
-                <i className="fa fa-trash" aria-hidden="true"></i>{" "}
+                <i className="fa-regular fa-trash" aria-hidden="true"></i>
               </Button>
             </Form>
           </div>

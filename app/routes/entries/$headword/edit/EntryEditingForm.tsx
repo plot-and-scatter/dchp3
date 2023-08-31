@@ -1,9 +1,9 @@
 import { Form } from "@remix-run/react"
 import { useState } from "react"
-import { type LoadedDataType } from "."
+import { type LoadedDataType } from ".."
 import Button from "~/components/elements/Button"
 import { attributeEnum } from "~/components/editing/attributeEnum"
-import { EditFormInput } from "../../../components/editing/EditFormInput"
+import { EditFormInput } from "~/components/editing/EditFormInput"
 
 interface EntryEditingFormProps {
   data: LoadedDataType

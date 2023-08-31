@@ -1,4 +1,4 @@
-import { type LoadedDataType } from "."
+import { type LoadedDataType } from ".."
 import MeaningEditingForm from "./MeaningEditingForm"
 
 interface MeaningEditingFormProps {

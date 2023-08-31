@@ -5,7 +5,6 @@ import Button from "~/components/elements/Button"
 import { useState } from "react"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
 import { EditFormInput } from "../../../components/editing/EditFormInput"
-import SeeAlsoItems from "~/components/SeeAlsoItems"
 import AddSeeAlso from "./AddSeeAlso"
 import SeeAlsoEditing from "./SeeAlsoEditing"
 
@@ -122,6 +121,22 @@ export default function MeaningEditingForm({
             />
           </div>
           <AddSeeAlso headword={headword} meaningId={meaning.id} />
+
+          {meaning.usageNotes.map((usageNote, index) => (
+            <div
+              className="col-span-full"
+              key={`usage-note-div-${usageNote.id}`}
+            >
+              <Form className="">
+                <label>Fist note {index}:</label>
+                <textarea
+                  value={usageNote.text}
+                  className="m-1 h-16 w-full border p-1"
+                />
+                <button> submit </button>
+              </Form>
+            </div>
+          ))}
 
           <Button
             type="submit"
