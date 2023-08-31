@@ -5,27 +5,35 @@ import type {
   BankSourceUpdate,
   BankCitationCreate,
   BankSourceCreate,
-  BankCitationById,
 } from "./bank.types"
 import { DEFAULT_CITATION_SELECT } from "~/services/bank/defaultCitationSelect"
 import type Nullable from "~/types/Nullable"
 import type { BankAuthor, BankPlace, BankTitle } from "@prisma/client"
+import { FULL_CITATION_SELECT } from "~/services/bank/fullCitationSelect"
 
-export async function getCitationById(citationId: string) {
-  return prisma.$queryRaw<
-    BankCitationById[]
-  >`SELECT c.memo, c.user_id, c.last_modified_user_id, c.text, c.clip_start, c.clip_end, c.clipped_text, c.id, c.short_meaning, c.spelling_variant, c.created, c.last_modified, c.part_of_speech, c.legacy_id, c.is_incomplete, h.headword, c.source_id, s.year_published, s.year_composed, s.type_id, s.page, u.email FROM citation AS c, headword AS h, source AS s, user AS u WHERE c.id=${citationId} AND c.headword_id=h.id AND c.source_id=s.id AND c.user_id=u.id`.then(
-    (response) => response[0] // Get first item
-  )
+export async function getFullCitationById(citationId: string) {
+  return prisma.bankCitation.findFirst({
+    select: FULL_CITATION_SELECT,
+    where: { id: parseInt(citationId) },
+  })
+
+  // return prisma.$queryRaw<
+  //   BankCitationById[]
+  // >`SELECT c.memo, c.user_id, c.last_modified_user_id, c.text, c.clip_start, c.clip_end, c.clipped_text, c.id, c.short_meaning, c.spelling_variant, c.created, c.last_modified, c.part_of_speech, c.legacy_id, c.is_incomplete, h.headword, c.source_id, s.year_published, s.year_composed, s.type_id, s.page, u.email FROM citation AS c, headword AS h, source AS s, user AS u WHERE c.id=${citationId} AND c.headword_id=h.id AND c.source_id=s.id AND c.user_id=u.id`.then(
+  //   (response) => response[0] // Get first item
+  // )
 }
 
 // TODO: Why do we limit this only to the user who entered the currently-viewed
 // citation?
 // TODO: Can we easily type the return function here...?
 export function getCitationsByHeadwordAndUserId(
-  headword: string,
-  userId: number
+  headword: Nullable<string>,
+  userId: Nullable<number>
 ) {
+  if (!headword)
+    throw new Error(`getCitationsByHeadwordAndUserId: Headword is null!`)
+
   return prisma.bankCitation.findMany({
     select: DEFAULT_CITATION_SELECT,
     where: { AND: [{ user_id: userId }, { headword: { headword } }] },
@@ -61,7 +69,7 @@ export function getAuthorBySourceId(
   })
 }
 
-export async function getUtteranceBySourceId(sourceId: string) {
+export async function getSourceBySourceId(sourceId: string) {
   return prisma.bankSource.findFirst({
     where: { id: parseInt(sourceId) },
   })

@@ -5,14 +5,12 @@ import type { SerializeFrom } from "@remix-run/server-runtime"
 
 interface BankHeadwordCitationSelectProps {
   citations: SerializeFrom<EditCitationIdLoaderData["headwordCitations"][0]>[]
-  currentCitationId: number
-  currentEmail: string
+  currentCitation: SerializeFrom<EditCitationIdLoaderData["citation"]>
 }
 
 export default function BankHeadwordCitationSelect({
   citations,
-  currentCitationId,
-  currentEmail,
+  currentCitation,
 }: BankHeadwordCitationSelectProps) {
   const navigate = useNavigate()
 
@@ -21,16 +19,19 @@ export default function BankHeadwordCitationSelect({
       {/* TODO: Improve the appearance of this. */}
       <BankSelect
         name={`headword`}
-        defaultValue={currentCitationId}
+        defaultValue={currentCitation.id}
         options={citations.map((c) => ({
           value: c.id,
-          name: `${c.headword} (${c.id}): ${
+          name: `${c.headword?.headword} (${c.id}): ${
             c.source?.place?.name || "[Place not entered]"
           }, ${c.source?.year_published || "[Publishing year not entered]"}`,
         }))}
         onChange={(event) => navigate(`/bank/edit/${event.target.value}`)}
       />
-      <span className="ml-2">entered by {currentEmail}</span>
+      <span className="ml-2">
+        entered by{" "}
+        {currentCitation.creator?.email || "[Creator email not available]"}
+      </span>
     </div>
   )
 }

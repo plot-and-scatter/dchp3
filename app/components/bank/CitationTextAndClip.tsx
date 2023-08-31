@@ -1,11 +1,13 @@
 import { useState } from "react"
-import type { EditCitationProps } from "./EditCitationProps"
 import LabelledField from "./LabelledField"
 import BankTextArea from "./BankTextArea"
 import BankNumericInput from "./BankNumericInput"
 import BankInput from "./BankInput"
+import type { BankEditCitationFieldsProps } from "./BankEditCitationFields"
 
-export default function CitationTextAndClip({ citation }: EditCitationProps) {
+export default function CitationTextAndClip({
+  citation,
+}: BankEditCitationFieldsProps) {
   const [clipStart, setClipStart] = useState(citation?.clip_start || 0)
   const [clipEnd, setClipEnd] = useState(citation?.clip_end || 0)
   const [citationText, setCitationText] = useState(citation?.text || "")
