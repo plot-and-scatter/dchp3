@@ -175,9 +175,9 @@ export default function SearchIndex() {
               className="flex"
               optionSetClassName="flex gap-x-2 mr-4"
               name="horizon"
-              defaultValue="15"
+              defaultValue="all"
               options={[
-                { name: "All", value: "all" },
+                { name: "All [no other values implemented]", value: "all" },
                 { name: "5", value: "5" },
                 { name: "10", value: "10" },
                 { name: "15", value: "15" },
