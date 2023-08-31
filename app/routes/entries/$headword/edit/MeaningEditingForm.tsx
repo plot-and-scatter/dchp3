@@ -4,9 +4,11 @@ import { attributeEnum } from "~/components/editing/attributeEnum"
 import Button from "~/components/elements/Button"
 import { useState } from "react"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
-import { EditFormInput } from "../../../components/editing/EditFormInput"
 import AddSeeAlso from "./AddSeeAlso"
 import SeeAlsoEditing from "./SeeAlsoEditing"
+import { EditFormInput } from "~/components/editing/EditFormInput"
+import FistnoteEditForm from "./FistnoteEditForm"
+import FistnoteAddingForm from "./FistnoteAddingForm"
 
 interface MeaningEditingFormProps {
   headword: string
@@ -37,7 +39,7 @@ export default function MeaningEditingForm({
   //   const [usageNoteValue, setUsageNote] = useState(usageNote)
 
   return (
-    <div className="my-16">
+    <div className="my-16 bg-slate-100 p-5">
       <div className="flex justify-between">
         <h3 className="text-4xl font-bold">Meaning: {meaning.order}</h3>
         <Form method="post" className="my-6">
@@ -114,29 +116,6 @@ export default function MeaningEditingForm({
             onChangeFunction={setCanadianismTypeComment}
             className="col-span-7"
           />
-          <div className="col-span-full">
-            <SeeAlsoEditing
-              headword={headword}
-              seeAlsoItems={meaning.seeAlso}
-            />
-          </div>
-          <AddSeeAlso headword={headword} meaningId={meaning.id} />
-
-          {meaning.usageNotes.map((usageNote, index) => (
-            <div
-              className="col-span-full"
-              key={`usage-note-div-${usageNote.id}`}
-            >
-              <Form className="">
-                <label>Fist note {index}:</label>
-                <textarea
-                  value={usageNote.text}
-                  className="m-1 h-16 w-full border p-1"
-                />
-                <button> submit </button>
-              </Form>
-            </div>
-          ))}
 
           <Button
             type="submit"
@@ -145,10 +124,27 @@ export default function MeaningEditingForm({
             value={attributeEnum.MEANING}
             className="col-span-1 col-start-4"
           >
-            Update Meaning
+            Update Content
           </Button>
         </div>
       </Form>
+
+      <div className="my-2 bg-slate-200 p-2">
+        <h2 className=" my-2 text-2xl underline">See Also</h2>
+        <SeeAlsoEditing headword={headword} seeAlsoItems={meaning.seeAlso} />
+        <AddSeeAlso headword={headword} meaningId={meaning.id} />
+      </div>
+      <div className="my-2 bg-slate-200 p-2">
+        <div className="flex justify-between">
+          <h2 className=" my-2 text-2xl underline">Fistnotes</h2>
+          <FistnoteAddingForm meaningId={meaning.id} />
+        </div>
+        {meaning.usageNotes.map((usageNote, index) => (
+          <div className="col-span-full" key={`usage-note-div-${usageNote.id}`}>
+            <FistnoteEditForm usageNote={usageNote} index={index} />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

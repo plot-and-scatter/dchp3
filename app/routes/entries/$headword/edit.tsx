@@ -1,4 +1,4 @@
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node"
+import { type ActionArgs, type LoaderArgs } from "@remix-run/node"
 import { Form, Link, useCatch, useLoaderData } from "@remix-run/react"
 import invariant from "tiny-invariant"
 import { getEntryByHeadword, updateEntry } from "~/models/entry.server"
@@ -8,14 +8,16 @@ import { PageHeader } from "~/components/elements/PageHeader"
 import Button from "~/components/elements/Button"
 import { type LoadedDataType } from "."
 import {
+  addDefinitionFistNote,
   addMeaningToEntry,
   addSeeAlso,
   deleteMeaning,
   deleteSeeAlso,
   updateMeaning,
+  updateOrDeleteDefinitionFistNote,
 } from "~/models/update.server"
-import EntryEditingForm from "./EntryEditingForm"
-import MeaningEditingForms from "./MeaningEditingForms"
+import EntryEditingForm from "./edit/EntryEditingForm"
+import MeaningEditingForms from "./edit/MeaningEditingForms"
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
@@ -50,11 +52,17 @@ export async function action({ request }: ActionArgs) {
     case attributeEnum.DELETE_SEE_ALSO:
       await deleteSeeAlso(data)
       break
+    case attributeEnum.DEFINITION_FIST_NOTE:
+      await updateOrDeleteDefinitionFistNote(data)
+      break
+    case attributeEnum.ADD_DEFINITION_FIST_NOTE:
+      await addDefinitionFistNote(data)
+      break
     default:
       throw new Error("attribute enum unknown")
   }
 
-  return redirect(`/entries/${data.headword}/edit`)
+  return null
 }
 
 export default function EntryDetailsPage() {

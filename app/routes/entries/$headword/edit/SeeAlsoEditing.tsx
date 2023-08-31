@@ -3,7 +3,6 @@ import React from "react"
 import SeeAlsoItem from "~/components/SeeAlsoItem"
 import { type SeeAlsoList } from "~/components/SeeAlsoItems"
 import { attributeEnum } from "~/components/editing/attributeEnum"
-import Button from "~/components/elements/Button"
 
 interface SeeAlsoEditingProps {
   headword: string
@@ -27,7 +26,7 @@ const SeeAlsoItems = ({
             key={`see-also-${seeAlso.meaning_id}-${seeAlso.entry_id}`}
             className="flex flex-row"
           >
-            {index > 0 && <span className="mr-3">,</span>}
+            {index > 0 && <span className="mr-6">,</span>}
             <SeeAlsoItem seeAlso={seeAlso} />
             <Form method="post" action={`/entries/${headword}/edit`}>
               <input
@@ -46,9 +45,12 @@ const SeeAlsoItems = ({
                 value={attributeEnum.DELETE_SEE_ALSO}
               ></input>
               <input type="hidden" name="headword" value={headword}></input>
-              <Button size="small" appearance="danger">
-                <i className="fa-regular fa-trash" aria-hidden="true"></i>
-              </Button>
+              <button type="submit">
+                <i
+                  className="fa-solid fa-trash-can blue mx-1 align-super text-red-400  hover:text-red-600"
+                  aria-hidden="true"
+                ></i>
+              </button>
             </Form>
           </div>
         )
