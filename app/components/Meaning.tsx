@@ -5,7 +5,7 @@ import HandNoteBlock from "~/components/HandNoteBlock"
 import SanitizedTextSpan from "~/components/SanitizedTextSpan"
 import Canadianism from "./Canadianism"
 import Citations from "./Citations"
-import SeeAlso from "~/components/SeeAlso"
+import SeeAlsoItems from "~/components/SeeAlsoItems"
 import DisplayEditorToggle from "./meaningComponents/DisplayEditorToggle"
 import MeaningHeader from "./meaningComponents/MeaningHeader"
 import MeaningHeaderForm from "./meaningComponents/MeaningHeaderForm"
@@ -76,7 +76,7 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
             icon="edit"
           />
           <div className="flex flex-row">
-            <SeeAlso seeAlso={meaning.seeAlso} />
+            <SeeAlsoItems seeAlsoItems={meaning.seeAlso} />
             <EditingPopover
               headword={headword ?? ""}
               type={editablePopoverInputTypes.SEE_ALSO}
