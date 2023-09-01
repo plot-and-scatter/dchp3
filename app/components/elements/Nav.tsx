@@ -1,5 +1,7 @@
 import { NavLink } from "@remix-run/react"
 import type { LoggedInUser } from "~/services/auth/auth.server"
+import Popover from "./Popover"
+import NavPopoverContents from "./NavPopoverContents"
 
 interface NavProps {
   user?: LoggedInUser
@@ -27,14 +29,6 @@ const Nav = ({ user }: NavProps): JSX.Element => {
           <i className="fa-regular fa-book mr-1 sm:mr-2"></i>
           <span className="hidden md:inline">References</span>
         </NavLink>
-        <NavLink to="/bank">
-          <i className="fa-solid fa-leaf-maple mr-1 sm:mr-2"></i>
-          BCE
-        </NavLink>
-        <NavLink to="/insertEntry">
-          <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> Insert
-          <span className="hidden md:inline"> entry </span>
-        </NavLink>
         <div className="font-bold">
           <NavLink to="/entries">
             <i className="fa-regular fa-books mr-1 sm:mr-2"></i> Browse
@@ -47,11 +41,21 @@ const Nav = ({ user }: NavProps): JSX.Element => {
             <span className="hidden md:inline"> entries</span>
           </NavLink>
         </div>
-        <div className="text-sm">
+        <div>
           {user ? (
-            <NavLink to="/admin">
-              <i className="fa-regular fa-key mr-1 sm:mr-2"></i> Admin screen
-            </NavLink>
+            // <NavLink to="/admin">
+            //   <i className="fa-regular fa-key mr-1 sm:mr-2"></i> Admin screen
+            // </NavLink>
+            <Popover
+              title={
+                <div className="flex items-center">
+                  <i className="fas fa-user mr-1 sm:mr-2" />
+                  {user.name}
+                </div>
+              }
+            >
+              <NavPopoverContents userName={user.name} isAdmin={!!user} />
+            </Popover>
           ) : (
             <NavLink to="/login">
               <i className="fa-regular fa-key mr-1 sm:mr-2"></i> Admin
