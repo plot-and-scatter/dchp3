@@ -63,8 +63,6 @@ export default function BankSearchResult({
         <br />
         <strong>Citation</strong>: {citationText}
         <br />
-        <strong>Full citation</strong>: {citation?.text}
-        <br />
         (Source: {sourceTypeToText(citation.source?.type_id)})
       </div>
     </div>
