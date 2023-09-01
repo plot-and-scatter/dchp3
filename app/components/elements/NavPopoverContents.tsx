@@ -37,12 +37,12 @@ export default function NavPopoverContents({
     })
     navItems.push({
       name: "Browse citations",
-      href: "/bank/create",
+      href: "/bank/headword-list",
       icon: <i className="far fa-files" />,
     })
     navItems.push({
       name: "Search citations",
-      href: "/bank/create",
+      href: "/bank/search",
       icon: <i className="far fa-file-magnifying-glass" />,
     })
     navItems.push({ name: "DCHP" })
