@@ -12,7 +12,11 @@ const EditingTools = ({ data }: EditingToolsProps) => {
   const [isLegacy, setIsLegacy] = useState(data.is_legacy)
 
   return (
-    <Form reloadDocument action={`/entries/${data.headword}`} method="post">
+    <Form
+      reloadDocument
+      action={`/entries/${data.headword}/edit`}
+      method="post"
+    >
       <div className="flex flex-col">
         <h3 className="my-2 text-lg underline">Editing Tools</h3>
         <label className="mx-2">

@@ -124,7 +124,7 @@ export default function MeaningEditingForm({
             value={attributeEnum.MEANING}
             className="col-span-1 col-start-4"
           >
-            Update Content
+            Update
           </Button>
         </div>
       </Form>

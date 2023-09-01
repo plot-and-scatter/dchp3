@@ -13,11 +13,15 @@ import {
   addSeeAlso,
   deleteMeaning,
   deleteSeeAlso,
+  updateEditingStatus,
+  updateEditingTools,
   updateMeaning,
   updateOrDeleteDefinitionFistNote,
 } from "~/models/update.server"
 import EntryEditingForm from "./edit/EntryEditingForm"
 import MeaningEditingForms from "./edit/MeaningEditingForms"
+import EditingTools from "~/components/editing/EditingTools"
+import EditingStatus from "~/components/editing/EditingStatus"
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
@@ -58,6 +62,12 @@ export async function action({ request }: ActionArgs) {
     case attributeEnum.ADD_DEFINITION_FIST_NOTE:
       await addDefinitionFistNote(data)
       break
+    case attributeEnum.EDITING_TOOLS:
+      await updateEditingTools(data)
+      break
+    case attributeEnum.EDITING_STATUS:
+      await updateEditingStatus(data)
+      break
     default:
       throw new Error("attribute enum unknown")
   }
@@ -76,32 +86,42 @@ export default function EntryDetailsPage() {
   const headword = data.headword
 
   return (
-    <div className="w-3/4">
-      <div className="flex flex-row items-center justify-between">
-        <PageHeader>Edit Headword: {headword}</PageHeader>
-        <Link
-          to={`/entries/${headword}`}
-          className="h-fit rounded border border-slate-700 bg-slate-600 p-2 text-white transition-colors duration-300 hover:bg-slate-500"
-        >
-          Return To Headword
-        </Link>
-        <Form
-          reloadDocument={true}
-          action={`/entries/${headword}/edit`}
-          method="post"
-        >
-          <Button>Add New Meaning</Button>
-          <input
-            type="hidden"
-            name="attributeType"
-            value={attributeEnum.ADD_MEANING}
-          />
-          <input type="hidden" name="attributeID" value={id} />
-          <input type="hidden" name="headword" value={headword} />
-        </Form>
+    <div className="flex w-11/12 flex-row justify-between">
+      <div className="w-1/4 align-bottom">
+        <div className="fixed mt-10">
+          <Link
+            to={`/entries/${headword}`}
+            className="h-fit rounded border border-slate-700 bg-slate-600 p-2 text-white transition-colors duration-300 hover:bg-slate-500"
+          >
+            Return To Headword
+          </Link>
+          <Form
+            reloadDocument={true}
+            action={`/entries/${headword}/edit`}
+            method="post"
+            className="my-5"
+          >
+            <Button>Add New Meaning</Button>
+            <input
+              type="hidden"
+              name="attributeType"
+              value={attributeEnum.ADD_MEANING}
+            />
+            <input type="hidden" name="attributeID" value={id} />
+            <input type="hidden" name="headword" value={headword} />
+          </Form>
+          <EditingTools data={data} />
+          <EditingStatus data={data} />
+        </div>
       </div>
-      <EntryEditingForm data={data} />
-      <MeaningEditingForms data={data} />
+
+      <div className="w-3/4">
+        <div className="flex flex-row items-center justify-between">
+          <PageHeader>Edit Headword: {headword}</PageHeader>
+        </div>
+        <EntryEditingForm data={data} />
+        <MeaningEditingForms data={data} />
+      </div>
     </div>
   )
 }
