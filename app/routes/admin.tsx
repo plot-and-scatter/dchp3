@@ -7,6 +7,7 @@ import {
 import { type LoaderArgs } from "@remix-run/server-runtime"
 import LogoutButton from "~/components/auth/LogoutButton"
 import Main from "~/components/elements/Main"
+import HeadwordAutocomplete from "~/components/editing/HeadwordAutocomplete"
 
 export const loader = async ({ request }: LoaderArgs) => {
   await redirectIfUserNotLoggedIn(request)
@@ -31,6 +32,10 @@ export default function Admin() {
         </p>
         <div>
           <LogoutButton />
+        </div>
+        <hr className="my-8" />
+        <div>
+          <HeadwordAutocomplete />
         </div>
       </div>
     </Main>

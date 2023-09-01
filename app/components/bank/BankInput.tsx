@@ -5,6 +5,7 @@ interface BankInputProps {
   onChange?: React.ChangeEventHandler<HTMLInputElement>
   value?: string | number
   hidden?: boolean
+  placeholder?: string
 }
 
 export default function BankInput({
@@ -14,6 +15,7 @@ export default function BankInput({
   showField = true,
   value,
   hidden,
+  placeholder,
 }: BankInputProps) {
   const defaultValueNoNulls = defaultValue === null ? undefined : defaultValue
 
@@ -26,6 +28,7 @@ export default function BankInput({
       onChange={onChange}
       value={value}
       hidden={hidden}
+      placeholder={placeholder}
     />
   )
 }
