@@ -11,8 +11,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const { searchTerm } = params
   invariant(searchTerm, `No search term provided`)
 
-  console.log("searchTerm", searchTerm)
-
   const url = new URL(request.url)
 
   const partialSearchOptions: Omit<SearchOptions, "searchTerm"> =
@@ -42,7 +40,6 @@ export default function SearchIndex() {
     <>
       <PageHeader>Search results for {searchTerm} (temp limit 100)</PageHeader>
       {citations.map((citation) => (
-        // <BankCitationResult citation={citation} key={citation.id} />
         <BankSearchResult
           citation={citation}
           key={citation.id}
