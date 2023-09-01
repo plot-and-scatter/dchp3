@@ -4,6 +4,7 @@ import { sourceTypeToText } from "utils/source"
 import type { CitationSearchLoaderData } from "~/routes/bank/search/$searchTerm"
 import type { SearchOptions } from "~/services/bank/searchCitations"
 import Highlighter from "react-highlight-words"
+import { horizonText } from "~/services/bank/textHorizon"
 
 interface BankSearchResultProps {
   citation: SerializeFrom<CitationSearchLoaderData["citations"][0]>
@@ -14,7 +15,8 @@ export default function BankSearchResult({
   citation,
   searchOptions,
 }: BankSearchResultProps) {
-  const { searchTerm } = searchOptions
+  const { searchTerm, horizon: _horizon } = searchOptions
+  const horizon = _horizon || "all"
 
   const headwordText =
     searchOptions.searchField === "headword" ? (
@@ -27,30 +29,17 @@ export default function BankSearchResult({
       citation.headword?.headword
     )
 
-  const citationTextInWords: string[] = (citation.text || "").split(" ")
-
-  const searchTextIndices = []
-  let workingCopy = [...citationTextInWords]
-
-  let previousIndex = -1
-
-  do {
-    const index = workingCopy.findIndex(
-      (text, index) =>
-        text.toLowerCase().includes(searchTerm) && index > previousIndex
-    )
-    previousIndex = index
-    if (index > -1) searchTextIndices.push(index)
-  } while (previousIndex > -1)
-
-  console.log("searchTextIndices", searchTextIndices)
+  let _citationText =
+    horizon !== "all"
+      ? horizonText(searchTerm, parseInt(horizon), citation?.text || "")
+      : citation.text
 
   const citationText =
     searchOptions.searchField === "citation" ? (
       <Highlighter
         highlightClassName="font-bold text-red-500 font-italic bg-transparent"
         searchWords={[searchTerm]}
-        textToHighlight={citation.text || ""}
+        textToHighlight={_citationText || ""}
       />
     ) : (
       citation.text
@@ -72,8 +61,11 @@ export default function BankSearchResult({
         <strong>Place</strong>: {citation.source?.place?.name} |
         <strong>Spelling Variations</strong>: {citation.spelling_variant}
         <br />
-        <strong>Citation</strong>: {citationText} (Source:{" "}
-        {sourceTypeToText(citation.source?.type_id)})
+        <strong>Citation</strong>: {citationText}
+        <br />
+        <strong>Full citation</strong>: {citation?.text}
+        <br />
+        (Source: {sourceTypeToText(citation.source?.type_id)})
       </div>
     </div>
   )

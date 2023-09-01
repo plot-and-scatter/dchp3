@@ -16,6 +16,7 @@ export type SearchOptions = {
   sourceFloorYear?: string | null
   sourceType?: BankSourceTypeEnum | "all" | null
   legacyType?: BankLegacyTypeEnum | "all" | null
+  horizon?: string | null
 }
 
 export default async function (opts: SearchOptions) {

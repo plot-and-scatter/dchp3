@@ -11,6 +11,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const { searchTerm } = params
   invariant(searchTerm, `No search term provided`)
 
+  console.log("searchTerm", searchTerm)
+
   const url = new URL(request.url)
 
   const partialSearchOptions: Omit<SearchOptions, "searchTerm"> =
