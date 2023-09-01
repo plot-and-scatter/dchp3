@@ -10,7 +10,7 @@ interface SeeAlsoInputProps
 
 const HEADWORD_DATA_URL = `/api/entries/headwords.json`
 const DEBOUNCE_DELAY_IN_MS = 200
-const MAX_HEADWORDS_DISPLAYED = 10
+const MAX_HEADWORDS_DISPLAYED = 8
 
 export default function SeeAlsoInput({ name, ...rest }: SeeAlsoInputProps) {
   const [text, setText] = useState<string>()
@@ -36,16 +36,17 @@ export default function SeeAlsoInput({ name, ...rest }: SeeAlsoInputProps) {
   return (
     <div className="w-96">
       <div className="flex">
-        <div className="w-72">
+        <div className="flex w-64 justify-between">
           <input
             name={name}
             value={text}
+            autoComplete="off"
             onChange={onChangeFunctions}
-            className="mx-2 rounded border p-1"
+            className="mx-2 w-full rounded border p-1"
             {...rest}
           />
         </div>
-        <div className="w-24">
+        <div className="w-32">
           {headwords.state === "loading" && <div>Loading...</div>}
         </div>
       </div>
