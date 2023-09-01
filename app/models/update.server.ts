@@ -37,7 +37,7 @@ export async function addMeaningToEntry(data: {
     data: {
       entry_id: id,
       partofspeech: "",
-      definition: "placeholder definition",
+      definition: "",
       ordernum: 0,
       orderletter: "",
       usage: "",
@@ -100,6 +100,45 @@ async function updateEntry(
   })
 }
 
+export async function updateMeaning(data: { [k: string]: FormDataEntryValue }) {
+  const id = getNumberFromFormInput(data.id)
+  assertIsValidId(id)
+
+  const definition = getStringFromFormInput(data.definition)
+  const order = getStringFromFormInput(data.order)
+  const partOfSpeech = getStringFromFormInput(data.partOfSpeech)
+  const canadianismType = getStringFromFormInput(data.canadianismType)
+  const canadianismTypeComment = getStringFromFormInput(
+    data.canadianismTypeComment
+  )
+  const dagger = getCheckboxValueAsBoolean(data.dagger)
+
+  await prisma.meaning.update({
+    where: {
+      id: id,
+    },
+    data: {
+      definition: definition,
+      order: order,
+      partofspeech: partOfSpeech,
+      dagger: dagger,
+      canadianism_type: canadianismType,
+      canadianism_type_comment: canadianismTypeComment,
+    },
+  })
+}
+
+export async function deleteMeaning(data: { [k: string]: FormDataEntryValue }) {
+  const id = getNumberFromFormInput(data.id)
+  assertIsValidId(id)
+
+  await prisma.meaning.delete({
+    where: {
+      id: id,
+    },
+  })
+}
+
 export async function updateCanadianism(data: {
   [k: string]: FormDataEntryValue
 }) {
@@ -117,8 +156,8 @@ export async function updateCanadianism(data: {
 export async function updateOrDeleteDefinitionFistNote(data: {
   [k: string]: FormDataEntryValue
 }) {
-  const usageNoteId = getNumberFromFormInput(data.attributeID)
-  const usageNoteText = getStringFromFormInput(data.newValue)
+  const usageNoteId = getNumberFromFormInput(data.usageNoteId)
+  const usageNoteText = getStringFromFormInput(data.usageNoteText)
 
   if (usageNoteText === "") {
     await prisma.usageNote.delete({
@@ -139,20 +178,20 @@ export async function updateOrDeleteDefinitionFistNote(data: {
 export async function addDefinitionFistNote(data: {
   [k: string]: FormDataEntryValue
 }) {
-  const meaningId = getNumberFromFormInput(data.attributeID)
-  const fistNoteText = getStringFromFormInput(data.newValue)
+  const meaningId = getNumberFromFormInput(data.meaningId)
+  const defaultFistnoteText = ""
 
   await prisma.usageNote.create({
     data: {
       meaning_id: meaningId,
-      text: fistNoteText,
+      text: defaultFistnoteText,
     },
   })
 }
 
 export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
   const meaningId = getNumberFromFormInput(data.attributeID)
-  const headword = getStringFromFormInput(data.headword)
+  const headword = getStringFromFormInput(data.headwordToAdd)
   const linkNote = getStringFromFormInput(data.linkNote)
 
   const entry = await prisma.entry.findUnique({
@@ -175,7 +214,7 @@ export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
 }
 
 export async function deleteSeeAlso(data: { [k: string]: FormDataEntryValue }) {
-  const meaningId = getNumberFromFormInput(data.attributeID)
+  const meaningId = getNumberFromFormInput(data.meaningId)
   const entryId = getNumberFromFormInput(data.entryId)
 
   await prisma.seeAlso.delete({

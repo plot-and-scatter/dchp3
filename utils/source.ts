@@ -1,6 +1,8 @@
 import type { BankSourceTypeEnum } from "~/models/bank.types"
 
-export function sourceTypeToText(sourceType: BankSourceTypeEnum): string {
+export function sourceTypeToText(
+  sourceType: BankSourceTypeEnum | undefined | null
+): string {
   switch (sourceType) {
     case 0:
       return "Book"

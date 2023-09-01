@@ -1,4 +1,4 @@
-import { createCookieSessionStorage, redirect } from "@remix-run/node"
+import { createCookieSessionStorage, json, redirect } from "@remix-run/node"
 import { LOGIN_PATH, NOT_ALLOWED_PATH } from "utils/paths"
 import type { Session } from "@remix-run/node"
 import {
@@ -8,6 +8,7 @@ import {
   getPermissionsMap,
 } from "~/services/auth/AuthRole"
 import type { LoggedInUser } from "./auth.server"
+import { getUserIdByEmail } from "~/models/user.server"
 
 // export the whole sessionStorage object
 export const sessionStorage = createCookieSessionStorage({
@@ -119,7 +120,9 @@ export const redirectIfUserLacksPermission = async (
 }
 
 export const getUserId = async (request: Request) => {
-  const user = await getUserFromSession(request)
-  const email = user?.email
-  if (!email) throw new Error(`No email for user`)
+  const email = await getEmailFromSession(request)
+  if (!email) throw json({ message: `No email on user` }, { status: 500 })
+
+  const userId = await getUserIdByEmail({ email })
+  return userId
 }

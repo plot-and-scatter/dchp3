@@ -1,16 +1,21 @@
-import { enumToSelectOptions } from "~/utils/inputUtils"
 import { BankLegacyTypeEnum, BankPosEnum } from "~/models/bank.types"
+import { enumToSelectOptions } from "~/utils/inputUtils"
 import BankInput from "./BankInput"
 import BankRadio from "./BankRadio"
 import BankSelect from "./BankSelect"
 import BankTextArea from "./BankTextArea"
-import LabelledField from "./LabelledField"
 import CitationTextAndClip from "./CitationTextAndClip"
-import type { EditCitationProps } from "./EditCitationProps"
+import LabelledField from "./LabelledField"
+import type { EditCitationIdLoaderData } from "~/routes/bank/edit/$citationId"
+import type { SerializeFrom } from "@remix-run/server-runtime"
 
-export default function BankEditCitationFields(props: EditCitationProps) {
-  const { citation } = props
+export type BankEditCitationFieldsProps = {
+  citation?: SerializeFrom<EditCitationIdLoaderData["citation"]>
+}
 
+export default function BankEditCitationFields({
+  citation,
+}: BankEditCitationFieldsProps) {
   return (
     <>
       {citation?.id && <LabelledField label={`ID`} field={citation.id} />}
@@ -19,7 +24,7 @@ export default function BankEditCitationFields(props: EditCitationProps) {
         field={
           <BankInput
             name="citation.headword"
-            defaultValue={citation?.headword}
+            defaultValue={citation?.headword?.headword}
           />
         }
       />
@@ -51,14 +56,14 @@ export default function BankEditCitationFields(props: EditCitationProps) {
           />
         }
       />
-      <CitationTextAndClip {...props} />
+      <CitationTextAndClip citation={citation} />
       {citation && (
         <>
           <LabelledField
             label={`Time Added`}
             field={
               <>
-                {citation.created} by {citation.email}
+                {citation.created} by {citation.creator?.email}
               </>
             }
           />

@@ -1,0 +1,26 @@
+export const FULL_CITATION_SELECT = {
+  user_id: true,
+  last_modified_user_id: true,
+  created: true,
+  text: true,
+  id: true,
+  short_meaning: true,
+  part_of_speech: true,
+  last_modified: true,
+  source_id: true,
+  spelling_variant: true,
+  clip_start: true,
+  clip_end: true,
+  legacy_id: true,
+  memo: true,
+  is_incomplete: true,
+  headword: { select: { headword: true } },
+  creator: { select: { email: true } },
+  source: {
+    include: {
+      place: true,
+      author: true,
+      title: true,
+    },
+  },
+}

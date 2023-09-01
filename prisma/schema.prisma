@@ -4,34 +4,39 @@ datasource db {
 }
 
 model BankAuthor {
-  id       Int     @id @default(autoincrement())
-  name     String? @db.VarChar(500)
-  is_dchp1 Int?    @db.TinyInt
-  is_teach Int?    @db.TinyInt
+  id       Int          @id @default(autoincrement())
+  name     String?      @db.VarChar(500)
+  is_dchp1 Int?         @db.TinyInt
+  is_teach Int?         @db.TinyInt
+  sources  BankSource[]
 
   @@map("author")
 }
 
 model BankCitation {
-  id                    Int                @id @default(autoincrement())
-  created               DateTime?          @db.DateTime(0)
-  short_meaning         String?            @db.VarChar(200)
-  part_of_speech        String?            @db.VarChar(50)
-  spelling_variant      String?            @db.VarChar(200)
-  text                  String?            @db.Text
+  id                    Int           @id @default(autoincrement())
+  created               DateTime?     @db.DateTime(0)
+  short_meaning         String?       @db.VarChar(200)
+  part_of_speech        String?       @db.VarChar(50)
+  spelling_variant      String?       @db.VarChar(200)
+  text                  String?       @db.Text
   headword_id           Int?
   source_id             Int?
   user_id               Int?
-  last_modified         DateTime?          @db.DateTime(0)
+  last_modified         DateTime?     @db.DateTime(0)
   last_modified_user_id Int?
   legacy_id             Int?
   is_incomplete         Int?
-  memo                  String?            @db.Text
-  is_dchp1              Int?               @db.TinyInt
-  is_teach              Int?               @db.TinyInt
+  memo                  String?       @db.Text
+  is_dchp1              Int?          @db.TinyInt
+  is_teach              Int?          @db.TinyInt
   clip_start            Int?
   clip_end              Int?
-  clipped_text          String?            @db.Text
+  clipped_text          String?       @db.Text
+  creator               User?         @relation(name: "creator", fields: [user_id], references: [id])
+  lastModifier          User?         @relation(name: "lastModifier", fields: [last_modified_user_id], references: [id])
+  source                BankSource?   @relation(fields: [source_id], references: [id])
+  headword              BankHeadword? @relation(fields: [headword_id], references: [id])
 
   @@index([headword_id], map: "headword_id_idxfk")
   @@index([source_id], map: "source_id_idxfk")
@@ -54,7 +59,7 @@ model BankCitation {
 model MeaningDetCitations {
   meaning_id  Int
   citation_id Int
-  meaning     Meaning?  @relation(fields: [meaning_id], references: [id])
+  meaning     Meaning?         @relation(fields: [meaning_id], references: [id])
   // citation    DetCitation? @relation(fields: [citation_id], references: [id])
   citation    DetBibliography? @relation(fields: [citation_id], references: [id])
 
@@ -63,7 +68,6 @@ model MeaningDetCitations {
   @@index([meaning_id], map: "det_citations_meanings_meaning_id_idxfk")
   @@map("det_citations_meanings")
 }
-
 
 model Entry {
   id                   Int       @id @default(autoincrement())
@@ -98,60 +102,59 @@ model Entry {
 }
 
 model DetCitation {
-  id	        Int	       @id
-  headword	  String?    @db.VarChar(400)
-  citation	  String?    @db.Text
-  meanshort	  String?    @db.VarChar(200)
-  spellvar	  String?    @db.VarChar(200)
-  dchp_1	    Int?       @db.TinyInt
-  yearpub	    String?    @db.VarChar(100)
-  page	      String?    @db.VarChar(300)
-  author	    String?    @db.VarChar(500)
-  place	      String?    @db.VarChar(500)
-  title	      String?    @db.Text
-  yearcomp	  String?    @db.VarChar(400)
-  perio_date	String?    @db.VarChar(200)
-  vol_iss	    String?    @db.VarChar(200)
-  url	        String?    @db.Text
-  uttered	    String?    @db.VarChar(500)
-  media	      String?    @db.VarChar(500)
-  broadcast	  String?    @db.VarChar(500)
-  evidence	  String?    @db.VarChar(500)
-  dateline	  String?    @db.VarChar(300)
-  short_title	String?    @db.MediumText
+  id          Int     @id
+  headword    String? @db.VarChar(400)
+  citation    String? @db.Text
+  meanshort   String? @db.VarChar(200)
+  spellvar    String? @db.VarChar(200)
+  dchp_1      Int?    @db.TinyInt
+  yearpub     String? @db.VarChar(100)
+  page        String? @db.VarChar(300)
+  author      String? @db.VarChar(500)
+  place       String? @db.VarChar(500)
+  title       String? @db.Text
+  yearcomp    String? @db.VarChar(400)
+  perio_date  String? @db.VarChar(200)
+  vol_iss     String? @db.VarChar(200)
+  url         String? @db.Text
+  uttered     String? @db.VarChar(500)
+  media       String? @db.VarChar(500)
+  broadcast   String? @db.VarChar(500)
+  evidence    String? @db.VarChar(500)
+  dateline    String? @db.VarChar(300)
+  short_title String? @db.MediumText
   // meanings    MeaningDetCitations[]
 
   @@map("det_citations")
 }
 
 model DetBibliography {
-  id           Int	       @id
-  citation     String?    @db.Text
-  yearpub      String?    @db.VarChar(100)
-  page         String?    @db.VarChar(300)
-  author       String?    @db.VarChar(500)
-  place        String?    @db.VarChar(500)
-  title        String?    @db.Text
-  editor       String?    @db.VarChar(500)
-  yearcomp     String?    @db.VarChar(400)
-  perio_date   String?    @db.VarChar(200)
-  vol_iss      String?    @db.VarChar(200)
-  url_acc_date String?   @db.VarChar(200)
-  url	         String?    @db.Text
-  publisher	   String?    @db.VarChar(300)
-  uttered	     String?    @db.VarChar(500)
-  witness	     String?    @db.VarChar(500)
-  time_apx	   String?    @db.VarChar(200)
-  media	       String?    @db.VarChar(500)
-  broadcast	   String?    @db.VarChar(500)
-  evidence	   String?    @db.VarChar(500)
-  dateline	   String?    @db.VarChar(300)
-  short_title	 String?    @db.MediumText
+  id           Int                   @id
+  citation     String?               @db.Text
+  yearpub      String?               @db.VarChar(100)
+  page         String?               @db.VarChar(300)
+  author       String?               @db.VarChar(500)
+  place        String?               @db.VarChar(500)
+  title        String?               @db.Text
+  editor       String?               @db.VarChar(500)
+  yearcomp     String?               @db.VarChar(400)
+  perio_date   String?               @db.VarChar(200)
+  vol_iss      String?               @db.VarChar(200)
+  url_acc_date String?               @db.VarChar(200)
+  url          String?               @db.Text
+  publisher    String?               @db.VarChar(300)
+  uttered      String?               @db.VarChar(500)
+  witness      String?               @db.VarChar(500)
+  time_apx     String?               @db.VarChar(200)
+  media        String?               @db.VarChar(500)
+  broadcast    String?               @db.VarChar(500)
+  evidence     String?               @db.VarChar(500)
+  dateline     String?               @db.VarChar(300)
+  short_title  String?               @db.MediumText
   meanings     MeaningDetCitations[]
 
   @@map("det_bibliographies")
 }
-
 
 model SeeAlso {
   meaning_id Int
@@ -165,7 +168,6 @@ model SeeAlso {
   @@index([entry_id], map: "det_entries_meanings_entry_id_idxfk")
   @@index([meaning_id], map: "det_entries_meanings_meaning_id_idxfk")
   @@index([entry_id, headword], map: "entry_id_idxfk")
-
   @@map("det_entries_meanings")
 }
 
@@ -208,19 +210,19 @@ model det_log_entries {
 }
 
 model Meaning {
-  id                       Int                @id @default(autoincrement())
+  id                       Int                   @id @default(autoincrement())
   entry_id                 Int
-  partofspeech             String             @db.VarChar(50)
-  definition               String             @db.Text
+  partofspeech             String                @db.VarChar(50)
+  definition               String                @db.Text
   ordernum                 Int
-  orderletter              String             @db.VarChar(3)
-  usage                    String             @db.VarChar(100)
-  headword                 String?            @db.VarChar(255)
-  canadianism_type         String?            @db.VarChar(50)
-  canadianism_type_comment String?            @db.Text
-  order                    String?            @db.VarChar(10)
+  orderletter              String                @db.VarChar(3)
+  usage                    String                @db.VarChar(100)
+  headword                 String?               @db.VarChar(255)
+  canadianism_type         String?               @db.VarChar(50)
+  canadianism_type_comment String?               @db.Text
+  order                    String?               @db.VarChar(10)
   dagger                   Boolean
-  entry                    Entry              @relation(fields: [entry_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  entry                    Entry                 @relation(fields: [entry_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   citations                MeaningDetCitations[]
   seeAlso                  SeeAlso[]
   usageNotes               UsageNote[]
@@ -236,9 +238,9 @@ model det_references {
 }
 
 model UsageNote {
-  id         Int    @id @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   meaning_id Int
-  text       String @db.Text
+  text       String  @db.Text
   meaning    Meaning @relation(fields: [meaning_id], references: [id])
 
   @@index([meaning_id], map: "meaning_id_idxfk")
@@ -252,22 +254,23 @@ model det_user_sessions {
 }
 
 model BankHeadword {
-  id       Int    @id @default(autoincrement())
-  headword String @db.VarChar(400)
-  is_dchp1 Int?   @db.TinyInt
-  is_teach Int?   @db.TinyInt
+  id        Int            @id @default(autoincrement())
+  headword  String         @db.VarChar(400)
+  is_dchp1  Int?           @db.TinyInt
+  is_teach  Int?           @db.TinyInt
+  citations BankCitation[]
 
   @@index([headword(length: 333)], map: "headword")
   @@index([id], map: "headword_id_idxfk")
-
   @@map("headword")
 }
 
 model BankPlace {
-  id       Int     @id @default(autoincrement())
-  name     String? @db.VarChar(500)
-  is_dchp1 Int?    @db.TinyInt
-  is_teach Int?    @db.TinyInt
+  id       Int          @id @default(autoincrement())
+  name     String?      @db.VarChar(500)
+  is_dchp1 Int?         @db.TinyInt
+  is_teach Int?         @db.TinyInt
+  sources  BankSource[]
 
   @@map("place")
 }
@@ -310,62 +313,71 @@ model sdt_sources {
 }
 
 model BankSource {
-  id                  Int     @id @default(autoincrement()) @db.UnsignedInt
+  id                  Int            @id @default(autoincrement()) @db.UnsignedInt
   type_id             Int?
-  year_published      String? @db.VarChar(100)
-  page                String? @db.VarChar(300)
+  year_published      String?        @db.VarChar(100)
+  page                String?        @db.VarChar(300)
   author_id           Int?
   title_id            Int?
   place_id            Int?
-  url                 String? @db.Text
-  url_access_date     String? @db.VarChar(200)
-  dateline            String? @db.VarChar(300)
-  periodical_date     String? @db.VarChar(200)
-  year_composed       String? @db.VarChar(400)
-  publisher           String? @db.VarChar(300)
-  uttered             String? @db.VarChar(500)
-  utterance_witness   String? @db.VarChar(500)
-  utterance_time      String? @db.VarChar(200)
-  utterance_media     String? @db.VarChar(500)
-  utterance_broadcast String? @db.VarChar(500)
-  volume_issue        String? @db.VarChar(200)
-  editor              String? @db.VarChar(500)
-  evidence            String? @db.VarChar(500)
-  is_dchp1            Int?    @db.TinyInt
-  is_teach            Int?    @db.TinyInt
+  url                 String?        @db.Text
+  url_access_date     String?        @db.VarChar(200)
+  dateline            String?        @db.VarChar(300)
+  periodical_date     String?        @db.VarChar(200)
+  year_composed       String?        @db.VarChar(400)
+  publisher           String?        @db.VarChar(300)
+  uttered             String?        @db.VarChar(500)
+  utterance_witness   String?        @db.VarChar(500)
+  utterance_time      String?        @db.VarChar(200)
+  utterance_media     String?        @db.VarChar(500)
+  utterance_broadcast String?        @db.VarChar(500)
+  volume_issue        String?        @db.VarChar(200)
+  editor              String?        @db.VarChar(500)
+  evidence            String?        @db.VarChar(500)
+  is_dchp1            Int?           @db.TinyInt
+  is_teach            Int?           @db.TinyInt
+  citations           BankCitation[]
+  place               BankPlace?     @relation(fields: [place_id], references: [id])
+  author              BankAuthor?    @relation(fields: [author_id], references: [id])
+  title               BankTitle?     @relation(fields: [title_id], references: [id])
 
   @@index([author_id], map: "author_id_idxfk")
   @@index([place_id], map: "place_id_idxfk")
   @@index([title_id], map: "title_id_idxfk")
   @@index([year_published], map: "year_published_idx")
-
   @@map("source")
 }
 
 model BankTitle {
-  id         Int     @id @default(autoincrement())
-  name       String? @db.Text
-  short_name String? @db.MediumText
-  is_dchp1   Int?    @db.TinyInt
-  is_teach   Int?    @db.TinyInt
+  id         Int          @id @default(autoincrement())
+  name       String?      @db.Text
+  short_name String?      @db.MediumText
+  is_dchp1   Int?         @db.TinyInt
+  is_teach   Int?         @db.TinyInt
+  sources    BankSource[]
 
   @@map("title")
 }
 
-model user {
-  id           Int     @id @default(autoincrement())
-  student_id   Int?
-  course       String? @db.VarChar(100)
-  access_level Int?
-  is_active    Int?
-  first_name   String? @db.VarChar(100)
-  last_name    String? @db.VarChar(100)
-  email        String? @db.VarChar(200)
-  password     String? @db.VarChar(50)
-  password_key String? @db.VarChar(50)
-  is_dchp1     Int?    @db.TinyInt
-  is_proofer   Int?    @default(1)
-  is_teach     Int?    @db.TinyInt
+model User {
+  id                    Int            @id @default(autoincrement())
+  student_id            Int?
+  course                String?        @db.VarChar(100)
+  access_level          Int?
+  is_active             Int?
+  first_name            String?        @db.VarChar(100)
+  last_name             String?        @db.VarChar(100)
+  email                 String?        @db.VarChar(200)
+  password              String?        @db.VarChar(50)
+  password_key          String?        @db.VarChar(50)
+  is_dchp1              Int?           @db.TinyInt
+  is_proofer            Int?           @default(1)
+  is_teach              Int?           @db.TinyInt
+  createdCitations      BankCitation[] @relation(name: "creator")
+  lastModifiedCitations BankCitation[] @relation(name: "lastModifier")
+
+  @@unique([email])
+  @@map("user")
 }
 
 generator client {

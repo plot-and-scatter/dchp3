@@ -5,12 +5,12 @@ import PeriodicalPanel from "./PeriodicalPanel"
 import SiteFlierPanel from "./SiteFlierPanel"
 import SpokenLanguagePanel from "./SpokenLanguagePanel"
 import ActiveSourcePicker from "./ActiveSourcePicker"
-import type { EditCitationProps } from "../EditCitationProps"
 import BankInput from "../BankInput"
+import type { BankEditCitationFieldsProps } from "../BankEditCitationFields"
 
-export default function BankSourcePanel(props: EditCitationProps) {
+export default function BankSourcePanel(props: BankEditCitationFieldsProps) {
   const [activeSourceType, setActiveSourceType] = useState<BankSourceTypeEnum>(
-    props.citation?.type_id || 0
+    props.citation?.source?.type_id || 0
   )
 
   return (
@@ -20,7 +20,11 @@ export default function BankSourcePanel(props: EditCitationProps) {
         setActiveSourceType={setActiveSourceType}
       />
       <BankInput name={`source.type_id`} value={activeSourceType} hidden />
-      <BankInput name={`source.id`} value={props.citation?.source_id} hidden />
+      <BankInput
+        name={`source.id`}
+        value={props.citation?.source_id || undefined}
+        hidden
+      />
       {activeSourceType === BankSourceTypeEnum.Book && <BookPanel {...props} />}
       {activeSourceType === BankSourceTypeEnum.Periodical && (
         <PeriodicalPanel {...props} />

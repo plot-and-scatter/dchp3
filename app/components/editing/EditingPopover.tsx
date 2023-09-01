@@ -72,7 +72,7 @@ const EditingPopover = ({
         <div className="grid grid-cols-1">
           <Form
             reloadDocument={true} // reloading to kill popper on post
-            action={`/entries/${headword}`}
+            action={`/entries/${headword}?index`}
             method="post"
           >
             <EditablePopoverInput

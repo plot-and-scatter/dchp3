@@ -1,11 +1,15 @@
 import { BankSourceTypeEnum } from "~/models/bank.types"
 import BankInput from "../BankInput"
 import LabelledField from "../LabelledField"
-import type { EditCitationProps } from "../EditCitationProps"
+import type { BankEditCitationFieldsProps } from "../BankEditCitationFields"
 
-export default function SpokenLanguagePanel(props: EditCitationProps) {
-  const showField =
-    props.citation?.type_id === BankSourceTypeEnum["Spoken Language"]
+export default function SpokenLanguagePanel(
+  props: BankEditCitationFieldsProps
+) {
+  const citation = props.citation
+  const source = citation?.source
+
+  const showField = source?.type_id === BankSourceTypeEnum["Spoken Language"]
 
   return (
     <>
@@ -15,7 +19,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
           <BankInput
             name={`source.year_published`}
             showField={showField}
-            defaultValue={props.citation?.year_published}
+            defaultValue={source?.year_published}
           />
         }
       />
@@ -25,7 +29,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
           <BankInput
             name={`source.year_composed`}
             showField={showField}
-            defaultValue={props.citation?.year_composed}
+            defaultValue={source?.year_composed}
           />
         }
       />
@@ -35,7 +39,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
           <BankInput
             name={`author`}
             showField={showField}
-            defaultValue={props.author}
+            defaultValue={source?.author?.name}
           />
         }
       />
@@ -45,7 +49,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
           <BankInput
             name={`source.utterance_media`}
             showField={showField}
-            defaultValue={props.source?.utterance_media}
+            defaultValue={source?.utterance_media}
           />
         }
       />
@@ -55,7 +59,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
           <BankInput
             name={`source.utterance_broadcast`}
             showField={showField}
-            defaultValue={props.source?.utterance_broadcast}
+            defaultValue={source?.utterance_broadcast}
           />
         }
       />
@@ -65,7 +69,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
           <BankInput
             name={`source.periodical_date`}
             showField={showField}
-            defaultValue={props.source?.periodical_date}
+            defaultValue={source?.periodical_date}
           />
         }
       />
@@ -75,7 +79,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
           <BankInput
             name={`source.utterance_time`}
             showField={showField}
-            defaultValue={props.source?.utterance_time}
+            defaultValue={source?.utterance_time}
           />
         }
       />
@@ -85,7 +89,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
           <BankInput
             name={`place`}
             showField={showField}
-            defaultValue={props.place}
+            defaultValue={source?.place?.name}
           />
         }
       />
@@ -95,7 +99,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
           <BankInput
             name={`source.utterance_witness`}
             showField={showField}
-            defaultValue={props.source?.utterance_witness}
+            defaultValue={source?.utterance_witness}
           />
         }
       />
@@ -105,7 +109,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
           <BankInput
             name={`source.url`}
             showField={showField}
-            defaultValue={props.source?.url}
+            defaultValue={source?.url}
           />
         }
       />
@@ -115,7 +119,7 @@ export default function SpokenLanguagePanel(props: EditCitationProps) {
           <BankInput
             name={`source.url_access_date`}
             showField={showField}
-            defaultValue={props.source?.url_access_date}
+            defaultValue={source?.url_access_date}
           />
         }
       />

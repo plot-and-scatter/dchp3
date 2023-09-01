@@ -1,6 +1,6 @@
 interface BankTextAreaProps {
   name: string
-  defaultValue?: string
+  defaultValue?: string | null
   rows?: number
   className?: string
   showField?: boolean // If true, show the defaultValue. If not, do not.
@@ -15,11 +15,12 @@ export default function BankTextArea({
   showField = true,
   onChange,
 }: BankTextAreaProps) {
+  const defaultValueNoNulls = defaultValue === null ? undefined : defaultValue
+
   return (
     <textarea
       name={name}
-      // defaultValue={defaultValue}
-      defaultValue={showField !== false ? defaultValue : undefined}
+      defaultValue={showField !== false ? defaultValueNoNulls : undefined}
       className={`${
         className || ""
       } w-full rounded border border-slate-700 px-4 py-2`}

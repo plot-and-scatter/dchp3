@@ -12,18 +12,14 @@ import {
   redirect,
 } from "@remix-run/server-runtime"
 import {
-  getAuthorBySourceId,
-  getCitationById,
   getCitationsByHeadwordAndUserId,
-  getPlaceBySourceId,
-  getTitleBySourceId,
-  getUtteranceBySourceId as getSourceBySourceId,
   findOrCreateHeadword,
   updateCitation,
   findOrCreateAuthor,
   findOrCreatePlace,
   findOrCreateTitle,
   updateSource,
+  getFullCitationById,
 } from "~/models/bank.server"
 import BankEditCitationFields from "~/components/bank/BankEditCitationFields"
 import {
@@ -129,33 +125,30 @@ export const loader = async ({ params }: LoaderArgs) => {
   const citationId = params.citationId
   invariant(citationId, `citationId not found`)
 
-  const citation = await getCitationById(citationId)
+  const citation = await getFullCitationById(citationId)
   if (!citation) {
     throw new Response(`No citation found with id ${citationId}`, {
       status: 404,
     })
   }
 
-  const sourceId = `${citation.source_id}`
-
   const response = await Promise.all([
-    getTitleBySourceId(sourceId),
-    getPlaceBySourceId(sourceId),
-    getAuthorBySourceId(sourceId),
-    getSourceBySourceId(sourceId),
-    getCitationsByHeadwordAndUserId(citation.headword, citation.user_id),
+    getCitationsByHeadwordAndUserId(
+      citation.headword?.headword || null,
+      citation.user_id
+    ),
   ]).then((responses) => {
     return {
-      title: responses[0].name,
-      place: responses[1].name,
-      author: responses[2].name,
-      source: responses[3],
-      headwordCitations: responses[4],
+      headwordCitations: responses[0],
     }
   })
 
   return { citation, ...response }
 }
+
+export type EditCitationIdLoaderData = Awaited<
+  Promise<ReturnType<typeof loader>>
+>
 
 export default function EditCitationId() {
   const data = useLoaderData<typeof loader>()
@@ -167,8 +160,7 @@ export default function EditCitationId() {
       <PageHeader>Editing citation</PageHeader>
       <BankHeadwordCitationSelect
         citations={headwordCitations}
-        currentCitationId={citation.id}
-        currentEmail={citation.email}
+        currentCitation={citation}
       />
       <hr className="my-6" />
       <Form action={`/bank/edit/${citation.id}`} method={`post`}>

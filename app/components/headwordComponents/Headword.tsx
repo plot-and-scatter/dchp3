@@ -6,7 +6,7 @@ import EditingPopover from "../editing/EditingPopover"
 import GeneralLabels from "./GeneralLabels"
 import Etymology from "./Etymology"
 import Alternatives from "./Alternatives"
-import { Form } from "@remix-run/react"
+import { Form, Link } from "@remix-run/react"
 import Button from "../elements/Button"
 
 interface HeadwordProps {
@@ -46,6 +46,12 @@ const Headword = ({
             attributeID={id}
           />
         </div>
+        <Link
+          className="rounded border border-slate-700 bg-slate-600 p-2 text-white transition-colors duration-300 hover:bg-slate-500"
+          to={`/entries/${word}/edit`}
+        >
+          Edit
+        </Link>
         <DictionaryVersion isLegacy={isLegacy} />
       </div>
       <div className="flex flex-row">

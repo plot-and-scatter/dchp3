@@ -2,10 +2,13 @@ import { BankSourceTypeEnum } from "~/models/bank.types"
 import BankInput from "../BankInput"
 import BankTextArea from "../BankTextArea"
 import LabelledField from "../LabelledField"
-import type { EditCitationProps } from "../EditCitationProps"
+import type { BankEditCitationFieldsProps } from "../BankEditCitationFields"
 
-export default function BookPanel(props: EditCitationProps) {
-  const showField = props.citation?.type_id === BankSourceTypeEnum.Book
+export default function BookPanel(props: BankEditCitationFieldsProps) {
+  const citation = props.citation
+  const source = citation?.source
+
+  const showField = source?.type_id === BankSourceTypeEnum.Book
 
   return (
     <>
@@ -15,7 +18,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.year_published`}
             showField={showField}
-            defaultValue={props.citation?.year_published}
+            defaultValue={source?.year_published}
           />
         }
       />
@@ -25,7 +28,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.year_composed`}
             showField={showField}
-            defaultValue={props.citation?.year_composed}
+            defaultValue={source?.year_composed}
           />
         }
       />
@@ -35,7 +38,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`author`}
             showField={showField}
-            defaultValue={props.author}
+            defaultValue={source?.author?.name}
           />
         }
       />
@@ -45,7 +48,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.editor`}
             showField={showField}
-            defaultValue={props.source?.editor}
+            defaultValue={source?.editor}
           />
         }
       />
@@ -55,7 +58,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankTextArea
             name={`title`}
             showField={showField}
-            defaultValue={props.title}
+            defaultValue={source?.title?.name}
             rows={3}
           />
         }
@@ -66,7 +69,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`place`}
             showField={showField}
-            defaultValue={props.place}
+            defaultValue={source?.place?.name}
           />
         }
       />
@@ -76,7 +79,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.publisher`}
             showField={showField}
-            defaultValue={props.source?.publisher}
+            defaultValue={source?.publisher}
           />
         }
       />
@@ -86,7 +89,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.url`}
             showField={showField}
-            defaultValue={props.source?.url}
+            defaultValue={source?.url}
           />
         }
       />
@@ -96,7 +99,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.url_access_date`}
             showField={showField}
-            defaultValue={props.source?.url_access_date}
+            defaultValue={source?.url_access_date}
           />
         }
       />
@@ -106,7 +109,7 @@ export default function BookPanel(props: EditCitationProps) {
           <BankInput
             name={`source.page`}
             showField={showField}
-            defaultValue={props.citation?.page}
+            defaultValue={source?.page}
           />
         }
       />

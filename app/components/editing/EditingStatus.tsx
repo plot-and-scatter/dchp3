@@ -27,7 +27,11 @@ interface grouping {
 
 const EditingStatus = ({ data }: EditingStatusProps) => {
   return (
-    <Form reloadDocument action={`/entries/${data.headword}`} method="post">
+    <Form
+      reloadDocument
+      action={`/entries/${data.headword}/edit`}
+      method="post"
+    >
       <div className="flex flex-col">
         <h3 className="my-3 text-lg underline">Editing Status</h3>
         {getEditingStatusInputs(data)}

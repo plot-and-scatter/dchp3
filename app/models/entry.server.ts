@@ -3,9 +3,10 @@ import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
 import {
   getCheckboxValueAsBoolean,
+  getNumberFromFormInput,
   getStringFromFormInput,
 } from "~/utils/generalUtils"
-import { isNonPositive } from "~/utils/numberUtils"
+import { assertIsValidId, isNonPositive } from "~/utils/numberUtils"
 
 export type { Entry } from "@prisma/client"
 
@@ -159,6 +160,62 @@ export async function updateRecordByAttributeAndType(
     default:
       throw new Error("Type of element being edited is not supported")
   }
+}
+
+async function assertNonDuplicateHeadword(
+  id: number,
+  incomingHeadword: string
+) {
+  const entry = await prisma.entry.findUniqueOrThrow({
+    where: { id: id },
+    select: { headword: true },
+  })
+
+  const currentHeadword = entry.headword
+  const incomingHeadwordEntry = await prisma.entry.findUnique({
+    where: { headword: incomingHeadword },
+  })
+
+  const headwordsAreDifferent = entry.headword !== incomingHeadword
+  const newHeadwordWouldBeDuplicate =
+    incomingHeadwordEntry !== undefined && incomingHeadwordEntry !== null
+
+  if (headwordsAreDifferent && newHeadwordWouldBeDuplicate) {
+    throw new Error(
+      `"${currentHeadword}" can't be changed to "${incomingHeadword}" as an Entry for "${incomingHeadword}" already exists`
+    )
+  }
+}
+
+export async function updateEntry(data: { [k: string]: FormDataEntryValue }) {
+  const id = getNumberFromFormInput(data.id)
+  assertIsValidId(id)
+
+  const headword = getStringFromFormInput(data.headword)
+  await assertNonDuplicateHeadword(id, headword)
+
+  const spellingVariant = getStringFromFormInput(data.spellingVariant)
+  const generalLabels = getStringFromFormInput(data.generalLabels)
+  const etymology = getStringFromFormInput(data.etymology)
+  const fistNote = getStringFromFormInput(data.fistNote)
+
+  const dagger = getCheckboxValueAsBoolean(data.dagger)
+  const isLegacy = getCheckboxValueAsBoolean(data.isLegacy)
+  const isNonCanadian = getCheckboxValueAsBoolean(data.isNonCanadian)
+
+  await prisma.entry.update({
+    where: { id: id },
+    data: {
+      headword: headword,
+      spelling_variants: spellingVariant,
+      general_labels: generalLabels,
+      etymology: etymology,
+      fist_note: fistNote,
+      dagger: dagger,
+      is_legacy: isLegacy,
+      no_cdn_conf: isNonCanadian,
+    },
+  })
 }
 
 export async function updateEntryHeadword(entryId: number, newValue: string) {
