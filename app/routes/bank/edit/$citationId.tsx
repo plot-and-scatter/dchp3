@@ -12,11 +12,7 @@ import {
   redirect,
 } from "@remix-run/server-runtime"
 import {
-  getAuthorBySourceId,
   getCitationsByHeadwordAndUserId,
-  getPlaceBySourceId,
-  getTitleBySourceId,
-  getSourceBySourceId,
   findOrCreateHeadword,
   updateCitation,
   findOrCreateAuthor,
