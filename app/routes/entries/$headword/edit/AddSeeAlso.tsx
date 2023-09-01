@@ -1,6 +1,7 @@
 import { Form } from "@remix-run/react"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import Button from "~/components/elements/Button"
+import SeeAlsoInput from "./SeeAlsoInput"
 
 interface AddSeeAlsoProps {
   meaningId: number
@@ -17,12 +18,12 @@ export default function AddSeeAlso({ meaningId, headword }: AddSeeAlsoProps) {
         <input type="hidden" name="attributeID" value={meaningId} />
         <label className="mx-2 p-1">
           New See Also:
-          <input name="headwordToAdd" className="rounded border p-1" />
+          <SeeAlsoInput name="headwordToAdd" />
         </label>
         <label htmlFor="linkNote" className="mx-2 p-1">
-          See Also Comment
+          See Also Comment:
         </label>
-        <input name="linkNote" className="w-auto rounded border p-1" />
+        <input name="linkNote" className="mx-2 w-auto rounded border p-1" />
       </div>
       <Button
         type="submit"
