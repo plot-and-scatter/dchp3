@@ -12,7 +12,7 @@ const Alternatives = ({ alternatives }: alternativesProps): JSX.Element => {
     <h2 className="leading-tight text-slate-700 md:text-xl">
       <span className="text-slate-500">Spelling variants:</span>{" "}
       <span className="italic">
-        <SanitizedTextSpan text={alternatives || "-- none --"} />
+        <SanitizedTextSpan text={alternatives} />
       </span>
     </h2>
   )

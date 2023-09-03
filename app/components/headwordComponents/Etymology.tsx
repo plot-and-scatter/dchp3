@@ -5,13 +5,12 @@ interface etymologyProps {
 }
 
 const Etymology = ({ etymology }: etymologyProps): JSX.Element => {
-  const authenticated: boolean = true // TODO: use authentication variable
-  if (!etymology && !authenticated) return <></>
+  if (!etymology) return <></>
 
   return (
     <p>
       <span className="ml-3 italic">
-        <SanitizedTextSpan text={etymology || "-- none --"} />
+        <SanitizedTextSpan text={etymology} />
       </span>
     </p>
   )

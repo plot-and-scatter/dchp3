@@ -11,7 +11,7 @@ const GeneralLabels = ({ generalLabels }: generalLabelsProps): JSX.Element => {
   return (
     <p>
       <span className="ml-3 italic">
-        <SanitizedTextSpan text={generalLabels || "-- none --"} />
+        <SanitizedTextSpan text={generalLabels} />
       </span>
     </p>
   )
