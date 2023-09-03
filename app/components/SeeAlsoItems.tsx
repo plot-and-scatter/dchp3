@@ -1,8 +1,5 @@
 import React from "react"
 import type { MeaningType } from "./Meaning"
-import EditingPopover from "./editing/EditingPopover"
-import { attributeEnum } from "./editing/attributeEnum"
-import { editablePopoverInputTypes } from "./editing/EditablePopoverInput"
 import SeeAlsoItem from "./SeeAlsoItem"
 
 export type SeeAlsoList = MeaningType["seeAlso"]
@@ -26,15 +23,6 @@ const SeeAlsoItems = ({ seeAlsoItems }: SeeAlsoItemsProps): JSX.Element => {
           >
             {index > 0 && <span className="mr-3">,</span>}
             <SeeAlsoItem seeAlso={seeAlso} />
-            <EditingPopover
-              currentValue={seeAlso.entry.headword}
-              type={editablePopoverInputTypes.DELETE}
-              attributeType={attributeEnum.DELETE_SEE_ALSO}
-              attributeID={seeAlso.meaning_id}
-              icon="delete"
-            >
-              <input type="hidden" name="entryId" value={seeAlso.entry_id} />
-            </EditingPopover>
           </React.Fragment>
         )
       })}

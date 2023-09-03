@@ -31,18 +31,20 @@ const Headword = ({
   return (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
       <div className="flex items-center justify-between">
-        <div className="flex justify-center align-middle">
-          <h1 className="text-3xl leading-tight md:text-5xl">
-            {word}
-            {hasDagger && <span className="align-super">&dagger;</span>}
-          </h1>
+        <div className="flex items-center">
+          <div className="flex justify-center align-middle">
+            <h1 className="text-3xl leading-tight md:text-5xl">
+              {word}
+              {hasDagger && <span className="align-super">&dagger;</span>}
+            </h1>
+          </div>
+          <Link
+            className="mx-5 rounded border border-slate-700 bg-slate-600 p-2 text-white transition-colors duration-300 hover:bg-slate-500"
+            to={`/entries/${word}/edit`}
+          >
+            Edit
+          </Link>
         </div>
-        <Link
-          className="rounded border border-slate-700 bg-slate-600 p-2 text-white transition-colors duration-300 hover:bg-slate-500"
-          to={`/entries/${word}/edit`}
-        >
-          Edit
-        </Link>
         <DictionaryVersion isLegacy={isLegacy} />
       </div>
       <Alternatives alternatives={alternatives} />

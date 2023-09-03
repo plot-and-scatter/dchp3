@@ -5,7 +5,8 @@ interface etymologyProps {
 }
 
 const Etymology = ({ etymology }: etymologyProps): JSX.Element => {
-  if (!etymology) return <></>
+  const authenticated: boolean = true // TODO: use authentication variable
+  if (!etymology && !authenticated) return <></>
 
   return (
     <p>
