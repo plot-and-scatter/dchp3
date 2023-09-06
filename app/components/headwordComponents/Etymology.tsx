@@ -11,7 +11,7 @@ const Etymology = ({ etymology }: etymologyProps): JSX.Element => {
   return (
     <p>
       <span className="ml-3 italic">
-        <SanitizedTextSpan text={etymology || "-- none --"} />
+        <SanitizedTextSpan text={etymology} />
       </span>
     </p>
   )
