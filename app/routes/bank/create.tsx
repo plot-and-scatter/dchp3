@@ -13,23 +13,55 @@ import {
   createSource,
 } from "~/models/bank.server"
 import BankEditCitationFields from "~/components/bank/BankEditCitationFields"
-import {
-  getBooleanFromFormInput,
-  getNumberFromFormInput,
-  getStringFromFormInput,
-  getStringOrNullFromFormInput,
-} from "~/utils/generalUtils"
 import { getUserIdByEmail } from "~/models/user.server"
 import { getEmailFromSession } from "~/services/auth/session.server"
-import type { BankCitationCreate, BankSourceCreate } from "~/models/bank.types"
+import { z } from "zod"
+
+const BankCreateFormDataSchema = z.object({
+  [`citation.headword`]: z.string(),
+  [`citation.clip_end`]: z.coerce.number().nonnegative().nullable(),
+  [`citation.clip_start`]: z.coerce.number().nonnegative().nullable(),
+  [`citation.clipped_text`]: z.string().nullable(),
+  [`citation.legacy_id`]: z.coerce.number().nullable(),
+  [`citation.memo`]: z.string().nullable(),
+  [`citation.part_of_speech`]: z.string().nullable(),
+  [`citation.short_meaning`]: z.string().nullable(),
+  [`citation.spelling_variant`]: z.string().nullable(),
+  [`citation.text`]: z.string().nullable(),
+  [`citation.is_incomplete`]: z
+    .union([z.literal("true"), z.literal("false")])
+    .nullable()
+    .transform((val) => (val === "true" ? 1 : null)),
+  [`source.dateline`]: z.string().nullish(),
+  [`source.editor`]: z.string().nullish(),
+  [`source.evidence`]: z.string().nullish(),
+  [`source.page`]: z.string().nullish(),
+  [`source.periodical_date`]: z.string().nullish(),
+  [`source.publisher`]: z.string().nullish(),
+  [`source.type_id`]: z.coerce.number(),
+  [`source.url_access_date`]: z.string().nullish(),
+  [`source.url`]: z.string().nullish(),
+  [`source.utterance_broadcast`]: z.string().nullish(),
+  [`source.utterance_media`]: z.string().nullish(),
+  [`source.utterance_time`]: z.string().nullish(),
+  [`source.utterance_witness`]: z.string().nullish(),
+  [`source.uttered`]: z.string().nullish(),
+  [`source.volume_issue`]: z.string().nullish(),
+  [`source.year_composed`]: z.string().nullish(),
+  [`source.year_published`]: z.string().nullish(),
+  [`author`]: z.string().nullable(),
+  [`place`]: z.string().nullable(),
+  [`title`]: z.string().nullable(),
+})
 
 export const action = async ({ request }: ActionArgs) => {
   const data = Object.fromEntries(await request.formData())
-  const headword = getStringFromFormInput(data[`citation.headword`])
+
+  const parsedData = BankCreateFormDataSchema.parse(data)
+
+  const headword = parsedData[`citation.headword`]
   invariant(headword)
   // TODO: Use more invariants + exception catchers
-
-  console.log("data", data)
 
   const email = await getEmailFromSession(request)
   if (!email) throw json({ message: `No email on user` }, { status: 500 })
@@ -38,71 +70,51 @@ export const action = async ({ request }: ActionArgs) => {
   // Find or create the headword
   const headwordId = await findOrCreateHeadword(headword)
 
-  const authorId = await findOrCreateAuthor(
-    getStringFromFormInput(data[`author`])
-  )
-  const placeId = await findOrCreatePlace(getStringFromFormInput(data[`place`]))
-  const titleId = await findOrCreateTitle(getStringFromFormInput(data[`title`]))
+  const authorId = await findOrCreateAuthor(parsedData[`author`])
+  const placeId = await findOrCreatePlace(parsedData[`place`])
+  const titleId = await findOrCreateTitle(parsedData[`title`])
 
-  const sourceFields: BankSourceCreate = {
-    type_id: getNumberFromFormInput(data[`source.type_id`]),
-    year_published: getStringOrNullFromFormInput(data[`source.year_published`]),
-    page: getStringOrNullFromFormInput(data[`source.page`]),
+  // Create the source
+  const sourceFields = {
     author_id: authorId,
-    title_id: titleId,
     place_id: placeId,
-    url: getStringOrNullFromFormInput(data[`source.url`]),
-    url_access_date: getStringOrNullFromFormInput(
-      data[`source.url_access_date`]
-    ),
-    dateline: getStringOrNullFromFormInput(data[`source.dateline`]),
-    periodical_date: getStringOrNullFromFormInput(
-      data[`source.periodical_date`]
-    ),
-    year_composed: getStringOrNullFromFormInput(data[`source.year_composed`]),
-    publisher: getStringOrNullFromFormInput(data[`source.publisher`]),
-    uttered: getStringOrNullFromFormInput(data[`source.uttered`]),
-    utterance_witness: getStringOrNullFromFormInput(
-      data[`source.utterance_witness`]
-    ),
-    utterance_time: getStringOrNullFromFormInput(data[`source.utterance_time`]),
-    utterance_media: getStringOrNullFromFormInput(
-      data[`source.utterance_media`]
-    ),
-    utterance_broadcast: getStringOrNullFromFormInput(
-      data[`source.utterance_broadcast`]
-    ),
-    volume_issue: getStringOrNullFromFormInput(data[`source.volume_issue`]),
-    editor: getStringOrNullFromFormInput(data[`source.editor`]),
-    evidence: getStringOrNullFromFormInput(data[`source.evidence`]),
-    is_dchp1: null,
-    is_teach: null,
+    title_id: titleId,
+    dateline: parsedData[`source.dateline`],
+    editor: parsedData[`source.editor`],
+    evidence: parsedData[`source.evidence`],
+    page: parsedData[`source.page`],
+    periodical_date: parsedData[`source.periodical_date`],
+    publisher: parsedData[`source.publisher`],
+    type_id: parsedData[`source.type_id`],
+    url_access_date: parsedData[`source.url_access_date`],
+    url: parsedData[`source.url`],
+    utterance_broadcast: parsedData[`source.utterance_broadcast`],
+    utterance_media: parsedData[`source.utterance_media`],
+    utterance_time: parsedData[`source.utterance_time`],
+    utterance_witness: parsedData[`source.utterance_witness`],
+    uttered: parsedData[`source.uttered`],
+    volume_issue: parsedData[`source.volume_issue`],
+    year_composed: parsedData[`source.year_composed`],
+    year_published: parsedData[`source.year_published`],
   }
-
-  console.log(sourceFields)
-
   const source = await createSource(sourceFields)
 
   // Create the citation
-  const citationFields: BankCitationCreate = {
+  const citationFields = {
     source_id: source.id,
-    memo: getStringFromFormInput(data[`citation.memo`]),
     headword_id: headwordId,
-    short_meaning: getStringFromFormInput(data[`citation.short_meaning`]),
-    spelling_variant: getStringFromFormInput(data[`citation.spelling_variant`]),
-    part_of_speech: getStringFromFormInput(data[`citation.part_of_speech`]),
-    text: getStringFromFormInput(data[`citation.text`]),
-    clip_start: getNumberFromFormInput(data[`citation.clip_start`]),
-    clip_end: getNumberFromFormInput(data[`citation.clip_end`]),
-    clipped_text: getStringFromFormInput(data[`citation.clipped_text`]),
+    memo: parsedData[`citation.memo`],
+    short_meaning: parsedData[`citation.short_meaning`],
+    spelling_variant: parsedData[`citation.spelling_variant`],
+    part_of_speech: parsedData[`citation.part_of_speech`],
+    text: parsedData[`citation.text`],
+    clip_start: parsedData[`citation.clip_start`],
+    clip_end: parsedData[`citation.clip_end`],
+    clipped_text: parsedData[`citation.clipped_text`],
+    legacy_id: parsedData[`citation.legacy_id`],
+    is_incomplete: parsedData[`citation.is_incomplete`],
     created: new Date(),
     user_id: userId,
-    legacy_id: getNumberFromFormInput(data[`citation.legacy_id`]),
-    is_incomplete: getBooleanFromFormInput(data[`citation.is_incomplete`])
-      ? 1
-      : 0,
-    is_dchp1: null,
-    is_teach: null,
   }
   const citation = await createCitation(citationFields)
 
@@ -113,7 +125,7 @@ export const loader = async () => {
   return null
 }
 
-export default function EditCitationId() {
+export default function BankCreate() {
   return (
     <>
       <PageHeader>Create citation</PageHeader>

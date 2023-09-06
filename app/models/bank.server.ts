@@ -3,12 +3,10 @@ import type {
   BankPrimaryKey,
   BankCitationUpdate,
   BankSourceUpdate,
-  BankCitationCreate,
-  BankSourceCreate,
 } from "./bank.types"
 import { DEFAULT_CITATION_SELECT } from "~/services/bank/defaultCitationSelect"
 import type Nullable from "~/types/Nullable"
-import type { BankAuthor, BankPlace, BankTitle } from "@prisma/client"
+import type { BankAuthor, BankPlace, BankTitle, Prisma } from "@prisma/client"
 import { FULL_CITATION_SELECT } from "~/services/bank/fullCitationSelect"
 
 export async function getFullCitationById(citationId: string) {
@@ -80,7 +78,9 @@ export async function findOrCreateHeadword(headword: string) {
   return result.id
 }
 
-export async function findOrCreateAuthor(author: string) {
+export async function findOrCreateAuthor(author: Nullable<string>) {
+  if (!author) return null
+
   // We are doing this using queryRaw because we MUST have the query be
   // case-sensitive (hence WHERE BINARY).
   const authorId = await prisma.$queryRaw<
@@ -93,7 +93,9 @@ export async function findOrCreateAuthor(author: string) {
   return result.id
 }
 
-export async function findOrCreatePlace(place: string) {
+export async function findOrCreatePlace(place: Nullable<string>) {
+  if (!place) return null
+
   // We are doing this using queryRaw because we MUST have the query be
   // case-sensitive (hence WHERE BINARY).
   const placeId = await prisma.$queryRaw<
@@ -106,7 +108,9 @@ export async function findOrCreatePlace(place: string) {
   return result.id
 }
 
-export async function findOrCreateTitle(title: string) {
+export async function findOrCreateTitle(title: Nullable<string>) {
+  if (!title) return null
+
   // We are doing this using queryRaw because we MUST have the query be
   // case-sensitive (hence WHERE BINARY).
   const titleId = await prisma.$queryRaw<
@@ -133,10 +137,14 @@ export async function updateSource(sourceFields: BankSourceUpdate) {
   })
 }
 
-export async function createCitation(citationFields: BankCitationCreate) {
+export async function createCitation(
+  citationFields: Prisma.BankCitationCreateArgs["data"]
+) {
   return await prisma.bankCitation.create({ data: citationFields })
 }
 
-export async function createSource(sourceFields: BankSourceCreate) {
+export async function createSource(
+  sourceFields: Prisma.BankSourceCreateArgs["data"]
+) {
   return await prisma.bankSource.create({ data: sourceFields })
 }

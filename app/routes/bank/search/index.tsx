@@ -4,14 +4,13 @@ import { Form } from "@remix-run/react"
 import { getStringFromFormInput } from "~/utils/generalUtils"
 import { json, redirect } from "@remix-run/server-runtime"
 import { PageHeader } from "~/components/elements/PageHeader"
-import BankCheckbox from "~/components/bank/BankCheckbox"
 import BankInput from "~/components/bank/BankInput"
 import BankNumericInput from "~/components/bank/BankNumericInput"
-import BankRadio from "~/components/bank/BankRadio"
 import BankSelect from "~/components/bank/BankSelect"
 import Button from "~/components/elements/Button"
 import LabelledField from "~/components/bank/LabelledField"
 import type { ActionArgs } from "@remix-run/server-runtime"
+import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
 
 export const SEARCH_PARAMS = [
   "exactPhrase",
@@ -71,13 +70,15 @@ export default function SearchIndex() {
           label="Select"
           field={
             <div className="flex">
-              <BankCheckbox
+              <BankRadioOrCheckbox
+                type="checkbox"
                 name="exactPhrase"
                 className="flex"
                 optionSetClassName="flex gap-x-2 mr-4"
                 options={[{ name: "Exact phrase", value: "exactPhrase" }]}
               />
-              <BankCheckbox
+              <BankRadioOrCheckbox
+                type="checkbox"
                 name="caseSensitive"
                 className="flex"
                 optionSetClassName="flex gap-x-2 mr-4"
@@ -140,7 +141,8 @@ export default function SearchIndex() {
         <LabelledField
           label="Sort by"
           field={
-            <BankRadio
+            <BankRadioOrCheckbox
+              type="radio"
               className="flex"
               optionSetClassName="flex gap-x-2 mr-4"
               name="orderBy"
@@ -156,7 +158,8 @@ export default function SearchIndex() {
         <LabelledField
           label="Order"
           field={
-            <BankRadio
+            <BankRadioOrCheckbox
+              type="radio"
               className="flex"
               optionSetClassName="flex gap-x-2 mr-4"
               name="orderDirection"
@@ -171,7 +174,8 @@ export default function SearchIndex() {
         <LabelledField
           label="Horizon"
           field={
-            <BankRadio
+            <BankRadioOrCheckbox
+              type="radio"
               className="flex"
               optionSetClassName="flex gap-x-2 mr-4"
               name="horizon"
