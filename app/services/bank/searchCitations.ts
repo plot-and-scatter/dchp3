@@ -87,6 +87,7 @@ export default async function (opts: SearchOptions) {
       user_id: true,
       last_modified_user_id: true,
       text: true,
+      clipped_text: true,
       id: true,
       short_meaning: true,
       last_modified: true,
