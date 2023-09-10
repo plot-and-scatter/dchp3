@@ -9,6 +9,7 @@ import SeeAlsoEditing from "./SeeAlsoEditing"
 import { EditFormInput } from "~/components/editing/EditFormInput"
 import FistnoteEditForm from "./FistnoteEditForm"
 import FistnoteAddingForm from "./FistnoteAddingForm"
+import QuotationAddingForm from "./QuotationAddingForm"
 
 interface MeaningEditingFormProps {
   headword: string
@@ -128,6 +129,10 @@ export default function MeaningEditingForm({
           </Button>
         </div>
       </Form>
+      <div className="my-2 flex flex-col justify-center bg-slate-200 p-2">
+        <h2 className=" my-2 text-2xl font-bold underline">Quotation Adding</h2>
+        <QuotationAddingForm meaningId={meaning.id} />
+      </div>
 
       <div className="my-2 bg-slate-200 p-2">
         <h2 className=" my-2 text-2xl underline">See Also</h2>

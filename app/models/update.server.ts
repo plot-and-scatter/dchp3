@@ -153,6 +153,29 @@ export async function updateCanadianism(data: {
   })
 }
 
+export async function addQuotations(data: { [k: string]: FormDataEntryValue }) {
+  const meaningId = getNumberFromFormInput(data.meaningId)
+  assertIsValidId(meaningId)
+
+  let citationsToInsert = []
+
+  for (let index in data) {
+    console.log(index)
+    console.log(data[index])
+    if (index.startsWith("citationId-")) {
+      let citationId = getNumberFromFormInput(data[index])
+      citationsToInsert.push({ meaning_id: meaningId, citation_id: citationId })
+    }
+  }
+
+  await prisma.meaningDetCitations.createMany({
+    data: citationsToInsert,
+    skipDuplicates: true,
+  })
+
+  return null
+}
+
 export async function updateOrDeleteDefinitionFistNote(data: {
   [k: string]: FormDataEntryValue
 }) {

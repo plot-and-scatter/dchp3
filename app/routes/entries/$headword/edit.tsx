@@ -10,6 +10,7 @@ import { type LoadedDataType } from "."
 import {
   addDefinitionFistNote,
   addMeaningToEntry,
+  addQuotations,
   addSeeAlso,
   deleteMeaning,
   deleteSeeAlso,
@@ -49,6 +50,9 @@ export async function action({ request }: ActionArgs) {
       break
     case attributeEnum.DELETE_MEANING:
       await deleteMeaning(data)
+      break
+    case attributeEnum.QUOTATION:
+      await addQuotations(data)
       break
     case attributeEnum.SEE_ALSO:
       await addSeeAlso(data)
