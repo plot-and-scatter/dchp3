@@ -176,6 +176,26 @@ export async function addQuotations(data: { [k: string]: FormDataEntryValue }) {
   return null
 }
 
+export async function deleteQuotations(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const meaningId = getNumberFromFormInput(data.meaningId)
+  const quotationId = getNumberFromFormInput(data.quotationId)
+  assertIsValidId(meaningId)
+  assertIsValidId(quotationId)
+
+  await prisma.meaningDetCitations.delete({
+    where: {
+      meaning_id_citation_id: {
+        meaning_id: meaningId,
+        citation_id: quotationId,
+      },
+    },
+  })
+
+  return null
+}
+
 export async function updateOrDeleteDefinitionFistNote(data: {
   [k: string]: FormDataEntryValue
 }) {

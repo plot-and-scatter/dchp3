@@ -10,6 +10,7 @@ import { EditFormInput } from "~/components/editing/EditFormInput"
 import FistnoteEditForm from "./FistnoteEditForm"
 import FistnoteAddingForm from "./FistnoteAddingForm"
 import QuotationAddingForm from "./QuotationAddingForm"
+import QuotationList from "./QuotationList"
 
 interface MeaningEditingFormProps {
   headword: string
@@ -40,7 +41,7 @@ export default function MeaningEditingForm({
   //   const [usageNoteValue, setUsageNote] = useState(usageNote)
 
   return (
-    <div className="my-20 bg-slate-100 p-5">
+    <div className="my-12 mb-56 bg-slate-100 p-5">
       <div className="flex justify-between">
         <h3 className="text-4xl font-bold">Meaning: {meaning.order}</h3>
         <Form method="post" className="my-6">
@@ -131,6 +132,7 @@ export default function MeaningEditingForm({
       </Form>
       <div className="my-2 flex flex-col justify-center bg-slate-200 p-2">
         <h2 className=" my-2 text-2xl font-bold underline">Quotation Adding</h2>
+        <QuotationList meaningId={meaning.id} citations={meaning.citations} />
         <QuotationAddingForm meaningId={meaning.id} />
       </div>
 

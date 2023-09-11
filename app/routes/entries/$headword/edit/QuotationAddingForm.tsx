@@ -29,6 +29,7 @@ export default function QuotationAddingForm({
   meaningId,
 }: QuotationAddingFormProps) {
   const citations = useFetcher<CitationSearchLoaderData>()
+  //let orderByProperty = "year"
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async (
     event: any
@@ -123,7 +124,8 @@ export default function QuotationAddingForm({
                       className="mx-1 p-1"
                     />
                     <p>
-                      <strong>{citation.id}: </strong> {citation.clipped_text}{" "}
+                      <strong>{citation.source?.place?.name} </strong>
+                      {citation.clipped_text}{" "}
                     </p>
                   </div>
                 </li>

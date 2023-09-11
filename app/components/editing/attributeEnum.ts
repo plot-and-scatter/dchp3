@@ -10,6 +10,7 @@ export enum attributeEnum {
   ADD_MEANING = "AddMeaning",
   DELETE_MEANING = "DeleteMeaning",
   QUOTATION = "Quotation",
+  DELETE_QUOTATION = "DeleteQuotation",
   // Note: MEANING_HEADER does not directly correspond to any individual entry field
   // TODO: Is there a cleaner way to handle this situation?
   MEANING_HEADER = "MeaningHeader",
