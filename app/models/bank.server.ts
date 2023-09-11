@@ -1,13 +1,9 @@
-import { prisma } from "~/db.server"
-import type {
-  BankPrimaryKey,
-  BankCitationUpdate,
-  BankSourceUpdate,
-} from "./bank.types"
 import { DEFAULT_CITATION_SELECT } from "~/services/bank/defaultCitationSelect"
-import type Nullable from "~/types/Nullable"
-import type { BankAuthor, BankPlace, BankTitle, Prisma } from "@prisma/client"
 import { FULL_CITATION_SELECT } from "~/services/bank/fullCitationSelect"
+import { prisma } from "~/db.server"
+import type { BankAuthor, BankPlace, BankTitle } from "@prisma/client"
+import type { BankPrimaryKey } from "./bank.types"
+import type Nullable from "~/types/Nullable"
 
 export async function getFullCitationById(citationId: string) {
   return prisma.bankCitation.findFirst({
@@ -54,12 +50,6 @@ export function getAuthorBySourceId(
 ): Promise<Nullable<BankAuthor>> {
   return prisma.bankAuthor.findFirst({
     where: { sources: { some: { id: parseInt(sourceId) } } },
-  })
-}
-
-export async function getSourceBySourceId(sourceId: string) {
-  return prisma.bankSource.findFirst({
-    where: { id: parseInt(sourceId) },
   })
 }
 
@@ -121,30 +111,4 @@ export async function findOrCreateTitle(title: Nullable<string>) {
   // Otherwise, insert.
   const result = await prisma.bankTitle.create({ data: { name: title } })
   return result.id
-}
-
-export async function updateCitation(citationFields: BankCitationUpdate) {
-  await prisma.bankCitation.update({
-    where: { id: citationFields.id },
-    data: citationFields,
-  })
-}
-
-export async function updateSource(sourceFields: BankSourceUpdate) {
-  await prisma.bankSource.update({
-    where: { id: sourceFields.id },
-    data: sourceFields,
-  })
-}
-
-export async function createCitation(
-  citationFields: Prisma.BankCitationCreateArgs["data"]
-) {
-  return await prisma.bankCitation.create({ data: citationFields })
-}
-
-export async function createSource(
-  sourceFields: Prisma.BankSourceCreateArgs["data"]
-) {
-  return await prisma.bankSource.create({ data: sourceFields })
 }

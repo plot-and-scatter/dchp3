@@ -1,9 +1,9 @@
-import type { LoaderArgs } from "@remix-run/node"
-import { json } from "@remix-run/node"
-import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react"
-import invariant from "tiny-invariant"
-
+import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { getEntriesByInitialLettersAndPage } from "~/models/entry.server"
+import { json } from "@remix-run/node"
+import { Link, useLoaderData, useParams } from "@remix-run/react"
+import invariant from "tiny-invariant"
+import type { LoaderArgs } from "@remix-run/node"
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.initialLetters, "initialLetters not found")
@@ -66,18 +66,4 @@ export default function EntryDetailsPage() {
   )
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error)
-
-  return <div>An unexpected error occurred: {error.message}</div>
-}
-
-export function CatchBoundary() {
-  const caught = useCatch()
-
-  if (caught.status === 404) {
-    return <div>Entry not found</div>
-  }
-
-  throw new Error(`Unexpected caught response with status: ${caught.status}`)
-}
+export const ErrorBoundary = DefaultErrorBoundary

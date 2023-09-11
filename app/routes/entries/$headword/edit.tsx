@@ -1,12 +1,12 @@
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node"
-import { Form, Link, useCatch, useLoaderData } from "@remix-run/react"
-import invariant from "tiny-invariant"
-import { getEntryByHeadword, updateEntry } from "~/models/entry.server"
-import { getAttributeEnumFromFormInput } from "~/utils/generalUtils"
 import { attributeEnum } from "~/components/editing/attributeEnum"
+import { Form, Link, useLoaderData } from "@remix-run/react"
+import { getAttributeEnumFromFormInput } from "~/utils/generalUtils"
+import { getEntryByHeadword, updateEntry } from "~/models/entry.server"
 import { PageHeader } from "~/components/elements/PageHeader"
-import Button from "~/components/elements/Button"
+import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node"
 import { type LoadedDataType } from "."
+import Button from "~/components/elements/Button"
+import invariant from "tiny-invariant"
 import {
   addDefinitionFistNote,
   addMeaningToEntry,
@@ -18,10 +18,11 @@ import {
   updateMeaning,
   updateOrDeleteDefinitionFistNote,
 } from "~/models/update.server"
+import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
+import EditingStatus from "~/components/editing/EditingStatus"
+import EditingTools from "~/components/editing/EditingTools"
 import EntryEditingForm from "./edit/EntryEditingForm"
 import MeaningEditingForms from "./edit/MeaningEditingForms"
-import EditingTools from "~/components/editing/EditingTools"
-import EditingStatus from "~/components/editing/EditingStatus"
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
@@ -126,18 +127,4 @@ export default function EntryDetailsPage() {
   )
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error)
-
-  return <div>An unexpected error occurred: {error.message}</div>
-}
-
-export function CatchBoundary() {
-  const caught = useCatch()
-
-  if (caught.status === 404) {
-    return <div>Error</div>
-  }
-
-  throw new Error(`Unexpected caught response with status: ${caught.status}`)
-}
+export const ErrorBoundary = DefaultErrorBoundary

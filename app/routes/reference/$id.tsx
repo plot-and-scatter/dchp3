@@ -1,11 +1,12 @@
+import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { Form, useLoaderData } from "@remix-run/react"
+import { useState } from "react"
+import invariant from "tiny-invariant"
 import {
   type ActionArgs,
   redirect,
   type LoaderArgs,
 } from "@remix-run/server-runtime"
-import { useState } from "react"
-import invariant from "tiny-invariant"
 import {
   type det_references,
   getReferenceById,
@@ -89,8 +90,4 @@ export default function ReferenceIdPage() {
   )
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error)
-
-  return <div>An unexpected error occurred: {error.message}</div>
-}
+export const ErrorBoundary = DefaultErrorBoundary

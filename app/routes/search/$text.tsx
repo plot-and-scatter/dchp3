@@ -1,18 +1,16 @@
-import type { ActionArgs, LoaderArgs } from "@remix-run/node"
-import { redirect } from "@remix-run/node"
 import {
   Form,
-  useCatch,
   useLoaderData,
   useParams,
   useSearchParams,
 } from "@remix-run/react"
+import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
+import { getSearchResults } from "~/models/search.server"
+import { redirect } from "@remix-run/node"
+import { SearchResultEnum } from "./searchResultEnum"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
-
-import {} from "~/models/entry.server"
-import { getSearchResults } from "~/models/search.server"
-import { SearchResultEnum } from "./searchResultEnum"
+import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 
 export async function action({ request, params }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -91,18 +89,4 @@ export default function EntryDetailsPage() {
   )
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error)
-
-  return <div>An unexpected error occurred: {error.message}</div>
-}
-
-export function CatchBoundary() {
-  const caught = useCatch()
-
-  if (caught.status === 404) {
-    return <div>Entry not found</div>
-  }
-
-  throw new Error(`Unexpected caught response with status: ${caught.status}`)
-}
+export const ErrorBoundary = DefaultErrorBoundary
