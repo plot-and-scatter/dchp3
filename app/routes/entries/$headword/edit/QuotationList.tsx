@@ -1,7 +1,6 @@
 import { Form, Link } from "@remix-run/react"
 import { type MeaningType } from "~/components/Meaning"
 import { attributeEnum } from "~/components/editing/attributeEnum"
-import Button from "~/components/elements/Button"
 
 export type CitationType = MeaningType["citations"][0]
 
@@ -47,11 +46,12 @@ function CitationItem({ citation, meaningId }: CitationItemProps) {
   if (!citation) return <></> //TODO return something else
 
   return (
-    <div className="my-2" key={citation.id}>
-      <p>
-        <strong>{citation.id}:</strong> {citation.citation}
+    <div className="my-2 grid grid-cols-12" key={citation.id}>
+      <p className="col-span-10">
+        <strong> {citation.yearcomp || citation.yearpub}:</strong>{" "}
+        {citation.citation}
       </p>
-      <Link to={`/bank/edit/${citation.id}`}>Edit</Link>
+      <Link to={`/bank/edit/${citation.id}`}>Edit </Link>
       <Form method="post">
         <input
           type="hidden"
@@ -60,7 +60,7 @@ function CitationItem({ citation, meaningId }: CitationItemProps) {
         />
         <input type="hidden" name="quotationId" value={citation.id} />
         <input type="hidden" name="meaningId" value={meaningId} />
-        <Button appearance="linkbutton">Remove</Button>
+        <button type="submit">Remove</button>
       </Form>
     </div>
   )
