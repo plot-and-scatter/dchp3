@@ -43,7 +43,7 @@ interface CitationItemProps {
 }
 
 function CitationItem({ citation, meaningId }: CitationItemProps) {
-  if (!citation) return <></> //TODO return something else
+  if (!citation) return <></>
 
   return (
     <div className="my-2 grid grid-cols-12" key={citation.id}>

@@ -6,18 +6,12 @@ interface MeaningEditingFormProps {
 }
 
 export default function MeaningEditingForms({ data }: MeaningEditingFormProps) {
-  const headword = data.headword
-
   return (
     <div id="definitions">
       {data.meanings
         .sort((a, b) => (a.order || "").localeCompare(b.order || ""))
         .map((meaning) => (
-          <MeaningEditingForm
-            key={meaning.id}
-            headword={headword}
-            meaning={meaning}
-          />
+          <MeaningEditingForm key={meaning.id} entry={data} meaning={meaning} />
         ))}
     </div>
   )
