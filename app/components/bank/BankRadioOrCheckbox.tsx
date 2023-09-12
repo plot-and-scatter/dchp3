@@ -1,22 +1,17 @@
+import type { BankInputProps } from "./BankInput"
 import type { BankInputOption, BankInputOptionType } from "./BankInputOption"
 
-interface BankCheckboxProps<T extends BankInputOptionType> {
-  name: string
-  defaultValue?: string | number
-  onChange?: React.ChangeEventHandler<HTMLInputElement>
+type BankCheckboxProps<T extends BankInputOptionType> = BankInputProps & {
   options: BankInputOption<T>[]
   optionSetClassName?: string
-  className?: string
+  type: "radio" | "checkbox"
 }
 
-export default function BankCheckbox<T extends BankInputOptionType>({
-  name: inputName,
-  defaultValue,
-  onChange,
-  options,
-  optionSetClassName,
-  className,
-}: BankCheckboxProps<T>) {
+export default function BankRadioOrCheckbox<T extends BankInputOptionType>(
+  props: BankCheckboxProps<T>
+) {
+  const { className, options, optionSetClassName, defaultValue, ...rest } =
+    props
   return (
     <div className={className}>
       {options.map((o) => {
@@ -25,11 +20,10 @@ export default function BankCheckbox<T extends BankInputOptionType>({
         return (
           <span className={optionSetClassName} key={idKey}>
             <input
-              name={inputName}
-              type="checkbox"
               value={value}
               id={idKey}
               defaultChecked={value === defaultValue}
+              {...rest}
             />
             <label htmlFor={idKey}>{name}</label>
           </span>

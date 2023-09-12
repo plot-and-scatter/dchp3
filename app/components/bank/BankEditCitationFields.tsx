@@ -1,13 +1,13 @@
 import { BankLegacyTypeEnum, BankPosEnum } from "~/models/bank.types"
 import { enumToSelectOptions } from "~/utils/inputUtils"
 import BankInput from "./BankInput"
-import BankRadio from "./BankRadio"
 import BankSelect from "./BankSelect"
 import BankTextArea from "./BankTextArea"
 import CitationTextAndClip from "./CitationTextAndClip"
 import LabelledField from "./LabelledField"
 import type { EditCitationIdLoaderData } from "~/routes/bank/edit/$citationId"
 import type { SerializeFrom } from "@remix-run/server-runtime"
+import BankRadioOrCheckbox from "./BankRadioOrCheckbox"
 
 export type BankEditCitationFieldsProps = {
   citation?: SerializeFrom<EditCitationIdLoaderData["citation"]>
@@ -92,7 +92,8 @@ export default function BankEditCitationFields({
       <LabelledField
         label={`Incomplete?`}
         field={
-          <BankRadio
+          <BankRadioOrCheckbox
+            type="radio"
             className={`flex gap-x-4`}
             optionSetClassName={`flex gap-x-2`}
             name={`citation.is_incomplete`}

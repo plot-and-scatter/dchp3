@@ -1,44 +1,74 @@
-import { PageHeader } from "~/components/elements/PageHeader"
 import { Form, useLoaderData } from "@remix-run/react"
-import BankHeadwordCitationSelect from "~/components/bank/BankHeadwordCitationSelect"
-import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
-import Button from "~/components/elements/Button"
-import invariant from "tiny-invariant"
-import React from "react"
+import {
+  getCitationsByHeadwordAndUserId,
+  findOrCreateHeadword,
+  findOrCreateAuthor,
+  findOrCreatePlace,
+  findOrCreateTitle,
+  getFullCitationById,
+} from "~/models/bank.server"
+import { getEmailFromSession } from "~/services/auth/session.server"
+import { getUserIdByEmail } from "~/models/user.server"
 import {
   json,
   type ActionArgs,
   type LoaderArgs,
   redirect,
 } from "@remix-run/server-runtime"
-import {
-  getCitationsByHeadwordAndUserId,
-  findOrCreateHeadword,
-  updateCitation,
-  findOrCreateAuthor,
-  findOrCreatePlace,
-  findOrCreateTitle,
-  updateSource,
-  getFullCitationById,
-} from "~/models/bank.server"
+import { PageHeader } from "~/components/elements/PageHeader"
+import { prisma } from "~/db.server"
+import { z } from "zod"
 import BankEditCitationFields from "~/components/bank/BankEditCitationFields"
-import {
-  getBooleanFromFormInput,
-  getNumberFromFormInput,
-  getStringFromFormInput,
-  getStringOrNullFromFormInput,
-} from "~/utils/generalUtils"
-import { getUserIdByEmail } from "~/models/user.server"
-import { getEmailFromSession } from "~/services/auth/session.server"
-import type { BankCitationUpdate, BankSourceUpdate } from "~/models/bank.types"
+import BankHeadwordCitationSelect from "~/components/bank/BankHeadwordCitationSelect"
+import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
+import Button from "~/components/elements/Button"
+import invariant from "tiny-invariant"
+
+const BankEditFormDataSchema = z.object({
+  [`citation.headword`]: z.string(),
+  [`citation.clip_end`]: z.coerce.number().nonnegative().nullable(),
+  [`citation.clip_start`]: z.coerce.number().nonnegative().nullable(),
+  [`citation.clipped_text`]: z.string().nullable(),
+  [`citation.legacy_id`]: z.coerce.number().nullable(),
+  [`citation.memo`]: z.string().nullable(),
+  [`citation.part_of_speech`]: z.string().nullable(),
+  [`citation.short_meaning`]: z.string().nullable(),
+  [`citation.spelling_variant`]: z.string().nullable(),
+  [`citation.text`]: z.string().nullable(),
+  [`citation.is_incomplete`]: z
+    .union([z.literal("true"), z.literal("false")])
+    .nullable()
+    .transform((val) => (val === "true" ? 1 : null)),
+  [`source.id`]: z.coerce.number(),
+  [`source.dateline`]: z.string().nullish(),
+  [`source.editor`]: z.string().nullish(),
+  [`source.evidence`]: z.string().nullish(),
+  [`source.page`]: z.string().nullish(),
+  [`source.periodical_date`]: z.string().nullish(),
+  [`source.publisher`]: z.string().nullish(),
+  [`source.type_id`]: z.coerce.number(),
+  [`source.url_access_date`]: z.string().nullish(),
+  [`source.url`]: z.string().nullish(),
+  [`source.utterance_broadcast`]: z.string().nullish(),
+  [`source.utterance_media`]: z.string().nullish(),
+  [`source.utterance_time`]: z.string().nullish(),
+  [`source.utterance_witness`]: z.string().nullish(),
+  [`source.uttered`]: z.string().nullish(),
+  [`source.volume_issue`]: z.string().nullish(),
+  [`source.year_composed`]: z.string().nullish(),
+  [`source.year_published`]: z.string().nullish(),
+  [`author`]: z.string().nullable(),
+  [`place`]: z.string().nullable(),
+  [`title`]: z.string().nullable(),
+})
 
 export const action = async ({ request, params }: ActionArgs) => {
   const data = Object.fromEntries(await request.formData())
-  const headword = getStringFromFormInput(data[`citation.headword`])
+  const parsedData = BankEditFormDataSchema.parse(data)
+
+  const headword = parsedData[`citation.headword`]
   invariant(headword)
   // TODO: Use more invariants + exception catchers
-
-  console.log("data", data)
 
   const citationId = parseInt(params.citationId || "0")
   invariant(citationId)
@@ -50,73 +80,56 @@ export const action = async ({ request, params }: ActionArgs) => {
   // Find or create the headword
   const headwordId = await findOrCreateHeadword(headword)
 
-  // Update the citation
-  const citationFields: BankCitationUpdate = {
-    id: citationId,
-    memo: getStringFromFormInput(data[`citation.memo`]),
-    headword_id: headwordId,
-    short_meaning: getStringFromFormInput(data[`citation.short_meaning`]),
-    spelling_variant: getStringFromFormInput(data[`citation.spelling_variant`]),
-    part_of_speech: getStringFromFormInput(data[`citation.part_of_speech`]),
-    text: getStringFromFormInput(data[`citation.text`]),
-    clip_start: getNumberFromFormInput(data[`citation.clip_start`]),
-    clip_end: getNumberFromFormInput(data[`citation.clip_end`]),
-    clipped_text: getStringFromFormInput(data[`citation.clipped_text`]),
-    last_modified: new Date(),
-    last_modified_user_id: userId,
-    legacy_id: getNumberFromFormInput(data[`citation.legacy_id`]),
-    is_incomplete: getBooleanFromFormInput(data[`citation.is_incomplete`])
-      ? 1
-      : 0,
-  }
+  await prisma.bankCitation.update({
+    where: { id: citationId },
+    data: {
+      id: citationId,
+      memo: parsedData[`citation.memo`],
+      headword_id: headwordId,
+      short_meaning: parsedData[`citation.short_meaning`],
+      spelling_variant: parsedData[`citation.spelling_variant`],
+      part_of_speech: parsedData[`citation.part_of_speech`],
+      text: parsedData[`citation.text`],
+      clip_start: parsedData[`citation.clip_start`],
+      clip_end: parsedData[`citation.clip_end`],
+      clipped_text: parsedData[`citation.clipped_text`],
+      last_modified: new Date(),
+      last_modified_user_id: userId,
+      legacy_id: parsedData[`citation.legacy_id`],
+      is_incomplete: parsedData[`citation.is_incomplete`],
+    },
+  })
 
-  await updateCitation(citationFields)
+  const authorId = await findOrCreateAuthor(parsedData[`author`])
+  const titleId = await findOrCreateTitle(parsedData[`title`])
+  const placeId = await findOrCreatePlace(parsedData[`place`])
 
-  const authorId = await findOrCreateAuthor(
-    getStringFromFormInput(data[`author`])
-  )
-  const placeId = await findOrCreatePlace(getStringFromFormInput(data[`place`]))
-  const titleId = await findOrCreateTitle(getStringFromFormInput(data[`title`]))
-
-  const sourceFields: BankSourceUpdate = {
-    id: getNumberFromFormInput(data[`source.id`]),
-    type_id: getNumberFromFormInput(data[`source.type_id`]),
-    year_published: getStringOrNullFromFormInput(data[`source.year_published`]),
-    page: getStringOrNullFromFormInput(data[`source.page`]),
-    author_id: authorId,
-    title_id: titleId,
-    place_id: placeId,
-    url: getStringOrNullFromFormInput(data[`source.url`]),
-    url_access_date: getStringOrNullFromFormInput(
-      data[`source.url_access_date`]
-    ),
-    dateline: getStringOrNullFromFormInput(data[`source.dateline`]),
-    periodical_date: getStringOrNullFromFormInput(
-      data[`source.periodical_date`]
-    ),
-    year_composed: getStringOrNullFromFormInput(data[`source.year_composed`]),
-    publisher: getStringOrNullFromFormInput(data[`source.publisher`]),
-    uttered: getStringOrNullFromFormInput(data[`source.uttered`]),
-    utterance_witness: getStringOrNullFromFormInput(
-      data[`source.utterance_witness`]
-    ),
-    utterance_time: getStringOrNullFromFormInput(data[`source.utterance_time`]),
-    utterance_media: getStringOrNullFromFormInput(
-      data[`source.utterance_media`]
-    ),
-    utterance_broadcast: getStringOrNullFromFormInput(
-      data[`source.utterance_broadcast`]
-    ),
-    volume_issue: getStringOrNullFromFormInput(data[`source.volume_issue`]),
-    editor: getStringOrNullFromFormInput(data[`source.editor`]),
-    evidence: getStringOrNullFromFormInput(data[`source.evidence`]),
-    is_dchp1: null,
-    is_teach: null,
-  }
-
-  console.log(sourceFields)
-
-  await updateSource(sourceFields)
+  await prisma.bankSource.update({
+    where: { id: parsedData[`source.id`] },
+    data: {
+      id: parsedData[`source.id`],
+      type_id: parsedData[`source.type_id`],
+      year_published: parsedData[`source.year_published`],
+      page: parsedData[`source.page`],
+      author_id: authorId,
+      title_id: titleId,
+      place_id: placeId,
+      url: parsedData[`source.url`],
+      url_access_date: parsedData[`source.url_access_date`],
+      dateline: parsedData[`source.dateline`],
+      periodical_date: parsedData[`source.periodical_date`],
+      year_composed: parsedData[`source.year_composed`],
+      publisher: parsedData[`source.publisher`],
+      uttered: parsedData[`source.uttered`],
+      utterance_witness: parsedData[`source.utterance_witness`],
+      utterance_time: parsedData[`source.utterance_time`],
+      utterance_media: parsedData[`source.utterance_media`],
+      utterance_broadcast: parsedData[`source.utterance_broadcast`],
+      volume_issue: parsedData[`source.volume_issue`],
+      editor: parsedData[`source.editor`],
+      evidence: parsedData[`source.evidence`],
+    },
+  })
 
   return redirect(`/bank/edit/${citationId}`)
 }
@@ -137,11 +150,7 @@ export const loader = async ({ params }: LoaderArgs) => {
       citation.headword?.headword || null,
       citation.user_id
     ),
-  ]).then((responses) => {
-    return {
-      headwordCitations: responses[0],
-    }
-  })
+  ]).then((responses) => ({ headwordCitations: responses[0] }))
 
   return { citation, ...response }
 }
@@ -156,35 +165,33 @@ export default function EditCitationId() {
   const { citation, headwordCitations } = data
 
   return (
-    <React.Fragment>
+    <Form>
       <PageHeader>Editing citation</PageHeader>
       <BankHeadwordCitationSelect
         citations={headwordCitations}
         currentCitation={citation}
       />
       <hr className="my-6" />
-      <Form action={`/bank/edit/${citation.id}`} method={`post`}>
-        <div className="flex gap-x-12">
-          <div className="flex w-1/2 flex-col gap-y-4">
-            <BankEditCitationFields {...data} key={citation.id} />
-          </div>
-          <div className="flex w-1/2 flex-col gap-y-4">
-            <BankSourcePanel {...data} key={citation.id} />
-            <div className="mx-auto mt-12 flex items-center gap-x-12">
-              <div>
-                <Button appearance="success" size="large">
-                  <i className="fa-solid fa-download mr-2" /> Save citation
-                </Button>
-              </div>
-              <div>
-                <Button appearance="danger">
-                  <i className="fa-solid fa-xmark mr-2" /> Delete citation
-                </Button>
-              </div>
+      <div className="flex gap-x-12">
+        <div className="flex w-1/2 flex-col gap-y-4">
+          <BankEditCitationFields {...data} key={citation.id} />
+        </div>
+        <div className="flex w-1/2 flex-col gap-y-4">
+          <BankSourcePanel {...data} key={citation.id} />
+          <div className="mx-auto mt-12 flex items-center gap-x-12">
+            <div>
+              <Button appearance="success" size="large">
+                <i className="fa-solid fa-download mr-2" /> Save citation
+              </Button>
+            </div>
+            <div>
+              <Button appearance="danger">
+                <i className="fa-solid fa-xmark mr-2" /> Delete citation
+              </Button>
             </div>
           </div>
         </div>
-      </Form>
-    </React.Fragment>
+      </div>
+    </Form>
   )
 }

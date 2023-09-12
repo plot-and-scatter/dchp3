@@ -18,7 +18,7 @@ export default function BankHeadwordCitationSelect({
     <div>
       {/* TODO: Improve the appearance of this. */}
       <BankSelect
-        name={`headword`}
+        name={`headword--citation-select`}
         defaultValue={currentCitation.id}
         options={citations.map((c) => ({
           value: c.id,

@@ -1,27 +1,12 @@
-interface BankNumericInputProps {
-  name: string
-  defaultValue?: string | number
-  onChange?: React.ChangeEventHandler<HTMLInputElement>
-  min?: number
-  max?: number
-}
+import type { BankInputProps } from "./BankInput"
+import BankInput from "./BankInput"
 
-export default function BankNumericInput({
-  name,
-  defaultValue,
-  onChange,
-  min,
-  max,
-}: BankNumericInputProps) {
+export default function BankNumericInput(props: BankInputProps) {
   return (
-    <input
+    <BankInput
       type="number"
-      name={name}
-      defaultValue={defaultValue}
       className="w-32 border border-slate-700 px-4 py-2"
-      onChange={onChange}
-      min={min}
-      max={max}
+      {...props}
     />
   )
 }
