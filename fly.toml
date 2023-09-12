@@ -13,6 +13,9 @@ kill_timeout = 5
   entrypoint = ["sh"]
   auto_rollback = true
 
+[env]
+  IMAGE_BUCKET_PREFIX = "https://pub-4a7db9194f8547b3bb7041d55b194d34.r2.dev"
+
 [[services]]
   protocol = "tcp"
   internal_port = 8080
