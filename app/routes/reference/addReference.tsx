@@ -1,10 +1,11 @@
+import { addReference } from "~/models/reference.server"
+import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { Form } from "@remix-run/react"
+import { getStringFromFormInput } from "~/utils/generalUtils"
 import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import invariant from "tiny-invariant"
-import { addReference } from "~/models/reference.server"
-import { getStringFromFormInput } from "~/utils/generalUtils"
 
-export async function action({ request, params }: ActionArgs) {
+export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
   invariant(data.shortDisplay)
   invariant(data.referenceText)
@@ -43,8 +44,4 @@ export default function ReferenceIdPage() {
   )
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error)
-
-  return <div>An unexpected error occurred: {error.message}</div>
-}
+export const ErrorBoundary = DefaultErrorBoundary
