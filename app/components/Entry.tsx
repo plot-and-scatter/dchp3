@@ -39,7 +39,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
           isNonCanadian={data.no_cdn_conf}
         />
         <Meanings meanings={data.meanings} />
-        <EntryImages data={data} />
+        {data.images.length > 0 && <EntryImages data={data} />}
       </div>
     </div>
   )
