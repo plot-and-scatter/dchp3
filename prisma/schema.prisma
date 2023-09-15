@@ -97,6 +97,7 @@ model Entry {
   edit_status_comment  String?   @db.VarChar(1000)
   meanings             Meaning[]
   seeAlso              SeeAlso[]
+  images               Image[]
 
   @@map("det_entries")
 }
@@ -184,13 +185,16 @@ model det_entries_references {
   @@index([entry_id], map: "det_citations_meanings_meaning_id_idxfk")
 }
 
-model det_images {
+model Image {
   id       Int     @id @default(autoincrement()) @db.UnsignedInt
   caption  String? @db.Text
   path     String  @default("") @db.VarChar(255)
   entry_id Int
   scale    Float?
   order    Int?
+  Entry    Entry?  @relation(fields: [entry_id], references: [id])
+
+  @@map("det_images")
 }
 
 model det_ips {

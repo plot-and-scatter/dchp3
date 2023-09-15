@@ -29,6 +29,7 @@ export function getEntryByHeadword({ headword }: Pick<Entry, "headword">) {
   return prisma.entry.findFirst({
     where: { headword },
     include: {
+      images: true,
       meanings: {
         include: {
           usageNotes: true,
