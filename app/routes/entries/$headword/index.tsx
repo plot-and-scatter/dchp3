@@ -10,9 +10,16 @@ export async function loader({ params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
 
   const entry = await getEntryByHeadword({ headword: params.headword })
+
   if (!entry) {
     throw new Response("Not Found", { status: 404 })
   }
+
+  // Rewrite image URLs
+  entry.images.forEach(
+    (i) => (i.path = `${process.env.IMAGE_BUCKET_PREFIX}${i.path}`)
+  )
+
   return entry
 }
 
