@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react"
+import { Form, Link } from "@remix-run/react"
 import { type MeaningType } from "~/components/Meaning"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import Button from "~/components/elements/Button"
@@ -9,14 +9,17 @@ import SeeAlsoEditing from "./SeeAlsoEditing"
 import { EditFormInput } from "~/components/editing/EditFormInput"
 import FistnoteEditForm from "./FistnoteEditForm"
 import FistnoteAddingForm from "./FistnoteAddingForm"
+import QuotationAddingForm from "./QuotationAddingForm"
+import QuotationList from "./QuotationList"
+import { type LoadedDataType } from ".."
 
 interface MeaningEditingFormProps {
-  headword: string
+  entry: LoadedDataType
   meaning: MeaningType
 }
 
 export default function MeaningEditingForm({
-  headword,
+  entry,
   meaning,
 }: MeaningEditingFormProps) {
   const {
@@ -36,10 +39,12 @@ export default function MeaningEditingForm({
   const [canadianismTypeComment, setCanadianismTypeComment] = useState(
     canadianism_type_comment
   )
+
+  const headword = entry.headword
   //   const [usageNoteValue, setUsageNote] = useState(usageNote)
 
   return (
-    <div className="my-20 bg-slate-100 p-5">
+    <div className="my-12 mb-56 bg-slate-100 p-5">
       <div className="flex justify-between">
         <h3 className="text-4xl font-bold">Meaning: {meaning.order}</h3>
         <Form method="post" className="my-6">
@@ -116,18 +121,41 @@ export default function MeaningEditingForm({
             onChangeFunction={setCanadianismTypeComment}
             className="col-span-7"
           />
-
-          <Button
-            type="submit"
-            size="medium"
-            name="attributeType"
-            value={attributeEnum.MEANING}
-            className="col-span-1 col-start-4"
-          >
-            Update
-          </Button>
+          <div className="col-span-full flex flex-row justify-between">
+            <div>
+              <Link
+                to={`/entries/${entry}`}
+                className="mx-2 h-fit rounded border border-slate-700 bg-slate-600 p-2 py-2 px-4 text-white transition-colors duration-300 hover:bg-slate-500"
+              >
+                Return To Headword
+              </Link>
+              <Button
+                className="mx-2"
+                name="attributeType"
+                value={attributeEnum.ADD_MEANING}
+              >
+                Add New Meaning
+              </Button>
+            </div>
+            <Button
+              type="submit"
+              size="medium"
+              name="attributeType"
+              value={attributeEnum.MEANING}
+              className="col-span-1 col-start-4 mx-10 px-10"
+            >
+              Update Meaning
+            </Button>
+            <input type="hidden" name="attributeID" value={entry.id} />
+          </div>
         </div>
       </Form>
+
+      <div className="my-2 flex flex-col justify-center bg-slate-200 p-2">
+        <h2 className=" my-2 text-2xl font-bold underline">Quotation Adding</h2>
+        <QuotationList meaningId={meaning.id} citations={meaning.citations} />
+        <QuotationAddingForm meaningId={meaning.id} />
+      </div>
 
       <div className="my-2 bg-slate-200 p-2">
         <h2 className=" my-2 text-2xl underline">See Also</h2>

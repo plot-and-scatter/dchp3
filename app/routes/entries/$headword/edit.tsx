@@ -10,8 +10,10 @@ import invariant from "tiny-invariant"
 import {
   addDefinitionFistNote,
   addMeaningToEntry,
+  addQuotations,
   addSeeAlso,
   deleteMeaning,
+  deleteQuotations,
   deleteSeeAlso,
   updateEditingStatus,
   updateEditingTools,
@@ -50,6 +52,12 @@ export async function action({ request }: ActionArgs) {
       break
     case attributeEnum.DELETE_MEANING:
       await deleteMeaning(data)
+      break
+    case attributeEnum.QUOTATION:
+      await addQuotations(data)
+      break
+    case attributeEnum.DELETE_QUOTATION:
+      await deleteQuotations(data)
       break
     case attributeEnum.SEE_ALSO:
       await addSeeAlso(data)
