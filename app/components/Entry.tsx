@@ -41,7 +41,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
         />
         <Meanings meanings={data.meanings} />
         {data.referenceLinks.length > 0 && <EntryReferences data={data} />}
-        <EntryImages data={data} />
+        {data.images.length > 0 && <EntryImages data={data} />}
       </div>
     </div>
   )
