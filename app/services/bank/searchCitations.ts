@@ -61,7 +61,7 @@ export default async function (opts: SearchOptions) {
     opts.orderBy === "year"
       ? { source: { year_published: orderDirection } }
       : opts.orderBy === "place"
-      ? { place: { name: orderDirection } }
+      ? { source: { place: { name: orderDirection } } }
       : { id: orderDirection }
 
   let textSearch =

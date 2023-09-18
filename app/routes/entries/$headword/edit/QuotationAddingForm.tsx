@@ -31,7 +31,6 @@ export default function QuotationAddingForm({
 }: QuotationAddingFormProps) {
   const citations = useFetcher<CitationSearchLoaderData>()
   const [orderByValue, setOrderByValue] = useState("")
-  //let orderByProperty = "year"
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async (
     event: any
@@ -72,7 +71,7 @@ export default function QuotationAddingForm({
                   name="orderBy"
                   defaultValue={"year"}
                   options={[
-                    { name: "Date Added", value: "dateAdded" },
+                    { name: "Date Added (ID)", value: "dateAdded" },
                     { name: "Year Published / Composed", value: "year" },
                     { name: "Place", value: "place" },
                   ]}
@@ -152,12 +151,13 @@ interface CitationPrefixProps {
 
 function CitationPrefix({ citation, orderBy }: CitationPrefixProps) {
   const prefixText = {
-    dateAdded: "date added",
-    year: "year added",
-    place: "citation.source.place.name",
+    dateAdded: citation.id,
+    year: citation.source?.year_published,
+    place: citation.source?.place?.name,
   }[orderBy]
 
-  if (prefixText === undefined || prefixText === null) return <></>
+  if (prefixText === undefined || prefixText === null || prefixText === "")
+    return <></>
 
-  return <strong>{prefixText + " hi"}:</strong>
+  return <strong>{prefixText}:</strong>
 }
