@@ -14,7 +14,11 @@ interface QuotationAddingFormProps {
 
 const citationSearchUrl = (
   searchTerm: string,
-  { orderBy, orderDirection }: { orderBy?: string; orderDirection?: string }
+  {
+    orderBy,
+    orderDirection,
+    page,
+  }: { orderBy?: string; orderDirection?: string; page?: string }
 ) => {
   const url = `/api/citations/${searchTerm}.json`
 
@@ -22,6 +26,7 @@ const citationSearchUrl = (
   searchParams.set("searchField", "headword")
   if (orderBy) searchParams.set("orderBy", orderBy)
   if (orderDirection) searchParams.set("orderDirection", orderDirection)
+  if (page) searchParams.set("page", page)
 
   return `${url}?${searchParams.toString()}`
 }
@@ -40,12 +45,17 @@ export default function QuotationAddingForm({
     const searchText = event.target.elements.searchText.value
     const orderBy = event.target.elements.orderBy.value
     const orderDirection = event.target.elements.orderDirection.value
+    const page = "2"
 
     setOrderByValue(orderBy)
 
+    console.log("SEARCHING: ")
+
     if (searchText.length >= 0) {
       // await resetFetcher(citations)
-      citations.load(citationSearchUrl(searchText, { orderBy, orderDirection }))
+      citations.load(
+        citationSearchUrl(searchText, { orderBy, orderDirection, page })
+      )
     } else {
       resetFetcher(citations)
     }
