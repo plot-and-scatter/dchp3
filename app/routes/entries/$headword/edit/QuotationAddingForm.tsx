@@ -6,6 +6,7 @@ import LabelledField from "~/components/bank/LabelledField"
 import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
 import Button from "~/components/elements/Button"
 import { attributeEnum } from "~/components/editing/attributeEnum"
+import { useState } from "react"
 
 interface QuotationAddingFormProps {
   meaningId: number
@@ -29,6 +30,7 @@ export default function QuotationAddingForm({
   meaningId,
 }: QuotationAddingFormProps) {
   const citations = useFetcher<CitationSearchLoaderData>()
+  const [orderByValue, setOrderByValue] = useState("")
   //let orderByProperty = "year"
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async (
@@ -39,6 +41,8 @@ export default function QuotationAddingForm({
     const searchText = event.target.elements.searchText.value
     const orderBy = event.target.elements.orderBy.value
     const orderDirection = event.target.elements.orderDirection.value
+
+    setOrderByValue(orderBy)
 
     if (searchText.length >= 0) {
       // await resetFetcher(citations)
@@ -124,7 +128,10 @@ export default function QuotationAddingForm({
                       className="mx-1 p-1"
                     />
                     <p>
-                      <strong>{citation.source?.place?.name} </strong>
+                      <CitationPrefix
+                        citation={citation}
+                        orderBy={orderByValue}
+                      />
                       {citation.clipped_text}{" "}
                     </p>
                   </div>
@@ -136,4 +143,21 @@ export default function QuotationAddingForm({
       )}
     </div>
   )
+}
+
+interface CitationPrefixProps {
+  citation: any
+  orderBy: string
+}
+
+function CitationPrefix({ citation, orderBy }: CitationPrefixProps) {
+  const prefixText = {
+    dateAdded: "date added",
+    year: "year added",
+    place: "citation.source.place.name",
+  }[orderBy]
+
+  if (prefixText === undefined || prefixText === null) return <></>
+
+  return <strong>{prefixText + " hi"}:</strong>
 }
