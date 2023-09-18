@@ -1,13 +1,13 @@
 import { prisma } from "~/db.server"
 
-export type { det_references } from "@prisma/client"
+export type { Reference } from "@prisma/client"
 
 export async function getReferences() {
-  return prisma.det_references.findMany()
+  return prisma.reference.findMany()
 }
 
 export async function getReferenceById(id: number) {
-  return prisma.det_references.findFirst({
+  return prisma.reference.findFirst({
     where: {
       id: id,
     },
@@ -18,7 +18,7 @@ export async function addReference(
   shortDisplay: string,
   referenceText: string
 ) {
-  await prisma.det_references.create({
+  await prisma.reference.create({
     data: { short_display: shortDisplay, reference_text: referenceText },
   })
 }
@@ -28,7 +28,7 @@ export async function updateReferenceById(
   shortDisplay: string,
   referenceText: string
 ) {
-  await prisma.det_references.update({
+  await prisma.reference.update({
     where: {
       id: id,
     },
@@ -37,5 +37,5 @@ export async function updateReferenceById(
 }
 
 export async function deleteReferenceById(id: number) {
-  await prisma.det_references.delete({ where: { id: id } })
+  await prisma.reference.delete({ where: { id: id } })
 }

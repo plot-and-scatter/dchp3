@@ -5,6 +5,7 @@ import Meanings from "~/components/Meanings"
 import type { LoadedDataType } from "~/routes/entries/$headword"
 import QuickLinks from "./quicklinks/QuickLinks"
 import EntryImages from "./EntryImages"
+import EntryReferences from "./EntryReferences"
 
 interface EntryProps {
   data: LoadedDataType
@@ -39,6 +40,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
           isNonCanadian={data.no_cdn_conf}
         />
         <Meanings meanings={data.meanings} />
+        {data.referenceLinks.length > 0 && <EntryReferences data={data} />}
         <EntryImages data={data} />
       </div>
     </div>

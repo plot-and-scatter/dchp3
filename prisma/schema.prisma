@@ -70,34 +70,35 @@ model MeaningDetCitations {
 }
 
 model Entry {
-  id                   Int       @id @default(autoincrement())
-  headword             String    @unique(map: "det_entries_unique_headword") @db.VarChar(255)
-  first_field          String    @db.VarChar(500)
-  etymology            String    @db.VarChar(500)
-  is_legacy            Boolean   @default(false)
-  is_public            Boolean   @default(false)
-  spelling_variants    String?   @db.VarChar(200)
-  superscript          String    @db.VarChar(50)
-  dagger               Boolean   @default(false)
-  general_labels       String?   @db.VarChar(500)
-  proofing_status      Int       @default(0)
-  proofing_user        String?   @db.VarChar(200)
-  fist_note            String?   @db.Text
-  image_file_name      String?   @db.VarChar(200)
-  comment              String?   @db.VarChar(1000)
-  first_draft          Boolean   @default(false)
-  revised_draft        Boolean   @default(false)
-  semantically_revised Boolean   @default(false)
-  edited_for_style     Boolean   @default(false)
-  proofread            Boolean   @default(false)
-  chief_editor_ok      Boolean   @default(false)
-  final_proofing       Boolean   @default(false)
-  no_cdn_susp          Boolean   @default(false)
-  no_cdn_conf          Boolean   @default(false)
-  edit_status_comment  String?   @db.VarChar(1000)
+  id                   Int             @id @default(autoincrement())
+  headword             String          @unique(map: "det_entries_unique_headword") @db.VarChar(255)
+  first_field          String          @db.VarChar(500)
+  etymology            String          @db.VarChar(500)
+  is_legacy            Boolean         @default(false)
+  is_public            Boolean         @default(false)
+  spelling_variants    String?         @db.VarChar(200)
+  superscript          String          @db.VarChar(50)
+  dagger               Boolean         @default(false)
+  general_labels       String?         @db.VarChar(500)
+  proofing_status      Int             @default(0)
+  proofing_user        String?         @db.VarChar(200)
+  fist_note            String?         @db.Text
+  image_file_name      String?         @db.VarChar(200)
+  comment              String?         @db.VarChar(1000)
+  first_draft          Boolean         @default(false)
+  revised_draft        Boolean         @default(false)
+  semantically_revised Boolean         @default(false)
+  edited_for_style     Boolean         @default(false)
+  proofread            Boolean         @default(false)
+  chief_editor_ok      Boolean         @default(false)
+  final_proofing       Boolean         @default(false)
+  no_cdn_susp          Boolean         @default(false)
+  no_cdn_conf          Boolean         @default(false)
+  edit_status_comment  String?         @db.VarChar(1000)
   meanings             Meaning[]
   seeAlso              SeeAlso[]
   images               Image[]
+  referenceLinks       ReferenceLink[]
 
   @@map("det_entries")
 }
@@ -172,7 +173,7 @@ model SeeAlso {
   @@map("det_entries_meanings")
 }
 
-model det_entries_references {
+model ReferenceLink {
   id            Int       @id @default(autoincrement())
   entry_id      Int
   reference_id  Int
@@ -180,9 +181,12 @@ model det_entries_references {
   link_text     String?   @db.VarChar(100)
   link_target   String?   @db.VarChar(1000)
   date_accessed DateTime? @db.DateTime(0)
+  reference     Reference @relation(fields: [reference_id], references: [id])
+  entry         Entry     @relation(fields: [entry_id], references: [id])
 
   @@index([reference_id], map: "det_citations_meanings_citation_id_idx")
   @@index([entry_id], map: "det_citations_meanings_meaning_id_idxfk")
+  @@map("det_entries_references")
 }
 
 model Image {
@@ -235,10 +239,13 @@ model Meaning {
   @@map("det_meanings")
 }
 
-model det_references {
-  id             Int    @id @default(autoincrement()) @db.UnsignedInt
-  short_display  String @default("") @db.VarChar(255)
-  reference_text String @db.Text
+model Reference {
+  id             Int             @id @default(autoincrement()) @db.UnsignedInt
+  short_display  String          @default("") @db.VarChar(255)
+  reference_text String          @db.Text
+  referenceLinks ReferenceLink[]
+
+  @@map("det_references")
 }
 
 model UsageNote {
