@@ -11,6 +11,9 @@ export default function EntryReference({
   console.log("referenceLink", referenceLink)
   return (
     <li>
+      {/*  For some reason Prisma does not properly generate the 'reference'
+      reference! (Maybe due to the name?) It does exist, though.
+      @ts-ignore */}
       <SanitizedTextSpan text={referenceLink.reference.short_display} />
       {referenceLink.link_target && (
         <>
