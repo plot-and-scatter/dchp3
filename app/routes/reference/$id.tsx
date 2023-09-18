@@ -8,7 +8,7 @@ import {
   type LoaderArgs,
 } from "@remix-run/server-runtime"
 import {
-  type det_references,
+  type Reference,
   getReferenceById,
   updateReferenceById,
 } from "~/models/reference.server"
@@ -20,7 +20,7 @@ import {
 export async function loader({ params }: LoaderArgs) {
   invariant(params.id)
   const id: number = parseInt(params.id)
-  const data: det_references | null = await getReferenceById(id)
+  const data: Reference | null = await getReferenceById(id)
   if (!data) throw new Error(`Reference with id: ${id} could not be obtained`)
 
   return data
