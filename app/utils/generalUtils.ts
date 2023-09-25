@@ -103,5 +103,7 @@ export function calculateSkip(
   let skip = 0
   if (page === null || page === undefined) return skip
 
-  return parsePageNumberOrError(page) * skipPerPage
+  const pageNumber = parsePageNumberOrError(page)
+
+  return (pageNumber - 1) * skipPerPage
 }

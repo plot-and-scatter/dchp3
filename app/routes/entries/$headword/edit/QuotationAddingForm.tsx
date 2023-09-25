@@ -1,5 +1,6 @@
 import { resetFetcher } from "~/routes/api/reset-fetcher"
 import { Form, useFetcher } from "@remix-run/react"
+import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import type { CitationSearchLoaderData } from "~/routes/api/citations/$searchTerm[.json]"
 import BankInput from "~/components/bank/BankInput"
 import LabelledField from "~/components/bank/LabelledField"
@@ -23,7 +24,7 @@ const citationSearchUrl = (
   const url = `/api/citations/${searchTerm}.json`
 
   const searchParams = new URLSearchParams()
-  searchParams.set("searchField", "headword")
+  searchParams.set("searchField", "headword") // should this be headword or citation?
   if (orderBy) searchParams.set("orderBy", orderBy)
   if (orderDirection) searchParams.set("orderDirection", orderDirection)
   if (page) searchParams.set("page", page)
@@ -45,11 +46,9 @@ export default function QuotationAddingForm({
     const searchText = event.target.elements.searchText.value
     const orderBy = event.target.elements.orderBy.value
     const orderDirection = event.target.elements.orderDirection.value
-    const page = "2"
+    const page = "1"
 
     setOrderByValue(orderBy)
-
-    console.log("SEARCHING: ")
 
     if (searchText.length >= 0) {
       // await resetFetcher(citations)
@@ -171,3 +170,5 @@ function CitationPrefix({ citation, orderBy }: CitationPrefixProps) {
 
   return <strong>{prefixText}:</strong>
 }
+
+export const ErrorBoundary = DefaultErrorBoundary

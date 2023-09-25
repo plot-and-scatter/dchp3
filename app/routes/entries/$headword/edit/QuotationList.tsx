@@ -46,7 +46,7 @@ function CitationItem({ citation, meaningId }: CitationItemProps) {
   if (!citation) return <></>
 
   return (
-    <div className="my-2 grid grid-cols-12" key={citation.id}>
+    <div className="my-2 grid grid-cols-12" key={meaningId + "-" + citation.id}>
       <p className="col-span-10">
         <strong> {citation.yearcomp || citation.yearpub}:</strong>{" "}
         {citation.citation}

@@ -9,6 +9,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   invariant(searchTerm, `No search term provided`)
 
   const url = new URL(request.url)
+  console.log("REQUESTED URL")
+  console.log(url.toString())
 
   const partialSearchOptions: Omit<SearchOptions, "searchTerm"> =
     SEARCH_PARAMS.reduce((opts, key) => {

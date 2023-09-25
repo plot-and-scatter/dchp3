@@ -26,6 +26,7 @@ export const SEARCH_PARAMS = [
   "orderBy",
   "orderDirection",
   "horizon",
+  "page",
 ]
 
 const BankCitationSearchFormDataSchema = z.object({
@@ -192,6 +193,7 @@ export default function SearchIndex() {
           />
         }
       />
+      <input type="hidden" name="page" value="1" />
       <Button appearance="primary" className="w-fit" size="large" type="submit">
         <i className="fas fa-search mx-auto mr-4" />
         Search
