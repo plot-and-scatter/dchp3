@@ -6,6 +6,7 @@ import SearchResultMeanings from "./search/SearchResultMeanings"
 import SearchResultUsageNotes from "./search/SearchResultUsageNotes"
 import SearchResultCanadianism from "./search/SearchResultCanadianism"
 import SearchResultFistNotes from "./search/SearchResultFistNotes"
+import SearchResultQuotations from "./search/SearchResultQuotations"
 
 interface SearchResultsProps {
   data: any[]
@@ -32,7 +33,7 @@ function getSearchResults(
     case SearchResultEnum.FIST_NOTE:
       return <SearchResultFistNotes text={text} data={data} />
     default:
-      throw new Error(`attribute ${attribute} is invalid`)
+      return <SearchResultQuotations text={text} data={data} />
   }
 }
 

@@ -8,6 +8,7 @@ export function DefaultErrorBoundary() {
     return (
       <div>
         <p>Status: {error.status}</p>
+        <p>{error.statusText}</p>
         <p>{error.data.message}</p>
       </div>
     )

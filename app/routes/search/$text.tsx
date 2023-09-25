@@ -48,7 +48,10 @@ export async function loader({ request, params }: LoaderArgs) {
   )
 
   if (!searchResults || searchResults.length === 0) {
-    throw new Error(`No Results Found for ${attribute} "${text}"`)
+    throw new Response(null, {
+      status: 404,
+      statusText: `No Results Found for ${attribute} "${text}"`,
+    })
   }
   return searchResults
 }
