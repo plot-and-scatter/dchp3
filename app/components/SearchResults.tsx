@@ -32,8 +32,13 @@ function getSearchResults(
       return <SearchResultUsageNotes text={text} data={data} />
     case SearchResultEnum.FIST_NOTE:
       return <SearchResultFistNotes text={text} data={data} />
-    default:
+    case SearchResultEnum.QUOTATION:
       return <SearchResultQuotations text={text} data={data} />
+    default:
+      throw new Response(null, {
+        status: 400,
+        statusText: `Text length must be greater than zero`,
+      })
   }
 }
 
