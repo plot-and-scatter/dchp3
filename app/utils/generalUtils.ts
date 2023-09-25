@@ -57,7 +57,6 @@ export function getCheckboxValueAsBoolean(value: FormDataEntryValue) {
   return result === "on"
 }
 
-
 export function getStringFromFormInput(formInput: FormDataEntryValue): string {
   return formInput?.toString() || ""
 }
@@ -93,7 +92,18 @@ export function parsePageNumberOrError(page: string): number {
   } else if (isNonPositive(pageNumber)) {
     throw new Error(`Page Number ("${page}") must be greater than zero`)
   }
-  
 
   return pageNumber
+}
+
+export function calculateSkip(
+  page: string | null | undefined,
+  skipPerPage: number
+) {
+  let skip = 0
+  if (page === null || page === undefined) return skip
+
+  const pageNumber = parsePageNumberOrError(page)
+
+  return (pageNumber - 1) * skipPerPage
 }

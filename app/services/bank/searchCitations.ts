@@ -4,6 +4,9 @@ import type {
   BankLegacyTypeEnum,
   BankSourceTypeEnum,
 } from "~/models/bank.types"
+import { calculateSkip } from "~/utils/generalUtils"
+
+const PAGE_SIZE = 100
 
 export type SearchOptions = {
   exactPhrase?: boolean | null
@@ -17,6 +20,7 @@ export type SearchOptions = {
   sourceType?: BankSourceTypeEnum | "all" | null
   legacyType?: BankLegacyTypeEnum | "all" | null
   horizon?: string | null
+  page?: string | null
 }
 
 export default async function (opts: SearchOptions) {
@@ -61,7 +65,7 @@ export default async function (opts: SearchOptions) {
     opts.orderBy === "year"
       ? { source: { year_published: orderDirection } }
       : opts.orderBy === "place"
-      ? { place: { name: orderDirection } }
+      ? { source: { place: { name: orderDirection } } }
       : { id: orderDirection }
 
   let textSearch =
@@ -73,6 +77,9 @@ export default async function (opts: SearchOptions) {
         }
       : { text: opts.exactPhrase ? searchTerm : { contains: searchTerm } }
 
+  const skip = calculateSkip(opts.page, PAGE_SIZE)
+  console.log("SKIP: " + skip)
+
   const results = await prisma.bankCitation.findMany({
     where: {
       ...dates,
@@ -81,7 +88,8 @@ export default async function (opts: SearchOptions) {
       ...legacyType,
       ...textSearch,
     },
-    take: 100,
+    skip: skip,
+    take: PAGE_SIZE,
     orderBy,
     select: {
       user_id: true,
