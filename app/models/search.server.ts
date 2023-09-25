@@ -62,8 +62,13 @@ export async function getSearchResults(
       return getSearchResultUsageNotes(text, skip, undefined, caseSensitive)
     case SearchResultEnum.FIST_NOTE:
       return getSearchResultFistNotes(text, skip, undefined, caseSensitive)
+    case SearchResultEnum.QUOTATION:
+      return getSearchResultQuotations(text, skip, undefined, caseSensitive)
     default:
-      throw new Error(`attribute ${attribute} must be a valid search result`)
+      throw new Response(null, {
+        status: 400,
+        statusText: `attribute "${attribute}" must be a valid search attribute`,
+      })
   }
 }
 
@@ -130,7 +135,10 @@ export function getEntriesByBasicTextSearch(
   caseSensitive: boolean = false
 ) {
   if (text.length === 0) {
-    throw new Error(`Text ("${text}") length must be greater than zero`)
+    throw new Response(null, {
+      status: 400,
+      statusText: `Text length must be greater than zero`,
+    })
   }
   const searchWildcard = `%${text}%`
 
@@ -151,7 +159,10 @@ export function getSearchResultMeanings(
   caseSensitive: boolean = false
 ) {
   if (text.length === 0) {
-    throw new Error(`Text ("${text}") length must be greater than zero`)
+    throw new Response(null, {
+      status: 400,
+      statusText: `Text length must be greater than zero`,
+    })
   }
 
   return prisma.meaning.findMany({
@@ -188,7 +199,10 @@ export function getSearchResultCanadianisms(
   caseSensitive: boolean = false
 ) {
   if (text.length === 0) {
-    throw new Error(`Text ("${text}") length must be greater than zero`)
+    throw new Response(null, {
+      status: 400,
+      statusText: `Text length must be greater than zero`,
+    })
   }
 
   const searchWildcard = `%${text}%`
@@ -220,7 +234,10 @@ export function getSearchResultUsageNotes(
   caseSensitive: boolean = false
 ) {
   if (text.length === 0) {
-    throw new Error(`Text ("${text}") length must be greater than zero`)
+    throw new Response(null, {
+      status: 400,
+      statusText: `Text length must be greater than zero`,
+    })
   }
 
   const searchWildcard = `%${text}%`
@@ -249,7 +266,10 @@ export function getSearchResultFistNotes(
   caseSensitive: boolean = false
 ) {
   if (text.length === 0) {
-    throw new Error(`Text ("${text}") length must be greater than zero`)
+    throw new Response(null, {
+      status: 400,
+      statusText: `Text length must be greater than zero`,
+    })
   }
 
   const searchWildcard = `%${text}%`
@@ -261,4 +281,71 @@ export function getSearchResultFistNotes(
     (fist_note) LIKE (${searchWildcard}), 
     LOWER(fist_note) LIKE LOWER(${searchWildcard}))  
   ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
+}
+
+// case sensitivity not working; check collation
+export function getSearchResultQuotations(
+  text: string,
+  skip: number = 0,
+  take: number = DEFAULT_PAGE_SIZE,
+  caseSensitive: boolean = false
+) {
+  if (text.length === 0) {
+    throw new Response(null, {
+      status: 400,
+      statusText: `Text length must be greater than zero`,
+    })
+  }
+
+  const searchWildcard = `%${text}%`
+
+  return prisma.bankCitation.findMany({
+    where: {
+      OR: [
+        {
+          text: {
+            contains: searchWildcard,
+          },
+        },
+        {
+          headword: {
+            headword: {
+              contains: searchWildcard,
+            },
+          },
+        },
+      ],
+    },
+    skip: skip,
+    take: take,
+    orderBy: {
+      id: "asc",
+    },
+    select: {
+      user_id: true,
+      last_modified_user_id: true,
+      text: true,
+      clipped_text: true,
+      id: true,
+      short_meaning: true,
+      last_modified: true,
+      source_id: true,
+      spelling_variant: true,
+      headword: {
+        select: { headword: true },
+      },
+      source: {
+        select: {
+          year_published: true,
+          year_composed: true,
+          type_id: true,
+          place: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  })
 }
