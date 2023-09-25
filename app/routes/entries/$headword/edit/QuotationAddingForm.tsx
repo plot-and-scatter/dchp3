@@ -1,5 +1,5 @@
 import { resetFetcher } from "~/routes/api/reset-fetcher"
-import { Form, useFetcher } from "@remix-run/react"
+import { Form, Link, useFetcher } from "@remix-run/react"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import type { CitationSearchLoaderData } from "~/routes/api/citations/$searchTerm[.json]"
 import BankInput from "~/components/bank/BankInput"
@@ -37,6 +37,7 @@ export default function QuotationAddingForm({
 }: QuotationAddingFormProps) {
   const citations = useFetcher<CitationSearchLoaderData>()
   const [orderByValue, setOrderByValue] = useState("")
+  const [pageNumber, setPageNumber] = useState(1)
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async (
     event: any
@@ -46,7 +47,7 @@ export default function QuotationAddingForm({
     const searchText = event.target.elements.searchText.value
     const orderBy = event.target.elements.orderBy.value
     const orderDirection = event.target.elements.orderDirection.value
-    const page = "1"
+    const page = pageNumber.toString()
 
     setOrderByValue(orderBy)
 
@@ -108,16 +109,40 @@ export default function QuotationAddingForm({
             {citations.state === "loading" && <div>Loading...</div>}
           </div>
         </div>
-        <Button appearance="primary" type="submit" className="mt-2">
-          Search
-        </Button>
+        <div className="mb-10">
+          <Button appearance="primary" type="submit" className="mt-2">
+            Search
+          </Button>
+          {citations.data && (
+            <>
+              <Button
+                appearance="primary"
+                type="submit"
+                className="ml-10 mt-2"
+                onClick={(e) => setPageNumber(Math.max(pageNumber - 1, 1))}
+              >
+                Prev Page
+              </Button>
+              <Button
+                appearance="primary"
+                type="submit"
+                className="ml-2 mt-2"
+                onClick={(e) => setPageNumber(pageNumber + 1)}
+              >
+                Next Page
+              </Button>
+            </>
+          )}
+        </div>
       </form>
       {citations.data && (
         <Form method="post">
           <strong>
             {citations.data.citations.length} citations (temp max 100)
           </strong>
-          <Button type="submit">Add Quotations</Button>
+          <Button type="submit" className="ml-3">
+            Add Quotations
+          </Button>
           <input
             type="hidden"
             name="attributeType"
@@ -128,7 +153,7 @@ export default function QuotationAddingForm({
             <ul>
               {citations.data.citations.map((citation) => (
                 <li key={citation.id} className="flex flex-col justify-center">
-                  <div className="flex items-center">
+                  <div className="flex items-center pr-5">
                     <input
                       type="checkbox"
                       name={`citationId-${citation.id}`}
@@ -136,11 +161,18 @@ export default function QuotationAddingForm({
                       className="mx-1 p-1"
                     />
                     <p>
-                      <CitationPrefix
-                        citation={citation}
-                        orderBy={orderByValue}
-                      />
-                      {citation.clipped_text}{" "}
+                      {
+                        <Link
+                          to={`/bank/edit/${citation.id}`}
+                          className="hover:underline"
+                        >
+                          <CitationPrefix
+                            citation={citation}
+                            orderBy={orderByValue}
+                          />
+                          {citation.clipped_text}
+                        </Link>
+                      }
                     </p>
                   </div>
                 </li>
