@@ -31,6 +31,8 @@
     "/public/build"
   ],
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.414.0",
+    "@aws-sdk/lib-storage": "^3.414.0",
     "@headlessui/react": "^1.7.5",
     "@popperjs/core": "^2.11.6",
     "@prisma/client": "^4.2.1",
@@ -40,6 +42,7 @@
     "@remix-run/server-runtime": "^1.19.3",
     "@types/dompurify": "^2.3.4",
     "@types/react-highlight-words": "^0.16.4",
+    "aws-sdk": "^2.1460.0",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.0.0",
     "isbot": "^3.5.0",
