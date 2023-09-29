@@ -2,6 +2,7 @@ import { Form } from "@remix-run/react"
 import { type LoadedDataType } from "~/routes/entries/$headword"
 import { attributeEnum } from "./attributeEnum"
 import { useState } from "react"
+import Button from "../elements/LinksAndButtons/Button"
 
 interface EditingToolsProps {
   data: LoadedDataType
@@ -45,9 +46,9 @@ const EditingTools = ({ data }: EditingToolsProps) => {
           value={attributeEnum.EDITING_TOOLS}
         />
         <input type="hidden" name="headword" value={data.headword} />
-        <button className="w-56 border bg-slate-500 hover:bg-slate-300">
-          submit
-        </button>
+        <Button variant="outline" size="small">
+          Save editing tools
+        </Button>
       </div>
     </Form>
   )

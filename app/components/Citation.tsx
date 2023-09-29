@@ -2,6 +2,7 @@ import React from "react"
 import SanitizedTextSpan from "~/components/SanitizedTextSpan"
 import BibliographyPopover from "./elements/BibliographyPopover"
 import type { MeaningType } from "./Meaning"
+import { Link } from "./elements/LinksAndButtons/Link"
 
 export type CitationType = MeaningType["citations"][0]["citation"]
 
@@ -21,13 +22,13 @@ const Citation = ({ citation }: CitationProps): JSX.Element => {
       </div>
       <div className="inline text-sm ">
         {citation.url && (
-          <a
+          <Link
             className="ml-2 cursor-pointer text-red-400 hover:text-red-600"
-            href={citation.url}
+            to={citation.url}
             target="_new"
           >
             <i className="fa-regular fa-photo-film"></i>
-          </a>
+          </Link>
         )}
         <BibliographyPopover citation={citation} />
       </div>

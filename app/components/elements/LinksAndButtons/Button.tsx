@@ -1,14 +1,12 @@
-import clsx from "clsx"
-import {
-  type ButtonAppearance,
-  buttonCommonClasses,
-  buttonAppearanceClass,
-} from "./ButtonAppearance"
-import { type ButtonSize, buttonSizeClass } from "./ButtonSize"
+import { buttonCommonClasses, buttonAppearanceClass } from "./ButtonAppearance"
 import { linkAppearanceClass } from "./LinkAppearance"
+import { type ButtonSize, buttonSizeClass } from "./ButtonSize"
+import clsx from "clsx"
+import type { AppearanceVariant, ButtonAppearance } from "./ButtonAppearance"
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   appearance?: ButtonAppearance
+  variant?: AppearanceVariant
   size?: ButtonSize
   asLink?: boolean
 }
@@ -16,6 +14,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = ({
   size = "medium",
   appearance,
+  variant,
   asLink,
   className,
   children,
@@ -25,7 +24,7 @@ const Button = ({
     className={clsx(
       !asLink && buttonCommonClasses,
       !asLink
-        ? [buttonAppearanceClass(appearance), buttonSizeClass(size)]
+        ? [buttonAppearanceClass(appearance, variant), buttonSizeClass(size)]
         : linkAppearanceClass(appearance),
       className
     )}

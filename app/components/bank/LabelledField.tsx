@@ -1,4 +1,4 @@
-interface LabelledFieldProps {
+export interface LabelledFieldProps {
   label: React.ReactNode
   field: React.ReactNode
 }

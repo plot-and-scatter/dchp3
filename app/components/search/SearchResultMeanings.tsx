@@ -1,5 +1,5 @@
 import SanitizedTextSpan from "../SanitizedTextSpan"
-import { DchpLink } from "../elements/LinksAndButtons/Link"
+import { Link } from "../elements/LinksAndButtons/Link"
 
 interface Props {
   text: string
@@ -21,9 +21,9 @@ const SearchResultMeanings = ({ text, data }: Props) => {
         return (
           <div className="m-1" key={"MeaningDiv" + e.id}>
             <p key={"meaningHeadword: " + e.id}>
-              <DchpLink to={`/entries/${e.entry.headword}`} bold>
+              <Link to={`/entries/${e.entry.headword}`} bold>
                 {e.entry.headword}
-              </DchpLink>
+              </Link>
             </p>
             <p key={"meaning: " + e.id}>
               <SanitizedTextSpan text={e.definition} />

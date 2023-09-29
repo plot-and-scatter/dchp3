@@ -1,4 +1,5 @@
 import React from "react"
+import Button from "../elements/LinksAndButtons/Button"
 
 interface QuickLinkProps {
   children: React.ReactNode
@@ -20,12 +21,13 @@ const scrollTo = (elementId: string): void => {
 const QuickLink = ({ children, scrollToId }: QuickLinkProps): JSX.Element => {
   return (
     <li>
-      <button
-        className="text-ellipsis whitespace-nowrap text-red-500"
+      <Button
+        asLink
+        className="text-ellipsis whitespace-nowrap"
         onClick={() => scrollTo(scrollToId)}
       >
         {children}
-      </button>
+      </Button>
     </li>
   )
 }

@@ -1,18 +1,18 @@
-import { Form, Link } from "@remix-run/react"
-import { type MeaningType } from "~/components/Meaning"
 import { attributeEnum } from "~/components/editing/attributeEnum"
-import Button from "~/components/elements/LinksAndButtons/Button"
-import { useState } from "react"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
-import AddSeeAlso from "./AddSeeAlso"
-import SeeAlsoEditing from "./SeeAlsoEditing"
 import { EditFormInput } from "~/components/editing/EditFormInput"
-import FistnoteEditForm from "./FistnoteEditForm"
+import { Form } from "@remix-run/react"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
+import { type LoadedDataType } from ".."
+import { type MeaningType } from "~/components/Meaning"
+import { useState } from "react"
+import AddSeeAlso from "./AddSeeAlso"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import FistnoteAddingForm from "./FistnoteAddingForm"
+import FistnoteEditForm from "./FistnoteEditForm"
 import QuotationAddingForm from "./QuotationAddingForm"
 import QuotationList from "./QuotationList"
-import { type LoadedDataType } from ".."
-import { DchpLink } from "~/components/elements/LinksAndButtons/Link"
+import SeeAlsoEditing from "./SeeAlsoEditing"
 
 interface MeaningEditingFormProps {
   entry: LoadedDataType
@@ -124,10 +124,14 @@ export default function MeaningEditingForm({
           />
           <div className="col-span-full flex flex-row justify-between">
             <div className="flex gap-x-4">
-              <DchpLink asButton to={`/entries/${entry.headword}`}>
+              <Link asButton to={`/entries/${entry.headword}`}>
                 &larr; Return to headword
-              </DchpLink>
-              <Button name="attributeType" value={attributeEnum.ADD_MEANING}>
+              </Link>
+              <Button
+                variant="outline"
+                name="attributeType"
+                value={attributeEnum.ADD_MEANING}
+              >
                 Add new meaning
               </Button>
             </div>

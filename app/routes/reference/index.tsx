@@ -1,8 +1,8 @@
-import { Link, useLoaderData } from "@remix-run/react"
-import SanitizedTextSpan from "~/components/SanitizedTextSpan"
-import { DchpLink } from "~/components/elements/LinksAndButtons/Link"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { getReferences } from "~/models/reference.server"
 import { stripHtml } from "~/utils/generalUtils"
+import { useLoaderData } from "@remix-run/react"
+import SanitizedTextSpan from "~/components/SanitizedTextSpan"
 
 export async function loader() {
   return await getReferences()
@@ -17,9 +17,9 @@ export default function ReferenceIndexPage() {
 
   return (
     <div className="flex flex-col">
-      <DchpLink asButton to="addReference" className="w-fit">
+      <Link asButton to="addReference" className="w-fit">
         Add new reference
-      </DchpLink>
+      </Link>
       <div className="my-8 grid grid-cols-7 justify-start gap-x-4">
         {data
           .sort((a, b) => {
@@ -35,9 +35,9 @@ export default function ReferenceIndexPage() {
               <p className="col-span-5">
                 <SanitizedTextSpan text={e.reference_text} />
               </p>
-              <DchpLink bold className="col-span-1" to={`/reference/${e.id}`}>
+              <Link bold className="col-span-1" to={`/reference/${e.id}`}>
                 Edit
-              </DchpLink>
+              </Link>
             </>
           ))}
       </div>

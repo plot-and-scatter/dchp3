@@ -2,6 +2,7 @@ import { Form } from "@remix-run/react"
 import { type LoadedDataType } from "~/routes/entries/$headword"
 import { attributeEnum } from "./attributeEnum"
 import { useState } from "react"
+import Button from "../elements/LinksAndButtons/Button"
 
 interface EditingStatusProps {
   data: LoadedDataType
@@ -42,9 +43,14 @@ const EditingStatus = ({ data }: EditingStatusProps) => {
         value={attributeEnum.EDITING_STATUS}
       />
       <input type="hidden" name="headword" value={data.headword} />
-      <button className="w-56 border bg-slate-500 hover:bg-slate-300">
-        submit
-      </button>
+      <Button
+        appearance="primary"
+        variant="outline"
+        size="small"
+        className="mt-4"
+      >
+        Save editing status
+      </Button>
     </Form>
   )
 }

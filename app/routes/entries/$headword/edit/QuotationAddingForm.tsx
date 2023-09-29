@@ -8,7 +8,7 @@ import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { useState } from "react"
-import { DchpLink } from "~/components/elements/LinksAndButtons/Link"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 
 interface QuotationAddingFormProps {
   meaningId: number
@@ -160,13 +160,13 @@ export default function QuotationAddingForm({
                       className="mx-1 p-1"
                     />
                     <p>
-                      <DchpLink to={`/bank/edit/${citation.id}`}>
+                      <Link to={`/bank/edit/${citation.id}`}>
                         <CitationPrefix
                           citation={citation}
                           orderBy={orderByValue}
                         />
                         {citation.clipped_text}
-                      </DchpLink>
+                      </Link>
                     </p>
                   </div>
                 </li>

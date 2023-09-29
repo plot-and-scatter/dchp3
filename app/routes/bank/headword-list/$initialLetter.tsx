@@ -1,4 +1,4 @@
-import { DchpLink } from "~/components/elements/LinksAndButtons/Link"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { prisma } from "~/db.server"
 import { useLoaderData, useParams } from "@remix-run/react"
@@ -38,13 +38,13 @@ export default function EntryDetailsPage() {
             <p className="" key={h.headword}>
               <strong>{h.headword}</strong> (<strong>{h.count}</strong>{" "}
               citations){" "}
-              <DchpLink
+              <Link
                 bold
                 to={`/bank/citations/${h.headword}`}
                 className="font-bold text-red-600 hover:text-red-400"
               >
                 View citations
-              </DchpLink>
+              </Link>
             </p>
           )
         })}

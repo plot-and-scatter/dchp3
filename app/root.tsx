@@ -48,10 +48,10 @@ export default function App() {
       <head>
         <Meta />
         <Links />
-        <script
+        {/* <script
           src="https://kit.fontawesome.com/178b0761ed.js"
           crossOrigin="anonymous"
-        ></script>
+        ></script> */}
       </head>
       <body className="h-full">
         <div className="relative">

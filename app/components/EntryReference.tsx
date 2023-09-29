@@ -1,5 +1,6 @@
 import type { ReferenceLink } from "@prisma/client"
 import SanitizedTextSpan from "./SanitizedTextSpan"
+import { Link } from "./elements/LinksAndButtons/Link"
 
 type EntryReferenceProps = {
   referenceLink: ReferenceLink
@@ -19,14 +20,9 @@ export default function EntryReference({
         <>
           {" "}
           •{" "}
-          <a
-            href={referenceLink.link_target}
-            target="_blank"
-            className="text-red-500"
-            rel="noreferrer"
-          >
+          <Link to={referenceLink.link_target} target="_blank" rel="noreferrer">
             {referenceLink.link_text || "Link"}
-          </a>
+          </Link>
         </>
       )}
     </li>

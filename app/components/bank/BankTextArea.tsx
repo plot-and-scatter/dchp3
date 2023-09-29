@@ -1,10 +1,12 @@
-interface BankTextAreaProps {
+import clsx from "clsx"
+
+type BankTextAreaProps = Omit<
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+  "defaultValue"
+> & {
   name: string
-  defaultValue?: string | null
-  rows?: number
-  className?: string
+  defaultValue?: string | number | null
   showField?: boolean // If true, show the defaultValue. If not, do not.
-  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>
 }
 
 export default function BankTextArea({
@@ -21,9 +23,10 @@ export default function BankTextArea({
     <textarea
       name={name}
       defaultValue={showField !== false ? defaultValueNoNulls : undefined}
-      className={`${
-        className || ""
-      } w-full rounded border border-slate-700 px-4 py-2`}
+      className={clsx(
+        className,
+        `w-full rounded border border-slate-700 px-4 py-2`
+      )}
       rows={rows}
       onChange={onChange}
     />

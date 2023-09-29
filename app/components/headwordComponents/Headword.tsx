@@ -3,7 +3,7 @@ import HandNoteBlock from "../HandNoteBlock"
 import GeneralLabels from "./GeneralLabels"
 import Etymology from "./Etymology"
 import Alternatives from "./Alternatives"
-import { DchpLink } from "../elements/LinksAndButtons/Link"
+import { Link } from "../elements/LinksAndButtons/Link"
 
 interface HeadwordProps {
   alternatives?: string
@@ -37,9 +37,9 @@ const Headword = ({
               {hasDagger && <span className="align-super">&dagger;</span>}
             </h1>
           </div>
-          <DchpLink asButton className="ml-4" to={`/entries/${word}/edit`}>
+          <Link asButton className="ml-4" to={`/entries/${word}/edit`}>
             Edit
-          </DchpLink>
+          </Link>
         </div>
         <DictionaryVersion isLegacy={isLegacy} />
       </div>

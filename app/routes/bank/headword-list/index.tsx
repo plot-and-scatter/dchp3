@@ -1,4 +1,4 @@
-import { DchpLink } from "~/components/elements/LinksAndButtons/Link"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { PageHeader } from "~/components/elements/PageHeader"
 import { A_TO_Z } from "~/routes/entries/index"
 
@@ -12,13 +12,13 @@ export default function HeadwordListIndexPage() {
       <div className="mt-5 grid grid-cols-9 gap-y-5">
         {A_TO_Z.map((letter) => (
           <div key={letter}>
-            <DchpLink
+            <Link
               bold
               to={`/bank/headword-list/${letter}`}
               className="text-2xl"
             >
               {letter}
-            </DchpLink>
+            </Link>
           </div>
         ))}
       </div>

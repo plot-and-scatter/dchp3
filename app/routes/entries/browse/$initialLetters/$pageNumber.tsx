@@ -1,7 +1,7 @@
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { getEntriesByInitialLettersAndPage } from "~/models/entry.server"
 import { json } from "@remix-run/node"
-import { DchpLink } from "~/components/elements/LinksAndButtons/Link"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { useLoaderData } from "@remix-run/react"
 import invariant from "tiny-invariant"
 import type { LoaderArgs } from "@remix-run/node"
@@ -37,18 +37,18 @@ export default function EntryDetailsPage() {
       </h3>
       <div className="my-4 flex flex-col gap-y-1">
         {entries.map((e) => (
-          <DchpLink to={`/entries/${e.headword}`} bold key={e.id}>
+          <Link to={`/entries/${e.headword}`} bold key={e.id}>
             {e.headword}
-          </DchpLink>
+          </Link>
         ))}
       </div>
       <div className="flex gap-x-4">
-        <DchpLink asButton to={`${paginationBase}${currentPage - 1}`}>
+        <Link asButton to={`${paginationBase}${currentPage - 1}`}>
           Previous page
-        </DchpLink>
-        <DchpLink asButton to={`${paginationBase}${currentPage + 1}`}>
+        </Link>
+        <Link asButton to={`${paginationBase}${currentPage + 1}`}>
           Next page
-        </DchpLink>
+        </Link>
       </div>
     </div>
   )

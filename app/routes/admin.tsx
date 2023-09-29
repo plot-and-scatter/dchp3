@@ -7,7 +7,7 @@ import {
 import { type LoaderArgs } from "@remix-run/server-runtime"
 import LogoutButton from "~/components/auth/LogoutButton"
 import Main from "~/components/elements/Main"
-import { DchpLink } from "~/components/elements/LinksAndButtons/Link"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 
 export const loader = async ({ request }: LoaderArgs) => {
   await redirectIfUserNotLoggedIn(request)
@@ -26,7 +26,7 @@ export default function Admin() {
         <PageHeader>Admin</PageHeader>
         <p>You are logged in (email: {email})</p>
         <p>
-          <DchpLink to="/">Home</DchpLink>
+          <Link to="/">Home</Link>
         </p>
         <div>
           <LogoutButton />

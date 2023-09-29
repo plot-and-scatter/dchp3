@@ -11,6 +11,7 @@ import { SearchResultEnum } from "./searchResultEnum"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
+import Button from "~/components/elements/LinksAndButtons/Button"
 
 export async function action({ request, params }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -71,22 +72,12 @@ export default function EntryDetailsPage() {
         searchAttribute={searchParams.get("attribute")}
       />
       <Form reloadDocument method="post">
-        <button
-          className="mx-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
-          type="submit"
-          name="nextPage"
-          value="false"
-        >
-          Prev Page
-        </button>
-        <button
-          className="mx-3 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
-          type="submit"
-          name="nextPage"
-          value="true"
-        >
-          Next Page
-        </button>
+        <Button type="submit" name="nextPage" value="false">
+          Previous page
+        </Button>
+        <Button type="submit" name="nextPage" value="true">
+          Next page
+        </Button>
       </Form>
     </>
   )

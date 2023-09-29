@@ -1,5 +1,5 @@
 import SanitizedTextSpan from "../SanitizedTextSpan"
-import { DchpLink } from "../elements/LinksAndButtons/Link"
+import { Link } from "../elements/LinksAndButtons/Link"
 
 interface SearchResultProps {
   text: string
@@ -19,9 +19,9 @@ const SearchResultFistNotes = ({ text, data }: SearchResultProps) => {
       {data.map((e) => {
         return (
           <div className="my-2 flex flex-col" key={e.id}>
-            <DchpLink bold to={`/entries/${e.headword}`}>
+            <Link bold to={`/entries/${e.headword}`}>
               {e.headword}
-            </DchpLink>
+            </Link>
             <SanitizedTextSpan text={e.fist_note} />
           </div>
         )

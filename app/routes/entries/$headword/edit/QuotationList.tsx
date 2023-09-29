@@ -2,7 +2,7 @@ import { Form } from "@remix-run/react"
 import { type MeaningType } from "~/components/Meaning"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import Button from "~/components/elements/LinksAndButtons/Button"
-import { DchpLink } from "~/components/elements/LinksAndButtons/Link"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 
 export type CitationType = MeaningType["citations"][0]
 
@@ -57,14 +57,14 @@ function CitationItem({ citation, meaningId }: CitationItemProps) {
         {citation.citation}
       </p>
       <div className="flex gap-x-2">
-        <DchpLink
+        <Link
           asButton
           buttonSize="small"
           to={`/bank/edit/${citation.id}`}
           className="h-fit"
         >
           Edit
-        </DchpLink>
+        </Link>
         <Form method="post">
           <input
             type="hidden"

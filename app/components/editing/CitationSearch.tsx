@@ -5,7 +5,7 @@ import type { CitationSearchLoaderData } from "~/routes/api/citations/$searchTer
 import BankRadioOrCheckbox from "../bank/BankRadioOrCheckbox"
 import Button from "../elements/LinksAndButtons/Button"
 import LabelledField from "../bank/LabelledField"
-import { DchpLink } from "../elements/LinksAndButtons/Link"
+import { Link } from "../elements/LinksAndButtons/Link"
 
 const citationSearchUrl = (
   searchTerm: string,
@@ -113,12 +113,12 @@ export default function CitationSearch() {
                 />
                 <div>
                   <strong>[ID: {citation.id}]</strong> {citation.clipped_text}{" "}
-                  <DchpLink
+                  <Link
                     to={`/bank/edit/${citation.id}`}
                     className="font-variant"
                   >
                     Edit
-                  </DchpLink>
+                  </Link>
                 </div>
               </li>
             ))}

@@ -4,6 +4,7 @@ import BibliographyItem from "./BibliographyItem"
 
 import { usePopper } from "react-popper"
 import { useState } from "react"
+import { Link } from "./LinksAndButtons/Link"
 
 interface BibliographyPopoverProps {
   citation: CitationType
@@ -54,9 +55,9 @@ const BibliographyPopover = ({ citation }: BibliographyPopoverProps) => {
             <BibliographyItem
               label="URL"
               value={
-                <a href={citation["url"] || ""} target="_new">
+                <Link to={citation["url"] || ""} target="_new">
                   {citation.url}
-                </a>
+                </Link>
               }
             />
             <BibliographyItem label="Uttered" value={citation["uttered"]} />

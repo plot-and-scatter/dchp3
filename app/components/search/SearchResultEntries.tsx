@@ -1,4 +1,4 @@
-import { DchpLink } from "../elements/LinksAndButtons/Link"
+import { Link } from "../elements/LinksAndButtons/Link"
 
 interface Props {
   text: string
@@ -18,12 +18,12 @@ const SearchResultEntries = ({ text, data }: Props) => {
       {data.map((e) => {
         return (
           <p key={e.id}>
-            <DchpLink
+            <Link
               to={`/entries/${e.headword}`}
               className="font-bold text-red-600 hover:text-red-400"
             >
               {e.headword}
-            </DchpLink>
+            </Link>
           </p>
         )
       })}

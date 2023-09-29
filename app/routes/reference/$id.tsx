@@ -16,6 +16,7 @@ import {
   getNumberFromFormInput,
   getStringFromFormInput,
 } from "~/utils/generalUtils"
+import Button from "~/components/elements/LinksAndButtons/Button"
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.id)
@@ -78,12 +79,12 @@ export default function ReferenceIdPage() {
           />
         </label>
         <div className="flex w-full flex-row justify-around self-center">
-          <button type="submit" name="updateReference">
-            Submit Changes
-          </button>
-          <button type="submit" name="deleteReference">
-            Delete Reference
-          </button>
+          <Button type="submit" name="updateReference" appearance="success">
+            Save changes
+          </Button>
+          <Button type="submit" name="deleteReference" appearance="danger">
+            Delete reference
+          </Button>
         </div>
       </Form>
     </div>

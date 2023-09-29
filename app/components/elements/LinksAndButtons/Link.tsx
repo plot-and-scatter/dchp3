@@ -1,25 +1,28 @@
 import { buttonAppearanceClass, buttonCommonClasses } from "./ButtonAppearance"
-import type { ButtonSize } from "./ButtonSize"
 import { buttonSizeClass } from "./ButtonSize"
 import { Link as RemixLink } from "@remix-run/react"
 import { type LinkAppearance, linkAppearanceClass } from "./LinkAppearance"
 import clsx from "clsx"
+import type { AppearanceVariant } from "./ButtonAppearance"
+import type { ButtonSize } from "./ButtonSize"
 import type { RemixLinkProps } from "@remix-run/react/dist/components"
 
-interface LinkProps extends RemixLinkProps {
+export type LinkProps = RemixLinkProps & {
   appearance?: LinkAppearance
-  underline?: boolean
-  bold?: boolean
   asButton?: boolean
+  bold?: boolean
   buttonSize?: ButtonSize
+  buttonVariant?: AppearanceVariant
+  underline?: boolean
 }
 
-export const DchpLink = ({
+export const Link = ({
   appearance,
-  underline,
-  bold,
   asButton,
+  bold,
   buttonSize,
+  buttonVariant,
+  underline,
   className,
   children,
   ...rest
@@ -31,7 +34,10 @@ export const DchpLink = ({
         bold && `font-bold`,
         asButton && buttonCommonClasses,
         asButton
-          ? [buttonAppearanceClass(appearance), buttonSizeClass(buttonSize)]
+          ? [
+              buttonAppearanceClass(appearance, buttonVariant),
+              buttonSizeClass(buttonSize),
+            ]
           : linkAppearanceClass(appearance),
         className
       )}
