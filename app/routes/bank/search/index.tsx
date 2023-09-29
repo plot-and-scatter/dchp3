@@ -10,7 +10,7 @@ import BankInput from "~/components/bank/BankInput"
 import BankNumericInput from "~/components/bank/BankNumericInput"
 import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
 import BankSelect from "~/components/bank/BankSelect"
-import Button from "~/components/elements/Button"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import LabelledField from "~/components/bank/LabelledField"
 import type { ActionArgs } from "@remix-run/server-runtime"
 

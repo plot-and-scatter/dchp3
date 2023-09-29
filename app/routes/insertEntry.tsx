@@ -4,7 +4,7 @@ import { Form } from "@remix-run/react"
 import Main from "~/components/elements/Main"
 import { PageHeader } from "~/components/elements/PageHeader"
 import { insertEntry } from "~/models/entry.server"
-import Button from "~/components/elements/Button"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 export async function action({ request }: ActionArgs) {

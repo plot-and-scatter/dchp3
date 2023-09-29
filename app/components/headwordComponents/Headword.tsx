@@ -3,7 +3,7 @@ import HandNoteBlock from "../HandNoteBlock"
 import GeneralLabels from "./GeneralLabels"
 import Etymology from "./Etymology"
 import Alternatives from "./Alternatives"
-import { Link } from "@remix-run/react"
+import { DchpLink } from "../elements/LinksAndButtons/Link"
 
 interface HeadwordProps {
   alternatives?: string
@@ -26,7 +26,6 @@ const Headword = ({
   isLegacy,
   isNonCanadian,
   word,
-  id,
 }: HeadwordProps): JSX.Element => {
   return (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
@@ -38,12 +37,9 @@ const Headword = ({
               {hasDagger && <span className="align-super">&dagger;</span>}
             </h1>
           </div>
-          <Link
-            className="mx-5 rounded border border-slate-700 bg-slate-600 p-2 text-white transition-colors duration-300 hover:bg-slate-500"
-            to={`/entries/${word}/edit`}
-          >
+          <DchpLink asButton className="ml-4" to={`/entries/${word}/edit`}>
             Edit
-          </Link>
+          </DchpLink>
         </div>
         <DictionaryVersion isLegacy={isLegacy} />
       </div>

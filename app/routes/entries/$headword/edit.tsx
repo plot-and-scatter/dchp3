@@ -5,7 +5,7 @@ import { getEntryByHeadword, updateEntry } from "~/models/entry.server"
 import { PageHeader } from "~/components/elements/PageHeader"
 import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node"
 import { type LoadedDataType } from "."
-import Button from "~/components/elements/Button"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import invariant from "tiny-invariant"
 import {
   addDefinitionFistNote,
@@ -25,6 +25,7 @@ import EditingStatus from "~/components/editing/EditingStatus"
 import EditingTools from "~/components/editing/EditingTools"
 import EntryEditingForm from "./edit/EntryEditingForm"
 import MeaningEditingForms from "./edit/MeaningEditingForms"
+import { DchpLink } from "~/components/elements/LinksAndButtons/Link"
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
@@ -98,19 +99,16 @@ export default function EntryDetailsPage() {
     <div className="flex w-11/12 flex-row justify-between">
       <div className="w-1/4 align-bottom">
         <div className="fixed mt-10">
-          <Link
-            to={`/entries/${headword}`}
-            className="h-fit rounded border border-slate-700 bg-slate-600 p-2 text-white transition-colors duration-300 hover:bg-slate-500"
-          >
-            Return To Headword
-          </Link>
+          <DchpLink asButton to={`/entries/${headword}`}>
+            &larr; Return to headword
+          </DchpLink>
           <Form
             reloadDocument={true}
             action={`/entries/${headword}/edit`}
             method="post"
             className="my-5"
           >
-            <Button>Add New Meaning</Button>
+            <Button>Add new meaning</Button>
             <input
               type="hidden"
               name="attributeType"
@@ -126,7 +124,7 @@ export default function EntryDetailsPage() {
 
       <div className="w-3/4">
         <div className="flex flex-row items-center justify-between">
-          <PageHeader>Edit Headword: {headword}</PageHeader>
+          <PageHeader>Edit headword: {headword}</PageHeader>
         </div>
         <EntryEditingForm data={data} />
         <MeaningEditingForms data={data} />

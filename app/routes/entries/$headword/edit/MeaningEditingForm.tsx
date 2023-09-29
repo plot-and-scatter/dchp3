@@ -1,7 +1,7 @@
 import { Form, Link } from "@remix-run/react"
 import { type MeaningType } from "~/components/Meaning"
 import { attributeEnum } from "~/components/editing/attributeEnum"
-import Button from "~/components/elements/Button"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import { useState } from "react"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
 import AddSeeAlso from "./AddSeeAlso"
@@ -12,6 +12,7 @@ import FistnoteAddingForm from "./FistnoteAddingForm"
 import QuotationAddingForm from "./QuotationAddingForm"
 import QuotationList from "./QuotationList"
 import { type LoadedDataType } from ".."
+import { DchpLink } from "~/components/elements/LinksAndButtons/Link"
 
 interface MeaningEditingFormProps {
   entry: LoadedDataType
@@ -122,29 +123,21 @@ export default function MeaningEditingForm({
             className="col-span-7"
           />
           <div className="col-span-full flex flex-row justify-between">
-            <div>
-              <Link
-                to={`/entries/${entry}`}
-                className="mx-2 h-fit rounded border border-slate-700 bg-slate-600 p-2 py-2 px-4 text-white transition-colors duration-300 hover:bg-slate-500"
-              >
-                Return To Headword
-              </Link>
-              <Button
-                className="mx-2"
-                name="attributeType"
-                value={attributeEnum.ADD_MEANING}
-              >
-                Add New Meaning
+            <div className="flex gap-x-4">
+              <DchpLink asButton to={`/entries/${entry.headword}`}>
+                &larr; Return to headword
+              </DchpLink>
+              <Button name="attributeType" value={attributeEnum.ADD_MEANING}>
+                Add new meaning
               </Button>
             </div>
             <Button
+              appearance="success"
               type="submit"
-              size="medium"
               name="attributeType"
               value={attributeEnum.MEANING}
-              className="col-span-1 col-start-4 mx-10 px-10"
             >
-              Update Meaning
+              Save meaning
             </Button>
             <input type="hidden" name="attributeID" value={entry.id} />
           </div>

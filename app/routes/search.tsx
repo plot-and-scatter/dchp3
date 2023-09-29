@@ -3,8 +3,8 @@ import { PageHeader } from "~/components/elements/PageHeader"
 import { SearchResultEnum } from "./search/searchResultEnum"
 import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import { useState } from "react"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import Main from "~/components/elements/Main"
-import Button from "~/components/elements/Button"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -60,48 +60,24 @@ export default function SearchPage() {
             search
           </Button>
         </div>
-        <div className="ml-5 flex flex-col">
-          <Button
-            appearance="linkbutton"
-            name="attribute"
-            value={SearchResultEnum.HEADWORD}
-          >
+        <div className="ml-5 flex flex-col items-start">
+          {/* TODO: Make this into tabs instead */}
+          <Button asLink name="attribute" value={SearchResultEnum.HEADWORD}>
             Headword
           </Button>
-
-          <Button
-            appearance="linkbutton"
-            name="attribute"
-            value={SearchResultEnum.MEANING}
-          >
+          <Button asLink name="attribute" value={SearchResultEnum.MEANING}>
             Meaning
           </Button>
-          <Button
-            appearance="linkbutton"
-            name="attribute"
-            value={SearchResultEnum.CANADIANISM}
-          >
+          <Button asLink name="attribute" value={SearchResultEnum.CANADIANISM}>
             Canadianism
           </Button>
-          <Button
-            appearance="linkbutton"
-            name="attribute"
-            value={SearchResultEnum.USAGE_NOTE}
-          >
+          <Button asLink name="attribute" value={SearchResultEnum.USAGE_NOTE}>
             UsageNote
           </Button>
-          <Button
-            appearance="linkbutton"
-            name="attribute"
-            value={SearchResultEnum.FIST_NOTE}
-          >
+          <Button asLink name="attribute" value={SearchResultEnum.FIST_NOTE}>
             FistNote
           </Button>
-          <Button
-            appearance="linkbutton"
-            name="attribute"
-            value={SearchResultEnum.QUOTATION}
-          >
+          <Button asLink name="attribute" value={SearchResultEnum.QUOTATION}>
             Quotation
           </Button>
         </div>

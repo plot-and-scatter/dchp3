@@ -1,14 +1,12 @@
-import { Link } from "@remix-run/react"
-import React from "react"
-import type JSXNode from "~/types/JSXNode"
 import SanitizedTextSpan from "../SanitizedTextSpan"
+import { DchpLink } from "../elements/LinksAndButtons/Link"
 
 interface Props {
   text: string
   data: any[]
 }
 
-const SearchResultMeanings = ({ text, data }: Props): JSXNode => {
+const SearchResultMeanings = ({ text, data }: Props) => {
   if (data === undefined || data.length === 0) {
     return null
   }
@@ -16,21 +14,16 @@ const SearchResultMeanings = ({ text, data }: Props): JSXNode => {
   return (
     <>
       <h3 className="text-xl font-bold">
-        <>
-          Meanings containing &ldquo;{text}&rdquo;: &nbsp;
-          {data.length}
-        </>
+        Meanings containing &ldquo;{text}&rdquo;: &nbsp;
+        {data.length}
       </h3>
       {data.map((e) => {
         return (
           <div className="m-1" key={"MeaningDiv" + e.id}>
             <p key={"meaningHeadword: " + e.id}>
-              <Link
-                to={`/entries/${e.entry.headword}`}
-                className="font-bold text-red-600 hover:text-red-400"
-              >
+              <DchpLink to={`/entries/${e.entry.headword}`} bold>
                 {e.entry.headword}
-              </Link>
+              </DchpLink>
             </p>
             <p key={"meaning: " + e.id}>
               <SanitizedTextSpan text={e.definition} />
