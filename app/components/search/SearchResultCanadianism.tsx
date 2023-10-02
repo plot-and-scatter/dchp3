@@ -1,14 +1,12 @@
-import { Link } from "@remix-run/react"
-import React from "react"
-import type JSXNode from "~/types/JSXNode"
 import SanitizedTextSpan from "../SanitizedTextSpan"
+import { Link } from "../elements/LinksAndButtons/Link"
 
 interface Props {
   text: string
   data: any[]
 }
 
-const SearchResultCanadianism = ({ text, data }: Props): JSXNode => {
+const SearchResultCanadianism = ({ text, data }: Props) => {
   if (data === undefined || data.length === 0) {
     return null
   }
@@ -16,10 +14,8 @@ const SearchResultCanadianism = ({ text, data }: Props): JSXNode => {
   return (
     <>
       <h3 className="text-xl font-bold">
-        <>
-          Canadianism Type Description containing &ldquo;{text}&rdquo;:{" "}
-          {data.length}
-        </>
+        Canadianism Type Description containing &ldquo;{text}&rdquo;:{" "}
+        {data.length}
       </h3>
       {data.map((e) => {
         return (

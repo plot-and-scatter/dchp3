@@ -21,7 +21,7 @@ import { z } from "zod"
 import BankEditCitationFields from "~/components/bank/BankEditCitationFields"
 import BankHeadwordCitationSelect from "~/components/bank/BankHeadwordCitationSelect"
 import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
-import Button from "~/components/elements/Button"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import invariant from "tiny-invariant"
 
 const BankEditFormDataSchema = z.object({

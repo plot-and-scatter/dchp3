@@ -1,66 +1,54 @@
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { getEntriesByInitialLettersAndPage } from "~/models/entry.server"
 import { json } from "@remix-run/node"
-import { Link, useLoaderData, useParams } from "@remix-run/react"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
+import { useLoaderData } from "@remix-run/react"
 import invariant from "tiny-invariant"
 import type { LoaderArgs } from "@remix-run/node"
 
 export async function loader({ params }: LoaderArgs) {
-  invariant(params.initialLetters, "initialLetters not found")
-  invariant(params.pageNumber, "pageNumber not found")
+  const { initialLetters, pageNumber } = params
+
+  invariant(initialLetters, "initialLetters not found")
+  invariant(pageNumber, "pageNumber not found")
 
   const entries = await getEntriesByInitialLettersAndPage(
-    params.initialLetters,
-    params.pageNumber
+    initialLetters,
+    pageNumber
   )
 
   if (!entries) {
     throw new Response("Not Found", { status: 404 })
   }
-  return json({ entries })
+  return json({ entries, initialLetters, pageNumber })
 }
 
 export default function EntryDetailsPage() {
-  const data = useLoaderData<typeof loader>()
-  const params = useParams()
+  const { entries, initialLetters, pageNumber } = useLoaderData<typeof loader>()
 
-  const currentPage = params.pageNumber ? parseInt(params.pageNumber) : 1
+  const currentPage = pageNumber ? parseInt(pageNumber) : 1
+  const paginationBase = `/entries/browse/${initialLetters}/`
 
   return (
     <div>
       <h3 className="text-2xl font-bold">
-        <>
-          Entries starting with {params.initialLetters}: {data.entries.length}{" "}
-          (Page {params.pageNumber})
-        </>
+        Entries starting with {initialLetters}: {entries.length} (Page{" "}
+        {pageNumber})
       </h3>
-      <div className="my-4 flex flex-col justify-center">
-        {data.entries.map((e) => {
-          return (
-            <p className="" key={e.id}>
-              <Link
-                to={`/entries/${e.headword}`}
-                className="font-bold text-red-600 hover:text-red-400"
-              >
-                {e.headword}
-              </Link>
-            </p>
-          )
-        })}
-        <div>
-          <Link
-            className="mx-3 my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
-            to={`../browse/${params.initialLetters}/${currentPage - 1}`}
-          >
-            Prev Page
+      <div className="my-4 flex flex-col gap-y-1">
+        {entries.map((e) => (
+          <Link to={`/entries/${e.headword}`} bold key={e.id}>
+            {e.headword}
           </Link>
-          <Link
-            className="mx-auto my-4 w-24 border border-slate-600 bg-slate-500 p-2 text-white hover:bg-slate-400"
-            to={`../browse/${params.initialLetters}/${currentPage + 1}`}
-          >
-            Next Page
-          </Link>
-        </div>
+        ))}
+      </div>
+      <div className="flex gap-x-4">
+        <Link asButton to={`${paginationBase}${currentPage - 1}`}>
+          Previous page
+        </Link>
+        <Link asButton to={`${paginationBase}${currentPage + 1}`}>
+          Next page
+        </Link>
       </div>
     </div>
   )

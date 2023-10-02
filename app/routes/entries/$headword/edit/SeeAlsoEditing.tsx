@@ -1,8 +1,8 @@
-import { Form } from "@remix-run/react"
-import React from "react"
-import SeeAlsoItem from "~/components/SeeAlsoItem"
-import { type SeeAlsoList } from "~/components/SeeAlsoItems"
 import { attributeEnum } from "~/components/editing/attributeEnum"
+import { Form } from "@remix-run/react"
+import { type SeeAlsoList } from "~/components/SeeAlsoItems"
+import IconButton from "~/components/elements/LinksAndButtons/IconButton"
+import SeeAlsoItem from "~/components/SeeAlsoItem"
 
 interface SeeAlsoEditingProps {
   headword: string
@@ -18,13 +18,13 @@ const SeeAlsoItems = ({
   }
 
   return (
-    <div className="flex flex-row">
-      <em>See also:</em>{" "}
+    <div className="flex flex-row items-center">
+      <em>See also:</em>&nbsp;
       {seeAlsoItems.map((seeAlso, index) => {
         return (
           <div
             key={`see-also-${seeAlso.meaning_id}-${seeAlso.entry_id}`}
-            className="flex flex-row"
+            className="flex flex-row items-center"
           >
             {index > 0 && <span className="mr-6">,</span>}
             <SeeAlsoItem seeAlso={seeAlso} />
@@ -45,12 +45,16 @@ const SeeAlsoItems = ({
                 value={attributeEnum.DELETE_SEE_ALSO}
               ></input>
               <input type="hidden" name="headword" value={headword}></input>
-              <button type="submit">
-                <i
-                  className="fa-solid fa-trash-can blue mx-1 align-super text-red-400  hover:text-red-600"
-                  aria-hidden="true"
-                ></i>
-              </button>
+              <IconButton
+                type="submit"
+                iconName="fa-trash-can"
+                size="small"
+                appearance="danger"
+                variant="outline"
+                className="ml-1"
+              >
+                Delete
+              </IconButton>
             </Form>
           </div>
         )

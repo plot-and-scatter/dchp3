@@ -1,11 +1,8 @@
 import { attributeEnum } from "~/components/editing/attributeEnum"
-import { Form, Link, useLoaderData } from "@remix-run/react"
+import { useLoaderData } from "@remix-run/react"
 import { getAttributeEnumFromFormInput } from "~/utils/generalUtils"
 import { getEntryByHeadword, updateEntry } from "~/models/entry.server"
-import { PageHeader } from "~/components/elements/PageHeader"
 import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node"
-import { type LoadedDataType } from "."
-import Button from "~/components/elements/Button"
 import invariant from "tiny-invariant"
 import {
   addDefinitionFistNote,
@@ -21,20 +18,21 @@ import {
   updateOrDeleteDefinitionFistNote,
 } from "~/models/update.server"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
-import EditingStatus from "~/components/editing/EditingStatus"
-import EditingTools from "~/components/editing/EditingTools"
-import EntryEditingForm from "./edit/EntryEditingForm"
-import MeaningEditingForms from "./edit/MeaningEditingForms"
+import EditEntry from "~/components/editing/entry/EditEntry"
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
 
   const entry = await getEntryByHeadword({ headword: params.headword })
+
   if (!entry) {
     throw new Response("Not Found", { status: 404 })
   }
-  return entry
+
+  return { entry }
 }
+
+export type EntryEditLoaderData = Awaited<Promise<ReturnType<typeof loader>>>
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -90,49 +88,9 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function EntryDetailsPage() {
-  const data = useLoaderData<typeof loader>() as LoadedDataType
-  const id = data.id
-  const headword = data.headword
+  const { entry } = useLoaderData()
 
-  return (
-    <div className="flex w-11/12 flex-row justify-between">
-      <div className="w-1/4 align-bottom">
-        <div className="fixed mt-10">
-          <Link
-            to={`/entries/${headword}`}
-            className="h-fit rounded border border-slate-700 bg-slate-600 p-2 text-white transition-colors duration-300 hover:bg-slate-500"
-          >
-            Return To Headword
-          </Link>
-          <Form
-            reloadDocument={true}
-            action={`/entries/${headword}/edit`}
-            method="post"
-            className="my-5"
-          >
-            <Button>Add New Meaning</Button>
-            <input
-              type="hidden"
-              name="attributeType"
-              value={attributeEnum.ADD_MEANING}
-            />
-            <input type="hidden" name="attributeID" value={id} />
-            <input type="hidden" name="headword" value={headword} />
-          </Form>
-          <EditingTools data={data} />
-          <EditingStatus data={data} />
-        </div>
-      </div>
-
-      <div className="w-3/4">
-        <div className="flex flex-row items-center justify-between">
-          <PageHeader>Edit Headword: {headword}</PageHeader>
-        </div>
-        <EntryEditingForm data={data} />
-        <MeaningEditingForms data={data} />
-      </div>
-    </div>
-  )
+  return <EditEntry entry={entry} />
 }
 
 export const ErrorBoundary = DefaultErrorBoundary

@@ -1,13 +1,14 @@
 import { resetFetcher } from "~/routes/api/reset-fetcher"
-import { Form, Link, useFetcher } from "@remix-run/react"
+import { Form, useFetcher } from "@remix-run/react"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import type { CitationSearchLoaderData } from "~/routes/api/citations/$searchTerm[.json]"
 import BankInput from "~/components/bank/BankInput"
 import LabelledField from "~/components/bank/LabelledField"
 import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
-import Button from "~/components/elements/Button"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { useState } from "react"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 
 interface QuotationAddingFormProps {
   meaningId: number
@@ -116,7 +117,6 @@ export default function QuotationAddingForm({
           {citations.data && (
             <>
               <Button
-                appearance="primary"
                 type="submit"
                 className="ml-10 mt-2"
                 onClick={(e) => setPageNumber(Math.max(pageNumber - 1, 1))}
@@ -124,7 +124,6 @@ export default function QuotationAddingForm({
                 Prev Page
               </Button>
               <Button
-                appearance="primary"
                 type="submit"
                 className="ml-2 mt-2"
                 onClick={(e) => setPageNumber(pageNumber + 1)}
@@ -161,18 +160,13 @@ export default function QuotationAddingForm({
                       className="mx-1 p-1"
                     />
                     <p>
-                      {
-                        <Link
-                          to={`/bank/edit/${citation.id}`}
-                          className="hover:underline"
-                        >
-                          <CitationPrefix
-                            citation={citation}
-                            orderBy={orderByValue}
-                          />
-                          {citation.clipped_text}
-                        </Link>
-                      }
+                      <Link to={`/bank/edit/${citation.id}`}>
+                        <CitationPrefix
+                          citation={citation}
+                          orderBy={orderByValue}
+                        />
+                        {citation.clipped_text}
+                      </Link>
                     </p>
                   </div>
                 </li>

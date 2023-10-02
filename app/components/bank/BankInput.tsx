@@ -14,7 +14,7 @@ export default function BankInput(props: BankInputProps) {
   return (
     <input
       className={
-        props.className || "w-full rounded border border-slate-700 px-4 py-2"
+        props.className || "w-full rounded border border-slate-700 px-3 py-2"
       }
       {...props} // defaultValue MUST come after this line.
       defaultValue={props.showField !== false ? defaultValueNoNulls : undefined}

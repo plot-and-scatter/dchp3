@@ -1,6 +1,6 @@
-import { Form } from "@remix-run/react"
 import { attributeEnum } from "~/components/editing/attributeEnum"
-import Button from "~/components/elements/Button"
+import { Form } from "@remix-run/react"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import SeeAlsoInput from "./SeeAlsoInput"
 
 interface AddSeeAlsoProps {

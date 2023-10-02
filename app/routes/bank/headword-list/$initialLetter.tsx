@@ -1,6 +1,7 @@
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
-import { Link, useLoaderData, useParams } from "@remix-run/react"
 import { prisma } from "~/db.server"
+import { useLoaderData, useParams } from "@remix-run/react"
 import invariant from "tiny-invariant"
 import type { LoaderArgs } from "@remix-run/node"
 
@@ -38,6 +39,7 @@ export default function EntryDetailsPage() {
               <strong>{h.headword}</strong> (<strong>{h.count}</strong>{" "}
               citations){" "}
               <Link
+                bold
                 to={`/bank/citations/${h.headword}`}
                 className="font-bold text-red-600 hover:text-red-400"
               >

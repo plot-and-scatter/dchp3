@@ -1,10 +1,11 @@
 import { resetFetcher } from "~/routes/api/reset-fetcher"
-import { Link, useFetcher } from "@remix-run/react"
+import { useFetcher } from "@remix-run/react"
 import BankInput from "../bank/BankInput"
 import type { CitationSearchLoaderData } from "~/routes/api/citations/$searchTerm[.json]"
 import BankRadioOrCheckbox from "../bank/BankRadioOrCheckbox"
-import Button from "../elements/Button"
+import Button from "../elements/LinksAndButtons/Button"
 import LabelledField from "../bank/LabelledField"
+import { Link } from "../elements/LinksAndButtons/Link"
 
 const citationSearchUrl = (
   searchTerm: string,
@@ -114,7 +115,7 @@ export default function CitationSearch() {
                   <strong>[ID: {citation.id}]</strong> {citation.clipped_text}{" "}
                   <Link
                     to={`/bank/edit/${citation.id}`}
-                    className="font-variant text-red-500"
+                    className="font-variant"
                   >
                     Edit
                   </Link>

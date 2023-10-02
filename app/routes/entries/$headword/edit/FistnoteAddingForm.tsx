@@ -1,6 +1,6 @@
 import { Form } from "@remix-run/react"
 import { attributeEnum } from "~/components/editing/attributeEnum"
-import Button from "~/components/elements/Button"
+import Button from "~/components/elements/LinksAndButtons/Button"
 
 interface FistnoteAddingFormProps {
   meaningId: number

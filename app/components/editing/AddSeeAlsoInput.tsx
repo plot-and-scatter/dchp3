@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import { attributeEnum } from "./attributeEnum"
+import Button from "../elements/LinksAndButtons/Button"
 
 const AddSeeAlsoInput = () => {
   const inputElement = useRef<HTMLInputElement>(null)
@@ -22,7 +23,7 @@ const AddSeeAlsoInput = () => {
         name="attributeType"
         value={attributeEnum.SEE_ALSO}
       />
-      <button type="submit"></button>
+      <Button type="submit"></Button>
     </div>
   )
 }

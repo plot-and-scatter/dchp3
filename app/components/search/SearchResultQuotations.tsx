@@ -1,14 +1,12 @@
-import { Link } from "@remix-run/react"
-import React from "react"
-import type JSXNode from "~/types/JSXNode"
 import SanitizedTextSpan from "../SanitizedTextSpan"
+import { Link } from "../elements/LinksAndButtons/Link"
 
 interface SearchResultProps {
   text: string
   data: any[]
 }
 
-const SearchResultQuotations = ({ text, data }: SearchResultProps): JSXNode => {
+const SearchResultQuotations = ({ text, data }: SearchResultProps) => {
   if (data === undefined || data.length === 0) {
     return null
   }
@@ -16,17 +14,12 @@ const SearchResultQuotations = ({ text, data }: SearchResultProps): JSXNode => {
   return (
     <>
       <h3 className="text-xl font-bold">
-        <>
-          Quotations containing &ldquo;{text}&rdquo;: {data.length}
-        </>
+        Quotations containing &ldquo;{text}&rdquo;: {data.length}
       </h3>
       {data.map((e) => {
         return (
           <div className="my-2 flex flex-col" key={e.id}>
-            <Link
-              to={`/bank/edit/${e.id}`}
-              className="font-bold text-red-600 hover:text-red-400"
-            >
+            <Link bold to={`/bank/edit/${e.id}`}>
               {e.headword.headword}
             </Link>
             <SanitizedTextSpan text={e.text} />

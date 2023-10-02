@@ -1,5 +1,5 @@
 import { sourceTypeToText } from "utils/source"
-import Button from "~/components/elements/Button"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import { BankSourceTypeEnum } from "~/models/bank.types"
 
 interface ActiveSourcePickerProps {

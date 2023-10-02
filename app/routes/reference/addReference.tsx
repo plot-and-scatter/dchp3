@@ -4,6 +4,10 @@ import { Form } from "@remix-run/react"
 import { getStringFromFormInput } from "~/utils/generalUtils"
 import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import invariant from "tiny-invariant"
+import Button from "~/components/elements/LinksAndButtons/Button"
+import TopLabelledField from "~/components/bank/TopLabelledField"
+import BankInput from "~/components/bank/BankInput"
+import BankTextArea from "~/components/bank/BankTextArea"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -20,24 +24,24 @@ export async function action({ request }: ActionArgs) {
 export default function ReferenceIdPage() {
   return (
     <div className="flex w-full max-w-4xl flex-col">
-      <h2 className="text-2xl font-bold"> Reference Adder </h2>
-      <Form className="flex flex-col" method="post">
+      <h2 className="my-4 text-2xl font-bold">Add reference</h2>
+      <Form className="flex flex-col gap-y-4" method="post">
         <input type="hidden" name="id" />
-        <label>
-          Short Display Text:
-          <input name="shortDisplay" className="m-3 border-2 p-1" type="text" />
-        </label>
-        <label className="flex flex-col">
-          <p>Reference Text:</p>
-          <textarea name="referenceText" className="my-1 border-2 p-2" />
-        </label>
-        <div className="flex w-full flex-row justify-around self-center">
-          <button type="submit" name="updateReference">
-            Submit Changes
-          </button>
-          <button type="submit" name="deleteReference">
-            Delete Reference
-          </button>
+        <TopLabelledField
+          label={<label htmlFor="shortDisplay">Short display text</label>}
+          field={<BankInput id="shortDisplay" name="shortDisplay" />}
+        />
+        <TopLabelledField
+          label={<label htmlFor="referenceText">Reference text</label>}
+          field={<BankTextArea id="referenceText" name="referenceText" />}
+        />
+        <div className="flex w-full flex-row justify-between self-center">
+          <Button name="updateReference" appearance="success">
+            Save reference
+          </Button>
+          <Button name="deleteReference" appearance="danger">
+            Cancel
+          </Button>
         </div>
       </Form>
     </div>

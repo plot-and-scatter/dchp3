@@ -1,13 +1,11 @@
-import { Link } from "@remix-run/react"
-import React from "react"
-import type JSXNode from "~/types/JSXNode"
+import { Link } from "../elements/LinksAndButtons/Link"
 
 interface Props {
   text: string
   data: any[]
 }
 
-const SearchResultEntries = ({ text, data }: Props): JSXNode => {
+const SearchResultEntries = ({ text, data }: Props) => {
   if (data === undefined || data.length === 0) {
     return null
   }
@@ -15,9 +13,7 @@ const SearchResultEntries = ({ text, data }: Props): JSXNode => {
   return (
     <>
       <h3 className="text-xl font-bold">
-        <>
-          Entries containing &ldquo;{text}&rdquo;: {data.length}
-        </>
+        Entries containing &ldquo;{text}&rdquo;: {data.length}
       </h3>
       {data.map((e) => {
         return (

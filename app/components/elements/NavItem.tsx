@@ -1,3 +1,5 @@
+import { Link } from "@remix-run/react"
+
 type NavItem = {
   name: string
   href?: string
@@ -18,9 +20,9 @@ export default function NavItem(item: NavItemProps) {
     return <div>{item.name}</div>
   } else {
     return (
-      <a
+      <Link
         key={item.name}
-        href={item.href}
+        to={item.href}
         className="group -m-1 flex items-center rounded-lg p-1 transition duration-150 ease-in-out hover:bg-slate-100 focus:outline-none focus-visible:ring-opacity-50"
       >
         <div className="flex h-6 w-6 shrink-0 items-center justify-center ">
@@ -32,7 +34,7 @@ export default function NavItem(item: NavItemProps) {
             <p className="text-sm text-slate-500">{item.description}</p>
           )}
         </div>
-      </a>
+      </Link>
     )
   }
 }

@@ -1,6 +1,8 @@
-import { Form, Link } from "@remix-run/react"
+import { Form } from "@remix-run/react"
 import { type MeaningType } from "~/components/Meaning"
 import { attributeEnum } from "~/components/editing/attributeEnum"
+import Button from "~/components/elements/LinksAndButtons/Button"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 
 export type CitationType = MeaningType["citations"][0]
 
@@ -46,22 +48,36 @@ function CitationItem({ citation, meaningId }: CitationItemProps) {
   if (!citation) return <></>
 
   return (
-    <div className="my-2 grid grid-cols-12" key={meaningId + "-" + citation.id}>
-      <p className="col-span-10">
+    <div
+      className="flex justify-between gap-x-4"
+      key={meaningId + "-" + citation.id}
+    >
+      <p>
         <strong> {citation.yearcomp || citation.yearpub}:</strong>{" "}
         {citation.citation}
       </p>
-      <Link to={`/bank/edit/${citation.id}`}>Edit </Link>
-      <Form method="post">
-        <input
-          type="hidden"
-          name="attributeType"
-          value={attributeEnum.DELETE_QUOTATION}
-        />
-        <input type="hidden" name="quotationId" value={citation.id} />
-        <input type="hidden" name="meaningId" value={meaningId} />
-        <button type="submit">Remove</button>
-      </Form>
+      <div className="flex gap-x-2">
+        <Link
+          asButton
+          buttonSize="small"
+          to={`/bank/edit/${citation.id}`}
+          className="h-fit"
+        >
+          Edit
+        </Link>
+        <Form method="post">
+          <input
+            type="hidden"
+            name="attributeType"
+            value={attributeEnum.DELETE_QUOTATION}
+          />
+          <input type="hidden" name="quotationId" value={citation.id} />
+          <input type="hidden" name="meaningId" value={meaningId} />
+          <Button type="submit" size="small" appearance="danger">
+            Remove
+          </Button>
+        </Form>
+      </div>
     </div>
   )
 }

@@ -1,17 +1,18 @@
-import { Form, Link } from "@remix-run/react"
-import { type MeaningType } from "~/components/Meaning"
 import { attributeEnum } from "~/components/editing/attributeEnum"
-import Button from "~/components/elements/Button"
-import { useState } from "react"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
-import AddSeeAlso from "./AddSeeAlso"
-import SeeAlsoEditing from "./SeeAlsoEditing"
 import { EditFormInput } from "~/components/editing/EditFormInput"
-import FistnoteEditForm from "./FistnoteEditForm"
+import { Form } from "@remix-run/react"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
+import { type LoadedDataType } from ".."
+import { type MeaningType } from "~/components/Meaning"
+import { useState } from "react"
+import AddSeeAlso from "./AddSeeAlso"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import FistnoteAddingForm from "./FistnoteAddingForm"
+import FistnoteEditForm from "./FistnoteEditForm"
 import QuotationAddingForm from "./QuotationAddingForm"
 import QuotationList from "./QuotationList"
-import { type LoadedDataType } from ".."
+import SeeAlsoEditing from "./SeeAlsoEditing"
 
 interface MeaningEditingFormProps {
   entry: LoadedDataType
@@ -122,29 +123,25 @@ export default function MeaningEditingForm({
             className="col-span-7"
           />
           <div className="col-span-full flex flex-row justify-between">
-            <div>
-              <Link
-                to={`/entries/${entry}`}
-                className="mx-2 h-fit rounded border border-slate-700 bg-slate-600 p-2 py-2 px-4 text-white transition-colors duration-300 hover:bg-slate-500"
-              >
-                Return To Headword
+            <div className="flex gap-x-4">
+              <Link asButton to={`/entries/${entry.headword}`}>
+                &larr; Return to headword
               </Link>
               <Button
-                className="mx-2"
+                variant="outline"
                 name="attributeType"
                 value={attributeEnum.ADD_MEANING}
               >
-                Add New Meaning
+                Add new meaning
               </Button>
             </div>
             <Button
+              appearance="success"
               type="submit"
-              size="medium"
               name="attributeType"
               value={attributeEnum.MEANING}
-              className="col-span-1 col-start-4 mx-10 px-10"
             >
-              Update Meaning
+              Save meaning
             </Button>
             <input type="hidden" name="attributeID" value={entry.id} />
           </div>
