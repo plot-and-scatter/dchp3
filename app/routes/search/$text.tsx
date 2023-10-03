@@ -65,6 +65,14 @@ export default function EntryDetailsPage() {
 
   return (
     <>
+      <Form reloadDocument method="post">
+        <Button type="submit" className="mx-2" name="nextPage" value="false">
+          Previous page
+        </Button>
+        <Button type="submit" className="mx-2" name="nextPage" value="true">
+          Next page
+        </Button>
+      </Form>
       <SearchResults
         data={data}
         text={params.text}
@@ -72,10 +80,10 @@ export default function EntryDetailsPage() {
         searchAttribute={searchParams.get("attribute")}
       />
       <Form reloadDocument method="post">
-        <Button type="submit" name="nextPage" value="false">
+        <Button type="submit" className="mx-2" name="nextPage" value="false">
           Previous page
         </Button>
-        <Button type="submit" name="nextPage" value="true">
+        <Button type="submit" className="mx-2" name="nextPage" value="true">
           Next page
         </Button>
       </Form>
