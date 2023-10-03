@@ -1,4 +1,5 @@
 export enum SearchResultEnum {
+  ALL = "All",
   HEADWORD = "Headword",
   MEANING = "Meaning",
   CANADIANISM = "Canadianism",

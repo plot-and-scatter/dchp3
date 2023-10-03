@@ -26,8 +26,7 @@ export default function SearchPage() {
   const [text, setText] = useState(params?.text)
 
   const [searchParams] = useSearchParams()
-  const currentAttribute =
-    searchParams.get("attribute") ?? SearchResultEnum.HEADWORD
+  const currentAttribute = searchParams.get("attribute") ?? SearchResultEnum.ALL
 
   return (
     <Main center={true}>

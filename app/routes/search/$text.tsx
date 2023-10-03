@@ -5,9 +5,8 @@ import {
   useSearchParams,
 } from "@remix-run/react"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
-import { getSearchResults } from "~/models/search.server"
+import { type AllSearchResults, getSearchResults } from "~/models/search.server"
 import { redirect } from "@remix-run/node"
-import { SearchResultEnum } from "./searchResultEnum"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
@@ -38,27 +37,33 @@ export async function loader({ request, params }: LoaderArgs) {
     url.searchParams.get("caseSensitive") === "true"
   const pageNumber: string | undefined =
     url.searchParams.get("pageNumber") ?? undefined
-  const attribute: string =
-    url.searchParams.get("attribute") ?? SearchResultEnum.HEADWORD
 
-  const searchResults: any[] = await getSearchResults(
+  const searchResults: AllSearchResults = await getSearchResults(
     text,
     pageNumber,
-    caseSensitive,
-    attribute
+    caseSensitive
   )
 
-  if (!searchResults || searchResults.length === 0) {
+  if (!searchResults || isEmpty(searchResults)) {
     throw new Response(null, {
       status: 404,
-      statusText: `No Results Found for ${attribute} "${text}"`,
+      statusText: `No Results Found for "${text}"`,
     })
   }
   return searchResults
 }
 
+function isEmpty(searchResults: AllSearchResults) {
+  let isEmpty = true
+  for (var elm of Object.values(searchResults)) {
+    console.log(elm.length)
+    if (elm.length !== 0) isEmpty = false
+  }
+  return isEmpty
+}
+
 export default function EntryDetailsPage() {
-  const data: any[] = useLoaderData<typeof loader>()
+  const data: AllSearchResults = useLoaderData<typeof loader>()
   const params = useParams()
   const [searchParams] = useSearchParams()
   invariant(params.text)

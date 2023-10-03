@@ -6,34 +6,64 @@ import { parsePageNumberOrError } from "~/utils/generalUtils"
 
 export type { Entry } from "@prisma/client"
 
+export type AllSearchResults = {
+  Headwords?: Pick<Entry, "id" | "headword">[]
+  Meanings?: SearchResultMeaning[]
+  Canadianisms?: Canadianism[]
+  UsageNotes?: UsageNote[]
+  FistNotes?: FistNote[]
+  Quotations?: Quotation[]
+}
+
 export async function getSearchResults(
   text: string,
   page: string = "1",
   caseSensitive: boolean = false,
   attribute: string = SearchResultEnum.HEADWORD
-): Promise<any[]> {
+): Promise<AllSearchResults> {
   const pageNumber = parsePageNumberOrError(page)
   const skip: number = calculatePageSkip(pageNumber)
 
-  switch (attribute) {
-    case SearchResultEnum.HEADWORD:
-      return getEntriesByBasicTextSearch(text, skip, undefined, caseSensitive)
-    case SearchResultEnum.MEANING:
-      return getSearchResultMeanings(text, skip, undefined, caseSensitive)
-    case SearchResultEnum.CANADIANISM:
-      return getSearchResultCanadianisms(text, skip, undefined, caseSensitive)
-    case SearchResultEnum.USAGE_NOTE:
-      return getSearchResultUsageNotes(text, skip, undefined, caseSensitive)
-    case SearchResultEnum.FIST_NOTE:
-      return getSearchResultFistNotes(text, skip, undefined, caseSensitive)
-    case SearchResultEnum.QUOTATION:
-      return getSearchResultQuotations(text, skip, undefined, caseSensitive)
-    default:
-      throw new Response(null, {
-        status: 400,
-        statusText: `attribute "${attribute}" must be a valid search attribute`,
-      })
-  }
+  const searchResults: AllSearchResults = {}
+  searchResults.Headwords = await getEntriesByBasicTextSearch(
+    text,
+    skip,
+    undefined,
+    caseSensitive
+  )
+  searchResults.Meanings = await getSearchResultMeanings(
+    text,
+    skip,
+    undefined,
+    caseSensitive
+  )
+  searchResults.Canadianisms = await getSearchResultCanadianisms(
+    text,
+    skip,
+    undefined,
+    caseSensitive
+  )
+  searchResults.UsageNotes = await getSearchResultUsageNotes(
+    text,
+    skip,
+    undefined,
+    caseSensitive
+  )
+  searchResults.FistNotes = await getSearchResultFistNotes(
+    text,
+    skip,
+    undefined,
+    caseSensitive
+  )
+
+  searchResults.Quotations = await getSearchResultQuotations(
+    text,
+    skip,
+    undefined,
+    caseSensitive
+  )
+
+  return searchResults
 }
 
 export function getEntriesByBasicTextSearch(
@@ -59,13 +89,21 @@ export function getEntriesByBasicTextSearch(
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
 }
 
+export interface SearchResultMeaning {
+  id: number
+  definition: string
+  entry: {
+    headword: string
+  }
+}
+
 // TODO: refactor to use Case Sensitive
 export function getSearchResultMeanings(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
-) {
+): Promise<SearchResultMeaning[]> {
   if (text.length === 0) {
     throw new Response(null, {
       status: 400,
@@ -105,7 +143,7 @@ export function getSearchResultCanadianisms(
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
-) {
+): Promise<Canadianism[]> {
   if (text.length === 0) {
     throw new Response(null, {
       status: 400,
@@ -140,7 +178,7 @@ export function getSearchResultUsageNotes(
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
-) {
+): Promise<UsageNote[]> {
   if (text.length === 0) {
     throw new Response(null, {
       status: 400,
@@ -172,7 +210,7 @@ export function getSearchResultFistNotes(
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
-) {
+): Promise<FistNote[]> {
   if (text.length === 0) {
     throw new Response(null, {
       status: 400,
@@ -191,13 +229,21 @@ export function getSearchResultFistNotes(
   ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
+export interface Quotation {
+  id: number
+  headword: {
+    headword: string
+  } | null
+  text: string | null
+}
+
 // case sensitivity not working; check collation
 export function getSearchResultQuotations(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
-) {
+): Promise<Quotation[]> {
   if (text.length === 0) {
     throw new Response(null, {
       status: 400,
@@ -230,29 +276,10 @@ export function getSearchResultQuotations(
       id: "asc",
     },
     select: {
-      user_id: true,
-      last_modified_user_id: true,
       text: true,
-      clipped_text: true,
       id: true,
-      short_meaning: true,
-      last_modified: true,
-      source_id: true,
-      spelling_variant: true,
       headword: {
         select: { headword: true },
-      },
-      source: {
-        select: {
-          year_published: true,
-          year_composed: true,
-          type_id: true,
-          place: {
-            select: {
-              name: true,
-            },
-          },
-        },
       },
     },
   })
