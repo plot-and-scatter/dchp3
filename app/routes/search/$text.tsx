@@ -44,22 +44,7 @@ export async function loader({ request, params }: LoaderArgs) {
     caseSensitive
   )
 
-  if (!searchResults || isEmpty(searchResults)) {
-    throw new Response(null, {
-      status: 404,
-      statusText: `No Results Found for "${text}"`,
-    })
-  }
   return searchResults
-}
-
-function isEmpty(searchResults: AllSearchResults) {
-  let isEmpty = true
-  for (var elm of Object.values(searchResults)) {
-    console.log(elm.length)
-    if (elm.length !== 0) isEmpty = false
-  }
-  return isEmpty
 }
 
 export default function EntryDetailsPage() {
@@ -81,7 +66,7 @@ export default function EntryDetailsPage() {
       <SearchResults
         data={data}
         text={params.text}
-        pageNumber={params.pageNumber}
+        pageNumber={searchParams.get("pageNumber")}
         searchAttribute={searchParams.get("attribute")}
       />
       <Form reloadDocument method="post">

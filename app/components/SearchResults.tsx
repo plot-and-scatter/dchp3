@@ -12,7 +12,7 @@ import { type AllSearchResults } from "~/models/search.server"
 interface SearchResultsProps {
   data: AllSearchResults
   text: string
-  pageNumber: string | undefined
+  pageNumber: string | null
   searchAttribute: string | null
 }
 
@@ -62,7 +62,7 @@ const SearchResults = ({
   pageNumber,
   searchAttribute,
 }: SearchResultsProps): JSXNode => {
-  const page = pageNumber ? pageNumber : "1"
+  const page = pageNumber ?? "1"
 
   return (
     <div className="mt-3 flex max-w-3xl flex-col justify-center align-middle">
