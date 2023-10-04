@@ -1,7 +1,8 @@
 import type { Entry } from "@prisma/client"
+import invariant from "tiny-invariant"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
-import { getEmailFromSession } from "~/services/auth/session.server"
+import { getEmailFromSession, getUserId } from "~/services/auth/session.server"
 import {
   getCheckboxValueAsBoolean,
   getNumberFromFormInput,
@@ -89,9 +90,6 @@ export async function insertEntry(
   data: { [k: string]: FormDataEntryValue },
   request: Request
 ) {
-  console.log("Headers")
-  console.log(request)
-
   const email = await getEmailFromSession(request)
 
   const headword = getStringFromFormInput(data.headword)
@@ -109,8 +107,8 @@ export async function insertEntry(
       headword: headword,
       first_field: "first field",
       etymology: etymology,
-      is_legacy: isLegacy, // TODO: should there be a dchp3 option?
-      is_public: true,
+      is_legacy: isLegacy,
+      is_public: false,
       spelling_variants: spellingVariants,
       superscript: "Superscript",
       dagger: dagger,
@@ -132,6 +130,8 @@ export async function insertEntry(
       edit_status_comment: null,
     },
   })
+
+  updateLogEntries(headword, request)
 }
 
 export function getEntriesByInitialLetters(
@@ -200,6 +200,27 @@ async function assertNonDuplicateHeadword(
       `"${currentHeadword}" can't be changed to "${incomingHeadword}" as an Entry for "${incomingHeadword}" already exists`
     )
   }
+}
+
+export async function updateLogEntries(headword: string, request: Request) {
+  const entry = await prisma.entry.findUnique({
+    where: {
+      headword: headword,
+    },
+    select: {
+      id: true,
+    },
+  })
+
+  const userId = await getUserId(request)
+  const currentTime = new Date()
+
+  invariant(entry)
+  invariant(userId)
+
+  await prisma.det_log_entries.create({
+    data: { entry_id: entry.id, user_id: userId, created: currentTime },
+  })
 }
 
 export async function updateEntry(data: { [k: string]: FormDataEntryValue }) {
