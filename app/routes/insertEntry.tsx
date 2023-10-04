@@ -9,7 +9,7 @@ import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
-  insertEntry(data)
+  insertEntry(data, request)
   return redirect(`/entries/${data.headword}`)
 }
 

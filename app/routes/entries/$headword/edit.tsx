@@ -1,7 +1,11 @@
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { useLoaderData } from "@remix-run/react"
 import { getAttributeEnumFromFormInput } from "~/utils/generalUtils"
-import { getEntryByHeadword, updateEntry } from "~/models/entry.server"
+import {
+  getEntryByHeadword,
+  updateEntry,
+  updateLogEntries,
+} from "~/models/entry.server"
 import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node"
 import invariant from "tiny-invariant"
 import {
@@ -19,9 +23,27 @@ import {
 } from "~/models/update.server"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import EditEntry from "~/components/editing/entry/EditEntry"
+import {
+  redirectIfUserLacksPermission,
+  userHasPermission,
+} from "~/services/auth/session.server"
+import { redirectIfUserLacksEntry } from "~/models/user.server"
 
-export async function loader({ params }: LoaderArgs) {
+async function redirectIfUserLacksEditPermission(
+  request: Request,
+  headword: string
+) {
+  if (await userHasPermission(request, "det:editAny")) {
+    return
+  }
+
+  await redirectIfUserLacksPermission(request, "det:editOwn")
+  await redirectIfUserLacksEntry(request, headword)
+}
+
+export async function loader({ request, params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
+  await redirectIfUserLacksEditPermission(request, params.headword)
 
   const entry = await getEntryByHeadword({ headword: params.headword })
 
@@ -34,9 +56,13 @@ export async function loader({ params }: LoaderArgs) {
 
 export type EntryEditLoaderData = Awaited<Promise<ReturnType<typeof loader>>>
 
-export async function action({ request }: ActionArgs) {
+export async function action({ params, request }: ActionArgs) {
+  invariant(params.headword)
   const data = Object.fromEntries(await request.formData())
   const type = getAttributeEnumFromFormInput(data.attributeType)
+
+  const headword = params.headword
+  await updateLogEntries(headword, request)
 
   switch (type) {
     case attributeEnum.ENTRY:

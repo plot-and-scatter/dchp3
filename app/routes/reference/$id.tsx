@@ -37,10 +37,6 @@ export async function action({ request, params }: ActionArgs) {
   const shortDisplay = getStringFromFormInput(data.shortDisplay)
   const referenceText = getStringFromFormInput(data.referenceText)
 
-  console.log(id)
-  console.log(shortDisplay)
-  console.log(referenceText)
-
   updateReferenceById(id, shortDisplay, referenceText)
   return redirect(`/reference`)
 }

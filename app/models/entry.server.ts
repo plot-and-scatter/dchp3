@@ -1,6 +1,8 @@
 import type { Entry } from "@prisma/client"
+import invariant from "tiny-invariant"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
+import { getEmailFromSession, getUserId } from "~/services/auth/session.server"
 import {
   getCheckboxValueAsBoolean,
   getNumberFromFormInput,
@@ -84,9 +86,14 @@ export function getEntriesByInitialLettersAndPage(
   return getEntriesByInitialLetters(initialLetters, skip)
 }
 
-export async function insertEntry(data: { [k: string]: FormDataEntryValue }) {
+export async function insertEntry(
+  data: { [k: string]: FormDataEntryValue },
+  request: Request
+) {
+  const email = await getEmailFromSession(request)
+
   const headword = getStringFromFormInput(data.headword)
-  const spelllingVariants = getStringFromFormInput(data.spellingVariants)
+  const spellingVariants = getStringFromFormInput(data.spellingVariants)
   const etymology = getStringFromFormInput(data.etymology)
   const generalLabels = getStringFromFormInput(data.generalLabels)
   const fistnote = getStringFromFormInput(data.fistnote)
@@ -100,14 +107,14 @@ export async function insertEntry(data: { [k: string]: FormDataEntryValue }) {
       headword: headword,
       first_field: "first field",
       etymology: etymology,
-      is_legacy: isLegacy, // TODO: should there be a dchp3 option?
-      is_public: true,
-      spelling_variants: spelllingVariants,
+      is_legacy: isLegacy,
+      is_public: false,
+      spelling_variants: spellingVariants,
       superscript: "Superscript",
       dagger: dagger,
       general_labels: generalLabels,
       proofing_status: 1,
-      proofing_user: null,
+      proofing_user: email,
       fist_note: fistnote,
       image_file_name: null,
       comment: null,
@@ -123,6 +130,8 @@ export async function insertEntry(data: { [k: string]: FormDataEntryValue }) {
       edit_status_comment: null,
     },
   })
+
+  updateLogEntries(headword, request)
 }
 
 export function getEntriesByInitialLetters(
@@ -191,6 +200,27 @@ async function assertNonDuplicateHeadword(
       `"${currentHeadword}" can't be changed to "${incomingHeadword}" as an Entry for "${incomingHeadword}" already exists`
     )
   }
+}
+
+export async function updateLogEntries(headword: string, request: Request) {
+  const entry = await prisma.entry.findUnique({
+    where: {
+      headword: headword,
+    },
+    select: {
+      id: true,
+    },
+  })
+
+  const userId = await getUserId(request)
+  const currentTime = new Date()
+
+  invariant(entry)
+  invariant(userId)
+
+  await prisma.det_log_entries.create({
+    data: { entry_id: entry.id, user_id: userId, created: currentTime },
+  })
 }
 
 export async function updateEntry(data: { [k: string]: FormDataEntryValue }) {

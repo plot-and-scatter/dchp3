@@ -160,8 +160,6 @@ export async function addQuotations(data: { [k: string]: FormDataEntryValue }) {
   let citationsToInsert = []
 
   for (let index in data) {
-    console.log(index)
-    console.log(data[index])
     if (index.startsWith("citationId-")) {
       let citationId = getNumberFromFormInput(data[index])
       citationsToInsert.push({ meaning_id: meaningId, citation_id: citationId })
@@ -296,7 +294,6 @@ export async function updateEditingStatus(data: {
 
 async function resetAllEditingStatusValues(headword: string) {
   for (const key in EditingStatusMap) {
-    console.log(key)
     await updateSingleEditingStatus(headword, key, "off")
   }
 }

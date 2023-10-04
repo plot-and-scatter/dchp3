@@ -78,7 +78,6 @@ export default async function (opts: SearchOptions) {
       : { text: opts.exactPhrase ? searchTerm : { contains: searchTerm } }
 
   const skip = calculateSkip(opts.page, PAGE_SIZE)
-  console.log("SKIP: " + skip)
 
   const results = await prisma.bankCitation.findMany({
     where: {

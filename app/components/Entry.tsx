@@ -12,8 +12,6 @@ interface EntryProps {
 }
 
 const Entry = ({ data }: EntryProps): JSX.Element => {
-  console.log("data", data)
-
   const bgColor = data.is_legacy
     ? "bg-amber-100"
     : data.no_cdn_conf
