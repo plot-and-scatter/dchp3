@@ -9,7 +9,7 @@ const Etymology = ({ etymology }: etymologyProps): JSX.Element => {
   if (!etymology && !authenticated) return <></>
 
   return (
-    <p>
+    <p className="mb-0">
       <span className="ml-3 italic">
         <SanitizedTextSpan text={etymology} />
       </span>

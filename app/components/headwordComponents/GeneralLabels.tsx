@@ -9,7 +9,7 @@ const GeneralLabels = ({ generalLabels }: generalLabelsProps): JSX.Element => {
   if (!generalLabels && !authenticated) return <></>
 
   return (
-    <p>
+    <p className="mb-0">
       <span className="ml-3 italic">
         <SanitizedTextSpan text={generalLabels} />
       </span>
