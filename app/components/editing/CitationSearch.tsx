@@ -43,8 +43,6 @@ export default function CitationSearch() {
     }
   }
 
-  console.log(citations.data)
-
   return (
     <div className="w-1/2">
       <form onSubmit={onSubmit}>

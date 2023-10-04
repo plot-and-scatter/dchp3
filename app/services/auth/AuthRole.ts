@@ -15,6 +15,7 @@ export type AuthPermission =
   | "det:editAny"
   | "det:editOwn"
   | "det:publish"
+  | "det:TEST"
 
 const DISPLAY_PERMISSIONS: AuthPermission[] = ["bank:read"]
 const STUDENT_EDITOR_PERMISSIONS: AuthPermission[] = [

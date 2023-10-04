@@ -32,9 +32,6 @@ export default async function (
 ) {
   const userId = await getUserIdByEmail({ email })
 
-  console.log("email", email)
-  console.log("userId", userId)
-
   // TODO: Paginate this
   const results = await prisma.$queryRaw<OwnCitation[]>`
 
@@ -72,8 +69,6 @@ export default async function (
   ORDER BY c.created DESC
 
   LIMIT 100`
-
-  console.log("results", results)
 
   return results
 }

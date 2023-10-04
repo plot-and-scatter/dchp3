@@ -1,6 +1,7 @@
 import type { Entry } from "@prisma/client"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { prisma } from "~/db.server"
+import { getEmailFromSession } from "~/services/auth/session.server"
 import {
   getCheckboxValueAsBoolean,
   getNumberFromFormInput,
@@ -84,9 +85,17 @@ export function getEntriesByInitialLettersAndPage(
   return getEntriesByInitialLetters(initialLetters, skip)
 }
 
-export async function insertEntry(data: { [k: string]: FormDataEntryValue }) {
+export async function insertEntry(
+  data: { [k: string]: FormDataEntryValue },
+  request: Request
+) {
+  console.log("Headers")
+  console.log(request)
+
+  const email = await getEmailFromSession(request)
+
   const headword = getStringFromFormInput(data.headword)
-  const spelllingVariants = getStringFromFormInput(data.spellingVariants)
+  const spellingVariants = getStringFromFormInput(data.spellingVariants)
   const etymology = getStringFromFormInput(data.etymology)
   const generalLabels = getStringFromFormInput(data.generalLabels)
   const fistnote = getStringFromFormInput(data.fistnote)
@@ -102,12 +111,12 @@ export async function insertEntry(data: { [k: string]: FormDataEntryValue }) {
       etymology: etymology,
       is_legacy: isLegacy, // TODO: should there be a dchp3 option?
       is_public: true,
-      spelling_variants: spelllingVariants,
+      spelling_variants: spellingVariants,
       superscript: "Superscript",
       dagger: dagger,
       general_labels: generalLabels,
       proofing_status: 1,
-      proofing_user: null,
+      proofing_user: email,
       fist_note: fistnote,
       image_file_name: null,
       comment: null,

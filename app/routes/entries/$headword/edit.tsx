@@ -19,9 +19,27 @@ import {
 } from "~/models/update.server"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import EditEntry from "~/components/editing/entry/EditEntry"
+import {
+  redirectIfUserLacksPermission,
+  userHasPermission,
+} from "~/services/auth/session.server"
+import { redirectIfUserLacksEntry } from "~/models/user.server"
 
-export async function loader({ params }: LoaderArgs) {
+async function redirectIfUserLacksEditPermission(
+  request: Request,
+  headword: string
+) {
+  if (await userHasPermission(request, "det:TEST")) {
+    return
+  }
+
+  await redirectIfUserLacksPermission(request, "det:editOwn")
+  await redirectIfUserLacksEntry(request, headword)
+}
+
+export async function loader({ request, params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
+  await redirectIfUserLacksEditPermission(request, params.headword)
 
   const entry = await getEntryByHeadword({ headword: params.headword })
 
