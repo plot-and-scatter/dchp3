@@ -11,4 +11,5 @@ p {
 /* This is for <blockquotes> inside .HandNoteBlock */
 .HandNoteBlock blockquote {
   margin-left: 2rem;
+  margin-bottom: 1rem;
 }

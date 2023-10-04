@@ -40,7 +40,7 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
           {meaning.usageNotes.length > 0 &&
             meaning.usageNotes.map((usageNote) => (
               <HandNoteBlock key={`usage-note-${usageNote.id}`}>
-                <SanitizedTextSpan text={usageNote.text} />
+                <SanitizedTextSpan toDoubleBreaks text={usageNote.text} />
               </HandNoteBlock>
             ))}
           <Citations meaning={meaning} />
