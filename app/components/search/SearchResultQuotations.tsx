@@ -20,7 +20,7 @@ const SearchResultQuotations = ({ text, data }: SearchResultProps) => {
         return (
           <div className="my-2 flex flex-col" key={e.id}>
             <Link bold to={`/bank/edit/${e.id}`}>
-              {e.headword.headword}
+              {e.headword?.headword ?? "\u2014 no headword available \u2014 "}
             </Link>
             <SanitizedTextSpan text={e.text} />
           </div>

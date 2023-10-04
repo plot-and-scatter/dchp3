@@ -26,8 +26,7 @@ export default function SearchPage() {
   const [text, setText] = useState(params?.text)
 
   const [searchParams] = useSearchParams()
-  const currentAttribute =
-    searchParams.get("attribute") ?? SearchResultEnum.HEADWORD
+  const currentAttribute = searchParams.get("attribute") ?? SearchResultEnum.ALL
 
   return (
     <Main center={true}>
@@ -60,26 +59,24 @@ export default function SearchPage() {
             search
           </Button>
         </div>
+
         <div className="ml-5 flex flex-col items-start">
-          {/* TODO: Make this into tabs instead */}
-          <Button asLink name="attribute" value={SearchResultEnum.HEADWORD}>
-            Headword
-          </Button>
-          <Button asLink name="attribute" value={SearchResultEnum.MEANING}>
-            Meaning
-          </Button>
-          <Button asLink name="attribute" value={SearchResultEnum.CANADIANISM}>
-            Canadianism
-          </Button>
-          <Button asLink name="attribute" value={SearchResultEnum.USAGE_NOTE}>
-            UsageNote
-          </Button>
-          <Button asLink name="attribute" value={SearchResultEnum.FIST_NOTE}>
-            FistNote
-          </Button>
-          <Button asLink name="attribute" value={SearchResultEnum.QUOTATION}>
-            Quotation
-          </Button>
+          {Object.values(SearchResultEnum).map((searchResultType) => {
+            const textClassname =
+              currentAttribute === searchResultType ? "font-black" : ""
+
+            return (
+              <Button
+                asLink
+                name="attribute"
+                value={searchResultType}
+                className=" w-full text-left"
+                key={`attribute-${searchResultType}`}
+              >
+                <span className={textClassname}>{searchResultType}</span>
+              </Button>
+            )
+          })}
         </div>
       </Form>
       <Outlet />

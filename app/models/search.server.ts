@@ -6,40 +6,13 @@ import { parsePageNumberOrError } from "~/utils/generalUtils"
 
 export type { Entry } from "@prisma/client"
 
-const MAX_RESULTS = 1000
-
-function getAttributeFunctionMap() {
-  interface AttributeFunctionMap {
-    [key: string]: (
-      text: string,
-      skip: number,
-      take: number,
-      caseSensitive: boolean
-    ) => any
-  }
-
-  let attributeFunctionMap: AttributeFunctionMap = {}
-  attributeFunctionMap["entries"] = getEntriesByBasicTextSearch
-  attributeFunctionMap["meanings"] = getSearchResultMeanings
-
-  return attributeFunctionMap
-}
-
-function getElementsAfterApplyingSkipAndTake(
-  values: any[],
-  length: number,
-  skip: number,
-  take: number
-) {
-  return length > skip ? values.slice(skip, skip + take) : []
-}
-
-function calculateNewSkip(length: number, skip: number) {
-  return (skip = length <= skip ? skip - length : 0)
-}
-
-function calculateElementsRemaining(remaining: number, gotten: number) {
-  return remaining - gotten
+export type AllSearchResults = {
+  Headwords?: Pick<Entry, "id" | "headword">[]
+  Meanings?: SearchResultMeaning[]
+  Canadianisms?: Canadianism[]
+  UsageNotes?: UsageNote[]
+  FistNotes?: FistNote[]
+  Quotations?: Quotation[]
 }
 
 export async function getSearchResults(
@@ -47,85 +20,50 @@ export async function getSearchResults(
   page: string = "1",
   caseSensitive: boolean = false,
   attribute: string = SearchResultEnum.HEADWORD
-): Promise<any[]> {
+): Promise<AllSearchResults> {
   const pageNumber = parsePageNumberOrError(page)
   const skip: number = calculatePageSkip(pageNumber)
 
-  switch (attribute) {
-    case SearchResultEnum.HEADWORD:
-      return getEntriesByBasicTextSearch(text, skip, undefined, caseSensitive)
-    case SearchResultEnum.MEANING:
-      return getSearchResultMeanings(text, skip, undefined, caseSensitive)
-    case SearchResultEnum.CANADIANISM:
-      return getSearchResultCanadianisms(text, skip, undefined, caseSensitive)
-    case SearchResultEnum.USAGE_NOTE:
-      return getSearchResultUsageNotes(text, skip, undefined, caseSensitive)
-    case SearchResultEnum.FIST_NOTE:
-      return getSearchResultFistNotes(text, skip, undefined, caseSensitive)
-    case SearchResultEnum.QUOTATION:
-      return getSearchResultQuotations(text, skip, undefined, caseSensitive)
-    default:
-      throw new Response(null, {
-        status: 400,
-        statusText: `attribute "${attribute}" must be a valid search attribute`,
-      })
-  }
-}
+  const searchResults: AllSearchResults = {}
+  searchResults.Headwords = await getEntriesByBasicTextSearch(
+    text,
+    skip,
+    undefined,
+    caseSensitive
+  )
+  searchResults.Meanings = await getSearchResultMeanings(
+    text,
+    skip,
+    undefined,
+    caseSensitive
+  )
+  searchResults.Canadianisms = await getSearchResultCanadianisms(
+    text,
+    skip,
+    undefined,
+    caseSensitive
+  )
+  searchResults.UsageNotes = await getSearchResultUsageNotes(
+    text,
+    skip,
+    undefined,
+    caseSensitive
+  )
+  searchResults.FistNotes = await getSearchResultFistNotes(
+    text,
+    skip,
+    undefined,
+    caseSensitive
+  )
 
-// TODO: Delete this function and related
-export async function getSearchResultsByPage(
-  text: string,
-  page: string = "1",
-  caseSensitive: boolean = false
-) {
-  type Result = Record<string, Array<any>>
-  let results: Result = {}
+  searchResults.Quotations = await getSearchResultQuotations(
+    text,
+    skip,
+    undefined,
+    caseSensitive
+  )
 
-  const attributeFunctionMap = getAttributeFunctionMap()
-
-  const pageNumber = parsePageNumberOrError(page)
-  let elementsToSkip = calculatePageSkip(pageNumber)
-  let maxTake = DEFAULT_PAGE_SIZE
-
-  /**
-   * attribute: Entry, Meaning, etc.
-   *
-   * elementsToSkip: We want to skip a certain number of elements based
-   *  on the page number. We need to keep track of this between different
-   *  attributes. If there are 40 headwords and 70 meanings, then page 2
-   *  should skip the first hundred elements and return the last 10 meanings
-   *
-   * maxTake: we want to return to the user maximum 100 entries. So
-   *  as we obtain more data,
-   */
-  for (const attribute in attributeFunctionMap) {
-    let allAttributeValues: any[] = await attributeFunctionMap[attribute](
-      text,
-      0,
-      MAX_RESULTS,
-      caseSensitive
-    )
-    let resultLength = allAttributeValues.length
-
-    let resultsForCurrentPage: any[] = getElementsAfterApplyingSkipAndTake(
-      allAttributeValues,
-      resultLength,
-      elementsToSkip,
-      maxTake
-    )
-
-    elementsToSkip = calculateNewSkip(resultLength, elementsToSkip)
-    maxTake = calculateElementsRemaining(maxTake, resultsForCurrentPage.length)
-
-    results[attribute] = resultsForCurrentPage
-
-    // maxTake is now zero-- no possibility of adding further items
-    if (maxTake === 0) {
-      break
-    }
-  }
-
-  return results
+  return searchResults
 }
 
 export function getEntriesByBasicTextSearch(
@@ -151,13 +89,21 @@ export function getEntriesByBasicTextSearch(
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
 }
 
+export interface SearchResultMeaning {
+  id: number
+  definition: string
+  entry: {
+    headword: string
+  }
+}
+
 // TODO: refactor to use Case Sensitive
 export function getSearchResultMeanings(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
-) {
+): Promise<SearchResultMeaning[]> {
   if (text.length === 0) {
     throw new Response(null, {
       status: 400,
@@ -197,7 +143,7 @@ export function getSearchResultCanadianisms(
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
-) {
+): Promise<Canadianism[]> {
   if (text.length === 0) {
     throw new Response(null, {
       status: 400,
@@ -232,7 +178,7 @@ export function getSearchResultUsageNotes(
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
-) {
+): Promise<UsageNote[]> {
   if (text.length === 0) {
     throw new Response(null, {
       status: 400,
@@ -264,7 +210,7 @@ export function getSearchResultFistNotes(
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
-) {
+): Promise<FistNote[]> {
   if (text.length === 0) {
     throw new Response(null, {
       status: 400,
@@ -283,13 +229,21 @@ export function getSearchResultFistNotes(
   ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
+export interface Quotation {
+  id: number
+  headword: {
+    headword: string
+  } | null
+  text: string | null
+}
+
 // case sensitivity not working; check collation
 export function getSearchResultQuotations(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false
-) {
+): Promise<Quotation[]> {
   if (text.length === 0) {
     throw new Response(null, {
       status: 400,
@@ -322,29 +276,10 @@ export function getSearchResultQuotations(
       id: "asc",
     },
     select: {
-      user_id: true,
-      last_modified_user_id: true,
       text: true,
-      clipped_text: true,
       id: true,
-      short_meaning: true,
-      last_modified: true,
-      source_id: true,
-      spelling_variant: true,
       headword: {
         select: { headword: true },
-      },
-      source: {
-        select: {
-          year_published: true,
-          year_composed: true,
-          type_id: true,
-          place: {
-            select: {
-              name: true,
-            },
-          },
-        },
       },
     },
   })
