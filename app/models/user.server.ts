@@ -35,3 +35,13 @@ export async function redirectIfUserLacksEntry(
   if (userModifiedThisEntry) return
   throw redirect(`${NOT_ALLOWED_PATH}`)
 }
+
+export async function getEntriesByUserEmail(email: string) {
+  const userId = await getUserIdByEmail({ email })
+
+  return prisma.det_log_entries.findMany({
+    where: {
+      user_id: userId,
+    },
+  })
+}
