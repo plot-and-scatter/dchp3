@@ -29,7 +29,7 @@ const Headword = ({
 }: HeadwordProps): JSX.Element => {
   return (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between border-b-2 border-slate-500 py-4">
         <div className="flex items-center">
           <div className="flex justify-center align-middle">
             <h1 className="text-3xl leading-tight md:text-5xl">
@@ -37,6 +37,8 @@ const Headword = ({
               {hasDagger && <span className="align-super">&dagger;</span>}
             </h1>
           </div>
+          <Etymology etymology={etymology} />
+          <GeneralLabels generalLabels={generalLabels} />
           <Link asButton className="ml-4" to={`/entries/${word}/edit`}>
             Edit
           </Link>
@@ -44,10 +46,7 @@ const Headword = ({
         <DictionaryVersion isLegacy={isLegacy} />
       </div>
       <Alternatives alternatives={alternatives} />
-      <div className="flex flex-row">
-        <Etymology etymology={etymology} />
-        <GeneralLabels generalLabels={generalLabels} />
-      </div>
+
       {handNote && (
         <HandNoteBlock className="text-xs text-slate-500 md:text-lg">
           {handNote}
