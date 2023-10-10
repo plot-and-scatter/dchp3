@@ -8,7 +8,7 @@ interface EntryListProps {
 
 const EntryList = ({ logEntries }: EntryListProps) => {
   return (
-    <div className="m-4">
+    <div className="">
       <h2 className="text-3xl">User's Entries</h2>
       <div className="grid grid-cols-9 [&>*]:text-lg">
         {logEntries.map((e) => {

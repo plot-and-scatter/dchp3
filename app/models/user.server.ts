@@ -8,6 +8,7 @@ export type { Entry } from "@prisma/client"
 export type LogEntries = (det_log_entries & {
   Entry: { headword: string } | null
 })[]
+export type { User } from "@prisma/client"
 
 export const DEFAULT_PAGE_SIZE = 100
 
@@ -37,6 +38,24 @@ export async function redirectIfUserLacksEntry(
 
   if (userModifiedThisEntry) return
   throw redirect(`${NOT_ALLOWED_PATH}`)
+}
+
+export async function getAllUsers() {
+  return prisma.user.findMany({
+    where: {
+      NOT: [
+        {
+          email: null,
+        },
+      ],
+    },
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+    },
+  })
 }
 
 export async function getEntriesByUserEmail(
