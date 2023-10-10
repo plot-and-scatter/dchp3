@@ -1,10 +1,13 @@
-import type { User } from "@prisma/client"
+import type { User, det_log_entries } from "@prisma/client"
 import { redirect } from "@remix-run/server-runtime"
 import { NOT_ALLOWED_PATH } from "utils/paths"
 import { prisma } from "~/db.server"
 import { getEmailFromSession } from "~/services/auth/session.server"
 
 export type { Entry } from "@prisma/client"
+export type LogEntries = (det_log_entries & {
+  Entry: { headword: string } | null
+})[]
 
 export const DEFAULT_PAGE_SIZE = 100
 
@@ -36,12 +39,21 @@ export async function redirectIfUserLacksEntry(
   throw redirect(`${NOT_ALLOWED_PATH}`)
 }
 
-export async function getEntriesByUserEmail(email: string) {
+export async function getEntriesByUserEmail(
+  email: string
+): Promise<LogEntries> {
   const userId = await getUserIdByEmail({ email })
 
   return prisma.det_log_entries.findMany({
     where: {
       user_id: userId,
+    },
+    include: {
+      Entry: {
+        select: {
+          headword: true,
+        },
+      },
     },
   })
 }

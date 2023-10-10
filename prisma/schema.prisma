@@ -98,6 +98,7 @@ model Entry {
   meanings             Meaning[]
   seeAlso              SeeAlso[]
   images               Image[]
+  logs                 det_log_entries[]
   referenceLinks       ReferenceLink[]
 
   @@map("det_entries")
@@ -213,6 +214,7 @@ model det_log_entries {
   user_id  Int
   created  DateTime @db.DateTime(0)
   headword String?  @db.VarChar(255)
+  Entry    Entry?  @relation(fields: [entry_id], references: [id])
 
   @@index([entry_id, headword], map: "entry_id_idxfk")
 }

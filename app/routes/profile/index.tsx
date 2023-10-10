@@ -1,6 +1,8 @@
+import { type Prisma } from "@prisma/client"
 import { useLoaderData } from "@remix-run/react"
 import { type LoaderArgs } from "@remix-run/server-runtime"
 import Main from "~/components/elements/Main"
+import EntryList from "~/components/profile/EntryList"
 import { getEntriesByUserEmail } from "~/models/user.server"
 import { type LoggedInUser } from "~/services/auth/auth.server"
 import { getUserFromSession } from "~/services/auth/session.server"
@@ -19,17 +21,16 @@ export async function loader({ request }: LoaderArgs) {
   return { username, entries }
 }
 
+type loaderData = Prisma.PromiseReturnType<typeof loader>
+
 export default function Profile() {
-  const data = useLoaderData<typeof loader>()
+  // remix bug - see: https://github.com/remix-run/remix/issues/3931
+  const data = useLoaderData<typeof loader>() as unknown as loaderData
 
   return (
     <Main center={true}>
       <h1 className="text-4xl">Profile: {data.username}</h1>
-      <div className="flex flex-col items-center">
-        {data.entries.map((e) => {
-          return <p key={e.entry_id}>{e.entry_id}</p>
-        })}
-      </div>
+      <EntryList logEntries={data.entries} />
     </Main>
   )
 }
