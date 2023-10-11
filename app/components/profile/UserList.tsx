@@ -15,7 +15,7 @@ const UserList = ({ users }: UserListProps) => {
           if (!user || !user.email) return <></>
           return (
             <React.Fragment key={user.id}>
-              <Link to={user.email}>
+              <Link to={`/profile/${user.email}`}>
                 <p> {user.first_name + " " + user.last_name}</p>
               </Link>
             </React.Fragment>
