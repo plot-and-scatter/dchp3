@@ -18,6 +18,7 @@ interface HeadwordProps {
   word: string
   id: number
   logEntries?: SerializeFrom<LogEntry>[]
+  showEditButton?: boolean
 }
 
 const Headword = ({
@@ -30,6 +31,7 @@ const Headword = ({
   isNonCanadian,
   word,
   logEntries,
+  showEditButton,
 }: HeadwordProps): JSX.Element => {
   return (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
@@ -41,9 +43,11 @@ const Headword = ({
               {hasDagger && <span className="align-super">&dagger;</span>}
             </h1>
           </div>
-          <Link asButton className="ml-4" to={`/entries/${word}/edit`}>
-            Edit
-          </Link>
+          {showEditButton && (
+            <Link asButton className="ml-4" to={`/entries/${word}/edit`}>
+              Edit
+            </Link>
+          )}
         </div>
         <DictionaryVersion isLegacy={isLegacy} logEntries={logEntries} />
       </div>

@@ -8,7 +8,7 @@ import {
   getPermissionsMap,
 } from "~/services/auth/AuthRole"
 import type { LoggedInUser } from "./auth.server"
-import { getUserIdByEmailOrThrow } from "~/models/user.server"
+import { getUserIdByEmailOrThrow, userOwnsEntry } from "~/models/user.server"
 
 // export the whole sessionStorage object
 export const sessionStorage = createCookieSessionStorage({
@@ -125,4 +125,21 @@ export const getUserId = async (request: Request) => {
 
   const userId = await getUserIdByEmailOrThrow({ email })
   return userId
+}
+
+export const canUserEditEntry = async (
+  request: Request,
+  headword: string
+): Promise<boolean> => {
+  // If the user can edit any, then they can edit this one.
+  if (await userHasPermission(request, "det:editAny")) return true
+
+  // If the user can't at least edit their own, they can't edit any.
+  if (!(await userHasPermission(request, "det:editOwn"))) return false
+
+  // If they can edit their own, they need to own this one.
+  if (await userOwnsEntry(request, headword)) return true
+
+  // They're not allowed to edit.
+  return false
 }

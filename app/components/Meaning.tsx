@@ -1,4 +1,4 @@
-import type { LoadedDataType } from "~/routes/entries/$headword"
+import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import Definition from "./Definition"
 import HandNoteBlock from "~/components/HandNoteBlock"
 import SanitizedTextSpan from "~/components/SanitizedTextSpan"
@@ -7,7 +7,7 @@ import Citations from "./Citations"
 import SeeAlsoItems from "~/components/SeeAlsoItems"
 import MeaningHeader from "./meaningComponents/MeaningHeader"
 
-export type MeaningType = LoadedDataType["meanings"][0]
+export type MeaningType = LoadedEntryDataType["meanings"][0]
 
 interface MeaningProps {
   meaning: MeaningType

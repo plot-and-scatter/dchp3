@@ -1,11 +1,12 @@
+import { canUserEditEntry as _canUserEditEntry } from "~/services/auth/session.server"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { getEntryByHeadword } from "~/models/entry.server"
-import { type LoaderArgs } from "@remix-run/node"
 import { useLoaderData } from "@remix-run/react"
 import Entry from "~/components/Entry"
 import invariant from "tiny-invariant"
+import type { LoaderArgs, SerializeFrom } from "@remix-run/node"
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ request, params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
 
   const entry = await getEntryByHeadword({ headword: params.headword })
@@ -19,15 +20,19 @@ export async function loader({ params }: LoaderArgs) {
     (i) => (i.path = `${process.env.IMAGE_BUCKET_PREFIX}${i.path}`)
   )
 
-  return entry
+  const canUserEditEntry = await _canUserEditEntry(request, params.headword)
+
+  return { entry, canUserEditEntry }
 }
 
-export type LoadedDataType = Awaited<Promise<ReturnType<typeof loader>>>
+export type LoadedEntryDataType = SerializeFrom<
+  Awaited<Promise<ReturnType<typeof loader>>>
+>["entry"]
 
 export default function EntryDetailsPage() {
   const data = useLoaderData<typeof loader>()
 
-  return <Entry data={data} />
+  return <Entry {...data} />
 }
 
 export const ErrorBoundary = DefaultErrorBoundary

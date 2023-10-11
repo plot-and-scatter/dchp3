@@ -1,11 +1,10 @@
-import { type LoadedDataType } from "~/routes/entries/$headword"
+import { type LoadedEntryDataType } from "~/routes/entries/$headword"
 import EntryReference from "./EntryReference"
-import type { SerializeFrom } from "@remix-run/server-runtime"
 
 const EntryReferences = ({
   data,
 }: {
-  data: SerializeFrom<LoadedDataType>
+  data: LoadedEntryDataType
 }): JSX.Element => {
   return (
     <div>

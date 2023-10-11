@@ -24,10 +24,7 @@ export function getUserIdByEmailOrThrow({ email }: Pick<User, "email">) {
   return getUserByEmailOrThrow({ email }).then((u) => u.id)
 }
 
-export async function redirectIfUserLacksEntry(
-  request: Request,
-  headword: string
-) {
+export async function userOwnsEntry(request: Request, headword: string) {
   const email = (await getEmailFromSession(request)) ?? ""
 
   const userModifiedThisEntry =
@@ -38,6 +35,13 @@ export async function redirectIfUserLacksEntry(
       },
     })) !== null
 
-  if (userModifiedThisEntry) return
+  return Boolean(userModifiedThisEntry)
+}
+
+export async function redirectIfUserLacksEntry(
+  request: Request,
+  headword: string
+) {
+  if (await userOwnsEntry(request, headword)) return
   throw redirect(`${NOT_ALLOWED_PATH}`)
 }
