@@ -15,14 +15,14 @@ export default function BankRadioOrCheckbox<T extends BankInputOptionType>(
   return (
     <div className={className}>
       {options.map((o) => {
-        const { name, value } = o
+        const { name, value, defaultChecked } = o
         const idKey = `${name}-${value}`
         return (
           <span className={optionSetClassName} key={idKey}>
             <input
               value={value}
               id={idKey}
-              defaultChecked={value === defaultValue}
+              defaultChecked={defaultChecked || value === defaultValue}
               {...rest}
             />
             <label htmlFor={idKey}>{name}</label>

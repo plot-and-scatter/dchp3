@@ -1,13 +1,21 @@
 import { Form, Outlet, useParams, useSearchParams } from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
-import { SearchResultEnum } from "./search/searchResultEnum"
+import {
+  SearchResultEnum,
+  SearchResultEnumDisplay,
+} from "./search/searchResultEnum"
 import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import { useState } from "react"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import Main from "~/components/elements/Main"
+import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
 
 export async function action({ request }: ActionArgs) {
+  // console.log("data", await request.formData())
+
   const data = Object.fromEntries(await request.formData())
+
+  console.log("data", data)
 
   const base = new URL(request.url)
   const url = new URL(`/search/${data.searchText}`, base)
@@ -32,12 +40,12 @@ export default function SearchPage() {
     <Main center={true}>
       <PageHeader>Search entries</PageHeader>
       <p>Enter search text to find headwords containing that text.</p>
-      <Form className="flex flex-row p-4" method="post">
+      <Form className="flex flex-col p-4" method="post">
         <div className="flex flex-col gap-3 p-1">
           <input
             type="text"
             placeholder="Search text"
-            className="w-96 border border-slate-700 p-2"
+            className="border border-slate-700 p-2"
             name="searchText"
             value={text}
             onChange={(e) => {
@@ -46,37 +54,53 @@ export default function SearchPage() {
           />
           <div>
             <label>
-              Case-sensitive:
+              <strong>Case-sensitive</strong>
               <input
                 className="ml-3 max-w-sm"
                 name="caseSensitive"
                 type="checkbox"
                 value="true"
+                defaultChecked
               />
             </label>
           </div>
+          <div className="flex">
+            <div className="mr-4">
+              <strong>DCHP version</strong>
+            </div>
+            <BankRadioOrCheckbox
+              type="checkbox"
+              name="dchpVersion"
+              className="flex"
+              optionSetClassName="flex gap-x-2 mr-4"
+              options={[
+                { name: "DCHP-1", value: "dchp1", defaultChecked: true },
+                { name: "DCHP-2", value: "dchp2", defaultChecked: true },
+                { name: "DCHP-3", value: "dchp3", defaultChecked: true },
+              ]}
+            />
+          </div>
+          <div className="flex">
+            <div className="mr-4">
+              <strong>Part of speech</strong>
+            </div>
+            <BankRadioOrCheckbox
+              type="radio"
+              name="attribute"
+              className="flex"
+              optionSetClassName="flex gap-x-2 mr-4"
+              defaultValue={currentAttribute}
+              options={Object.values(SearchResultEnum).map(
+                (searchResultType) => ({
+                  name: SearchResultEnumDisplay[searchResultType],
+                  value: searchResultType,
+                })
+              )}
+            />
+          </div>
           <Button size="large" name="attribute" value={currentAttribute}>
-            search
+            Search entries
           </Button>
-        </div>
-
-        <div className="ml-5 flex flex-col items-start">
-          {Object.values(SearchResultEnum).map((searchResultType) => {
-            const textClassname =
-              currentAttribute === searchResultType ? "font-black" : ""
-
-            return (
-              <Button
-                asLink
-                name="attribute"
-                value={searchResultType}
-                className=" w-full text-left"
-                key={`attribute-${searchResultType}`}
-              >
-                <span className={textClassname}>{searchResultType}</span>
-              </Button>
-            )
-          })}
         </div>
       </Form>
       <Outlet />
