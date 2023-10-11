@@ -2,9 +2,10 @@ import React from "react"
 import type { LoadedDataType } from "~/routes/entries/$headword"
 import SanitizedTextSpan from "../SanitizedTextSpan"
 import QuickLink from "./QuickLink"
+import type { SerializeFrom } from "@remix-run/server-runtime"
 
 interface QuickLinksProps {
-  data: LoadedDataType
+  data: SerializeFrom<LoadedDataType>
 }
 
 const QuickLinks = ({ data }: QuickLinksProps): JSX.Element => {

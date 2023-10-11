@@ -99,6 +99,7 @@ model Entry {
   seeAlso              SeeAlso[]
   images               Image[]
   referenceLinks       ReferenceLink[]
+  logEntries           LogEntry[]
 
   @@map("det_entries")
 }
@@ -207,14 +208,16 @@ model det_ips {
   host_name String @db.VarChar(45)
 }
 
-model det_log_entries {
+model LogEntry {
   id       Int      @id @default(autoincrement())
   entry_id Int
   user_id  Int
   created  DateTime @db.DateTime(0)
   headword String?  @db.VarChar(255)
+  entry    Entry    @relation(fields: [entry_id], references: [id])
 
   @@index([entry_id, headword], map: "entry_id_idxfk")
+  @@map("det_log_entries")
 }
 
 model Meaning {

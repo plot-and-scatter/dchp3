@@ -8,7 +8,7 @@ import {
   getPermissionsMap,
 } from "~/services/auth/AuthRole"
 import type { LoggedInUser } from "./auth.server"
-import { getUserIdByEmail } from "~/models/user.server"
+import { getUserIdByEmailOrThrow } from "~/models/user.server"
 
 // export the whole sessionStorage object
 export const sessionStorage = createCookieSessionStorage({
@@ -123,6 +123,6 @@ export const getUserId = async (request: Request) => {
   const email = await getEmailFromSession(request)
   if (!email) throw json({ message: `No email on user` }, { status: 500 })
 
-  const userId = await getUserIdByEmail({ email })
+  const userId = await getUserIdByEmailOrThrow({ email })
   return userId
 }

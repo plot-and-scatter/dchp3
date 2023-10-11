@@ -5,6 +5,9 @@ import { json } from "@remix-run/server-runtime"
 import { sessionStorage } from "./session.server"
 import { getEmail, getIsAdmin } from "utils/user.server"
 import type { AuthRole } from "./AuthRole"
+import type { User } from "@prisma/client"
+import { getUserByEmailOrThrow, getUserByEmailSafe } from "~/models/user.server"
+import { prisma } from "~/db.server"
 
 export type LoggedInUser = {
   email: string
@@ -35,6 +38,7 @@ export const authenticator = () => {
       const { profile } = strategyArgs
 
       const name = profile.displayName || "No name set in profile"
+      const [firstName, ...lastName] = name.split(" ")
 
       const roles = (profile._json as any)["https://dchp.ca/roles"]
 
@@ -43,6 +47,30 @@ export const authenticator = () => {
 
       if (!email)
         throw json({ message: "No email defined on user!" }, { status: 500 })
+
+      let user: User | null
+
+      user = await getUserByEmailSafe({ email })
+
+      // TODO: Handle this case more elegantly.
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            first_name: firstName,
+            last_name: lastName.join(" "),
+            email,
+          },
+        })
+
+        if (!user) {
+          throw json(
+            {
+              message: `No user in database with email ${email}, and could not create one`,
+            },
+            { status: 500 }
+          )
+        }
+      }
 
       return {
         email,

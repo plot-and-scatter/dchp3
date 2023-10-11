@@ -1,9 +1,10 @@
 import type { ReferenceLink } from "@prisma/client"
 import SanitizedTextSpan from "./SanitizedTextSpan"
 import { Link } from "./elements/LinksAndButtons/Link"
+import type { SerializeFrom } from "@remix-run/server-runtime"
 
 type EntryReferenceProps = {
-  referenceLink: ReferenceLink
+  referenceLink: SerializeFrom<ReferenceLink>
 }
 
 export default function EntryReference({

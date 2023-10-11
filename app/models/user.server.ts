@@ -8,14 +8,20 @@ export type { Entry } from "@prisma/client"
 
 export const DEFAULT_PAGE_SIZE = 100
 
-export function getUserByEmail({ email }: Pick<User, "email">) {
+export function getUserByEmailOrThrow({ email }: Pick<User, "email">) {
   return prisma.user.findFirstOrThrow({
     where: { email },
   })
 }
 
-export function getUserIdByEmail({ email }: Pick<User, "email">) {
-  return getUserByEmail({ email }).then((u) => u.id)
+export function getUserByEmailSafe({ email }: Pick<User, "email">) {
+  return prisma.user.findFirst({
+    where: { email },
+  })
+}
+
+export function getUserIdByEmailOrThrow({ email }: Pick<User, "email">) {
+  return getUserByEmailOrThrow({ email }).then((u) => u.id)
 }
 
 export async function redirectIfUserLacksEntry(

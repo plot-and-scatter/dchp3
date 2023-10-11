@@ -23,10 +23,10 @@ export async function loader({ params }: LoaderArgs) {
   return entry
 }
 
-export type LoadedDataType = Prisma.PromiseReturnType<typeof loader>
+export type LoadedDataType = Awaited<Promise<ReturnType<typeof loader>>>
 
 export default function EntryDetailsPage() {
-  const data = useLoaderData<typeof loader>() as LoadedDataType
+  const data = useLoaderData<typeof loader>()
 
   return <Entry data={data} />
 }

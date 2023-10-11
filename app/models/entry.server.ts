@@ -37,6 +37,7 @@ export function getEntryByHeadword({ headword }: Pick<Entry, "headword">) {
         },
       },
       images: true,
+      logEntries: true,
       meanings: {
         include: {
           usageNotes: true,
@@ -218,7 +219,7 @@ export async function updateLogEntries(headword: string, request: Request) {
   invariant(entry)
   invariant(userId)
 
-  await prisma.det_log_entries.create({
+  await prisma.logEntry.create({
     data: { entry_id: entry.id, user_id: userId, created: currentTime },
   })
 }

@@ -6,9 +6,10 @@ import type { LoadedDataType } from "~/routes/entries/$headword"
 import QuickLinks from "./quicklinks/QuickLinks"
 import EntryImages from "./EntryImages"
 import EntryReferences from "./EntryReferences"
+import type { SerializeFrom } from "@remix-run/server-runtime"
 
 interface EntryProps {
-  data: LoadedDataType
+  data: SerializeFrom<LoadedDataType>
 }
 
 const Entry = ({ data }: EntryProps): JSX.Element => {
@@ -36,6 +37,7 @@ const Entry = ({ data }: EntryProps): JSX.Element => {
           etymology={data.etymology || ""}
           isLegacy={data.is_legacy}
           isNonCanadian={data.no_cdn_conf}
+          logEntries={data.logEntries}
         />
         <Meanings meanings={data.meanings} />
         {data.referenceLinks.length > 0 && <EntryReferences data={data} />}
