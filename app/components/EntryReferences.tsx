@@ -1,7 +1,11 @@
-import { type LoadedDataType } from "~/routes/entries/$headword"
+import { type LoadedEntryDataType } from "~/routes/entries/$headword"
 import EntryReference from "./EntryReference"
 
-const EntryReferences = ({ data }: { data: LoadedDataType }): JSX.Element => {
+const EntryReferences = ({
+  data,
+}: {
+  data: LoadedEntryDataType
+}): JSX.Element => {
   return (
     <div>
       <h1 className="mb-5 text-2xl font-bold">References</h1>

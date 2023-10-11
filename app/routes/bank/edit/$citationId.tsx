@@ -8,7 +8,7 @@ import {
   getFullCitationById,
 } from "~/models/bank.server"
 import { getEmailFromSession } from "~/services/auth/session.server"
-import { getUserIdByEmail } from "~/models/user.server"
+import { getUserIdByEmailOrThrow } from "~/models/user.server"
 import {
   json,
   type ActionArgs,
@@ -75,7 +75,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   const email = await getEmailFromSession(request)
   if (!email) throw json({ message: `No email on user` }, { status: 500 })
-  const userId = await getUserIdByEmail({ email })
+  const userId = await getUserIdByEmailOrThrow({ email })
 
   // Find or create the headword
   const headwordId = await findOrCreateHeadword(headword)

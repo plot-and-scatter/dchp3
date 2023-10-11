@@ -6,7 +6,7 @@ import type {
   User,
 } from "@prisma/client"
 import { prisma } from "~/db.server"
-import { getUserIdByEmail } from "~/models/user.server"
+import { getUserIdByEmailOrThrow } from "~/models/user.server"
 
 export type OwnCitation = Pick<
   BankCitation,
@@ -30,7 +30,7 @@ export default async function (
   skip?: number,
   take: number = 20
 ) {
-  const userId = await getUserIdByEmail({ email })
+  const userId = await getUserIdByEmailOrThrow({ email })
 
   // TODO: Paginate this
   const results = await prisma.$queryRaw<OwnCitation[]>`

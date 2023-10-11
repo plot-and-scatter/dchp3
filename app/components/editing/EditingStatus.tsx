@@ -1,11 +1,11 @@
 import { Form } from "@remix-run/react"
-import { type LoadedDataType } from "~/routes/entries/$headword"
+import { type LoadedEntryDataType } from "~/routes/entries/$headword"
 import { attributeEnum } from "./attributeEnum"
 import { useState } from "react"
 import Button from "../elements/LinksAndButtons/Button"
 
 interface EditingStatusProps {
-  data: LoadedDataType
+  data: LoadedEntryDataType
 }
 
 export enum EditingStatusType {
@@ -56,7 +56,7 @@ const EditingStatus = ({ data }: EditingStatusProps) => {
 }
 
 export default EditingStatus
-function getEditingStatusInputs(data: LoadedDataType) {
+function getEditingStatusInputs(data: LoadedEntryDataType) {
   const firstDraft: grouping = {
     type: EditingStatusType.FIRST_DRAFT,
     label: "First Draft",

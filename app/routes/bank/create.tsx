@@ -6,7 +6,7 @@ import {
 } from "~/models/bank.server"
 import { Form } from "@remix-run/react"
 import { getEmailFromSession } from "~/services/auth/session.server"
-import { getUserIdByEmail } from "~/models/user.server"
+import { getUserIdByEmailOrThrow } from "~/models/user.server"
 import { json, type ActionArgs, redirect } from "@remix-run/server-runtime"
 import { PageHeader } from "~/components/elements/PageHeader"
 import { prisma } from "~/db.server"
@@ -63,7 +63,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   const email = await getEmailFromSession(request)
   if (!email) throw json({ message: `No email on user` }, { status: 500 })
-  const userId = await getUserIdByEmail({ email })
+  const userId = await getUserIdByEmailOrThrow({ email })
 
   // Find or create the headword
   const headwordId = await findOrCreateHeadword(headword)

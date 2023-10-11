@@ -1,7 +1,7 @@
-import { type LoadedDataType } from "~/routes/entries/$headword"
 import { EntryImage } from "./EntryImage"
+import { type LoadedEntryDataType } from "~/routes/entries/$headword"
 
-const EntryImages = ({ data }: { data: LoadedDataType }): JSX.Element => {
+const EntryImages = ({ data }: { data: LoadedEntryDataType }): JSX.Element => {
   return (
     <div>
       <h1 className="mb-5 text-2xl font-bold">Images</h1>
