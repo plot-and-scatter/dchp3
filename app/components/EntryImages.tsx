@@ -1,7 +1,12 @@
 import { type LoadedDataType } from "~/routes/entries/$headword"
 import { EntryImage } from "./EntryImage"
+import type { SerializeFrom } from "@remix-run/server-runtime"
 
-const EntryImages = ({ data }: { data: LoadedDataType }): JSX.Element => {
+const EntryImages = ({
+  data,
+}: {
+  data: SerializeFrom<LoadedDataType>
+}): JSX.Element => {
   return (
     <div>
       <h1 className="mb-5 text-2xl font-bold">Images</h1>

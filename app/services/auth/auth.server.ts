@@ -6,7 +6,7 @@ import { sessionStorage } from "./session.server"
 import { getEmail, getIsAdmin } from "utils/user.server"
 import type { AuthRole } from "./AuthRole"
 import type { User } from "@prisma/client"
-import { getUserByEmailOrThrow, getUserByEmailSafe } from "~/models/user.server"
+import { getUserByEmailSafe } from "~/models/user.server"
 import { prisma } from "~/db.server"
 
 export type LoggedInUser = {

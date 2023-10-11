@@ -4,7 +4,6 @@ import { type LoaderArgs } from "@remix-run/node"
 import { useLoaderData } from "@remix-run/react"
 import Entry from "~/components/Entry"
 import invariant from "tiny-invariant"
-import type { Prisma } from "@prisma/client"
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.headword, "headword not found")
