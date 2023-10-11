@@ -1,17 +1,16 @@
 import type { LogEntry } from "@prisma/client"
 import type { SerializeFrom } from "@remix-run/server-runtime"
-import React from "react"
 
 interface DictionaryVersionProps {
-  isLegacy: boolean
+  dchpVersion: string | null
   logEntries?: SerializeFrom<LogEntry>[]
 }
 
 const calculateDictionaryVersion = (
-  isLegacy: boolean,
+  dchpVersion: string | null,
   logEntries?: SerializeFrom<LogEntry>[]
 ): { version: string; year?: number; date: string } => {
-  if (isLegacy) return { version: `DCHP-1`, date: `pre-1967` }
+  if (dchpVersion === "dchp1") return { version: `DCHP-1`, date: `pre-1967` }
 
   if (!logEntries) return { version: `Unknown`, date: `Post-DCHP-1` }
 
@@ -36,14 +35,15 @@ const calculateDictionaryVersion = (
 }
 
 const DictionaryVersion = ({
-  isLegacy,
+  dchpVersion,
   logEntries,
 }: DictionaryVersionProps): JSX.Element => {
-  const version = calculateDictionaryVersion(isLegacy, logEntries)
+  const version = calculateDictionaryVersion(dchpVersion, logEntries)
 
-  const color = isLegacy
-    ? "border-amber-300 bg-amber-200"
-    : "border-slate-200 bg-slate-100"
+  const color =
+    dchpVersion === "dchp1"
+      ? "border-amber-300 bg-amber-200"
+      : "border-slate-200 bg-slate-100"
 
   return (
     <div

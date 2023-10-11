@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react"
+import { Outlet, useLoaderData } from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
 import {
   getEmailFromSession,
@@ -31,6 +31,7 @@ export default function Admin() {
         <div>
           <LogoutButton />
         </div>
+        <Outlet />
       </div>
     </Main>
   )
