@@ -9,21 +9,24 @@ import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import { ValidatedForm, validationError } from "remix-validated-form"
 import { withZod } from "@remix-validated-form/with-zod"
 import { z } from "zod"
-import { zfd } from "zod-form-data"
 import ActionButton from "~/components/elements/LinksAndButtons/ActionButton"
-import BankInput from "~/components/bank/BankInput"
 import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
 import FAIcon from "~/components/elements/Icons/FAIcon"
 import Main from "~/components/elements/Main"
+import BankInput from "~/components/bank/BankInput"
+import { zfd } from "zod-form-data"
 
 const searchActionSchema = z.object({
   searchTerm: z.string().min(1, "Search term must be one or more characters"),
   database: zfd.repeatable(
     z.array(z.string()).min(1, "You must select at least one database")
   ),
-  caseSensitive: zfd.checkbox(),
   canadianismType: zfd.repeatable(
     z.array(z.string()).min(1, "You must select at least one Canadianism type")
+  ),
+  caseSensitive: zfd.checkbox(),
+  attribute: zfd.repeatable(
+    z.array(z.string()).min(1, "You must select at least one data type")
   ),
 })
 
@@ -82,15 +85,18 @@ export default function SearchPage() {
               name="searchTerm"
             />
           </div>
-          <div className="flex">
-            <div className="mr-4">
-              <strong>Case-sensitive</strong>
-            </div>
+          <div>
             <BankRadioOrCheckbox
               type="checkbox"
               name="caseSensitive"
               optionSetClassName="flex gap-x-2 mr-4"
-              options={[{ label: "", value: "on", defaultChecked: true }]}
+              options={[
+                {
+                  label: "Case sensitive",
+                  value: "on",
+                  defaultChecked: true,
+                },
+              ]}
             />
           </div>
           <div className="flex">
@@ -133,6 +139,7 @@ export default function SearchPage() {
             <BankRadioOrCheckbox
               type="checkbox"
               name="canadianismType"
+              className="flex"
               optionSetClassName="flex gap-x-2 mr-4"
               options={Object.values(CanadianismTypeEnum).map(
                 (canadianismType) => ({

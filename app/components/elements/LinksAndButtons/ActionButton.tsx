@@ -24,7 +24,7 @@ export default function ActionButton({
   const content = isSubmitting ? submittingElement || <>Loading...</> : children
 
   return (
-    <Button disabled={isSubmitting} {...rest}>
+    <Button type="submit" disabled={isSubmitting} {...rest}>
       {content}
     </Button>
   )
