@@ -1,12 +1,12 @@
-import type { User, det_log_entries } from "@prisma/client"
+import type { User, LogEntry } from "@prisma/client"
 import { redirect } from "@remix-run/server-runtime"
 import { NOT_ALLOWED_PATH } from "utils/paths"
 import { prisma } from "~/db.server"
 import { getEmailFromSession } from "~/services/auth/session.server"
 
 export type { Entry } from "@prisma/client"
-export type LogEntries = (det_log_entries & {
-  Entry: { headword: string } | null
+export type LogEntries = (LogEntry & {
+  entry: { headword: string }
 })[]
 export type { User } from "@prisma/client"
 
@@ -71,14 +71,14 @@ export async function getAllUsers() {
 export async function getEntriesByUserEmail(
   email: string
 ): Promise<LogEntries> {
-  const userId = await getUserIdByEmail({ email })
+  const userId = await getUserIdByEmailOrThrow({ email })
 
-  return prisma.det_log_entries.findMany({
+  return prisma.logEntry.findMany({
     where: {
       user_id: userId,
     },
     include: {
-      Entry: {
+      entry: {
         select: {
           headword: true,
         },

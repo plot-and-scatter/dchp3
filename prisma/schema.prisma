@@ -98,7 +98,6 @@ model Entry {
   meanings             Meaning[]
   seeAlso              SeeAlso[]
   images               Image[]
-  logs                 det_log_entries[]
   referenceLinks       ReferenceLink[]
   logEntries           LogEntry[]
 

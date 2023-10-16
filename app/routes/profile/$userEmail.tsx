@@ -8,16 +8,24 @@ import UserList from "~/components/profile/UserList"
 import {
   getAllUsers,
   getEntriesByUserEmail,
-  getUserByEmail,
+  getUserByEmailSafe,
 } from "~/models/user.server"
 
 export async function loader({ params }: LoaderArgs) {
   // TODO: check to see if you have perms
 
   const email = params.userEmail ?? ""
-  const user = await getUserByEmail({ email })
+  const user = await getUserByEmailSafe({ email })
   const users = await getAllUsers()
   const entries = await getEntriesByUserEmail(email)
+
+  if (!user) {
+    throw new Response(null, {
+      status: 404,
+      statusText: `User not found`,
+    })
+  }
+
   return { user, users, entries }
 }
 
