@@ -4,7 +4,14 @@ import { getEntryByHeadword } from "~/models/entry.server"
 import { useLoaderData } from "@remix-run/react"
 import Entry from "~/components/Entry"
 import invariant from "tiny-invariant"
-import type { LoaderArgs, SerializeFrom } from "@remix-run/node"
+import type { LoaderArgs, MetaFunction, SerializeFrom } from "@remix-run/node"
+import { BASE_APP_TITLE } from "~/root"
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return {
+    title: `${BASE_APP_TITLE} | ${data.entry.headword}`,
+  }
+}
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.headword, "headword not found")

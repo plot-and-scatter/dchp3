@@ -18,6 +18,8 @@ import Header from "./components/elements/Header"
 import Nav from "./components/elements/Nav"
 import { getUserFromSession } from "./services/auth/session.server"
 
+export const BASE_APP_TITLE = "DCHP-3"
+
 export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: tailwindStylesheetUrl },
@@ -26,9 +28,7 @@ export const links: LinksFunction = () => {
 }
 
 export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "DCHP-3",
-  viewport: "width=device-width,initial-scale=1",
+  title: BASE_APP_TITLE,
 })
 
 export async function loader({ request }: LoaderArgs) {
@@ -46,6 +46,8 @@ export default function App() {
   return (
     <html lang="en" className="h-full">
       <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
         <script
