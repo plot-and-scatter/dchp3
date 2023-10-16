@@ -3,7 +3,7 @@ import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
 import { EditFormInput } from "~/components/editing/EditFormInput"
 import { Form } from "@remix-run/react"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
-import { type LoadedDataType } from ".."
+import { type LoadedEntryDataType } from ".."
 import { type MeaningType } from "~/components/Meaning"
 import { useState } from "react"
 import AddSeeAlso from "./AddSeeAlso"
@@ -15,7 +15,7 @@ import QuotationList from "./QuotationList"
 import SeeAlsoEditing from "./SeeAlsoEditing"
 
 interface MeaningEditingFormProps {
-  entry: LoadedDataType
+  entry: LoadedEntryDataType
   meaning: MeaningType
 }
 

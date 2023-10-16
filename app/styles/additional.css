@@ -7,3 +7,9 @@ p {
   margin-bottom: 0.5rem;
   line-height: 150%;
 }
+
+/* This is for <blockquotes> inside .HandNoteBlock */
+.HandNoteBlock blockquote {
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}

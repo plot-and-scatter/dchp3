@@ -1,10 +1,9 @@
-import React from "react"
-import type { LoadedDataType } from "~/routes/entries/$headword"
+import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import SanitizedTextSpan from "../SanitizedTextSpan"
 import QuickLink from "./QuickLink"
 
 interface QuickLinksProps {
-  data: LoadedDataType
+  data: LoadedEntryDataType
 }
 
 const QuickLinks = ({ data }: QuickLinksProps): JSX.Element => {

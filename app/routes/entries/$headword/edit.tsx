@@ -6,7 +6,8 @@ import {
   updateEntry,
   updateLogEntries,
 } from "~/models/entry.server"
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node"
+import { redirect } from "@remix-run/node"
+import type { SerializeFrom, ActionArgs, LoaderArgs } from "@remix-run/node"
 import invariant from "tiny-invariant"
 import {
   addDefinitionFistNote,
@@ -54,7 +55,9 @@ export async function loader({ request, params }: LoaderArgs) {
   return { entry }
 }
 
-export type EntryEditLoaderData = Awaited<Promise<ReturnType<typeof loader>>>
+export type EntryEditLoaderData = SerializeFrom<
+  Awaited<Promise<ReturnType<typeof loader>>>
+>
 
 export async function action({ params, request }: ActionArgs) {
   invariant(params.headword)

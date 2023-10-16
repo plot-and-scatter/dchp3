@@ -4,6 +4,8 @@ import GeneralLabels from "./GeneralLabels"
 import Etymology from "./Etymology"
 import Alternatives from "./Alternatives"
 import { Link } from "../elements/LinksAndButtons/Link"
+import type { LogEntry } from "@prisma/client"
+import type { SerializeFrom } from "@remix-run/server-runtime"
 
 interface HeadwordProps {
   alternatives?: string
@@ -15,6 +17,8 @@ interface HeadwordProps {
   isNonCanadian?: boolean
   word: string
   id: number
+  logEntries?: SerializeFrom<LogEntry>[]
+  showEditButton?: boolean
 }
 
 const Headword = ({
@@ -26,6 +30,8 @@ const Headword = ({
   isLegacy,
   isNonCanadian,
   word,
+  logEntries,
+  showEditButton,
 }: HeadwordProps): JSX.Element => {
   return (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
@@ -37,13 +43,15 @@ const Headword = ({
               {hasDagger && <span className="align-super">&dagger;</span>}
             </h1>
           </div>
+          {showEditButton && (
+            <Link asButton className="ml-4" to={`/entries/${word}/edit`}>
+              Edit
+            </Link>
+          )}
           <Etymology etymology={etymology} />
           <GeneralLabels generalLabels={generalLabels} />
-          <Link asButton className="ml-4" to={`/entries/${word}/edit`}>
-            Edit
-          </Link>
         </div>
-        <DictionaryVersion isLegacy={isLegacy} />
+        <DictionaryVersion isLegacy={isLegacy} logEntries={logEntries} />
       </div>
       <Alternatives alternatives={alternatives} />
 

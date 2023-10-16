@@ -1,22 +1,55 @@
+import type { LogEntry } from "@prisma/client"
+import type { SerializeFrom } from "@remix-run/server-runtime"
 import React from "react"
 
 interface DictionaryVersionProps {
   isLegacy: boolean
+  logEntries?: SerializeFrom<LogEntry>[]
+}
+
+const calculateDictionaryVersion = (
+  isLegacy: boolean,
+  logEntries?: SerializeFrom<LogEntry>[]
+): { version: string; year?: number; date: string } => {
+  if (isLegacy) return { version: `DCHP-1`, date: `pre-1967` }
+
+  if (!logEntries) return { version: `Unknown`, date: `Post-DCHP-1` }
+
+  // Find the *earliest* log entry (when this was created)
+  const logEntry = [...logEntries]
+    .sort((a, b) => {
+      const aTime = Date.parse(a.created)
+      const bTime = Date.parse(b.created)
+      return aTime - bTime
+    })
+    .pop()
+
+  if (!logEntry) return { version: `Unknown`, date: `Post-DCHP-1` }
+
+  const date = new Date(Date.parse(logEntry.created))
+  const year = date.getFullYear()
+  const localeMonth = date.toLocaleString(`en-ca`, { month: "short" })
+
+  const version = `DCHP-${year >= 2018 ? 3 : 2}`
+
+  return { version, date: `${localeMonth} ${year}` }
 }
 
 const DictionaryVersion = ({
   isLegacy,
+  logEntries,
 }: DictionaryVersionProps): JSX.Element => {
+  const version = calculateDictionaryVersion(isLegacy, logEntries)
+
   const color = isLegacy
     ? "border-amber-300 bg-amber-200"
     : "border-slate-200 bg-slate-100"
-  const text = isLegacy ? "DCHP-1 (pre-1967)" : "DCHP-2 (Dec 2016)"
 
   return (
     <div
       className={`border ${color} py-1 px-2 text-xs text-slate-700 shadow-sm md:px-4 md:text-sm`}
     >
-      {text}
+      {version.version} ({version.date})
     </div>
   )
 }

@@ -1,11 +1,11 @@
 import { Form } from "@remix-run/react"
-import { type LoadedDataType } from "~/routes/entries/$headword"
+import { type LoadedEntryDataType } from "~/routes/entries/$headword"
 import { attributeEnum } from "./attributeEnum"
 import { useState } from "react"
 import Button from "../elements/LinksAndButtons/Button"
 
 interface EditingToolsProps {
-  data: LoadedDataType
+  data: LoadedEntryDataType
 }
 
 const EditingTools = ({ data }: EditingToolsProps) => {

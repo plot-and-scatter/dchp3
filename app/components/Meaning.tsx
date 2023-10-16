@@ -1,4 +1,4 @@
-import type { LoadedDataType } from "~/routes/entries/$headword"
+import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import Definition from "./Definition"
 import HandNoteBlock from "~/components/HandNoteBlock"
 import SanitizedTextSpan from "~/components/SanitizedTextSpan"
@@ -7,7 +7,7 @@ import Citations from "./Citations"
 import SeeAlsoItems from "~/components/SeeAlsoItems"
 import MeaningHeader from "./meaningComponents/MeaningHeader"
 
-export type MeaningType = LoadedDataType["meanings"][0]
+export type MeaningType = LoadedEntryDataType["meanings"][0]
 
 interface MeaningProps {
   meaning: MeaningType
@@ -40,7 +40,7 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
           {meaning.usageNotes.length > 0 &&
             meaning.usageNotes.map((usageNote) => (
               <HandNoteBlock key={`usage-note-${usageNote.id}`}>
-                <SanitizedTextSpan text={usageNote.text} />
+                <SanitizedTextSpan toDoubleBreaks text={usageNote.text} />
               </HandNoteBlock>
             ))}
           <Citations meaning={meaning} />

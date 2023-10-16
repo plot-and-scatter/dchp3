@@ -19,12 +19,14 @@ export function getCitationsByHeadwordAndUserId(
   headword: Nullable<string>,
   userId: Nullable<number>
 ) {
-  if (!headword)
-    throw new Error(`getCitationsByHeadwordAndUserId: Headword is null!`)
+  // if (!headword)
+  //   throw new Error(`getCitationsByHeadwordAndUserId: Headword is null!`)
 
   return prisma.bankCitation.findMany({
     select: DEFAULT_CITATION_SELECT,
-    where: { AND: [{ user_id: userId }, { headword: { headword } }] },
+    where: {
+      AND: [{ user_id: userId }, { headword: headword ? { headword } : null }],
+    },
     take: 100,
   })
 }

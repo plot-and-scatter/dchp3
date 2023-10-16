@@ -1,8 +1,8 @@
-import { type LoadedDataType } from ".."
+import { type LoadedEntryDataType } from ".."
 import MeaningEditingForm from "./MeaningEditingForm"
 
 interface MeaningEditingFormProps {
-  data: LoadedDataType
+  data: LoadedEntryDataType
 }
 
 export default function MeaningEditingForms({ data }: MeaningEditingFormProps) {

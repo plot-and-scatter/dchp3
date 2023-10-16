@@ -13,6 +13,7 @@ const HandNoteBlock = ({
     <div
       className={[
         className,
+        "HandNoteBlock", // See the file `additional.css` for blockquote styling.
         "flex items-start text-sm leading-snug text-slate-500 md:text-lg",
       ].join(" ")}
     >
