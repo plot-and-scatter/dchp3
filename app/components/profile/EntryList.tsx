@@ -14,7 +14,6 @@ const EntryList = ({ logEntries }: EntryListProps) => {
         {logEntries.map((e) => {
           return (
             <React.Fragment key={e.id}>
-              <p className="col-span-1">Entry:</p>
               <Link
                 className="col-span-3"
                 bold
