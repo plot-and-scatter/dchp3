@@ -63,9 +63,9 @@ export default function CitationSearch() {
                   name="orderBy"
                   defaultValue={"year"}
                   options={[
-                    { name: "Date Added", value: "dateAdded" },
-                    { name: "Year Published / Composed", value: "year" },
-                    { name: "Place", value: "place" },
+                    { label: "Date Added", value: "dateAdded" },
+                    { label: "Year Published / Composed", value: "year" },
+                    { label: "Place", value: "place" },
                   ]}
                 />
               }
@@ -80,8 +80,8 @@ export default function CitationSearch() {
                   name="orderDirection"
                   defaultValue={"asc"}
                   options={[
-                    { name: "Ascending", value: "asc" },
-                    { name: "Descending", value: "desc" },
+                    { label: "Ascending", value: "asc" },
+                    { label: "Descending", value: "desc" },
                   ]}
                 />
               }
@@ -106,7 +106,7 @@ export default function CitationSearch() {
                 <BankRadioOrCheckbox
                   type="checkbox"
                   name="citationId"
-                  options={[{ name: "", value: citation.id }]}
+                  options={[{ label: "", value: citation.id }]}
                   className="mr-2"
                 />
                 <div>

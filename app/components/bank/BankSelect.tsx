@@ -22,7 +22,7 @@ export default function BankSelect<T extends BankInputOptionType>({
     >
       {options.map((o) => (
         <option key={o.value} value={o.value}>
-          {o.name}
+          {o.label}
         </option>
       ))}
     </select>

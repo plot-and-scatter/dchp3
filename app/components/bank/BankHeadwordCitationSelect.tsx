@@ -22,7 +22,7 @@ export default function BankHeadwordCitationSelect({
         defaultValue={currentCitation.id}
         options={citations.map((c) => ({
           value: c.id,
-          name: `${c.headword?.headword} (${c.id}): ${
+          label: `${c.headword?.headword} (${c.id}): ${
             c.source?.place?.name || "[Place not entered]"
           }, ${c.source?.year_published || "[Publishing year not entered]"}`,
         }))}

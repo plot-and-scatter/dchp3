@@ -82,9 +82,9 @@ export default function QuotationAddingForm({
                   name="orderBy"
                   defaultValue={"year"}
                   options={[
-                    { name: "Date Added (ID)", value: "dateAdded" },
-                    { name: "Year Published / Composed", value: "year" },
-                    { name: "Place", value: "place" },
+                    { label: "Date Added (ID)", value: "dateAdded" },
+                    { label: "Year Published / Composed", value: "year" },
+                    { label: "Place", value: "place" },
                   ]}
                 />
               }
@@ -99,8 +99,8 @@ export default function QuotationAddingForm({
                   name="orderDirection"
                   defaultValue={"asc"}
                   options={[
-                    { name: "Ascending", value: "asc" },
-                    { name: "Descending", value: "desc" },
+                    { label: "Ascending", value: "asc" },
+                    { label: "Descending", value: "desc" },
                   ]}
                 />
               }

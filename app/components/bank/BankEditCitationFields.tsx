@@ -98,8 +98,8 @@ export default function BankEditCitationFields({
             optionSetClassName={`flex gap-x-2`}
             name={`citation.is_incomplete`}
             options={[
-              { name: `Yes`, value: `true` },
-              { name: `No`, value: `false` },
+              { label: `Yes`, value: `true` },
+              { label: `No`, value: `false` },
             ]}
             defaultValue={
               citation ? (citation.is_incomplete ? "true" : "false") : "false"

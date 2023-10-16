@@ -37,11 +37,15 @@ export async function loader({ request, params }: LoaderArgs) {
     url.searchParams.get("caseSensitive") === "true"
   const pageNumber: string | undefined =
     url.searchParams.get("pageNumber") ?? undefined
+  const dchpVersions: string[] | undefined =
+    url.searchParams.getAll("dchpVersion")
 
   const searchResults: AllSearchResults = await getSearchResults(
     text,
     pageNumber,
-    caseSensitive
+    caseSensitive,
+    undefined,
+    dchpVersions
   )
 
   return searchResults
