@@ -8,7 +8,7 @@ interface SearchResultProps {
 
 const SearchResultQuotations = ({ text, data }: SearchResultProps) => {
   if (data === undefined || data.length === 0) {
-    return null
+    return <>No results.</>
   }
 
   return (
