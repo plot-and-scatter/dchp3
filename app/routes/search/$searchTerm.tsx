@@ -74,7 +74,7 @@ export default function EntryDetailsPage() {
       <SecondaryHeader>
         Search results for &ldquo;{params.searchTerm}&rdquo;
       </SecondaryHeader>
-      <Form reloadDocument method="post">
+      <Form method="post">
         <SearchResults
           data={data}
           text={params.searchTerm}
