@@ -13,10 +13,6 @@ const SearchResultMeanings = ({ text, data }: Props) => {
 
   return (
     <>
-      <h3 className="text-xl font-bold">
-        Meanings containing &ldquo;{text}&rdquo;: &nbsp;
-        {data.length}
-      </h3>
       {data.map((e) => {
         return (
           <div className="m-1" key={"MeaningDiv" + e.id}>

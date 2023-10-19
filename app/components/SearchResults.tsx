@@ -28,17 +28,7 @@ function getSearchResults(
   attribute: string | null
 ) {
   switch (attribute) {
-    case SearchResultEnum.ALL:
-      return (
-        <>
-          <SearchResultEntries text={text} data={data.Headword ?? []} />
-          <SearchResultMeanings text={text} data={data.Meaning ?? []} />
-          <SearchResultCanadianism text={text} data={data.Canadianism ?? []} />
-          <SearchResultUsageNotes text={text} data={data.UsageNote ?? []} />
-          <SearchResultFistNotes text={text} data={data.FistNote ?? []} />
-          <SearchResultQuotations text={text} data={data.Quotation ?? []} />
-        </>
-      )
+    case SearchResultEnum.ALL: // By default, show headwords
     case SearchResultEnum.HEADWORD:
       return <SearchResultEntries text={text} data={data.Headword ?? []} />
     case SearchResultEnum.MEANING:
@@ -74,13 +64,18 @@ const SearchResults = ({
       <div className="-mb-[1px] flex flex-row gap-x-2 border-b border-slate-700">
         {enumValues(SearchResultEnum)
           .filter((value) => value !== SearchResultEnum.ALL)
-          .map((value) => (
+          .map((value, index) => (
             <Button
               size="small"
               key={value}
               name={"attribute"}
               value={value}
-              variant={searchAttribute === value ? "solid" : "outline"}
+              variant={
+                searchAttribute === value ||
+                (searchAttribute === SearchResultEnum.ALL && index === 0)
+                  ? "solid"
+                  : "outline"
+              }
               className="whitespace-nowrap rounded-bl-none rounded-br-none border-b-0"
             >
               {SearchResultEnumDisplay[value as SearchResultEnum]} (
