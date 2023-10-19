@@ -6,7 +6,7 @@ import { getEmailFromSession } from "~/services/auth/session.server"
 
 export type { Entry } from "@prisma/client"
 export type LogEntries = (LogEntry & {
-  entry: { headword: string }
+  entry: { headword: string } | null
 })[]
 export type { User } from "@prisma/client"
 
