@@ -17,9 +17,9 @@ const EntryList = ({ logEntries }: EntryListProps) => {
               <Link
                 className="col-span-3"
                 bold
-                to={`/entries/${e.entry.headword}`}
+                to={`/entries/${e.entry?.headword}`}
               >
-                {e.entry.headword ?? `Deleted entry: ${e.entry_id}`}
+                {e.entry?.headword ?? `Deleted entry: ${e.entry_id}`}
               </Link>
               <p className="col-span-1"></p>
               <p className="col-span-1">Edited:</p>
