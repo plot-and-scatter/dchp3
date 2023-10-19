@@ -7,12 +7,12 @@ import { parsePageNumberOrError } from "~/utils/generalUtils"
 export type { Entry } from "@prisma/client"
 
 export type AllSearchResults = {
-  Headwords?: Pick<Entry, "id" | "headword">[]
-  Meanings?: SearchResultMeaning[]
-  Canadianisms?: Canadianism[]
-  UsageNotes?: UsageNote[]
-  FistNotes?: FistNote[]
-  Quotations?: Quotation[]
+  [SearchResultEnum.HEADWORD]?: Pick<Entry, "id" | "headword">[]
+  [SearchResultEnum.MEANING]?: SearchResultMeaning[]
+  [SearchResultEnum.CANADIANISM]?: Canadianism[]
+  [SearchResultEnum.USAGE_NOTE]?: UsageNote[]
+  [SearchResultEnum.FIST_NOTE]?: FistNote[]
+  [SearchResultEnum.QUOTATION]?: Quotation[]
 }
 
 export async function getSearchResults(
@@ -28,35 +28,35 @@ export async function getSearchResults(
   const versions = dchpVersions || ["dchp1", "dchp2", "dchp3"]
 
   const searchResults: AllSearchResults = {}
-  searchResults.Headwords = await getEntriesByBasicTextSearch(
+  searchResults.Headword = await getEntriesByBasicTextSearch(
     text,
     skip,
     undefined,
     caseSensitive,
     versions
   )
-  searchResults.Meanings = await getSearchResultMeanings(
+  searchResults.Meaning = await getSearchResultMeanings(
     text,
     skip,
     undefined,
     caseSensitive,
     versions
   )
-  searchResults.Canadianisms = await getSearchResultCanadianisms(
+  searchResults.Canadianism = await getSearchResultCanadianisms(
     text,
     skip,
     undefined,
     caseSensitive,
     versions
   )
-  searchResults.UsageNotes = await getSearchResultUsageNotes(
+  searchResults.UsageNote = await getSearchResultUsageNotes(
     text,
     skip,
     undefined,
     caseSensitive,
     versions
   )
-  searchResults.FistNotes = await getSearchResultFistNotes(
+  searchResults.FistNote = await getSearchResultFistNotes(
     text,
     skip,
     undefined,
@@ -64,7 +64,7 @@ export async function getSearchResults(
     versions
   )
 
-  searchResults.Quotations = await getSearchResultQuotations(
+  searchResults.Quotation = await getSearchResultQuotations(
     text,
     skip,
     undefined,
@@ -262,7 +262,8 @@ export function getSearchResultQuotations(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
-  caseSensitive: boolean = false
+  caseSensitive: boolean = false,
+  dchpVersions: string[]
 ): Promise<Quotation[]> {
   if (text.length === 0) {
     throw new Response(null, {

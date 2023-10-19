@@ -1,24 +1,24 @@
-import type { BankInputOption, BankInputOptionType } from "./BankInputOption"
+import type { BankInputOption } from "./BankInputOption"
 
-interface BankSelectProps<T extends BankInputOptionType> {
-  options: BankInputOption<T>[]
-  defaultValue?: T
+type BankSelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
+  options: BankInputOption[]
   name: string
   onChange?: React.ChangeEventHandler<HTMLSelectElement>
 }
 
-export default function BankSelect<T extends BankInputOptionType>({
+export default function BankSelect({
   name,
   options,
-  defaultValue,
   onChange,
-}: BankSelectProps<T>) {
+  className,
+  ...rest
+}: BankSelectProps) {
   return (
     <select
       name={name}
       onChange={onChange}
-      className={`rounded border border-slate-700 py-2 px-4`}
-      defaultValue={defaultValue}
+      className={className || `rounded border border-slate-700 py-2 px-4`}
+      {...rest}
     >
       {options.map((o) => (
         <option key={o.value} value={o.value}>

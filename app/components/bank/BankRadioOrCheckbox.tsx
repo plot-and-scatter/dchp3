@@ -1,18 +1,16 @@
 import { useField } from "remix-validated-form"
 import type { BankInputProps } from "./BankInput"
-import type { BankInputOption, BankInputOptionType } from "./BankInputOption"
+import type { BankInputOption } from "./BankInputOption"
 import ValidationErrorText from "../elements/Form/ValidationErrorText"
 
-type BankCheckboxProps<T extends BankInputOptionType> = BankInputProps & {
-  options: BankInputOption<T>[]
+type BankCheckboxProps = BankInputProps & {
+  options: BankInputOption[]
   optionSetClassName?: string
   direction?: "horizontal" | "vertical"
   type: "radio" | "checkbox"
 }
 
-export default function BankRadioOrCheckbox<T extends BankInputOptionType>(
-  props: BankCheckboxProps<T>
-) {
+export default function BankRadioOrCheckbox(props: BankCheckboxProps) {
   const {
     className,
     name,

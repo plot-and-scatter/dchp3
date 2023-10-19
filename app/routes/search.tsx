@@ -1,9 +1,6 @@
-import { Outlet, useSearchParams } from "@remix-run/react"
+import { Outlet, useParams, useSearchParams } from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
-import {
-  SearchResultEnum,
-  SearchResultEnumDisplay,
-} from "./search/searchResultEnum"
+import { SearchResultEnum } from "./search/searchResultEnum"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
 import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import { ValidatedForm, validationError } from "remix-validated-form"
@@ -39,23 +36,20 @@ export async function action({ request }: ActionArgs) {
     return validationError(result.error)
   }
 
-  const { searchTerm, database } = result.data
-
-  console.log("database", database)
-
-  // const searchTerm = data.get("searchText") || ""
-  // const caseSensitive = data.get("caseSensitive") ? "true" : "false"
-  // const attribute = data.get("attribute") || ""
-  // const dchpVersions = data.getAll("dchpVersion")
+  // TODO: Is there an easier way to directly translate these validated form
+  // data params into URL search params? Seems unnecessarily bloated.
+  const { searchTerm, database, caseSensitive, attribute, canadianismType } =
+    result.data
 
   const base = new URL(request.url)
   const url = new URL(`/search/${searchTerm}`, base)
 
-  // url.searchParams.set("caseSensitive", caseSensitive)
-  // url.searchParams.set("attribute", attribute.toString())
-  // dchpVersions.forEach((v) =>
-  //   url.searchParams.append("dchpVersion", v.toString())
-  // )
+  url.searchParams.set("caseSensitive", String(caseSensitive))
+  url.searchParams.set("attribute", attribute[0])
+  database.forEach((d) => url.searchParams.append("database", d))
+  canadianismType.forEach((ct) =>
+    url.searchParams.append("canadianismType", ct)
+  )
 
   return redirect(url.toString())
 }
@@ -64,92 +58,78 @@ const SEARCH_PATH = "/search"
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams()
+  const params = useParams<{ searchTerm?: string }>()
   const currentAttribute = searchParams.get("attribute") ?? SearchResultEnum.ALL
 
   return (
-    <Main center={true}>
+    <Main center>
       <PageHeader>Search entries</PageHeader>
-      <p>Enter search text to find headwords containing that text.</p>
       <ValidatedForm
         validator={formValidator}
-        className="flex flex-col p-4"
+        className="flex flex-row gap-4"
         method="post"
         action={SEARCH_PATH}
       >
-        <div className="flex flex-col gap-3 p-1">
-          <div>
+        <div className="flex flex-row gap-4">
+          <div className="flex flex-col gap-2">
             <BankInput
               type="text"
               placeholder="Search term"
-              className="border border-slate-700 p-2"
+              className="border border-slate-700 p-2 text-2xl"
               name="searchTerm"
+              defaultValue={params.searchTerm}
             />
-          </div>
-          <div>
-            <BankRadioOrCheckbox
-              type="checkbox"
-              name="caseSensitive"
-              optionSetClassName="flex gap-x-2 mr-4"
-              options={[
-                {
-                  label: "Case sensitive",
-                  value: "on",
-                  defaultChecked: true,
-                },
-              ]}
-            />
-          </div>
-          <div className="flex">
-            <div className="mr-4">
-              <strong>Database</strong>
+            <div className="whitespace-nowrap">
+              <BankRadioOrCheckbox
+                type="checkbox"
+                name="caseSensitive"
+                optionSetClassName="flex gap-x-2 mr-4"
+                options={[
+                  {
+                    label: "Case sensitive",
+                    value: "on",
+                    defaultChecked: true,
+                  },
+                ]}
+              />
             </div>
-            <BankRadioOrCheckbox
-              type="checkbox"
-              name="database"
-              optionSetClassName="flex gap-x-2 mr-4"
-              options={[
-                { label: "DCHP-1", value: "dchp1", defaultChecked: true },
-                { label: "DCHP-2", value: "dchp2", defaultChecked: true },
-                { label: "DCHP-3", value: "dchp3", defaultChecked: true },
-              ]}
-            />
           </div>
-          <div className="flex">
-            <div className="mr-4">
-              <strong>Data type</strong>
-            </div>
-            <BankRadioOrCheckbox
-              type="radio"
-              name="attribute"
-              className="flex"
-              optionSetClassName="flex gap-x-2 mr-4"
-              defaultValue={currentAttribute}
-              options={Object.values(SearchResultEnum).map(
-                (searchResultType) => ({
-                  label: SearchResultEnumDisplay[searchResultType],
-                  value: searchResultType,
-                })
-              )}
-            />
+        </div>
+        <div className="flex flex-col">
+          <div className="mr-4">
+            <strong>Database</strong>
           </div>
-          <div className="flex">
-            <div className="mr-4">
-              <strong>Canadianism type</strong>
-            </div>
-            <BankRadioOrCheckbox
-              type="checkbox"
-              name="canadianismType"
-              className="flex"
-              optionSetClassName="flex gap-x-2 mr-4"
-              options={Object.values(CanadianismTypeEnum).map(
-                (canadianismType) => ({
-                  label: canadianismType,
-                  value: canadianismType,
-                  defaultChecked: true,
-                })
-              )}
-            />
+          <BankRadioOrCheckbox
+            type="checkbox"
+            name="database"
+            optionSetClassName="flex gap-x-2 mr-4"
+            direction="vertical"
+            options={[
+              { label: "DCHP-1", value: "dchp1", defaultChecked: true },
+              { label: "DCHP-2", value: "dchp2", defaultChecked: true },
+              { label: "DCHP-3", value: "dchp3", defaultChecked: true },
+            ]}
+          />
+        </div>
+        <div className="flex flex-col">
+          <div className="mr-4">
+            <strong>Canadianism type</strong>
           </div>
+          <BankRadioOrCheckbox
+            type="checkbox"
+            name="canadianismType"
+            optionSetClassName="flex gap-x-2 mr-4"
+            direction="vertical"
+            options={Object.values(CanadianismTypeEnum).map(
+              (canadianismType) => ({
+                label: canadianismType,
+                value: canadianismType,
+                defaultChecked: true,
+              })
+            )}
+          />
+        </div>
+        <div>
           <ActionButton
             size="large"
             name="attribute"
@@ -157,7 +137,7 @@ export default function SearchPage() {
             className="mx-auto w-fit"
             formActionPath={SEARCH_PATH}
           >
-            <FAIcon iconName="fa-search" className="mr-2" /> Search entries
+            <FAIcon iconName="fa-search" className="mr-2" /> Search
           </ActionButton>
         </div>
       </ValidatedForm>

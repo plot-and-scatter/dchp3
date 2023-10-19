@@ -1,5 +1,5 @@
 import { BankLegacyTypeEnum, BankPosEnum } from "~/models/bank.types"
-import { enumToSelectOptions } from "~/utils/inputUtils"
+import { enumToOptions } from "~/utils/inputUtils"
 import BankInput from "./BankInput"
 import BankSelect from "./BankSelect"
 import BankTextArea from "./BankTextArea"
@@ -51,8 +51,8 @@ export default function BankEditCitationFields({
         field={
           <BankSelect
             name={`citation.part_of_speech`}
-            defaultValue={citation?.part_of_speech}
-            options={enumToSelectOptions(BankPosEnum)}
+            defaultValue={citation?.part_of_speech ?? undefined}
+            options={enumToOptions(BankPosEnum)}
           />
         }
       />
@@ -85,7 +85,7 @@ export default function BankEditCitationFields({
           <BankSelect
             name={`citation.legacy_id`}
             defaultValue={citation?.legacy_id || BankLegacyTypeEnum["DCHP-3"]}
-            options={enumToSelectOptions(BankLegacyTypeEnum)}
+            options={enumToOptions(BankLegacyTypeEnum)}
           />
         }
       />

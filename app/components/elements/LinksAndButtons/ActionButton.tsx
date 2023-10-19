@@ -15,8 +15,6 @@ export default function ActionButton({
 }: ActionButtonProps) {
   const navigation = useNavigation()
 
-  console.log("navigation.state", navigation.state)
-
   const isSubmitting =
     (navigation.state === "submitting" || navigation.state === "loading") &&
     (formActionPath ? navigation.formAction === formActionPath : true)

@@ -21,7 +21,7 @@ export default function BankHeadwordCitationSelect({
         name={`headword--citation-select`}
         defaultValue={currentCitation.id}
         options={citations.map((c) => ({
-          value: c.id,
+          value: String(c.id),
           label: `${c.headword?.headword} (${c.id}): ${
             c.source?.place?.name || "[Place not entered]"
           }, ${c.source?.year_published || "[Publishing year not entered]"}`,

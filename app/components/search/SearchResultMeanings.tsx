@@ -8,7 +8,7 @@ interface Props {
 
 const SearchResultMeanings = ({ text, data }: Props) => {
   if (data === undefined || data.length === 0) {
-    return null
+    return <>No results.</>
   }
 
   return (

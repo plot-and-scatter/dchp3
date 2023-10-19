@@ -1,6 +1,6 @@
 import { BankLegacyTypeEnum, BankSourceTypeEnum } from "~/models/bank.types"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
-import { enumToSelectOptions } from "~/utils/inputUtils"
+import { enumToOptions } from "~/utils/inputUtils"
 import { Form } from "@remix-run/react"
 import { getStringFromFormInput } from "~/utils/generalUtils"
 import { json, redirect } from "@remix-run/server-runtime"
@@ -115,7 +115,7 @@ export default function SearchIndex() {
             name="legacyType"
             options={[
               { label: "All", value: "all" },
-              ...enumToSelectOptions(BankLegacyTypeEnum),
+              ...enumToOptions(BankLegacyTypeEnum),
             ]}
           />
         }
@@ -127,7 +127,7 @@ export default function SearchIndex() {
             name="sourceType"
             options={[
               { label: "All", value: "all" },
-              ...enumToSelectOptions(BankSourceTypeEnum),
+              ...enumToOptions(BankSourceTypeEnum),
             ]}
           />
         }

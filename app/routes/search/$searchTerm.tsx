@@ -5,15 +5,20 @@ import {
   useSearchParams,
 } from "@remix-run/react"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
-import { type AllSearchResults, getSearchResults } from "~/models/search.server"
 import { redirect } from "@remix-run/node"
+import { type AllSearchResults, getSearchResults } from "~/models/search.server"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
-import Button from "~/components/elements/LinksAndButtons/Button"
+import { PageHeader } from "~/components/elements/PageHeader"
+import { SecondaryHeader } from "~/components/elements/SecondaryHeader"
 
 export async function action({ request, params }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
+
+  console.log("dddddata", data)
+
   const pageIncrement = data.nextPage === "true" ? 1 : -1
 
   const url = new URL(request.url)
@@ -25,20 +30,27 @@ export async function action({ request, params }: ActionArgs) {
 
   url.searchParams.set("pageNumber", nextPageNumber.toString())
 
+  // Also set the attribute, if the user clicked one of those buttons.
+  const attribute = data.attribute
+  if (attribute) {
+    url.searchParams.set("attribute", String(attribute))
+  }
+
   return redirect(url.toString())
 }
 
 export async function loader({ request, params }: LoaderArgs) {
-  invariant(params.text, "text not found")
-  const text = params.text
+  invariant(params.searchTerm, "searchTerm not found")
+  const text = params.searchTerm
 
   const url = new URL(request.url)
   const caseSensitive: boolean =
     url.searchParams.get("caseSensitive") === "true"
   const pageNumber: string | undefined =
     url.searchParams.get("pageNumber") ?? undefined
-  const dchpVersions: string[] | undefined =
-    url.searchParams.getAll("dchpVersion")
+  const dchpVersions: string[] | undefined = url.searchParams.getAll("database")
+
+  console.log("####", caseSensitive, text, pageNumber, dchpVersions)
 
   const searchResults: AllSearchResults = await getSearchResults(
     text,
@@ -55,33 +67,22 @@ export default function EntryDetailsPage() {
   const data: AllSearchResults = useLoaderData<typeof loader>()
   const params = useParams()
   const [searchParams] = useSearchParams()
-  invariant(params.text)
+  invariant(params.searchTerm)
 
   return (
-    <>
+    <div className="mt-5 w-fit border-t-2 border-slate-500 pt-5">
+      <SecondaryHeader>
+        Search results for &ldquo;{params.searchTerm}&rdquo;
+      </SecondaryHeader>
       <Form reloadDocument method="post">
-        <Button type="submit" className="mx-2" name="nextPage" value="false">
-          Previous page
-        </Button>
-        <Button type="submit" className="mx-2" name="nextPage" value="true">
-          Next page
-        </Button>
+        <SearchResults
+          data={data}
+          text={params.searchTerm}
+          pageNumber={searchParams.get("pageNumber")}
+          searchAttribute={searchParams.get("attribute")}
+        />
       </Form>
-      <SearchResults
-        data={data}
-        text={params.text}
-        pageNumber={searchParams.get("pageNumber")}
-        searchAttribute={searchParams.get("attribute")}
-      />
-      <Form reloadDocument method="post">
-        <Button type="submit" className="mx-2" name="nextPage" value="false">
-          Previous page
-        </Button>
-        <Button type="submit" className="mx-2" name="nextPage" value="true">
-          Next page
-        </Button>
-      </Form>
-    </>
+    </div>
   )
 }
 

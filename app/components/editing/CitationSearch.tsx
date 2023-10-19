@@ -106,7 +106,7 @@ export default function CitationSearch() {
                 <BankRadioOrCheckbox
                   type="checkbox"
                   name="citationId"
-                  options={[{ label: "", value: citation.id }]}
+                  options={[{ label: "", value: String(citation.id) }]}
                   className="mr-2"
                 />
                 <div>
