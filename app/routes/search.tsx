@@ -66,7 +66,7 @@ export default function SearchPage() {
       <PageHeader>Search entries</PageHeader>
       <ValidatedForm
         validator={formValidator}
-        className="flex flex-row gap-4"
+        className="flex flex-row gap-8"
         method="post"
         action={SEARCH_PATH}
       >
