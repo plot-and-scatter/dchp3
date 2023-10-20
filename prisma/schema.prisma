@@ -95,6 +95,7 @@ model Entry {
   no_cdn_susp          Boolean         @default(false)
   no_cdn_conf          Boolean         @default(false)
   edit_status_comment  String?         @db.VarChar(1000)
+  dchp_version         String?         @db.VarChar(10)
   meanings             Meaning[]
   seeAlso              SeeAlso[]
   images               Image[]

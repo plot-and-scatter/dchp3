@@ -1,5 +1,5 @@
 import { BankLegacyTypeEnum, BankPosEnum } from "~/models/bank.types"
-import { enumToSelectOptions } from "~/utils/inputUtils"
+import { enumToOptions } from "~/utils/inputUtils"
 import BankInput from "./BankInput"
 import BankSelect from "./BankSelect"
 import BankTextArea from "./BankTextArea"
@@ -11,11 +11,16 @@ import BankRadioOrCheckbox from "./BankRadioOrCheckbox"
 
 export type BankEditCitationFieldsProps = {
   citation?: SerializeFrom<EditCitationIdLoaderData["citation"]>
+  //conformFields?: Fieldset<z.infer<typeof BankCreateFormDataSchema>>
+  citationFields?: any
 }
 
 export default function BankEditCitationFields({
+  citationFields,
   citation,
 }: BankEditCitationFieldsProps) {
+  console.log("citationFields", citationFields)
+
   return (
     <>
       {citation?.id && <LabelledField label={`ID`} field={citation.id} />}
@@ -23,6 +28,7 @@ export default function BankEditCitationFields({
         label={`Headword`}
         field={
           <BankInput
+            conformField={citationFields?.headword}
             name="citation.headword"
             defaultValue={citation?.headword?.headword}
           />
@@ -32,6 +38,7 @@ export default function BankEditCitationFields({
         label={`Short Meaning`}
         field={
           <BankTextArea
+            conformField={citationFields?.short_meaning}
             name="citation.short_meaning"
             defaultValue={citation?.short_meaning}
           />
@@ -51,8 +58,8 @@ export default function BankEditCitationFields({
         field={
           <BankSelect
             name={`citation.part_of_speech`}
-            defaultValue={citation?.part_of_speech}
-            options={enumToSelectOptions(BankPosEnum)}
+            defaultValue={citation?.part_of_speech ?? undefined}
+            options={enumToOptions(BankPosEnum)}
           />
         }
       />
@@ -85,7 +92,7 @@ export default function BankEditCitationFields({
           <BankSelect
             name={`citation.legacy_id`}
             defaultValue={citation?.legacy_id || BankLegacyTypeEnum["DCHP-3"]}
-            options={enumToSelectOptions(BankLegacyTypeEnum)}
+            options={enumToOptions(BankLegacyTypeEnum)}
           />
         }
       />
@@ -98,8 +105,8 @@ export default function BankEditCitationFields({
             optionSetClassName={`flex gap-x-2`}
             name={`citation.is_incomplete`}
             options={[
-              { name: `Yes`, value: `true` },
-              { name: `No`, value: `false` },
+              { label: `Yes`, value: `true` },
+              { label: `No`, value: `false` },
             ]}
             defaultValue={
               citation ? (citation.is_incomplete ? "true" : "false") : "false"

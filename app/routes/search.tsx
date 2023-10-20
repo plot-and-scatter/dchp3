@@ -1,82 +1,160 @@
-import { Form, Outlet, useParams, useSearchParams } from "@remix-run/react"
+import {
+  Form,
+  Outlet,
+  useActionData,
+  useParams,
+  useSearchParams,
+} from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
 import { SearchResultEnum } from "./search/searchResultEnum"
-import { type ActionArgs, redirect } from "@remix-run/server-runtime"
-import { useState } from "react"
-import Button from "~/components/elements/LinksAndButtons/Button"
+import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
+import { type ActionArgs, redirect, json } from "@remix-run/server-runtime"
+import { z } from "zod"
+import ActionButton from "~/components/elements/LinksAndButtons/ActionButton"
+import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
+import FAIcon from "~/components/elements/Icons/FAIcon"
 import Main from "~/components/elements/Main"
+import BankInput from "~/components/bank/BankInput"
+import { useForm } from "@conform-to/react"
+import { parse } from "@conform-to/zod"
+
+const searchActionSchema = z.object({
+  searchTerm: z
+    .string()
+    .min(1, "Search term must be one or more characters (use * to search all)"),
+  database: z.array(z.string()).min(1, "You must select at least one database"),
+  canadianismType: z
+    .array(z.string())
+    .min(1, "You must select at least one Canadianism type"),
+  caseSensitive: z.boolean(),
+  attribute: z
+    .array(z.string())
+    .min(1, "You must select at least one data type"),
+})
 
 export async function action({ request }: ActionArgs) {
-  const data = Object.fromEntries(await request.formData())
+  const formData = await request.formData()
+
+  const submission = parse(formData, { schema: searchActionSchema })
+
+  if (submission.intent !== "submit" || !submission.value) {
+    return json(submission)
+  }
+
+  // TODO: Is there an easier way to directly translate these validated form
+  // data params into URL search params? Seems unnecessarily bloated.
+  const { searchTerm, database, caseSensitive, attribute, canadianismType } =
+    submission.value
 
   const base = new URL(request.url)
-  const url = new URL(`/search/${data.searchText}`, base)
+  const url = new URL(`/search/${searchTerm}`, base)
 
-  const caseSensitive = data.caseSensitive ? "true" : "false"
-  const attribute = data.attribute ? data.attribute : SearchResultEnum.HEADWORD
-
-  url.searchParams.set("caseSensitive", caseSensitive)
-  url.searchParams.set("attribute", attribute.toString())
+  url.searchParams.set("caseSensitive", String(caseSensitive))
+  url.searchParams.set("attribute", attribute[0])
+  database.forEach((d) => url.searchParams.append("database", d))
+  canadianismType.forEach((ct) =>
+    url.searchParams.append("canadianismType", ct)
+  )
 
   return redirect(url.toString())
 }
 
-export default function SearchPage() {
-  const params = useParams()
-  const [text, setText] = useState(params?.text)
+const SEARCH_PATH = "/search"
 
+export default function SearchPage() {
   const [searchParams] = useSearchParams()
+  const params = useParams<{ searchTerm?: string }>()
   const currentAttribute = searchParams.get("attribute") ?? SearchResultEnum.ALL
 
+  const lastSubmission = useActionData<typeof action>()
+
+  const [form, fields] = useForm({
+    lastSubmission,
+    shouldValidate: "onInput", // Run the same validation logic on client
+    onValidate({ formData }) {
+      return parse(formData, { schema: searchActionSchema })
+    },
+  })
+
+  console.log("form", form, "fields", fields)
+
   return (
-    <Main center={true}>
+    <Main center>
       <PageHeader>Search entries</PageHeader>
-      <p>Enter search text to find headwords containing that text.</p>
-      <Form className="flex flex-row p-4" method="post">
-        <div className="flex flex-col gap-3 p-1">
-          <input
-            type="text"
-            placeholder="Search text"
-            className="w-96 border border-slate-700 p-2"
-            name="searchText"
-            value={text}
-            onChange={(e) => {
-              setText(e.target.value)
-            }}
-          />
-          <div>
-            <label>
-              Case-sensitive:
-              <input
-                className="ml-3 max-w-sm"
-                name="caseSensitive"
+      <Form {...form.props} className="flex flex-row gap-8" method="post">
+        <div className="flex flex-row gap-4">
+          <div className="flex flex-col gap-2">
+            <BankInput
+              type="text"
+              placeholder="Search term"
+              className="border border-slate-700 p-2 text-2xl"
+              name="searchTerm"
+              defaultValue={params.searchTerm}
+              conformField={fields.searchTerm}
+            />
+            <div className="whitespace-nowrap">
+              <BankRadioOrCheckbox
                 type="checkbox"
-                value="true"
+                name="caseSensitive"
+                optionSetClassName="flex gap-x-2 mr-4"
+                conformField={fields.caseSensitive}
+                options={[
+                  {
+                    label: "Case sensitive",
+                    value: "on",
+                    defaultChecked: true,
+                  },
+                ]}
               />
-            </label>
+            </div>
           </div>
-          <Button size="large" name="attribute" value={currentAttribute}>
-            search
-          </Button>
         </div>
-
-        <div className="ml-5 flex flex-col items-start">
-          {Object.values(SearchResultEnum).map((searchResultType) => {
-            const textClassname =
-              currentAttribute === searchResultType ? "font-black" : ""
-
-            return (
-              <Button
-                asLink
-                name="attribute"
-                value={searchResultType}
-                className=" w-full text-left"
-                key={`attribute-${searchResultType}`}
-              >
-                <span className={textClassname}>{searchResultType}</span>
-              </Button>
-            )
-          })}
+        <div className="flex flex-col">
+          <div className="mr-4">
+            <strong>Database</strong>
+          </div>
+          <BankRadioOrCheckbox
+            type="checkbox"
+            name="database"
+            optionSetClassName="flex gap-x-2 mr-4"
+            direction="vertical"
+            conformField={fields.database}
+            options={[
+              { label: "DCHP-1", value: "dchp1", defaultChecked: true },
+              { label: "DCHP-2", value: "dchp2", defaultChecked: true },
+              { label: "DCHP-3", value: "dchp3", defaultChecked: true },
+            ]}
+          />
+        </div>
+        <div className="flex flex-col">
+          <div className="mr-4">
+            <strong>Canadianism type</strong>
+          </div>
+          <BankRadioOrCheckbox
+            type="checkbox"
+            name="canadianismType"
+            optionSetClassName="flex gap-x-2 mr-4"
+            direction="vertical"
+            conformField={fields.canadianismType}
+            options={Object.values(CanadianismTypeEnum).map(
+              (canadianismType) => ({
+                label: canadianismType,
+                value: canadianismType,
+                defaultChecked: true,
+              })
+            )}
+          />
+        </div>
+        <div>
+          <ActionButton
+            size="large"
+            name="attribute"
+            value={currentAttribute}
+            className="mx-auto w-fit"
+            formActionPath={SEARCH_PATH}
+          >
+            <FAIcon iconName="fa-search" className="mr-2" /> Search
+          </ActionButton>
         </div>
       </Form>
       <Outlet />

@@ -9,12 +9,14 @@ export function EntryImage({ image }: EntryImageProps) {
   return (
     <div className="m-5 text-center" key={image.id}>
       <img
-        className="m-3 mx-auto max-w-xl"
+        className="m-3 mx-auto max-w-xl border border-slate-300 shadow-md"
         src={image.path}
         alt={image.caption || "Caption unavailable"}
       />
       <h3>
-        <SanitizedTextSpan text={image.caption} />
+        <strong>
+          <SanitizedTextSpan text={image.caption} />
+        </strong>
       </h3>
     </div>
   )

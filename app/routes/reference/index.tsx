@@ -3,13 +3,18 @@ import { getReferences } from "~/models/reference.server"
 import { stripHtml } from "~/utils/generalUtils"
 import { useLoaderData } from "@remix-run/react"
 import SanitizedTextSpan from "~/components/SanitizedTextSpan"
+import { userHasPermission } from "~/services/auth/session.server"
+import type { LoaderArgs } from "@remix-run/server-runtime"
 
-export async function loader() {
-  return await getReferences()
+export async function loader({ request }: LoaderArgs) {
+  const references = await getReferences()
+  const canUserAddReference = await userHasPermission(request, "det:publish")
+
+  return { references, canUserAddReference }
 }
 
 export default function ReferenceIndexPage() {
-  const data = useLoaderData<typeof loader>()
+  const { references, canUserAddReference } = useLoaderData<typeof loader>()
 
   const options: Intl.CollatorOptions = {
     sensitivity: "base",
@@ -17,11 +22,13 @@ export default function ReferenceIndexPage() {
 
   return (
     <div className="flex flex-col">
-      <Link asButton to="addReference" className="w-fit">
-        Add new reference
-      </Link>
+      {canUserAddReference && (
+        <Link asButton to="addReference" className="w-fit">
+          Add new reference
+        </Link>
+      )}
       <div className="my-8 grid grid-cols-7 justify-start gap-x-4">
-        {data
+        {references
           .sort((a, b) => {
             const first = stripHtml(a.short_display)
             const second = stripHtml(b.short_display)
@@ -35,9 +42,13 @@ export default function ReferenceIndexPage() {
               <p className="col-span-5">
                 <SanitizedTextSpan text={e.reference_text} />
               </p>
-              <Link bold className="col-span-1" to={`/reference/${e.id}`}>
-                Edit
-              </Link>
+              <div className="col-span-1">
+                {canUserAddReference && (
+                  <Link bold className="col-span-1" to={`/reference/${e.id}`}>
+                    Edit
+                  </Link>
+                )}
+              </div>
             </>
           ))}
       </div>

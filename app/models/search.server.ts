@@ -1,5 +1,5 @@
 import { DEFAULT_PAGE_SIZE, calculatePageSkip } from "./entry.server"
-import type { Entry } from "@prisma/client"
+import { Prisma, type Entry } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { SearchResultEnum } from "~/routes/search/searchResultEnum"
 import { parsePageNumberOrError } from "~/utils/generalUtils"
@@ -7,60 +7,69 @@ import { parsePageNumberOrError } from "~/utils/generalUtils"
 export type { Entry } from "@prisma/client"
 
 export type AllSearchResults = {
-  Headwords?: Pick<Entry, "id" | "headword">[]
-  Meanings?: SearchResultMeaning[]
-  Canadianisms?: Canadianism[]
-  UsageNotes?: UsageNote[]
-  FistNotes?: FistNote[]
-  Quotations?: Quotation[]
+  [SearchResultEnum.HEADWORD]?: Pick<Entry, "id" | "headword">[]
+  [SearchResultEnum.MEANING]?: SearchResultMeaning[]
+  [SearchResultEnum.CANADIANISM]?: Canadianism[]
+  [SearchResultEnum.USAGE_NOTE]?: UsageNote[]
+  [SearchResultEnum.FIST_NOTE]?: FistNote[]
+  [SearchResultEnum.QUOTATION]?: Quotation[]
 }
 
 export async function getSearchResults(
   text: string,
   page: string = "1",
   caseSensitive: boolean = false,
-  attribute: string = SearchResultEnum.HEADWORD
+  attribute: string = SearchResultEnum.HEADWORD,
+  dchpVersions?: string[]
 ): Promise<AllSearchResults> {
   const pageNumber = parsePageNumberOrError(page)
   const skip: number = calculatePageSkip(pageNumber)
 
+  const versions = dchpVersions || ["dchp1", "dchp2", "dchp3"]
+
   const searchResults: AllSearchResults = {}
-  searchResults.Headwords = await getEntriesByBasicTextSearch(
+  searchResults.Headword = await getEntriesByBasicTextSearch(
     text,
     skip,
     undefined,
-    caseSensitive
+    caseSensitive,
+    versions
   )
-  searchResults.Meanings = await getSearchResultMeanings(
+  searchResults.Meaning = await getSearchResultMeanings(
     text,
     skip,
     undefined,
-    caseSensitive
+    caseSensitive,
+    versions
   )
-  searchResults.Canadianisms = await getSearchResultCanadianisms(
+  searchResults.Canadianism = await getSearchResultCanadianisms(
     text,
     skip,
     undefined,
-    caseSensitive
+    caseSensitive,
+    versions
   )
-  searchResults.UsageNotes = await getSearchResultUsageNotes(
+  searchResults.UsageNote = await getSearchResultUsageNotes(
     text,
     skip,
     undefined,
-    caseSensitive
+    caseSensitive,
+    versions
   )
-  searchResults.FistNotes = await getSearchResultFistNotes(
+  searchResults.FistNote = await getSearchResultFistNotes(
     text,
     skip,
     undefined,
-    caseSensitive
+    caseSensitive,
+    versions
   )
 
-  searchResults.Quotations = await getSearchResultQuotations(
+  searchResults.Quotation = await getSearchResultQuotations(
     text,
     skip,
     undefined,
-    caseSensitive
+    caseSensitive,
+    versions
   )
 
   return searchResults
@@ -70,7 +79,8 @@ export function getEntriesByBasicTextSearch(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
-  caseSensitive: boolean = false
+  caseSensitive: boolean = false,
+  dchpVersions: string[]
 ) {
   if (text.length === 0) {
     throw new Response(null, {
@@ -82,10 +92,11 @@ export function getEntriesByBasicTextSearch(
 
   return prisma.$queryRaw<
     Pick<Entry, "id" | "headword">[]
-  >`SELECT id, headword FROM det_entries 
-    WHERE IF(${caseSensitive}, 
-      (headword) LIKE (${searchWildcard}), 
-      LOWER(headword) LIKE LOWER(${searchWildcard}))  
+  >`SELECT id, headword FROM det_entries
+    WHERE IF(${caseSensitive},
+      (headword) LIKE (${searchWildcard}),
+      LOWER(headword) LIKE LOWER(${searchWildcard}))
+      AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
     ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
 }
 
@@ -102,7 +113,8 @@ export function getSearchResultMeanings(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
-  caseSensitive: boolean = false
+  caseSensitive: boolean = false,
+  dchpVersions?: string[]
 ): Promise<SearchResultMeaning[]> {
   if (text.length === 0) {
     throw new Response(null, {
@@ -142,7 +154,8 @@ export function getSearchResultCanadianisms(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
-  caseSensitive: boolean = false
+  caseSensitive: boolean = false,
+  dchpVersions: string[]
 ): Promise<Canadianism[]> {
   if (text.length === 0) {
     throw new Response(null, {
@@ -153,15 +166,18 @@ export function getSearchResultCanadianisms(
 
   const searchWildcard = `%${text}%`
 
-  return prisma.$queryRaw<
-    Canadianism[]
-  >`SELECT det_entries.headword as headword,
-  det_meanings.canadianism_type_comment, det_meanings.id
+  return prisma.$queryRaw<Canadianism[]>`SELECT
+    det_entries.headword as headword,
+    det_meanings.canadianism_type_comment,
+    det_meanings.id
   FROM det_meanings, det_entries
-  WHERE det_meanings.entry_id = det_entries.id AND
-  IF(${caseSensitive}, 
-    (det_meanings.canadianism_type_comment) LIKE (${searchWildcard}), 
-    LOWER(det_meanings.canadianism_type_comment) LIKE LOWER(${searchWildcard}))  
+  WHERE
+    det_meanings.entry_id = det_entries.id
+    AND IF(${caseSensitive},
+      (det_meanings.canadianism_type_comment) LIKE (${searchWildcard}),
+      LOWER(det_meanings.canadianism_type_comment) LIKE LOWER(${searchWildcard})
+    )
+    AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
   ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
@@ -177,7 +193,8 @@ export function getSearchResultUsageNotes(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
-  caseSensitive: boolean = false
+  caseSensitive: boolean = false,
+  dchpVersions: string[]
 ): Promise<UsageNote[]> {
   if (text.length === 0) {
     throw new Response(null, {
@@ -191,10 +208,11 @@ export function getSearchResultUsageNotes(
   return prisma.$queryRaw<UsageNote[]>`SELECT det_entries.headword as headword,
   det_meanings.usage, det_meanings.partofspeech, det_meanings.id
   FROM det_meanings, det_entries
-  WHERE det_meanings.entry_id = det_entries.id AND
-  IF(${caseSensitive}, 
-    (det_meanings.usage) LIKE (${searchWildcard}), 
-    LOWER(det_meanings.usage) LIKE LOWER(${searchWildcard}))  
+  WHERE det_meanings.entry_id = det_entries.id
+    AND IF(${caseSensitive},
+    (det_meanings.usage) LIKE (${searchWildcard}),
+    LOWER(det_meanings.usage) LIKE LOWER(${searchWildcard}))
+    AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
   ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
@@ -209,7 +227,8 @@ export function getSearchResultFistNotes(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
-  caseSensitive: boolean = false
+  caseSensitive: boolean = false,
+  dchpVersions: string[]
 ): Promise<FistNote[]> {
   if (text.length === 0) {
     throw new Response(null, {
@@ -223,9 +242,10 @@ export function getSearchResultFistNotes(
   // TODO: Change this
   return prisma.$queryRaw<FistNote[]>`SELECT headword, fist_note, id
   FROM det_entries
-  WHERE IF(${caseSensitive}, 
-    (fist_note) LIKE (${searchWildcard}), 
-    LOWER(fist_note) LIKE LOWER(${searchWildcard}))  
+  WHERE IF(${caseSensitive},
+    (fist_note) LIKE (${searchWildcard}),
+    LOWER(fist_note) LIKE LOWER(${searchWildcard}))
+    AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
   ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
@@ -242,7 +262,8 @@ export function getSearchResultQuotations(
   text: string,
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
-  caseSensitive: boolean = false
+  caseSensitive: boolean = false,
+  dchpVersions: string[]
 ): Promise<Quotation[]> {
   if (text.length === 0) {
     throw new Response(null, {

@@ -7,14 +7,11 @@ interface Props {
 
 const SearchResultEntries = ({ text, data }: Props) => {
   if (data === undefined || data.length === 0) {
-    return null
+    return <>No results.</>
   }
 
   return (
     <>
-      <h3 className="text-xl font-bold">
-        Entries containing &ldquo;{text}&rdquo;: {data.length}
-      </h3>
       {data.map((e) => {
         return (
           <p key={e.id}>

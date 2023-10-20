@@ -3,7 +3,7 @@ import { FULL_CITATION_SELECT } from "~/services/bank/fullCitationSelect"
 import { prisma } from "~/db.server"
 import type { BankAuthor, BankPlace, BankTitle } from "@prisma/client"
 import type { BankPrimaryKey } from "./bank.types"
-import type Nullable from "~/types/Nullable"
+import type NullOrUndefined from "~/types/NullOrUndefined"
 
 export async function getFullCitationById(citationId: string) {
   return prisma.bankCitation.findFirst({
@@ -16,8 +16,8 @@ export async function getFullCitationById(citationId: string) {
 // citation?
 // TODO: Can we easily type the return function here...?
 export function getCitationsByHeadwordAndUserId(
-  headword: Nullable<string>,
-  userId: Nullable<number>
+  headword: NullOrUndefined<string>,
+  userId: NullOrUndefined<number>
 ) {
   // if (!headword)
   //   throw new Error(`getCitationsByHeadwordAndUserId: Headword is null!`)
@@ -33,7 +33,7 @@ export function getCitationsByHeadwordAndUserId(
 
 export function getTitleBySourceId(
   sourceId: string
-): Promise<Nullable<BankTitle>> {
+): Promise<NullOrUndefined<BankTitle>> {
   return prisma.bankTitle.findFirst({
     where: { sources: { some: { id: parseInt(sourceId) } } },
   })
@@ -41,7 +41,7 @@ export function getTitleBySourceId(
 
 export function getPlaceBySourceId(
   sourceId: string
-): Promise<Nullable<BankPlace>> {
+): Promise<NullOrUndefined<BankPlace>> {
   return prisma.bankPlace.findFirst({
     where: { sources: { some: { id: parseInt(sourceId) } } },
   })
@@ -49,7 +49,7 @@ export function getPlaceBySourceId(
 
 export function getAuthorBySourceId(
   sourceId: string
-): Promise<Nullable<BankAuthor>> {
+): Promise<NullOrUndefined<BankAuthor>> {
   return prisma.bankAuthor.findFirst({
     where: { sources: { some: { id: parseInt(sourceId) } } },
   })
@@ -70,7 +70,7 @@ export async function findOrCreateHeadword(headword: string) {
   return result.id
 }
 
-export async function findOrCreateAuthor(author: Nullable<string>) {
+export async function findOrCreateAuthor(author: NullOrUndefined<string>) {
   if (!author) return null
 
   // We are doing this using queryRaw because we MUST have the query be
@@ -85,7 +85,7 @@ export async function findOrCreateAuthor(author: Nullable<string>) {
   return result.id
 }
 
-export async function findOrCreatePlace(place: Nullable<string>) {
+export async function findOrCreatePlace(place: NullOrUndefined<string>) {
   if (!place) return null
 
   // We are doing this using queryRaw because we MUST have the query be
@@ -100,7 +100,7 @@ export async function findOrCreatePlace(place: Nullable<string>) {
   return result.id
 }
 
-export async function findOrCreateTitle(title: Nullable<string>) {
+export async function findOrCreateTitle(title: NullOrUndefined<string>) {
   if (!title) return null
 
   // We are doing this using queryRaw because we MUST have the query be

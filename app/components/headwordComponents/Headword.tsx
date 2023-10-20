@@ -13,7 +13,7 @@ interface HeadwordProps {
   generalLabels?: string
   handNote?: string
   hasDagger?: boolean
-  isLegacy: boolean
+  dchpVersion: string | null
   isNonCanadian?: boolean
   word: string
   id: number
@@ -27,7 +27,7 @@ const Headword = ({
   generalLabels,
   handNote,
   hasDagger,
-  isLegacy,
+  dchpVersion,
   isNonCanadian,
   word,
   logEntries,
@@ -51,7 +51,7 @@ const Headword = ({
           <Etymology etymology={etymology} />
           <GeneralLabels generalLabels={generalLabels} />
         </div>
-        <DictionaryVersion isLegacy={isLegacy} logEntries={logEntries} />
+        <DictionaryVersion dchpVersion={dchpVersion} logEntries={logEntries} />
       </div>
       <Alternatives alternatives={alternatives} />
 

@@ -25,6 +25,7 @@
     "resolveJsonModule": true,
     "target": "ES2021",
     "strict": true,
+    "strictNullChecks": true,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",

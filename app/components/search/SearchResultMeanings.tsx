@@ -8,15 +8,11 @@ interface Props {
 
 const SearchResultMeanings = ({ text, data }: Props) => {
   if (data === undefined || data.length === 0) {
-    return null
+    return <>No results.</>
   }
 
   return (
     <>
-      <h3 className="text-xl font-bold">
-        Meanings containing &ldquo;{text}&rdquo;: &nbsp;
-        {data.length}
-      </h3>
       {data.map((e) => {
         return (
           <div className="m-1" key={"MeaningDiv" + e.id}>

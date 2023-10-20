@@ -1,6 +1,6 @@
 import { BankLegacyTypeEnum, BankSourceTypeEnum } from "~/models/bank.types"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
-import { enumToSelectOptions } from "~/utils/inputUtils"
+import { enumToOptions } from "~/utils/inputUtils"
 import { Form } from "@remix-run/react"
 import { getStringFromFormInput } from "~/utils/generalUtils"
 import { json, redirect } from "@remix-run/server-runtime"
@@ -79,7 +79,7 @@ export default function SearchIndex() {
               name="exactPhrase"
               className="flex"
               optionSetClassName="flex gap-x-2 mr-4"
-              options={[{ name: "Exact phrase", value: "exactPhrase" }]}
+              options={[{ label: "Exact phrase", value: "exactPhrase" }]}
             />
             <BankRadioOrCheckbox
               type="checkbox"
@@ -88,7 +88,7 @@ export default function SearchIndex() {
               optionSetClassName="flex gap-x-2 mr-4"
               options={[
                 {
-                  name: "Case sensitive [not implemented]",
+                  label: "Case sensitive [not implemented]",
                   value: "caseSensitive",
                 },
               ]}
@@ -102,8 +102,8 @@ export default function SearchIndex() {
           <BankSelect
             name="searchField"
             options={[
-              { name: "Citation (Full Text)", value: "citation" },
-              { name: "Headword", value: "headword" },
+              { label: "Citation (Full Text)", value: "citation" },
+              { label: "Headword", value: "headword" },
             ]}
           />
         }
@@ -114,8 +114,8 @@ export default function SearchIndex() {
           <BankSelect
             name="legacyType"
             options={[
-              { name: "All", value: "all" },
-              ...enumToSelectOptions(BankLegacyTypeEnum),
+              { label: "All", value: "all" },
+              ...enumToOptions(BankLegacyTypeEnum),
             ]}
           />
         }
@@ -126,8 +126,8 @@ export default function SearchIndex() {
           <BankSelect
             name="sourceType"
             options={[
-              { name: "All", value: "all" },
-              ...enumToSelectOptions(BankSourceTypeEnum),
+              { label: "All", value: "all" },
+              ...enumToOptions(BankSourceTypeEnum),
             ]}
           />
         }
@@ -151,9 +151,9 @@ export default function SearchIndex() {
             name="orderBy"
             defaultValue={"year"}
             options={[
-              { name: "Date Added", value: "dateAdded" },
-              { name: "Year Published / Composed", value: "year" },
-              { name: "Place", value: "place" },
+              { label: "Date Added", value: "dateAdded" },
+              { label: "Year Published / Composed", value: "year" },
+              { label: "Place", value: "place" },
             ]}
           />
         }
@@ -168,8 +168,8 @@ export default function SearchIndex() {
             name="orderDirection"
             defaultValue={"asc"}
             options={[
-              { name: "Ascending", value: "asc" },
-              { name: "Descending", value: "desc" },
+              { label: "Ascending", value: "asc" },
+              { label: "Descending", value: "desc" },
             ]}
           />
         }
@@ -184,11 +184,11 @@ export default function SearchIndex() {
             name="horizon"
             defaultValue="all"
             options={[
-              { name: "All", value: "all" },
-              { name: "5", value: "5" },
-              { name: "10", value: "10" },
-              { name: "15", value: "15" },
-              { name: "25", value: "25" },
+              { label: "All", value: "all" },
+              { label: "5", value: "5" },
+              { label: "10", value: "10" },
+              { label: "15", value: "15" },
+              { label: "25", value: "25" },
             ]}
           />
         }

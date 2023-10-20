@@ -1,3 +1,4 @@
+import FAIcon from "../Icons/FAIcon"
 import Button from "./Button"
 import type { ButtonProps } from "./Button"
 
@@ -12,7 +13,7 @@ export default function IconButton({
 }: IconButtonProps) {
   return (
     <Button {...rest}>
-      <i className={`fas ${iconName}`} />
+      <FAIcon iconName={iconName} />
       {children}
     </Button>
   )

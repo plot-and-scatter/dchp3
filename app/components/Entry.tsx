@@ -33,7 +33,7 @@ const Entry = ({ entry, canUserEditEntry }: EntryProps): JSX.Element => {
           handNote={entry.fist_note || ""}
           hasDagger={entry.dagger}
           etymology={entry.etymology || ""}
-          isLegacy={entry.is_legacy}
+          dchpVersion={entry.dchp_version}
           isNonCanadian={entry.no_cdn_conf}
           logEntries={entry.logEntries}
           showEditButton={canUserEditEntry}

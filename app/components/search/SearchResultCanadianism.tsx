@@ -8,18 +8,14 @@ interface Props {
 
 const SearchResultCanadianism = ({ text, data }: Props) => {
   if (data === undefined || data.length === 0) {
-    return null
+    return <>No results.</>
   }
 
   return (
     <>
-      <h3 className="text-xl font-bold">
-        Canadianism Type Description containing &ldquo;{text}&rdquo;:{" "}
-        {data.length}
-      </h3>
       {data.map((e) => {
         return (
-          <div className="my-2 flex flex-col" key={e.id}>
+          <div className="mb-2 flex flex-col" key={e.id}>
             <Link
               to={`/entries/${e.headword}`}
               className="font-bold text-red-600 hover:text-red-400"
