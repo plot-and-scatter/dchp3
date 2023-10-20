@@ -18,18 +18,25 @@ import BankEditCitationFields from "~/components/bank/BankEditCitationFields"
 import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
 import Button from "~/components/elements/LinksAndButtons/Button"
 
+export const emptyStringToNull = z
+  .string()
+  .nullish()
+  .transform((x) => {
+    return x === undefined ? null : x
+  })
+
 export const bankCitationFormDataSchema = z.object({
   citation: z.object({
     headword: z.string().min(1, "Headword must be at least one character long"),
     clip_end: z.number().min(0),
     clip_start: z.number().min(0),
-    clipped_text: z.string().optional().nullable(),
+    clipped_text: emptyStringToNull,
     legacy_id: z.number().min(0),
-    memo: z.string().optional().nullable(),
-    part_of_speech: z.string().optional().nullable(),
-    short_meaning: z.string().optional().nullable(),
-    spelling_variant: z.string().optional().nullable(),
-    text: z.string().optional().nullable(),
+    memo: emptyStringToNull,
+    part_of_speech: emptyStringToNull,
+    short_meaning: emptyStringToNull,
+    spelling_variant: emptyStringToNull,
+    text: emptyStringToNull,
     is_incomplete: z
       .union([z.literal("true"), z.literal("false")])
       .optional()
@@ -38,38 +45,32 @@ export const bankCitationFormDataSchema = z.object({
   }),
   source: z.object({
     id: z.number().optional(),
-    dateline: z.string().optional(),
-    editor: z.string().optional(),
-    evidence: z.string().optional(),
-    page: z.string().optional(),
-    periodical_date: z.string().optional(),
-    publisher: z.string().optional(),
+    dateline: emptyStringToNull,
+    editor: emptyStringToNull,
+    evidence: emptyStringToNull,
+    page: emptyStringToNull,
+    periodical_date: emptyStringToNull,
+    publisher: emptyStringToNull,
     type_id: z.number().min(0),
-    url_access_date: z.string().optional(),
-    url: z.string().optional(),
-    utterance_broadcast: z.string().optional(),
-    utterance_media: z.string().optional(),
-    utterance_time: z.string().optional(),
-    utterance_witness: z.string().optional(),
-    uttered: z.string().optional(),
-    volume_issue: z.string().optional(),
-    year_composed: z.string().optional(),
-    year_published: z.string().optional(),
+    url_access_date: emptyStringToNull,
+    url: emptyStringToNull,
+    utterance_broadcast: emptyStringToNull,
+    utterance_media: emptyStringToNull,
+    utterance_time: emptyStringToNull,
+    utterance_witness: emptyStringToNull,
+    uttered: emptyStringToNull,
+    volume_issue: emptyStringToNull,
+    year_composed: emptyStringToNull,
+    year_published: emptyStringToNull,
   }),
-  [`author`]: z.string().optional(),
-  [`place`]: z.string().optional(),
-  [`title`]: z.string().optional(),
+  [`author`]: emptyStringToNull,
+  [`place`]: emptyStringToNull,
+  [`title`]: emptyStringToNull,
 })
 
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData()
-
-  console.log("formData", formData)
-
   const submission = parse(formData, { schema: bankCitationFormDataSchema })
-
-  console.log("=----=---- submission", submission)
-
   if (submission.intent !== "submit" || !submission.value) {
     return json(submission)
   }

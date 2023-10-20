@@ -24,8 +24,6 @@ export default function BankInput({
   const error = conformField?.errors
   const hasErrors = !!conformField?.errors && conformField?.errors.length > 0
 
-  // console.log("...rest", name, rest)
-
   return (
     <>
       <input

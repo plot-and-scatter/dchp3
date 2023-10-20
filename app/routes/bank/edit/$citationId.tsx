@@ -28,13 +28,7 @@ import { useFieldset, useForm } from "@conform-to/react"
 
 export const action = async ({ request, params }: ActionArgs) => {
   const formData = await request.formData()
-
-  console.log("formData", formData)
-
   const submission = parse(formData, { schema: bankCitationFormDataSchema })
-
-  console.log("=----=---- submission", submission)
-
   if (submission.intent !== "submit" || !submission.value) {
     return json(submission)
   }
