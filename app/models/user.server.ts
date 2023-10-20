@@ -1,10 +1,14 @@
-import type { User } from "@prisma/client"
+import type { User, LogEntry } from "@prisma/client"
 import { redirect } from "@remix-run/server-runtime"
 import { NOT_ALLOWED_PATH } from "utils/paths"
 import { prisma } from "~/db.server"
 import { getEmailFromSession } from "~/services/auth/session.server"
 
 export type { Entry } from "@prisma/client"
+export type LogEntries = (LogEntry & {
+  entry: { headword: string } | null
+})[]
+export type { User } from "@prisma/client"
 
 export const DEFAULT_PAGE_SIZE = 100
 
@@ -44,4 +48,41 @@ export async function redirectIfUserLacksEntry(
 ) {
   if (await userOwnsEntry(request, headword)) return
   throw redirect(`${NOT_ALLOWED_PATH}`)
+}
+
+export async function getAllUsers() {
+  return prisma.user.findMany({
+    where: {
+      NOT: [
+        {
+          email: null,
+        },
+      ],
+    },
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+    },
+  })
+}
+
+export async function getEntriesByUserEmail(
+  email: string
+): Promise<LogEntries> {
+  const userId = await getUserIdByEmailOrThrow({ email })
+
+  return prisma.logEntry.findMany({
+    where: {
+      user_id: userId,
+    },
+    include: {
+      entry: {
+        select: {
+          headword: true,
+        },
+      },
+    },
+  })
 }
