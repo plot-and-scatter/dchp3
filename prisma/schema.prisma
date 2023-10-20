@@ -215,7 +215,7 @@ model LogEntry {
   user_id  Int
   created  DateTime @db.DateTime(0)
   headword String?  @db.VarChar(255)
-  entry    Entry    @relation(fields: [entry_id], references: [id])
+  entry    Entry?    @relation(fields: [entry_id], references: [id])
 
   @@index([entry_id, headword], map: "entry_id_idxfk")
   @@map("det_log_entries")

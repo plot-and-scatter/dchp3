@@ -1,9 +1,9 @@
-import { useField } from "remix-validated-form"
 import type { BankInputProps } from "./BankInput"
 import type { BankInputOption } from "./BankInputOption"
 import ValidationErrorText from "../elements/Form/ValidationErrorText"
 
 type BankCheckboxProps = BankInputProps & {
+  conformField?: any
   options: BankInputOption[]
   optionSetClassName?: string
   direction?: "horizontal" | "vertical"
@@ -12,6 +12,7 @@ type BankCheckboxProps = BankInputProps & {
 
 export default function BankRadioOrCheckbox(props: BankCheckboxProps) {
   const {
+    conformField,
     className,
     name,
     options,
@@ -20,7 +21,9 @@ export default function BankRadioOrCheckbox(props: BankCheckboxProps) {
     direction = "horizontal",
     ...rest
   } = props
-  const { error, getInputProps } = useField(name)
+
+  const error = conformField?.errors
+  const hasErrors = !!conformField?.errors && conformField?.errors.length > 0
 
   return (
     <div className={className}>
@@ -36,14 +39,13 @@ export default function BankRadioOrCheckbox(props: BankCheckboxProps) {
                 defaultChecked={defaultChecked || value === defaultValue}
                 name={name}
                 {...rest}
-                {...getInputProps({ id: idKey })}
               />
               <label htmlFor={idKey}>{label || <>&nbsp;</>}</label>
             </span>
           )
         })}
       </div>
-      {error && <ValidationErrorText>{error}</ValidationErrorText>}
+      {hasErrors && <ValidationErrorText>{error}</ValidationErrorText>}
     </div>
   )
 }

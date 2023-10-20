@@ -16,7 +16,7 @@ export default function Login() {
 
   return (
     <TextPageMain>
-      <PageHeader>Log in</PageHeader>
+      <PageHeader>Admin log in</PageHeader>
       <div className="my-10">
         <LoginButton />
       </div>

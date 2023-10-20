@@ -7,11 +7,9 @@ import {
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { redirect } from "@remix-run/node"
 import { type AllSearchResults, getSearchResults } from "~/models/search.server"
-import Button from "~/components/elements/LinksAndButtons/Button"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
-import { PageHeader } from "~/components/elements/PageHeader"
 import { SecondaryHeader } from "~/components/elements/SecondaryHeader"
 
 export async function action({ request, params }: ActionArgs) {

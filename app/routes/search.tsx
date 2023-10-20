@@ -1,45 +1,50 @@
-import { Outlet, useParams, useSearchParams } from "@remix-run/react"
+import {
+  Form,
+  Outlet,
+  useActionData,
+  useParams,
+  useSearchParams,
+} from "@remix-run/react"
 import { PageHeader } from "~/components/elements/PageHeader"
 import { SearchResultEnum } from "./search/searchResultEnum"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
-import { type ActionArgs, redirect } from "@remix-run/server-runtime"
-import { ValidatedForm, validationError } from "remix-validated-form"
-import { withZod } from "@remix-validated-form/with-zod"
+import { type ActionArgs, redirect, json } from "@remix-run/server-runtime"
 import { z } from "zod"
 import ActionButton from "~/components/elements/LinksAndButtons/ActionButton"
 import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
 import FAIcon from "~/components/elements/Icons/FAIcon"
 import Main from "~/components/elements/Main"
 import BankInput from "~/components/bank/BankInput"
-import { zfd } from "zod-form-data"
+import { useForm } from "@conform-to/react"
+import { parse } from "@conform-to/zod"
 
 const searchActionSchema = z.object({
-  searchTerm: z.string().min(1, "Search term must be one or more characters"),
-  database: zfd.repeatable(
-    z.array(z.string()).min(1, "You must select at least one database")
-  ),
-  canadianismType: zfd.repeatable(
-    z.array(z.string()).min(1, "You must select at least one Canadianism type")
-  ),
-  caseSensitive: zfd.checkbox(),
-  attribute: zfd.repeatable(
-    z.array(z.string()).min(1, "You must select at least one data type")
-  ),
+  searchTerm: z
+    .string()
+    .min(1, "Search term must be one or more characters (use * to search all)"),
+  database: z.array(z.string()).min(1, "You must select at least one database"),
+  canadianismType: z
+    .array(z.string())
+    .min(1, "You must select at least one Canadianism type"),
+  caseSensitive: z.boolean(),
+  attribute: z
+    .array(z.string())
+    .min(1, "You must select at least one data type"),
 })
 
-const formValidator = withZod(searchActionSchema)
-
 export async function action({ request }: ActionArgs) {
-  const result = await formValidator.validate(await request.formData())
+  const formData = await request.formData()
 
-  if (result.error) {
-    return validationError(result.error)
+  const submission = parse(formData, { schema: searchActionSchema })
+
+  if (submission.intent !== "submit" || !submission.value) {
+    return json(submission)
   }
 
   // TODO: Is there an easier way to directly translate these validated form
   // data params into URL search params? Seems unnecessarily bloated.
   const { searchTerm, database, caseSensitive, attribute, canadianismType } =
-    result.data
+    submission.value
 
   const base = new URL(request.url)
   const url = new URL(`/search/${searchTerm}`, base)
@@ -61,15 +66,22 @@ export default function SearchPage() {
   const params = useParams<{ searchTerm?: string }>()
   const currentAttribute = searchParams.get("attribute") ?? SearchResultEnum.ALL
 
+  const lastSubmission = useActionData<typeof action>()
+
+  const [form, fields] = useForm({
+    lastSubmission,
+    shouldValidate: "onInput", // Run the same validation logic on client
+    onValidate({ formData }) {
+      return parse(formData, { schema: searchActionSchema })
+    },
+  })
+
+  console.log("form", form, "fields", fields)
+
   return (
     <Main center>
       <PageHeader>Search entries</PageHeader>
-      <ValidatedForm
-        validator={formValidator}
-        className="flex flex-row gap-8"
-        method="post"
-        action={SEARCH_PATH}
-      >
+      <Form {...form.props} className="flex flex-row gap-8" method="post">
         <div className="flex flex-row gap-4">
           <div className="flex flex-col gap-2">
             <BankInput
@@ -78,12 +90,14 @@ export default function SearchPage() {
               className="border border-slate-700 p-2 text-2xl"
               name="searchTerm"
               defaultValue={params.searchTerm}
+              conformField={fields.searchTerm}
             />
             <div className="whitespace-nowrap">
               <BankRadioOrCheckbox
                 type="checkbox"
                 name="caseSensitive"
                 optionSetClassName="flex gap-x-2 mr-4"
+                conformField={fields.caseSensitive}
                 options={[
                   {
                     label: "Case sensitive",
@@ -104,6 +118,7 @@ export default function SearchPage() {
             name="database"
             optionSetClassName="flex gap-x-2 mr-4"
             direction="vertical"
+            conformField={fields.database}
             options={[
               { label: "DCHP-1", value: "dchp1", defaultChecked: true },
               { label: "DCHP-2", value: "dchp2", defaultChecked: true },
@@ -120,6 +135,7 @@ export default function SearchPage() {
             name="canadianismType"
             optionSetClassName="flex gap-x-2 mr-4"
             direction="vertical"
+            conformField={fields.canadianismType}
             options={Object.values(CanadianismTypeEnum).map(
               (canadianismType) => ({
                 label: canadianismType,
@@ -140,7 +156,7 @@ export default function SearchPage() {
             <FAIcon iconName="fa-search" className="mr-2" /> Search
           </ActionButton>
         </div>
-      </ValidatedForm>
+      </Form>
       <Outlet />
     </Main>
   )

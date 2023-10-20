@@ -11,11 +11,16 @@ import BankRadioOrCheckbox from "./BankRadioOrCheckbox"
 
 export type BankEditCitationFieldsProps = {
   citation?: SerializeFrom<EditCitationIdLoaderData["citation"]>
+  //conformFields?: Fieldset<z.infer<typeof BankCreateFormDataSchema>>
+  citationFields?: any
 }
 
 export default function BankEditCitationFields({
+  citationFields,
   citation,
 }: BankEditCitationFieldsProps) {
+  console.log("citationFields", citationFields)
+
   return (
     <>
       {citation?.id && <LabelledField label={`ID`} field={citation.id} />}
@@ -23,6 +28,7 @@ export default function BankEditCitationFields({
         label={`Headword`}
         field={
           <BankInput
+            conformField={citationFields?.headword}
             name="citation.headword"
             defaultValue={citation?.headword?.headword}
           />
@@ -32,6 +38,7 @@ export default function BankEditCitationFields({
         label={`Short Meaning`}
         field={
           <BankTextArea
+            conformField={citationFields?.short_meaning}
             name="citation.short_meaning"
             defaultValue={citation?.short_meaning}
           />

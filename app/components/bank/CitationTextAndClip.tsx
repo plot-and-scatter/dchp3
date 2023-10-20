@@ -68,6 +68,7 @@ export default function CitationTextAndClip({
               name={`citation.clipped_text`}
               hidden
               value={citationText.substring(clipStart, clipEnd)}
+              readOnly
             />
             <code style={{ fontFamily: "Charter, Georgia, serif" }}>
               {citationText.substring(0, clipStart)}
