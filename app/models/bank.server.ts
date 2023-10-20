@@ -3,7 +3,7 @@ import { FULL_CITATION_SELECT } from "~/services/bank/fullCitationSelect"
 import { prisma } from "~/db.server"
 import type { BankAuthor, BankPlace, BankTitle } from "@prisma/client"
 import type { BankPrimaryKey } from "./bank.types"
-import type NullOrUndefined from "~/types/Nullable"
+import type NullOrUndefined from "~/types/NullOrUndefined"
 
 export async function getFullCitationById(citationId: string) {
   return prisma.bankCitation.findFirst({
