@@ -1,29 +1,38 @@
 import React from "react"
 import { type User } from "~/models/user.server"
-import { Link } from "../elements/LinksAndButtons/Link"
+import UserListSection from "./UserListSection"
 
 interface UserListProps {
-  users?: Pick<User, "first_name" | "last_name" | "id" | "email">[]
+  users?: User[]
+}
+
+function isAccessLevel(user: User, level: number) {
+  if (user === null) return false
+  return user.access_level === level
 }
 
 const UserList = ({ users }: UserListProps) => {
   if (users === undefined) return <></>
 
+  // display: 1. Student / Editor, 2. Research Assistant, 3. Superadmin
   return (
     <div className="flex flex-col">
-      <h2 className="text-3xl">Other Users</h2>
-      <div className="grid grid-cols-3">
-        {users?.map((user) => {
-          if (!user || !user.email) return <></>
-          return (
-            <React.Fragment key={user.id}>
-              <Link to={`/profile/${user.email}`}>
-                <p> {user.first_name + " " + user.last_name}</p>
-              </Link>
-            </React.Fragment>
-          )
-        })}
-      </div>
+      <UserListSection
+        header="Superadmin"
+        users={users.filter((user) => isAccessLevel(user, 1))}
+      />
+      <UserListSection
+        header="Research Assistant"
+        users={users.filter((user) => isAccessLevel(user, 2))}
+      />
+      <UserListSection
+        header="Student / Editor"
+        users={users.filter((user) => isAccessLevel(user, 3))}
+      />
+      <UserListSection
+        header="Display"
+        users={users.filter((user) => isAccessLevel(user, 0))}
+      />
     </div>
   )
 }
