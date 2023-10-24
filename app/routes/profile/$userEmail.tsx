@@ -17,10 +17,11 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const email = params.userEmail ?? ""
   const user = await getUserByEmailSafe({ email })
-  const users = await getAllUsers()
   const entries = await getEntriesByUserEmail(email)
-
   const displayUsers = await userHasPermission(request, "det:viewUsers")
+
+  let users = undefined
+  if (displayUsers) users = await getAllUsers()
 
   if (!user) {
     throw new Response(null, {
@@ -42,7 +43,7 @@ export default function Profile() {
     <Main center={true}>
       <ProfileHeader user={data.user} />
       <div className="m-6 flex">
-        <UserList displayUsers={data.displayUsers} users={data.users} />
+        <UserList users={data.users} />
         <EntryList logEntries={data.entries} />
       </div>
     </Main>

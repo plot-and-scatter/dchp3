@@ -3,12 +3,11 @@ import { type User } from "~/models/user.server"
 import { Link } from "../elements/LinksAndButtons/Link"
 
 interface UserListProps {
-  displayUsers: boolean
-  users: Pick<User, "first_name" | "last_name" | "id" | "email">[]
+  users?: Pick<User, "first_name" | "last_name" | "id" | "email">[]
 }
 
-const UserList = ({ displayUsers, users }: UserListProps) => {
-  if (!displayUsers) return <></>
+const UserList = ({ users }: UserListProps) => {
+  if (users === undefined) return <></>
 
   return (
     <div className="flex flex-col">
