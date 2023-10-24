@@ -58,6 +58,9 @@ export async function getAllUsers() {
           email: null,
         },
       ],
+      access_level: {
+        gt: 1,
+      },
     },
     select: {
       id: true,

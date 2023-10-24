@@ -10,14 +10,17 @@ import {
   getEntriesByUserEmail,
   getUserByEmailSafe,
 } from "~/models/user.server"
+import { userHasPermission } from "~/services/auth/session.server"
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ request, params }: LoaderArgs) {
   // TODO: check to see if you have perms
 
   const email = params.userEmail ?? ""
   const user = await getUserByEmailSafe({ email })
   const users = await getAllUsers()
   const entries = await getEntriesByUserEmail(email)
+
+  const displayUsers = await userHasPermission(request, "det:viewUsers")
 
   if (!user) {
     throw new Response(null, {
@@ -26,7 +29,7 @@ export async function loader({ params }: LoaderArgs) {
     })
   }
 
-  return { user, users, entries }
+  return { user, users, entries, displayUsers }
 }
 
 type loaderData = Prisma.PromiseReturnType<typeof loader>
@@ -39,7 +42,7 @@ export default function Profile() {
     <Main center={true}>
       <ProfileHeader user={data.user} />
       <div className="m-6 flex">
-        <UserList users={data.users} />
+        <UserList displayUsers={data.displayUsers} users={data.users} />
         <EntryList logEntries={data.entries} />
       </div>
     </Main>
