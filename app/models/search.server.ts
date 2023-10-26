@@ -6,6 +6,8 @@ import { parsePageNumberOrError } from "~/utils/generalUtils"
 
 export type { Entry } from "@prisma/client"
 
+export const SEARCH_WILDCARD = "*"
+
 export type AllSearchResults = {
   [SearchResultEnum.HEADWORD]?: Pick<Entry, "id" | "headword">[]
   [SearchResultEnum.MEANING]?: SearchResultMeaning[]
@@ -88,7 +90,7 @@ export function getEntriesByBasicTextSearch(
       statusText: `Text length must be greater than zero`,
     })
   }
-  const searchWildcard = `%${text}%`
+  const searchWildcard = text === SEARCH_WILDCARD ? "%" : `%${text}%`
 
   return prisma.$queryRaw<Pick<Entry, "id" | "headword">[]>`
   SELECT id, headword FROM det_entries
@@ -128,7 +130,7 @@ export function getSearchResultMeanings(
         is_public: true,
       },
       definition: {
-        contains: text,
+        contains: text === SEARCH_WILDCARD ? "" : text,
       },
     },
     select: {
@@ -166,7 +168,7 @@ export function getSearchResultCanadianisms(
     })
   }
 
-  const searchWildcard = `%${text}%`
+  const searchWildcard = text === SEARCH_WILDCARD ? "%" : `%${text}%`
 
   return prisma.$queryRaw<Canadianism[]>`SELECT
     det_entries.headword as headword,
@@ -206,7 +208,7 @@ export function getSearchResultUsageNotes(
     })
   }
 
-  const searchWildcard = `%${text}%`
+  const searchWildcard = text === SEARCH_WILDCARD ? "%" : `%${text}%`
 
   return prisma.$queryRaw<UsageNote[]>`SELECT det_entries.headword as headword,
   det_meanings.usage, det_meanings.partofspeech, det_meanings.id
@@ -241,7 +243,7 @@ export function getSearchResultFistNotes(
     })
   }
 
-  const searchWildcard = `%${text}%`
+  const searchWildcard = text === SEARCH_WILDCARD ? "%" : `%${text}%`
 
   // TODO: Change this
   return prisma.$queryRaw<FistNote[]>`SELECT headword, fist_note, id
@@ -277,7 +279,7 @@ export function getSearchResultQuotations(
     })
   }
 
-  const searchWildcard = `%${text}%`
+  const searchWildcard = text === SEARCH_WILDCARD ? "%" : `%${text}%`
 
   return prisma.bankCitation.findMany({
     where: {
