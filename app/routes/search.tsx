@@ -26,7 +26,7 @@ const searchActionSchema = z.object({
   canadianismType: z
     .array(z.string())
     .min(1, "You must select at least one Canadianism type"),
-  caseSensitive: z.boolean(),
+  caseSensitive: z.boolean().nullish(),
   attribute: z
     .array(z.string())
     .min(1, "You must select at least one data type"),
