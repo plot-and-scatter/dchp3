@@ -8,7 +8,7 @@ import type { LoaderArgs } from "@remix-run/server-runtime"
 
 export async function loader({ request }: LoaderArgs) {
   const references = await getReferences()
-  const canUserAddReference = await userHasPermission(request, "det:publish")
+  const canUserAddReference = await userHasPermission(request, "det:editAny")
 
   return { references, canUserAddReference }
 }
