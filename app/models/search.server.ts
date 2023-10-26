@@ -90,14 +90,13 @@ export function getEntriesByBasicTextSearch(
   }
   const searchWildcard = `%${text}%`
 
-  return prisma.$queryRaw<
-    Pick<Entry, "id" | "headword">[]
-  >`SELECT id, headword FROM det_entries
-    WHERE IF(${caseSensitive},
-      (headword) LIKE (${searchWildcard}),
-      LOWER(headword) LIKE LOWER(${searchWildcard}))
-      AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
-    ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
+  return prisma.$queryRaw<Pick<Entry, "id" | "headword">[]>`
+  SELECT id, headword FROM det_entries
+  WHERE IF(${caseSensitive}, (headword) LIKE (${searchWildcard}), LOWER(headword) LIKE LOWER(${searchWildcard}))
+  AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
+  AND (det_entries.is_public = 1)
+  ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}
+  `
 }
 
 export interface SearchResultMeaning {
@@ -125,6 +124,9 @@ export function getSearchResultMeanings(
 
   return prisma.meaning.findMany({
     where: {
+      entry: {
+        is_public: true,
+      },
       definition: {
         contains: text,
       },
@@ -178,6 +180,7 @@ export function getSearchResultCanadianisms(
       LOWER(det_meanings.canadianism_type_comment) LIKE LOWER(${searchWildcard})
     )
     AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
+    AND det_entries.is_public = 1
   ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
@@ -213,6 +216,7 @@ export function getSearchResultUsageNotes(
     (det_meanings.usage) LIKE (${searchWildcard}),
     LOWER(det_meanings.usage) LIKE LOWER(${searchWildcard}))
     AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
+    AND det_entries.is_public = 1
   ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
@@ -246,6 +250,7 @@ export function getSearchResultFistNotes(
     (fist_note) LIKE (${searchWildcard}),
     LOWER(fist_note) LIKE LOWER(${searchWildcard}))
     AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
+    AND det_entries.is_public = 1
   ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
