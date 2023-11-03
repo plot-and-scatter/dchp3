@@ -1,16 +1,42 @@
 import clsx from "clsx"
 import { Link } from "../elements/LinksAndButtons/Link"
 
+const buildUrl = (
+  baseLink: string,
+  pageNumber: number,
+  useSearch?: string,
+  url?: string
+) => {
+  if (!useSearch) {
+    return `${baseLink}/${pageNumber}`
+  } else {
+    if (!url)
+      throw new Error(
+        `Can't use PaginationControl in useSearch mode without supplying url`
+      )
+    const _url = new URL(url)
+    _url.searchParams.set(useSearch, String(pageNumber))
+
+    console.log(_url, String(_url))
+
+    return String(_url)
+  }
+}
+
 type PaginationControlProps = {
   baseLink: string
   currentPage: number
   pageCount: number
+  useSearch?: string
+  url?: string
 }
 
 export default function PaginationControl({
   baseLink,
   currentPage,
   pageCount,
+  useSearch,
+  url,
 }: PaginationControlProps) {
   const showPrevious = currentPage > 1
   const showNext = currentPage < pageCount
@@ -21,7 +47,7 @@ export default function PaginationControl({
     middlePageLinks.push(
       <Link
         key={`page-link-${pageNumber}`}
-        to={`${baseLink}/${pageNumber}`}
+        to={buildUrl(baseLink, pageNumber, useSearch, url)}
         className={clsx(
           "block px-2 py-1",
           pageNumber === currentPage && " bg-red-700 font-bold text-white"
@@ -68,7 +94,7 @@ export default function PaginationControl({
       <Link
         buttonVariant="outline"
         asButton
-        to={`${baseLink}/${currentPage - 1}`}
+        to={buildUrl(baseLink, currentPage - 1, useSearch, url)}
         className={showPrevious ? "visible" : "invisible"}
       >
         &larr; Previous page
@@ -79,7 +105,7 @@ export default function PaginationControl({
       <Link
         buttonVariant="outline"
         asButton
-        to={`${baseLink}/${currentPage + 1}`}
+        to={buildUrl(baseLink, currentPage + 1, useSearch, url)}
         className={showNext ? "visible" : "invisible"}
       >
         Next page &rarr;
