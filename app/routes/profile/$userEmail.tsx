@@ -4,7 +4,6 @@ import { type LoaderArgs } from "@remix-run/server-runtime"
 import Main from "~/components/elements/Main"
 import EntryList from "~/components/profile/EntryList"
 import ProfileHeader from "~/components/profile/ProfileHeader"
-import UserList from "~/components/profile/UserList"
 import {
   getAllUsers,
   getEntryLogsByUserEmail,
@@ -43,7 +42,6 @@ export default function Profile() {
     <Main center={true}>
       <ProfileHeader user={data.user} />
       <div className="m-6 flex">
-        <UserList users={data.users} />
         <EntryList logEntries={data.entries} />
       </div>
     </Main>
