@@ -59,6 +59,7 @@ export const authenticator = () => {
             first_name: firstName,
             last_name: lastName.join(" "),
             email,
+            is_active: 1,
           },
         })
 
@@ -70,6 +71,14 @@ export const authenticator = () => {
             { status: 500 }
           )
         }
+      } else {
+        // User exists, we just need to update their is_active status.
+        user = await prisma.user.update({
+          where: { email },
+          data: {
+            is_active: 1,
+          },
+        })
       }
 
       return {
