@@ -8,6 +8,12 @@ import { calculatePageSkip } from "./entry.server"
 export type { Entry } from "@prisma/client"
 export type LogEntries = (LogEntry & {
   entry: { headword: string } | null
+} & {
+  user: {
+    first_name: string | null
+    last_name: string | null
+    email: string | null
+  } | null
 })[]
 export type { User } from "@prisma/client"
 
@@ -78,6 +84,13 @@ export async function getEntryLogsByUserEmail(
           headword: true,
         },
       },
+      user: {
+        select: {
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
     },
   })
 }
@@ -96,6 +109,13 @@ export async function getAllEntryLogsByPage(
       entry: {
         select: {
           headword: true,
+        },
+      },
+      user: {
+        select: {
+          first_name: true,
+          last_name: true,
+          email: true,
         },
       },
     },

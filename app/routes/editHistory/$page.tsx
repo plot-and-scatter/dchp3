@@ -81,7 +81,7 @@ export default function EditPage() {
           Next page
         </Link>
       </div>
-      <div className="grid grid-cols-12">
+      <div className="grid grid-cols-10 gap-x-2">
         {data.entryLogs.map((e) => {
           return (
             <React.Fragment key={e.id}>
@@ -92,12 +92,14 @@ export default function EditPage() {
               >
                 {e.entry?.headword ?? `Deleted entry: ${e.entry_id}`}
               </Link>
-              <p className="col-span-1"></p>
-              <p className="col-span-1">User:</p>
-              <p className="col-span-3">{"test user"}</p>
-              <p className="col-span-1">Edited:</p>
               <p className="col-span-3">
-                {new Date(e.created).toLocaleDateString()}
+                User:{" "}
+                <Link to={`/profile/${e.user?.email}`}>
+                  {e.user?.first_name + " " + e.user?.last_name}
+                </Link>
+              </p>
+              <p className="col-span-2">
+                Edited: {new Date(e.created).toLocaleDateString()}
               </p>
             </React.Fragment>
           )
