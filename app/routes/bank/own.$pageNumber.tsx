@@ -51,10 +51,10 @@ export default function OwnCitations() {
 
   return (
     <>
-      <PageHeader>
-        Owned citations (Page {pageNumber} of {pageCount}, {citationCount}{" "}
-        citations total)
-      </PageHeader>
+      <PageHeader>Owned citations</PageHeader>
+      <p className="text-center">
+        Page {pageNumber} of {pageCount}, {citationCount} citations total
+      </p>
       <PaginationControl
         baseLink="/bank/own"
         currentPage={pageNumber}
