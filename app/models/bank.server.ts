@@ -27,7 +27,6 @@ export function getCitationsByHeadwordAndUserId(
     where: {
       AND: [{ user_id: userId }, { headword: headword ? { headword } : null }],
     },
-    take: 100,
   })
 }
 
