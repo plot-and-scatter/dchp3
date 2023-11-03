@@ -16,7 +16,7 @@ const UserListSection = ({ header, users }: UserListSectionProps) => {
   // display: 1. Student / Editor, 2. Research Assistant, 3. Superadmin
   return (
     <>
-      <h2 className="text-3xl">{header}</h2>
+      <h2 className="text-2xl">{header}</h2>
       <div className="grid grid-cols-3">
         {users.map((user) => {
           return (

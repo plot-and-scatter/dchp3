@@ -3,6 +3,7 @@ import { redirect } from "@remix-run/server-runtime"
 import { NOT_ALLOWED_PATH } from "utils/paths"
 import { prisma } from "~/db.server"
 import { getEmailFromSession } from "~/services/auth/session.server"
+import { calculatePageSkip } from "./entry.server"
 
 export type { Entry } from "@prisma/client"
 export type LogEntries = (LogEntry & {
@@ -62,7 +63,7 @@ export async function getAllUsers() {
   })
 }
 
-export async function getEntriesByUserEmail(
+export async function getEntryLogsByUserEmail(
   email: string
 ): Promise<LogEntries> {
   const userId = await getUserIdByEmailOrThrow({ email })
@@ -78,5 +79,22 @@ export async function getEntriesByUserEmail(
         },
       },
     },
+  })
+}
+
+export async function getAllEntryLogsByPage(page: number): Promise<LogEntries> {
+  const skip = calculatePageSkip(page)
+  const take = DEFAULT_PAGE_SIZE
+
+  return prisma.logEntry.findMany({
+    include: {
+      entry: {
+        select: {
+          headword: true,
+        },
+      },
+    },
+    skip: skip,
+    take: take,
   })
 }

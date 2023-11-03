@@ -16,6 +16,7 @@ export type AuthPermission =
   | "det:editOwn"
   | "det:publish"
   | "det:viewUsers"
+  | "det:viewEdits"
   | "det:TEST" // for testing only
 
 const DISPLAY_PERMISSIONS: AuthPermission[] = ["bank:read"]
@@ -37,6 +38,7 @@ const SUPERADMIN_PERMISSIONS: AuthPermission[] = [
   "det:deleteAny",
   "det:publish",
   "det:viewUsers",
+  "det:viewEdits",
 ]
 
 export const AUTH_PERMISSION_ROLE_MAP: Record<AuthRole, AuthPermission[]> = {

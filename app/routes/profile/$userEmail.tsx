@@ -7,7 +7,7 @@ import ProfileHeader from "~/components/profile/ProfileHeader"
 import UserList from "~/components/profile/UserList"
 import {
   getAllUsers,
-  getEntriesByUserEmail,
+  getEntryLogsByUserEmail,
   getUserByEmailSafe,
 } from "~/models/user.server"
 import { userHasPermission } from "~/services/auth/session.server"
@@ -17,7 +17,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const email = params.userEmail ?? ""
   const user = await getUserByEmailSafe({ email })
-  const entries = await getEntriesByUserEmail(email)
+  const entries = await getEntryLogsByUserEmail(email)
   const displayUsers = await userHasPermission(request, "det:viewUsers")
 
   let users = undefined
