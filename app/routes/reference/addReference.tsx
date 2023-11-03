@@ -8,8 +8,11 @@ import Button from "~/components/elements/LinksAndButtons/Button"
 import TopLabelledField from "~/components/bank/TopLabelledField"
 import BankInput from "~/components/bank/BankInput"
 import BankTextArea from "~/components/bank/BankTextArea"
+import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 export async function action({ request }: ActionArgs) {
+  await redirectIfUserLacksPermission(request, "det:editReferences")
+
   const data = Object.fromEntries(await request.formData())
   invariant(data.shortDisplay)
   invariant(data.referenceText)
