@@ -1,4 +1,4 @@
-import type { User, LogEntry } from "@prisma/client"
+import type { User, LogEntry, Prisma } from "@prisma/client"
 import { redirect } from "@remix-run/server-runtime"
 import { NOT_ALLOWED_PATH } from "utils/paths"
 import { prisma } from "~/db.server"
@@ -82,9 +82,14 @@ export async function getEntryLogsByUserEmail(
   })
 }
 
-export async function getAllEntryLogsByPage(page: number): Promise<LogEntries> {
+export async function getAllEntryLogsByPage(
+  page: number,
+  orderBy: string
+): Promise<LogEntries> {
   const skip = calculatePageSkip(page)
   const take = DEFAULT_PAGE_SIZE
+
+  const orderDirection: Prisma.SortOrder = orderBy === "desc" ? "desc" : "asc"
 
   return prisma.logEntry.findMany({
     include: {
@@ -93,6 +98,9 @@ export async function getAllEntryLogsByPage(page: number): Promise<LogEntries> {
           headword: true,
         },
       },
+    },
+    orderBy: {
+      created: orderDirection,
     },
     skip: skip,
     take: take,

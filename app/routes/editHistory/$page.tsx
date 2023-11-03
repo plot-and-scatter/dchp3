@@ -1,17 +1,42 @@
 import { type Prisma } from "@prisma/client"
-import { useLoaderData, useParams } from "@remix-run/react"
-import { type LoaderArgs } from "@remix-run/server-runtime"
+import { Form, useLoaderData, useParams } from "@remix-run/react"
+import {
+  redirect,
+  type ActionArgs,
+  type LoaderArgs,
+} from "@remix-run/server-runtime"
 import React from "react"
+import invariant from "tiny-invariant"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import Main from "~/components/elements/Main"
 import { getAllEntryLogsByPage } from "~/models/user.server"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
-import { parsePageNumberOrError } from "~/utils/generalUtils"
+import {
+  getStringFromFormInput,
+  parsePageNumberOrError,
+} from "~/utils/generalUtils"
+
+export async function action({ request, params }: ActionArgs) {
+  const data = Object.fromEntries(await request.formData())
+  invariant(data.orderBy)
+
+  const url = `/editHistory/1`
+
+  const searchParams = new URLSearchParams()
+  searchParams.set("orderBy", getStringFromFormInput(data.orderBy))
+
+  return redirect(`${url}?${searchParams.toString()}`)
+}
 
 export async function loader({ request, params }: LoaderArgs) {
   redirectIfUserLacksPermission(request, "det:viewEdits")
   const pageNumber = parsePageNumberOrError(params.page)
-  const entryLogs = await getAllEntryLogsByPage(pageNumber)
+
+  const url = new URL(request.url)
+  const orderBy: string = url.searchParams.get("orderBy") ?? "desc"
+
+  const entryLogs = await getAllEntryLogsByPage(pageNumber, orderBy)
   return { entryLogs }
 }
 
@@ -29,6 +54,17 @@ export default function EditPage() {
   return (
     <Main center={true}>
       <h1 className="m-5 text-4xl">Edit History, Page: {params.page} </h1>
+      <Form method="post" className="my-3">
+        <h2 className="text-2xl">Search</h2>
+        <label>
+          Sort by:
+          <select name="orderBy">
+            <option value="asc"> Ascending</option>
+            <option value="desc"> Descending</option>
+          </select>
+        </label>
+        <Button> Search</Button>
+      </Form>
       <div className="my-2">
         <Link
           className="m-2"
