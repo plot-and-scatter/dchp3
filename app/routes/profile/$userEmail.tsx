@@ -12,8 +12,7 @@ import {
 import { userHasPermission } from "~/services/auth/session.server"
 
 export async function loader({ request, params }: LoaderArgs) {
-  // TODO: check to see if you have perms
-
+  // TODO: Throw redirect if 1. no det:viewUsers, or 2. User doesn't own this page
   const email = params.userEmail ?? ""
   const user = await getUserByEmailSafe({ email })
   const entries = await getEntryLogsByUserEmail(email)

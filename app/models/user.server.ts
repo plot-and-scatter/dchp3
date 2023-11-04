@@ -1,4 +1,4 @@
-import type { User, LogEntry, Prisma } from "@prisma/client"
+import type { User, LogEntry, Prisma, Entry } from "@prisma/client"
 import { redirect } from "@remix-run/server-runtime"
 import { NOT_ALLOWED_PATH } from "utils/paths"
 import { prisma } from "~/db.server"
@@ -6,14 +6,8 @@ import { getEmailFromSession } from "~/services/auth/session.server"
 import { calculatePageSkip } from "./entry.server"
 
 export type { Entry } from "@prisma/client"
-export type LogEntries = (LogEntry & {
-  entry: { headword: string } | null
-} & {
-  user: {
-    first_name: string | null
-    last_name: string | null
-    email: string | null
-  } | null
+export type LogEntries = (LogEntry & { entry: Entry | null } & {
+  user: User | null
 })[]
 export type { User } from "@prisma/client"
 
@@ -79,18 +73,8 @@ export async function getEntryLogsByUserEmail(
       user_id: userId,
     },
     include: {
-      entry: {
-        select: {
-          headword: true,
-        },
-      },
-      user: {
-        select: {
-          first_name: true,
-          last_name: true,
-          email: true,
-        },
-      },
+      entry: true,
+      user: true,
     },
   })
 }
@@ -106,18 +90,8 @@ export async function getAllEntryLogsByPage(
 
   return prisma.logEntry.findMany({
     include: {
-      entry: {
-        select: {
-          headword: true,
-        },
-      },
-      user: {
-        select: {
-          first_name: true,
-          last_name: true,
-          email: true,
-        },
-      },
+      entry: true,
+      user: true,
     },
     orderBy: {
       created: orderDirection,

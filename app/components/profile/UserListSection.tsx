@@ -15,7 +15,6 @@ const UserListSection = ({
 }: UserListSectionProps) => {
   if (users === undefined) return <></>
 
-  // display: 1. Student / Editor, 2. Research Assistant, 3. Superadmin
   return (
     <>
       <h2 className="text-2xl">{header}</h2>
