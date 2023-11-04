@@ -7,6 +7,7 @@ import {
 } from "@remix-run/server-runtime"
 import React from "react"
 import invariant from "tiny-invariant"
+import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import Main from "~/components/elements/Main"
@@ -69,7 +70,7 @@ export default function EditPage() {
         <Link
           className="m-2"
           asButton
-          to={`${paginationBase}${currentPage - 1}`}
+          to={`${paginationBase}${Math.max(currentPage - 1, 1)}`}
         >
           Previous page
         </Link>
@@ -109,7 +110,7 @@ export default function EditPage() {
         <Link
           className="m-2"
           asButton
-          to={`${paginationBase}${currentPage - 1}`}
+          to={`${paginationBase}${Math.max(currentPage - 1, 1)}`}
         >
           Previous page
         </Link>
@@ -124,3 +125,5 @@ export default function EditPage() {
     </Main>
   )
 }
+
+export const ErrorBoundary = DefaultErrorBoundary

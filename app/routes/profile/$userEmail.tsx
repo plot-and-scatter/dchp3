@@ -1,6 +1,6 @@
 import { type Prisma } from "@prisma/client"
 import { useLoaderData } from "@remix-run/react"
-import { type LoaderArgs } from "@remix-run/server-runtime"
+import { redirect, type LoaderArgs } from "@remix-run/server-runtime"
 import Main from "~/components/elements/Main"
 import EntryList from "~/components/profile/EntryList"
 import ProfileHeader from "~/components/profile/ProfileHeader"
@@ -9,11 +9,23 @@ import {
   getEntryLogsByUserEmail,
   getUserByEmailSafe,
 } from "~/models/user.server"
-import { userHasPermission } from "~/services/auth/session.server"
+import {
+  getEmailFromSession,
+  userHasPermission,
+} from "~/services/auth/session.server"
+
+async function redirectIfUserLacksEmailAccess(request: Request, email: string) {
+  if (await userHasPermission(request, "det:viewUsers")) {
+    return
+  }
+
+  const userEmail = await getEmailFromSession(request)
+  if (userEmail !== email) throw redirect("/not-allowed")
+}
 
 export async function loader({ request, params }: LoaderArgs) {
-  // TODO: Throw redirect if 1. no det:viewUsers, or 2. User doesn't own this page
   const email = params.userEmail ?? ""
+  await redirectIfUserLacksEmailAccess(request, email)
   const user = await getUserByEmailSafe({ email })
   const entries = await getEntryLogsByUserEmail(email)
   const displayUsers = await userHasPermission(request, "det:viewUsers")
