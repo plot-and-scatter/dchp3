@@ -6,16 +6,14 @@ import {
 } from "@remix-run/react"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { redirect } from "@remix-run/node"
+import { SecondaryHeader } from "~/components/elements/SecondaryHeader"
 import { type AllSearchResults, getSearchResults } from "~/models/search.server"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
-import { SecondaryHeader } from "~/components/elements/SecondaryHeader"
 
 export async function action({ request, params }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
-
-  console.log("dddddata", data)
 
   const pageIncrement = data.nextPage === "true" ? 1 : -1
 
@@ -71,6 +69,9 @@ export default function EntryDetailsPage() {
     <div className="mt-5 w-fit border-t-2 border-slate-500 pt-5">
       <SecondaryHeader>
         Search results for &ldquo;{params.searchTerm}&rdquo;
+        {searchParams.get("caseSensitive") !== "undefined" && (
+          <> (case sensitive)</>
+        )}
       </SecondaryHeader>
       <Form method="post">
         <SearchResults

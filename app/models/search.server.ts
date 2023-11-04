@@ -6,6 +6,8 @@ import { parsePageNumberOrError } from "~/utils/generalUtils"
 
 export type { Entry } from "@prisma/client"
 
+export const SEARCH_WILDCARD = "*"
+
 export type AllSearchResults = {
   [SearchResultEnum.HEADWORD]?: Pick<Entry, "id" | "headword">[]
   [SearchResultEnum.MEANING]?: SearchResultMeaning[]
@@ -88,16 +90,15 @@ export function getEntriesByBasicTextSearch(
       statusText: `Text length must be greater than zero`,
     })
   }
-  const searchWildcard = `%${text}%`
+  const searchWildcard = text === SEARCH_WILDCARD ? "%" : `%${text}%`
 
-  return prisma.$queryRaw<
-    Pick<Entry, "id" | "headword">[]
-  >`SELECT id, headword FROM det_entries
-    WHERE IF(${caseSensitive},
-      (headword) LIKE (${searchWildcard}),
-      LOWER(headword) LIKE LOWER(${searchWildcard}))
-      AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
-    ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}`
+  return prisma.$queryRaw<Pick<Entry, "id" | "headword">[]>`
+  SELECT id, headword FROM det_entries
+  WHERE IF(${caseSensitive}, (headword) LIKE (${searchWildcard}), LOWER(headword) LIKE LOWER(${searchWildcard}))
+  AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
+  AND (det_entries.is_public = 1)
+  ORDER BY headword ASC LIMIT ${take} OFFSET ${skip}
+  `
 }
 
 export interface SearchResultMeaning {
@@ -125,8 +126,11 @@ export function getSearchResultMeanings(
 
   return prisma.meaning.findMany({
     where: {
+      entry: {
+        is_public: true,
+      },
       definition: {
-        contains: text,
+        contains: text === SEARCH_WILDCARD ? "" : text,
       },
     },
     select: {
@@ -164,7 +168,7 @@ export function getSearchResultCanadianisms(
     })
   }
 
-  const searchWildcard = `%${text}%`
+  const searchWildcard = text === SEARCH_WILDCARD ? "%" : `%${text}%`
 
   return prisma.$queryRaw<Canadianism[]>`SELECT
     det_entries.headword as headword,
@@ -178,6 +182,7 @@ export function getSearchResultCanadianisms(
       LOWER(det_meanings.canadianism_type_comment) LIKE LOWER(${searchWildcard})
     )
     AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
+    AND det_entries.is_public = 1
   ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
@@ -203,7 +208,7 @@ export function getSearchResultUsageNotes(
     })
   }
 
-  const searchWildcard = `%${text}%`
+  const searchWildcard = text === SEARCH_WILDCARD ? "%" : `%${text}%`
 
   return prisma.$queryRaw<UsageNote[]>`SELECT det_entries.headword as headword,
   det_meanings.usage, det_meanings.partofspeech, det_meanings.id
@@ -213,6 +218,7 @@ export function getSearchResultUsageNotes(
     (det_meanings.usage) LIKE (${searchWildcard}),
     LOWER(det_meanings.usage) LIKE LOWER(${searchWildcard}))
     AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
+    AND det_entries.is_public = 1
   ORDER BY LOWER(det_entries.headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
@@ -237,7 +243,7 @@ export function getSearchResultFistNotes(
     })
   }
 
-  const searchWildcard = `%${text}%`
+  const searchWildcard = text === SEARCH_WILDCARD ? "%" : `%${text}%`
 
   // TODO: Change this
   return prisma.$queryRaw<FistNote[]>`SELECT headword, fist_note, id
@@ -246,6 +252,7 @@ export function getSearchResultFistNotes(
     (fist_note) LIKE (${searchWildcard}),
     LOWER(fist_note) LIKE LOWER(${searchWildcard}))
     AND (det_entries.dchp_version IN (${Prisma.join(dchpVersions)}))
+    AND det_entries.is_public = 1
   ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
@@ -272,7 +279,7 @@ export function getSearchResultQuotations(
     })
   }
 
-  const searchWildcard = `%${text}%`
+  const searchWildcard = text === SEARCH_WILDCARD ? "%" : `%${text}%`
 
   return prisma.bankCitation.findMany({
     where: {

@@ -27,14 +27,14 @@ export default function Admin() {
   return (
     <Main>
       <div>
-        <PageHeader>Admin</PageHeader>
+        <PageHeader>Your access</PageHeader>
         <p>
           You are logged in as <strong>{email}</strong>
         </p>
         <div className="my-4">
           <LogoutButton />
         </div>
-        <SecondaryHeader>Your roles and permissions</SecondaryHeader>
+        <SecondaryHeader>Roles and permissions</SecondaryHeader>
         <div className="flex flex-row">
           {Object.keys(roleAndPermissionMap).map((role) => {
             return (

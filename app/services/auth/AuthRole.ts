@@ -17,6 +17,7 @@ export type AuthPermission =
   | "det:publish"
   | "det:viewUsers"
   | "det:viewEdits"
+  | "det:editReferences"
   | "det:TEST" // for testing only
 
 const DISPLAY_PERMISSIONS: AuthPermission[] = ["bank:read"]
@@ -31,6 +32,7 @@ const RESEARCH_ASSISTANT_PERMISSIONS: AuthPermission[] = [
   ...STUDENT_EDITOR_PERMISSIONS,
   "bank:editAny",
   "det:editAny",
+  "det:editReferences",
 ]
 const SUPERADMIN_PERMISSIONS: AuthPermission[] = [
   ...RESEARCH_ASSISTANT_PERMISSIONS,
