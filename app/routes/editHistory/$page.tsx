@@ -17,7 +17,7 @@ import {
   parsePageNumberOrError,
 } from "~/utils/generalUtils"
 
-export async function action({ request, params }: ActionArgs) {
+export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
   invariant(data.orderBy)
 
@@ -54,18 +54,18 @@ export default function EditPage() {
   return (
     <Main center={true}>
       <h1 className="m-5 text-4xl">Edit History, Page: {params.page} </h1>
-      <Form method="post" className="my-3">
+      <Form method="post" className="mb-5">
         <h2 className="text-2xl">Search</h2>
         <label>
           Sort by:
           <select name="orderBy">
-            <option value="asc"> Ascending</option>
             <option value="desc"> Descending</option>
+            <option value="asc"> Ascending</option>
           </select>
         </label>
-        <Button> Search</Button>
+        <Button size="small"> Search</Button>
       </Form>
-      <div className="my-2">
+      <div className="mb-6">
         <Link
           className="m-2"
           asButton

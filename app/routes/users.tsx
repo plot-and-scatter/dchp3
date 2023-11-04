@@ -20,7 +20,7 @@ function isAccessLevel(user: User, level: number) {
 }
 
 export default function Users() {
-  const [displayInactive, setDisplayInactive] = useState(true)
+  const [displayInactive, setDisplayInactive] = useState(false)
   const data = useLoaderData<typeof loader>()
   const users = data.users
   if (users === undefined) return <></>
