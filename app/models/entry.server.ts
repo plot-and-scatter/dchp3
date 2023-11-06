@@ -135,6 +135,20 @@ export async function insertEntry(
   updateLogEntries(headword, request)
 }
 
+export function countEntriesByInitialLetters(initialLetters: string) {
+  if (initialLetters.length === 0) {
+    throw new Error(
+      `Initial letters ("${initialLetters}") length must be greater than zero`
+    )
+  }
+  const initialLettersWildcard = `${initialLetters}%`
+  return prisma.$queryRaw<
+    {
+      count: number
+    }[]
+  >`SELECT count(*) as count FROM det_entries WHERE LOWER(headword) LIKE LOWER(${initialLettersWildcard})`
+}
+
 export function getEntriesByInitialLetters(
   initialLetters: string,
   skip: number = 0,

@@ -6,7 +6,7 @@ import type {
 } from "~/models/bank.types"
 import { calculateSkip } from "~/utils/generalUtils"
 
-const PAGE_SIZE = 100
+export const PAGE_SIZE = 100
 
 export type SearchOptions = {
   exactPhrase?: boolean | null
@@ -79,6 +79,16 @@ export default async function (opts: SearchOptions) {
 
   const skip = calculateSkip(opts.page, PAGE_SIZE)
 
+  const count = await prisma.bankCitation.count({
+    where: {
+      ...dates,
+      ...place,
+      ...sourceType,
+      ...legacyType,
+      ...textSearch,
+    },
+  })
+
   const results = await prisma.bankCitation.findMany({
     where: {
       ...dates,
@@ -118,5 +128,5 @@ export default async function (opts: SearchOptions) {
     },
   })
 
-  return results
+  return { count, citations: results }
 }

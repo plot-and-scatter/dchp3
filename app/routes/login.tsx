@@ -17,6 +17,10 @@ export default function Login() {
   return (
     <TextPageMain>
       <PageHeader>Admin log in</PageHeader>
+      <p>
+        If you have admin access to the DCHP-3, please use the login button
+        below.
+      </p>
       <div className="my-10">
         <LoginButton />
       </div>
