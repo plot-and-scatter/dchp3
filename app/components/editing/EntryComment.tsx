@@ -21,6 +21,7 @@ const EntryComment = ({ data }: EntryCommentProps) => {
         <h3 className="text-xl underline">Comment</h3>
         <textarea
           className="h-40 border p-2"
+          name="comment"
           onChange={(e) => setComment(e.target.value)}
         >
           {comment}

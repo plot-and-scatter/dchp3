@@ -336,3 +336,19 @@ export async function updateEditingTools(data: {
     },
   })
 }
+
+export async function updateEditingComment(data: {
+  [k: string]: FormDataEntryValue
+}) {
+  const headword = getStringFromFormInput(data.headword)
+  const comment = getStringFromFormInput(data.comment)
+
+  await prisma.entry.update({
+    where: {
+      headword: headword,
+    },
+    data: {
+      comment: comment,
+    },
+  })
+}
