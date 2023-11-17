@@ -11,6 +11,7 @@ const ProfileHeader = ({ user }: ProfileHeaderProps) => {
         Profile: {user.first_name + " " + user.last_name}
       </h1>
       <p className="text-lg">Email: {user.email}</p>
+      <p className="text-lg">Access Level: {user.access_level}</p>
     </div>
   )
 }

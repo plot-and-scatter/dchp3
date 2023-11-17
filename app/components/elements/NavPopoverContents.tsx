@@ -24,6 +24,16 @@ export default function NavPopoverContents({
       href: "/admin",
       icon: <i className="fas fa-key" />,
     })
+    navItems.push({
+      name: "Display Users",
+      href: "/users",
+      icon: <i className="fas fa-key" />,
+    })
+    navItems.push({
+      name: "All Editing History",
+      href: "/editHistory",
+      icon: <i className="fas fa-key" />,
+    })
     navItems.push({ name: "Bank" })
     navItems.push({
       name: "Add citation",

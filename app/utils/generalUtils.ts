@@ -85,7 +85,9 @@ export function getAttributeEnumFromFormInput(formInput: FormDataEntryValue) {
   return enumValue
 }
 
-export function parsePageNumberOrError(page: string): number {
+export function parsePageNumberOrError(page: string | undefined): number {
+  if (page === undefined) throw new Error(`Page is undefined`)
+
   const pageNumber = parseInt(page)
   if (isNaN(pageNumber)) {
     throw new Error(`Page Number ("${page}") must be a number`)

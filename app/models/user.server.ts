@@ -1,12 +1,13 @@
-import type { User, LogEntry } from "@prisma/client"
+import type { User, LogEntry, Prisma, Entry } from "@prisma/client"
 import { redirect } from "@remix-run/server-runtime"
 import { NOT_ALLOWED_PATH } from "utils/paths"
 import { prisma } from "~/db.server"
 import { getEmailFromSession } from "~/services/auth/session.server"
+import { calculatePageSkip } from "./entry.server"
 
 export type { Entry } from "@prisma/client"
-export type LogEntries = (LogEntry & {
-  entry: { headword: string } | null
+export type LogEntries = (LogEntry & { entry: Entry | null } & {
+  user: User | null
 })[]
 export type { User } from "@prisma/client"
 
@@ -59,16 +60,10 @@ export async function getAllUsers() {
         },
       ],
     },
-    select: {
-      id: true,
-      first_name: true,
-      last_name: true,
-      email: true,
-    },
   })
 }
 
-export async function getEntriesByUserEmail(
+export async function getEntryLogsByUserEmail(
   email: string
 ): Promise<LogEntries> {
   const userId = await getUserIdByEmailOrThrow({ email })
@@ -78,11 +73,30 @@ export async function getEntriesByUserEmail(
       user_id: userId,
     },
     include: {
-      entry: {
-        select: {
-          headword: true,
-        },
-      },
+      entry: true,
+      user: true,
     },
+  })
+}
+
+export async function getAllEntryLogsByPage(
+  page: number,
+  orderBy: string
+): Promise<LogEntries> {
+  const skip = calculatePageSkip(page)
+  const take = DEFAULT_PAGE_SIZE
+
+  const orderDirection: Prisma.SortOrder = orderBy === "desc" ? "desc" : "asc"
+
+  return prisma.logEntry.findMany({
+    include: {
+      entry: true,
+      user: true,
+    },
+    orderBy: {
+      created: orderDirection,
+    },
+    skip: skip,
+    take: take,
   })
 }

@@ -4,9 +4,10 @@ import { Link } from "../elements/LinksAndButtons/Link"
 
 interface EntryListProps {
   logEntries: LogEntries
+  displayUsers?: boolean
 }
 
-const EntryList = ({ logEntries }: EntryListProps) => {
+const EntryList = ({ logEntries, displayUsers }: EntryListProps) => {
   return (
     <div className="">
       <h2 className="text-3xl">User's Entries</h2>
