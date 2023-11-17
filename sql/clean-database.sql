@@ -12,3 +12,7 @@ update headword set headword = replace(headword, 'Ã³', 'ó');
 
 -- We can't blanket replace "Ãª" because it matches "aa" by default.
 update headword set headword = "Fête nationale" where headword like "FÃªte nationale"
+
+-- Set all users to inactive. If/when they log in via Auth0 we will reset them
+-- to active.
+update user set is_active = 0
