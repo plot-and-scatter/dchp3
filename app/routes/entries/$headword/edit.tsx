@@ -17,6 +17,7 @@ import {
   deleteMeaning,
   deleteQuotations,
   deleteSeeAlso,
+  updateEditingComment,
   updateEditingStatus,
   updateEditingTools,
   updateMeaning,
@@ -103,6 +104,9 @@ export async function action({ params, request }: ActionArgs) {
       break
     case attributeEnum.EDITING_STATUS:
       await updateEditingStatus(data)
+      break
+    case attributeEnum.COMMENT:
+      await updateEditingComment(data)
       break
     default:
       throw new Error("attribute enum unknown")
