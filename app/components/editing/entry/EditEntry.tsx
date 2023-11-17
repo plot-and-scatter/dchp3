@@ -7,14 +7,15 @@ import EditingTools from "../EditingTools"
 import EntryEditingForm from "~/routes/entries/$headword/edit/EntryEditingForm"
 import MeaningEditingForms from "~/routes/entries/$headword/edit/MeaningEditingForms"
 import type { EntryEditLoaderData } from "~/routes/entries/$headword/edit"
+import EntryComment from "../EntryComment"
 
 export default function EditEntry({ entry }: EntryEditLoaderData) {
   const { id, headword } = entry
 
   return (
     <div className="flex w-11/12 flex-row justify-between">
-      <div className="w-1/4 align-bottom">
-        <div className="fixed mt-10">
+      <div className="w-1/4">
+        <div className="fixed w-1/5">
           <Form
             reloadDocument={true}
             action={`/entries/${headword}/edit`}
@@ -34,6 +35,7 @@ export default function EditEntry({ entry }: EntryEditLoaderData) {
           </Form>
           <EditingTools data={entry} />
           <EditingStatus data={entry} />
+          <EntryComment data={entry} />
         </div>
       </div>
 

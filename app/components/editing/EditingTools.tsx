@@ -20,33 +20,36 @@ const EditingTools = ({ data }: EditingToolsProps) => {
     >
       <div className="flex flex-col">
         <h3 className="my-2 text-lg underline">Editing Tools</h3>
-        <label className="mx-2">
-          Publically Visible
-          <input
-            name="isPublic"
-            className="m-1"
-            type="checkbox"
-            checked={isPublic}
-            onChange={(e) => setIsPublic(e.target.checked)}
-          />
-        </label>
-        <label className="mx-2">
-          Is Legacy
-          <input
-            name="isLegacy"
-            className="m-1"
-            type="checkbox"
-            checked={isLegacy}
-            onChange={(e) => setIsLegacy(e.target.checked)}
-          />
-        </label>
+        <div>
+          <label className="mx-2">
+            Publically Visible
+            <input
+              name="isPublic"
+              className="m-1"
+              type="checkbox"
+              checked={isPublic}
+              onChange={(e) => setIsPublic(e.target.checked)}
+            />
+          </label>
+          <label className="mx-2">
+            Is Legacy
+            <input
+              name="isLegacy"
+              className="m-1"
+              type="checkbox"
+              checked={isLegacy}
+              onChange={(e) => setIsLegacy(e.target.checked)}
+            />
+          </label>
+        </div>
+
         <input
           type="hidden"
           name="attributeType"
           value={attributeEnum.EDITING_TOOLS}
         />
         <input type="hidden" name="headword" value={data.headword} />
-        <Button variant="outline" size="small">
+        <Button variant="outline" size="small" className="w-full">
           Save editing tools
         </Button>
       </div>

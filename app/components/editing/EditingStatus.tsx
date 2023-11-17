@@ -35,7 +35,9 @@ const EditingStatus = ({ data }: EditingStatusProps) => {
     >
       <div className="flex flex-col">
         <h3 className="my-3 text-lg underline">Editing Status</h3>
-        {getEditingStatusInputs(data)}
+        <div className="grid grid-flow-col grid-rows-5">
+          {getEditingStatusInputs(data)}
+        </div>
       </div>
       <input
         type="hidden"
@@ -43,12 +45,7 @@ const EditingStatus = ({ data }: EditingStatusProps) => {
         value={attributeEnum.EDITING_STATUS}
       />
       <input type="hidden" name="headword" value={data.headword} />
-      <Button
-        appearance="primary"
-        variant="outline"
-        size="small"
-        className="mt-4"
-      >
+      <Button variant="outline" size="small" className="mt-4 w-full">
         Save editing status
       </Button>
     </Form>

@@ -22,4 +22,5 @@ export enum attributeEnum {
   ADD_DEFINITION_FIST_NOTE = "AddDefintionFistNote",
   EDITING_TOOLS = "EditingTools",
   EDITING_STATUS = "EditingStatus",
+  COMMENT = "Comment",
 }
