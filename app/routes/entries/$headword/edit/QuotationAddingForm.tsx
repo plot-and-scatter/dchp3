@@ -9,7 +9,6 @@ import Button from "~/components/elements/LinksAndButtons/Button"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { useState } from "react"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
-import PaginationControl from "~/components/bank/PaginationControl"
 import BankSelect from "~/components/bank/BankSelect"
 import { PAGE_SIZE } from "~/services/bank/searchCitations"
 
