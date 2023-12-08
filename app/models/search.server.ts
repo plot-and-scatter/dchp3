@@ -8,6 +8,15 @@ export type { Entry } from "@prisma/client"
 
 export const SEARCH_WILDCARD = "*"
 
+export const BASE_CANADANISM_TYPES = [
+  "1. Origin",
+  "2. Preservation",
+  "3. Semantic Change",
+  "4. Culturally Significant",
+  "5. Frequency",
+  "6. Memorial",
+]
+
 export type AllSearchResults = {
   [SearchResultEnum.HEADWORD]?: Pick<Entry, "id" | "headword">[]
   [SearchResultEnum.MEANING]?: SearchResultMeaning[]
@@ -22,12 +31,14 @@ export async function getSearchResults(
   page: string = "1",
   caseSensitive: boolean = false,
   attribute: string = SearchResultEnum.HEADWORD,
-  dchpVersions?: string[]
+  dchpVersions?: string[],
+  canadianismTypesArg?: string[]
 ): Promise<AllSearchResults> {
   const pageNumber = parsePageNumberOrError(page)
   const skip: number = calculatePageSkip(pageNumber)
 
   const versions = dchpVersions || ["dchp1", "dchp2", "dchp3"]
+  const canadianismTypes = canadianismTypesArg || [...BASE_CANADANISM_TYPES]
 
   const searchResults: AllSearchResults = {}
   searchResults.Headword = await getEntriesByBasicTextSearch(
@@ -35,14 +46,16 @@ export async function getSearchResults(
     skip,
     undefined,
     caseSensitive,
-    versions
+    versions,
+    canadianismTypes
   )
   searchResults.Meaning = await getSearchResultMeanings(
     text,
     skip,
     undefined,
     caseSensitive,
-    versions
+    versions,
+    canadianismTypes
   )
   searchResults.Canadianism = await getSearchResultCanadianisms(
     text,
@@ -82,7 +95,8 @@ export function getEntriesByBasicTextSearch(
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false,
-  dchpVersions: string[]
+  dchpVersions: string[],
+  canadianismTypes: string[]
 ) {
   if (text.length === 0) {
     throw new Response(null, {
@@ -115,7 +129,8 @@ export function getSearchResultMeanings(
   skip: number = 0,
   take: number = DEFAULT_PAGE_SIZE,
   caseSensitive: boolean = false,
-  dchpVersions?: string[]
+  dchpVersions: undefined | string[],
+  canadianismTypes: string[]
 ): Promise<SearchResultMeaning[]> {
   if (text.length === 0) {
     throw new Response(null, {
@@ -124,15 +139,23 @@ export function getSearchResultMeanings(
     })
   }
 
-  return prisma.meaning.findMany({
-    where: {
-      entry: {
-        is_public: true,
-      },
-      definition: {
-        contains: text === SEARCH_WILDCARD ? "" : text,
-      },
+  const where: any = {
+    entry: {
+      is_public: true,
     },
+    definition: {
+      contains: text === SEARCH_WILDCARD ? "" : text,
+    },
+  }
+
+  if (canadianismTypes.length !== BASE_CANADANISM_TYPES.length) {
+    where.canadianism_type = {
+      in: canadianismTypes,
+    }
+  }
+
+  return prisma.meaning.findMany({
+    where,
     select: {
       entry: {
         select: {

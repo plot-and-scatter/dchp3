@@ -46,14 +46,25 @@ export async function loader({ request, params }: LoaderArgs) {
     url.searchParams.get("pageNumber") ?? undefined
   const dchpVersions: string[] | undefined = url.searchParams.getAll("database")
 
-  console.log("####", caseSensitive, text, pageNumber, dchpVersions)
+  const canadianismTypes: string[] | undefined =
+    url.searchParams.getAll("canadianismType")
+
+  console.log(
+    "####",
+    caseSensitive,
+    text,
+    pageNumber,
+    dchpVersions,
+    canadianismTypes
+  )
 
   const searchResults: AllSearchResults = await getSearchResults(
     text,
     pageNumber,
     caseSensitive,
     undefined,
-    dchpVersions
+    dchpVersions,
+    canadianismTypes
   )
 
   return searchResults
