@@ -9,6 +9,8 @@ import Button from "~/components/elements/LinksAndButtons/Button"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { useState } from "react"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
+import BankSelect from "~/components/bank/BankSelect"
+import { PAGE_SIZE } from "~/services/bank/searchCitations"
 
 interface QuotationAddingFormProps {
   meaningId: number
@@ -54,11 +56,27 @@ export default function QuotationAddingForm({
 
     if (searchText.length >= 0) {
       // await resetFetcher(citations)
-      citations.load(
-        citationSearchUrl(searchText, { orderBy, orderDirection, page })
-      )
+      const url = citationSearchUrl(`${searchText}/${pageNumber}`, {
+        orderBy,
+        orderDirection,
+        page,
+      })
+      console.log("url", url)
+      citations.load(url)
     } else {
       resetFetcher(citations)
+    }
+  }
+
+  let citationNumStart = 1
+  let citationNumEnd = 1
+  let pageCountOptions = []
+
+  if (citations.data) {
+    citationNumStart = (+citations.data.pageNumber - 1) * PAGE_SIZE + 1
+    citationNumEnd = citationNumStart + citations.data.citations.length - 1
+    for (let i = 1; i <= citations.data.pageCount; i++) {
+      pageCountOptions.push({ label: `${i}`, value: `${i}` })
     }
   }
 
@@ -72,6 +90,16 @@ export default function QuotationAddingForm({
               name="searchText"
               // onChange={onChangeAction}
             />
+            {citations.data && (
+              <label className="block" htmlFor="pageNumber">
+                Page number:
+                <BankSelect
+                  name="pageNumber"
+                  options={pageCountOptions}
+                  onChange={(e) => setPageNumber(+e.target.value)}
+                />
+              </label>
+            )}
             <LabelledField
               label="Sort by"
               field={
@@ -114,30 +142,13 @@ export default function QuotationAddingForm({
           <Button appearance="primary" type="submit" className="mt-2">
             Search
           </Button>
-          {citations.data && (
-            <>
-              <Button
-                type="submit"
-                className="ml-10 mt-2"
-                onClick={(e) => setPageNumber(Math.max(pageNumber - 1, 1))}
-              >
-                Prev Page
-              </Button>
-              <Button
-                type="submit"
-                className="ml-2 mt-2"
-                onClick={(e) => setPageNumber(pageNumber + 1)}
-              >
-                Next Page
-              </Button>
-            </>
-          )}
         </div>
       </form>
       {citations.data && (
         <Form method="post">
           <strong>
-            {citations.data.citations.length} citations (temp max 100)
+            Showing {citationNumStart}–{citationNumEnd} of{" "}
+            {citations.data.citationCount} citations
           </strong>
           <Button type="submit" className="ml-3">
             Add Quotations

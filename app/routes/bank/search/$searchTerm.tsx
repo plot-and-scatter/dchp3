@@ -28,7 +28,7 @@ export default function SearchIndex() {
         baseLink={`/bank/search/${searchTerm}`}
         useSearch={"page"}
         url={url}
-        currentPage={pageNumber}
+        currentPage={+pageNumber}
         pageCount={pageCount}
       />
       <hr className="my-4" />
@@ -45,7 +45,7 @@ export default function SearchIndex() {
       <PaginationControl
         baseLink={`/bank/search/${searchTerm}`}
         useSearch={"page"}
-        currentPage={pageNumber}
+        currentPage={+pageNumber}
         pageCount={pageCount}
         url={url}
       />
