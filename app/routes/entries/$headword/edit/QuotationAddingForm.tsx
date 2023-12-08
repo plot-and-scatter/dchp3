@@ -71,10 +71,14 @@ export default function QuotationAddingForm({
 
   let citationNumStart = 1
   let citationNumEnd = 1
+  let pageCountOptions = []
 
   if (citations.data) {
     citationNumStart = (+citations.data.pageNumber - 1) * PAGE_SIZE + 1
     citationNumEnd = citationNumStart + citations.data.citations.length - 1
+    for (let i = 1; i <= citations.data.pageCount; i++) {
+      pageCountOptions.push({ label: `${i}`, value: `${i}` })
+    }
   }
 
   return (
@@ -92,7 +96,7 @@ export default function QuotationAddingForm({
                 Page number:
                 <BankSelect
                   name="pageNumber"
-                  options={["1", "2"].map((n) => ({ label: n, value: n }))}
+                  options={pageCountOptions}
                   onChange={(e) => setPageNumber(+e.target.value)}
                 />
               </label>
