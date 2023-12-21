@@ -48,7 +48,11 @@ export default function BankSearchResult({
   return (
     <div key={citation.id} className="mb-4">
       <div className="text-lg font-bold">
-        <NavLink to={`/bank/edit/${citation.id}`} className="text-blue-500">
+        <NavLink
+          to={`/bank/edit/${citation.id}`}
+          target="_blank"
+          className="text-blue-500"
+        >
           {headwordText}
         </NavLink>
       </div>
