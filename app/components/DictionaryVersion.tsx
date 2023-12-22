@@ -43,11 +43,11 @@ const DictionaryVersion = ({
   const color =
     dchpVersion === "dchp1"
       ? "border-amber-300 bg-amber-200"
-      : "border-slate-200 bg-slate-100"
+      : "border-gray-200 bg-gray-100"
 
   return (
     <div
-      className={`border ${color} py-1 px-2 text-xs text-slate-700 shadow-sm md:px-4 md:text-sm`}
+      className={`border ${color} py-1 px-2 text-xs text-gray-700 shadow-sm md:px-4 md:text-sm`}
     >
       {version.version} ({version.date})
     </div>

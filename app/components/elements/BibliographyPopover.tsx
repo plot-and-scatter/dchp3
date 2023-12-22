@@ -20,10 +20,10 @@ const BibliographyPopover = ({ citation }: BibliographyPopoverProps) => {
   return (
     <Popover className="relative ml-2 inline-block">
       <Popover.Button
-        className="text-red-400 focus:border-red-600"
+        className="text-primary-light focus:border-primary"
         ref={setReferenceElement}
       >
-        <i className="fa-regular fa-book-open-cover cursor-pointer hover:text-red-600"></i>
+        <i className="fa-regular fa-book-open-cover cursor-pointer hover:text-primary"></i>
       </Popover.Button>
 
       <Popover.Panel

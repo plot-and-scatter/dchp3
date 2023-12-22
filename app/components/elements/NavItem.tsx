@@ -23,15 +23,15 @@ export default function NavItem(item: NavItemProps) {
       <Link
         key={item.name}
         to={item.href}
-        className="group -m-1 flex items-center rounded-lg p-1 transition duration-150 ease-in-out hover:bg-slate-100 focus:outline-none focus-visible:ring-opacity-50"
+        className="group -m-1 flex items-center rounded-lg p-1 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring-opacity-50"
       >
         <div className="flex h-6 w-6 shrink-0 items-center justify-center ">
           {item.icon}
         </div>
         <div className="ml-2 text-base">
-          <p className="mb-0 font-semibold text-red-500">{item.name}</p>
+          <p className="mb-0 font-semibold text-primary">{item.name}</p>
           {item.description && (
-            <p className="text-sm text-slate-500">{item.description}</p>
+            <p className="text-sm text-gray-500">{item.description}</p>
           )}
         </div>
       </Link>

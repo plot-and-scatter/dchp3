@@ -18,7 +18,8 @@ const SearchResultCanadianism = ({ text, data }: Props) => {
           <div className="mb-2 flex flex-col" key={e.id}>
             <Link
               to={`/entries/${e.headword}`}
-              className="font-bold text-red-600 hover:text-red-400"
+              appearance="primary"
+              className="font-bold"
             >
               {e.headword}
             </Link>

@@ -32,8 +32,9 @@ export default function BankTextArea({
         name={name}
         className={clsx(
           className,
-          `w-full rounded border border-slate-700 px-4 py-2`,
-          hasErrors && "border-red-700 bg-red-100 outline-red-700"
+          `w-full rounded border border-gray-700 px-4 py-2`,
+          hasErrors &&
+            "border-primary-dark bg-primary-lightest outline-primary-dark"
         )}
         {...rest}
       />

@@ -21,7 +21,7 @@ export default function BankSearchResult({
   const headwordText =
     searchOptions.searchField === "headword" ? (
       <Highlighter
-        highlightClassName="font-bold text-red-500 font-italic bg-transparent"
+        highlightClassName="font-bold text-primary font-italic bg-transparent"
         searchWords={[searchTerm]}
         textToHighlight={citation.headword?.headword || ""}
       />
@@ -37,7 +37,7 @@ export default function BankSearchResult({
   const citationText =
     searchOptions.searchField === "citation" ? (
       <Highlighter
-        highlightClassName="font-bold text-red-500 font-italic bg-transparent"
+        highlightClassName="font-bold text-primary font-italic bg-transparent"
         searchWords={[searchTerm]}
         textToHighlight={_citationText || ""}
       />

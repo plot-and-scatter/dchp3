@@ -11,7 +11,7 @@ export default function SeeAlsoItem({ seeAlso }: SeeAlsoProps) {
   return (
     <span>
       <NavLink
-        className={`text-sm font-bold uppercase tracking-widest text-red-500 underline hover:text-red-700 md:text-base md:tracking-wider`}
+        className={`text-sm font-bold uppercase tracking-widest text-primary underline hover:text-primary-dark md:text-base md:tracking-wider`}
         to={`/entries/${seeAlso.entry.headword}`}
       >
         {seeAlso.entry.headword}

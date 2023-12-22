@@ -61,7 +61,7 @@ const SearchResults = ({
 
   return (
     <div className="-m-4 flex max-w-3xl flex-col justify-center p-4 align-middle">
-      <div className="-mb-[1px] flex flex-row gap-x-2 border-b border-slate-700">
+      <div className="-mb-[1px] flex flex-row gap-x-2 border-b border-gray-700">
         {enumValues(SearchResultEnum)
           .filter((value) => value !== SearchResultEnum.ALL)
           .map((value, index) => (
@@ -86,7 +86,7 @@ const SearchResults = ({
       {/* <h2 className="my-5 mb-10 text-4xl font-extrabold">
         Page {page} results for: "{text}"
       </h2> */}
-      <div className="border border-slate-700 bg-slate-50 p-4">
+      <div className="border border-gray-700 bg-gray-50 p-4">
         <div>{getSearchResults(page, text, data, searchAttribute)}</div>
         {/* <div className="flex justify-between gap-x-2 pt-4 text-center">
           <Button type="submit" size="small" name="nextPage" value="false">

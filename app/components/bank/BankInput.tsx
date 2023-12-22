@@ -29,9 +29,10 @@ export default function BankInput({
       <input
         name={name}
         className={clsx(
-          "my-0 w-full rounded border border-slate-700 px-4 py-2",
+          "my-0 w-full rounded border border-gray-700 px-4 py-2",
           className,
-          hasErrors && "border-red-700 bg-red-100 outline-red-700"
+          hasErrors &&
+            "border-primary-dark bg-primary-lightest outline-primary-dark"
         )}
         {...rest} // defaultValue MUST come after this line.
         defaultValue={showField !== false ? defaultValueNoNulls : undefined}

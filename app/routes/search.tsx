@@ -87,11 +87,19 @@ export default function SearchPage() {
             <BankInput
               type="text"
               placeholder="Search term"
-              className="border border-slate-700 p-2 text-2xl"
+              className="border border-gray-700 p-2 text-2xl"
               name="searchTerm"
               defaultValue={params.searchTerm}
               conformField={fields.searchTerm}
             />
+            <p className="text-sm">
+              <FAIcon
+                iconStyle="far"
+                iconName="fa-lightbulb"
+                className="mr-1"
+              />{" "}
+              You can enter <strong>*</strong> to match all entries.
+            </p>
             <div className="whitespace-nowrap">
               <BankRadioOrCheckbox
                 type="checkbox"
@@ -100,7 +108,7 @@ export default function SearchPage() {
                 conformField={fields.caseSensitive}
                 options={[
                   {
-                    label: "Case sensitive",
+                    label: "Case sensitive search",
                     value: "on",
                     defaultChecked: true,
                   },

@@ -77,7 +77,7 @@ export default function EntryDetailsPage() {
   invariant(params.searchTerm)
 
   return (
-    <div className="mt-5 w-fit border-t-2 border-slate-500 pt-5">
+    <div className="mt-5 w-fit border-t-2 border-gray-500 pt-5">
       <SecondaryHeader>
         Search results for &ldquo;{params.searchTerm}&rdquo;
         {searchParams.get("caseSensitive") !== "undefined" && (

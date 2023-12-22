@@ -33,7 +33,7 @@ export default function Index() {
           <label className="ml-3 pl-3 font-bold">
             Headword
             <input
-              className="ml-3 border border-slate-400 pl-1"
+              className="ml-3 border border-gray-400 pl-1"
               type="text"
               name="headword"
             />
@@ -41,7 +41,7 @@ export default function Index() {
           <label className="ml-3 pl-3 font-bold">
             Spelling Variants
             <input
-              className="ml-3 w-96 border border-slate-400 pl-1"
+              className="ml-3 w-96 border border-gray-400 pl-1"
               type="text"
               name="spellingVariants"
             />
@@ -52,7 +52,7 @@ export default function Index() {
           <label className="ml-3 pl-3 font-bold">
             Etymology
             <input
-              className="ml-3 border border-slate-400 pl-1"
+              className="ml-3 border border-gray-400 pl-1"
               type="text"
               name="etymology"
             />
@@ -60,7 +60,7 @@ export default function Index() {
           <label className="ml-3 pl-3 font-bold">
             General Labels
             <input
-              className="ml-3 border border-slate-400 pl-1"
+              className="ml-3 border border-gray-400 pl-1"
               type="text"
               name="generalLabels"
             />
@@ -72,7 +72,7 @@ export default function Index() {
             Fistnote
             <textarea
               name="fistnote"
-              className="h-28 w-1/2 border border-slate-400 p-1 font-normal"
+              className="h-28 w-1/2 border border-gray-400 p-1 font-normal"
             ></textarea>
           </label>
         </div>

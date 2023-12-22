@@ -34,14 +34,14 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function BankIndex() {
   return (
     <div className="mt-32">
-      <nav className="flex items-center border-b border-b-slate-300 bg-slate-100 p-2 shadow">
+      <nav className="flex items-center border-b border-b-gray-300 bg-gray-100 p-2 shadow">
         <h2 className="text-xl font-bold">Bank of Canadian English</h2>
         <div>
           {navItems.map((ni) => (
             <NavLink
               key={ni.href}
               to={ni.href}
-              className="ml-4 text-red-600 hover:text-red-800"
+              className="ml-4 text-primary hover:text-primary-dark"
             >
               {ni.icon}
               <span className="ml-2">{ni.name}</span>

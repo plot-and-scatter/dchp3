@@ -10,6 +10,8 @@ export default function ValidationErrorText({
   className,
 }: ValidationErrorTextProps) {
   return (
-    <div className={clsx("text-sm text-red-700", className)}>{children}</div>
+    <div className={clsx("text-sm text-primary-dark", className)}>
+      {children}
+    </div>
   )
 }

@@ -15,7 +15,7 @@ const QuickLinks = ({ data }: QuickLinksProps): JSX.Element => {
 
   return (
     <>
-      <h3 className="mb-2 text-lg font-bold text-slate-600">Quick links</h3>
+      <h3 className="mb-2 text-lg font-bold text-gray-600">Quick links</h3>
       {data ? (
         <ul className="">
           <QuickLink scrollToId="headword">

@@ -50,7 +50,7 @@ export default function PaginationControl({
         to={buildUrl(baseLink, pageNumber, useSearch, url)}
         className={clsx(
           "block px-2 py-1",
-          pageNumber === currentPage && " bg-red-700 font-bold text-white"
+          pageNumber === currentPage && " text-white bg-primary-dark font-bold"
         )}
       >
         {pageNumber}

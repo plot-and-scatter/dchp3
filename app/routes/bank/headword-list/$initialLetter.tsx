@@ -35,13 +35,13 @@ export default function EntryDetailsPage() {
       <div className="my-4 flex flex-col justify-center">
         {headwords.map((h) => {
           return (
-            <p className="" key={h.headword}>
+            <p key={h.headword}>
               <strong>{h.headword}</strong> (<strong>{h.count}</strong>{" "}
               citations){" "}
               <Link
                 bold
                 to={`/bank/citations/${h.headword}`}
-                className="font-bold text-red-600 hover:text-red-400"
+                appearance="primary"
               >
                 View citations
               </Link>
