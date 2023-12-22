@@ -3,6 +3,7 @@ import { type LoadedEntryDataType } from "~/routes/entries/$headword"
 import { attributeEnum } from "./attributeEnum"
 import { useState } from "react"
 import Button from "../elements/LinksAndButtons/Button"
+import { TertiaryHeader } from "../elements/TertiaryHeader"
 
 interface EditingToolsProps {
   data: LoadedEntryDataType
@@ -19,7 +20,7 @@ const EditingTools = ({ data }: EditingToolsProps) => {
       method="post"
     >
       <div className="flex flex-col">
-        <h3 className="my-2 text-lg underline">Editing Tools</h3>
+        <TertiaryHeader>Editing tools</TertiaryHeader>
         <div>
           <label className="mx-2">
             Publically Visible
