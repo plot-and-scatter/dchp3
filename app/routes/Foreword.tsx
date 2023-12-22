@@ -1,15 +1,11 @@
-import Header from "~/components/elements/Header"
-import Main from "~/components/elements/Main"
-import Nav from "~/components/elements/Nav"
+import { PageHeader } from "~/components/elements/PageHeader"
+import TextPageMain from "~/components/elements/TextPageMain"
 
 export default function Foreword() {
-    return (
-        <div className="relative">
-            <Header />
-            <Nav />
-            <Main>
-                <p>To come</p>
-            </Main>
-        </div>
-    )
+  return (
+    <TextPageMain>
+      <PageHeader>Foreword</PageHeader>
+      <p>To come.</p>
+    </TextPageMain>
+  )
 }

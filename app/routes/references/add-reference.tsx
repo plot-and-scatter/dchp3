@@ -21,7 +21,7 @@ export async function action({ request }: ActionArgs) {
   const referenceText = getStringFromFormInput(data.referenceText)
 
   addReference(shortDisplay, referenceText)
-  return redirect(`/reference`)
+  return redirect(`/references`)
 }
 
 export default function ReferenceIdPage() {

@@ -81,8 +81,12 @@ export default function SearchPage() {
   return (
     <Main center>
       <PageHeader>Search entries</PageHeader>
-      <Form {...form.props} className="flex flex-row gap-8" method="post">
-        <div className="flex flex-row gap-4">
+      <Form
+        {...form.props}
+        className="flex flex-col gap-4 lg:flex-row lg:gap-8"
+        method="post"
+      >
+        <div className="flex flex-col gap-4 lg:flex-row">
           <div className="flex flex-col gap-2">
             <BankInput
               type="text"
@@ -117,43 +121,45 @@ export default function SearchPage() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col">
-          <div className="mr-4">
-            <strong>Database</strong>
+        <div className="flex flex-row gap-4">
+          <div className="flex flex-col">
+            <div className="mr-4">
+              <strong>Database</strong>
+            </div>
+            <BankRadioOrCheckbox
+              type="checkbox"
+              name="database"
+              optionSetClassName="flex gap-x-2 mr-4"
+              direction="vertical"
+              conformField={fields.database}
+              options={[
+                { label: "DCHP-1", value: "dchp1", defaultChecked: true },
+                { label: "DCHP-2", value: "dchp2", defaultChecked: true },
+                { label: "DCHP-3", value: "dchp3", defaultChecked: true },
+              ]}
+            />
           </div>
-          <BankRadioOrCheckbox
-            type="checkbox"
-            name="database"
-            optionSetClassName="flex gap-x-2 mr-4"
-            direction="vertical"
-            conformField={fields.database}
-            options={[
-              { label: "DCHP-1", value: "dchp1", defaultChecked: true },
-              { label: "DCHP-2", value: "dchp2", defaultChecked: true },
-              { label: "DCHP-3", value: "dchp3", defaultChecked: true },
-            ]}
-          />
-        </div>
-        <div className="flex flex-col">
-          <div className="mr-4">
-            <strong>Canadianism type</strong>
+          <div className="flex flex-col">
+            <div className="mr-4">
+              <strong>Canadianism type</strong>
+            </div>
+            <BankRadioOrCheckbox
+              type="checkbox"
+              name="canadianismType"
+              optionSetClassName="flex gap-x-2 mr-4"
+              direction="vertical"
+              conformField={fields.canadianismType}
+              options={Object.values(CanadianismTypeEnum).map(
+                (canadianismType) => ({
+                  label: canadianismType,
+                  value: canadianismType,
+                  defaultChecked: true,
+                })
+              )}
+            />
           </div>
-          <BankRadioOrCheckbox
-            type="checkbox"
-            name="canadianismType"
-            optionSetClassName="flex gap-x-2 mr-4"
-            direction="vertical"
-            conformField={fields.canadianismType}
-            options={Object.values(CanadianismTypeEnum).map(
-              (canadianismType) => ({
-                label: canadianismType,
-                value: canadianismType,
-                defaultChecked: true,
-              })
-            )}
-          />
         </div>
-        <div>
+        <div className="text-center lg:text-start">
           <ActionButton
             size="large"
             name="attribute"

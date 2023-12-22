@@ -26,7 +26,7 @@ export default function ReferenceIndexPage() {
   return (
     <div className="flex flex-col">
       {canUserAddReference && (
-        <Link asButton to="addReference" className="w-fit">
+        <Link asButton to="add-reference" className="w-fit">
           Add new reference
         </Link>
       )}

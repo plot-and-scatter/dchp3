@@ -11,6 +11,7 @@ import invariant from "tiny-invariant"
 import type { LoaderArgs } from "@remix-run/node"
 import PaginationControl from "~/components/bank/PaginationControl"
 import { PageHeader } from "~/components/elements/PageHeader"
+import Main from "~/components/elements/Main"
 
 export async function loader({ params }: LoaderArgs) {
   const { initialLetters, pageNumber } = params
