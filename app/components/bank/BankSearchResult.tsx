@@ -51,7 +51,7 @@ export default function BankSearchResult({
         <NavLink
           to={`/bank/edit/${citation.id}`}
           target="_blank"
-          className="text-blue-500"
+          className="text-action-500"
         >
           {headwordText}
         </NavLink>

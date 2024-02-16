@@ -18,6 +18,7 @@ module.exports = {
       success: colors.emerald,
       white: colors.white,
       amber: colors.amber,
+      action: colors.blue,
     },
     extend: {},
   },

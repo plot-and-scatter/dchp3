@@ -14,19 +14,19 @@ const buttonAppearanceClasses: Record<
   string
 > = {
   "primary-solid": "border-gray-700 bg-gray-600 text-white hover:bg-gray-500",
-  "secondary-solid":
-    "border-stone-500 bg-stone-400 text-white hover:bg-stone-300",
+  "secondary-solid": "border-gray-500 bg-gray-400 text-white hover:bg-gray-300",
   "danger-solid":
     "border-primary-dark bg-primary text-white hover:bg-primary-light",
   "success-solid":
-    "border-emerald-600 bg-emerald-500 text-white hover:bg-emerald-400",
-  "action-solid": "border-blue-600 bg-blue-500 text-white hover:bg-blue-400",
+    "border-success-600 bg-success-500 text-white hover:bg-success-400",
+  "action-solid":
+    "border-action-600 bg-action-500 text-white hover:bg-action-400",
 
   "primary-outline": "border-gray-700 text-gray-700 hover:bg-gray-50",
-  "secondary-outline": "border-stone-500 text-stone-400 hover:bg-stone-50",
+  "secondary-outline": "border-gray-500 text-gray-400 hover:bg-gray-50",
   "danger-outline": "border-primary text-primary hover:bg-primary-lightest",
-  "success-outline": "border-emerald-600 text-emerald-500 hover:bg-emerald-50",
-  "action-outline": "border-blue-600 text-blue-500 hover:bg-blue-50",
+  "success-outline": "border-success-600 text-success-500 hover:bg-success-50",
+  "action-outline": "border-action-600 text-action-500 hover:bg-action-50",
 }
 
 export const buttonAppearanceClass = (
