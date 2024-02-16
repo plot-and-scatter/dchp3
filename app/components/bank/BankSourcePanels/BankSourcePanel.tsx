@@ -26,6 +26,7 @@ export default function BankSourcePanel(props: BankEditCitationFieldsProps) {
         hidden
       />
       <BankInput
+        readOnly
         name={`source.id`}
         value={props.citation?.source_id || undefined}
         hidden
