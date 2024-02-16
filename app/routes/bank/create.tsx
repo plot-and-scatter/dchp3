@@ -148,11 +148,6 @@ export default function BankCreate() {
                 <i className="fa-solid fa-download mr-2" /> Save citation
               </Button>
             </div>
-            <div>
-              <Button appearance="danger">
-                <i className="fa-solid fa-xmark mr-2" /> Delete citation
-              </Button>
-            </div>
           </div>
         </div>
       </div>
