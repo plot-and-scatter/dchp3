@@ -45,7 +45,7 @@ export default function MeaningEditingForm({
   //   const [usageNoteValue, setUsageNote] = useState(usageNote)
 
   return (
-    <div className="my-12 mb-56 bg-slate-100 p-5">
+    <div className="my-12 mb-56 bg-gray-100 p-5">
       <div className="flex justify-between">
         <h3 className="text-4xl font-bold">Meaning: {meaning.order}</h3>
         <Form method="post" className="my-6">
@@ -148,18 +148,18 @@ export default function MeaningEditingForm({
         </div>
       </Form>
 
-      <div className="my-2 flex flex-col justify-center bg-slate-200 p-2">
+      <div className="my-2 flex flex-col justify-center bg-gray-200 p-2">
         <h2 className=" my-2 text-2xl font-bold underline">Quotation Adding</h2>
         <QuotationList meaningId={meaning.id} citations={meaning.citations} />
         <QuotationAddingForm meaningId={meaning.id} />
       </div>
 
-      <div className="my-2 bg-slate-200 p-2">
+      <div className="my-2 bg-gray-200 p-2">
         <h2 className=" my-2 text-2xl underline">See Also</h2>
         <SeeAlsoEditing headword={headword} seeAlsoItems={meaning.seeAlso} />
         <AddSeeAlso headword={headword} meaningId={meaning.id} />
       </div>
-      <div className="my-2 bg-slate-200 p-2">
+      <div className="my-2 bg-gray-200 p-2">
         <div className="flex justify-between">
           <h2 className=" my-2 text-2xl underline">Fistnotes</h2>
           <FistnoteAddingForm meaningId={meaning.id} />

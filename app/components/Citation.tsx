@@ -14,7 +14,7 @@ const Citation = ({ citation }: CitationProps): JSX.Element => {
   if (!citation) return <></>
   return (
     <div>
-      <span className="mr-2 font-bold leading-tight text-slate-500">
+      <span className="mr-2 font-bold leading-tight text-gray-500">
         {citation.yearcomp || citation.yearpub}
       </span>
       <div className="inline">
@@ -23,7 +23,8 @@ const Citation = ({ citation }: CitationProps): JSX.Element => {
       <div className="inline text-sm ">
         {citation.url && (
           <Link
-            className="ml-2 cursor-pointer text-red-400 hover:text-red-600"
+            appearance="primary"
+            className="ml-2 cursor-pointer"
             to={citation.url}
             target="_new"
           >

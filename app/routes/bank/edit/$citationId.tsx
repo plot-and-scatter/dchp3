@@ -44,6 +44,12 @@ export const action = async ({ request, params }: ActionArgs) => {
   if (!email) throw json({ message: `No email on user` }, { status: 500 })
   const userId = await getUserIdByEmailOrThrow({ email })
 
+  // If the buttonIntent is delete, delete the citation.
+  if (submission.payload[`buttonIntent`] === `delete`) {
+    await prisma.bankCitation.delete({ where: { id: citationId } })
+    return redirect(`/bank/own`)
+  }
+
   // Find or create the headword
   const headwordId = await findOrCreateHeadword(headword)
 
@@ -139,12 +145,17 @@ export default function EditCitationId() {
           <BankSourcePanel {...data} key={citation.id} />
           <div className="mx-auto mt-12 flex items-center gap-x-12">
             <div>
-              <Button appearance="success" size="large">
+              <Button
+                appearance="success"
+                size="large"
+                name="buttonIntent"
+                value="save"
+              >
                 <i className="fa-solid fa-download mr-2" /> Save citation
               </Button>
             </div>
             <div>
-              <Button appearance="danger">
+              <Button appearance="danger" name="buttonIntent" value="delete">
                 <i className="fa-solid fa-xmark mr-2" /> Delete citation
               </Button>
             </div>

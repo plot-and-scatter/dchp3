@@ -23,7 +23,7 @@ export default function FistnoteEditForm({
         name="usageNoteText"
         value={usageNoteText}
         onChange={(e) => setText(e.target.value)}
-        className="m-1 h-16 w-full border bg-slate-50 p-1"
+        className="m-1 h-16 w-full border bg-gray-50 p-1"
       />
       <input
         type="hidden"

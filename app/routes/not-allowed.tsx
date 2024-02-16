@@ -28,8 +28,8 @@ export default function Admin() {
           <table>
             <thead>
               <tr>
-                <th className="bg-slate-100 p-4 text-left font-bold">Role</th>
-                <th className="bg-slate-100 p-4 text-left font-bold">
+                <th className="bg-gray-100 p-4 text-left font-bold">Role</th>
+                <th className="bg-gray-100 p-4 text-left font-bold">
                   Permissions
                 </th>
               </tr>

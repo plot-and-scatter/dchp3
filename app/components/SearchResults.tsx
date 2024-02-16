@@ -60,8 +60,8 @@ const SearchResults = ({
   const page = pageNumber ?? "1"
 
   return (
-    <div className="-m-4 flex max-w-3xl flex-col justify-center p-4 align-middle">
-      <div className="-mb-[1px] flex flex-row gap-x-2 border-b border-slate-700">
+    <div className="mx-auto flex w-full flex-col justify-center align-middle lg:w-fit lg:max-w-3xl">
+      <div className="mb-2 flex flex-row flex-wrap gap-2 border-gray-700 lg:-mb-[1px] lg:border-b">
         {enumValues(SearchResultEnum)
           .filter((value) => value !== SearchResultEnum.ALL)
           .map((value, index) => (
@@ -76,7 +76,7 @@ const SearchResults = ({
                   ? "solid"
                   : "outline"
               }
-              className="whitespace-nowrap rounded-bl-none rounded-br-none border-b-0"
+              className="lg:whitespace-nowrap lg:rounded-bl-none lg:rounded-br-none lg:border-b-0"
             >
               {SearchResultEnumDisplay[value as SearchResultEnum]} (
               {data[value as keyof AllSearchResults]?.length})
@@ -86,7 +86,7 @@ const SearchResults = ({
       {/* <h2 className="my-5 mb-10 text-4xl font-extrabold">
         Page {page} results for: "{text}"
       </h2> */}
-      <div className="border border-slate-700 bg-slate-50 p-4">
+      <div className="w-full border border-gray-700 bg-gray-50 p-4">
         <div>{getSearchResults(page, text, data, searchAttribute)}</div>
         {/* <div className="flex justify-between gap-x-2 pt-4 text-center">
           <Button type="submit" size="small" name="nextPage" value="false">

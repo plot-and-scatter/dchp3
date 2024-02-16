@@ -7,7 +7,7 @@ interface DefinitionProps {
 
 const Definition = ({ meaning }: DefinitionProps): JSX.Element => {
   return (
-    <p className="mb-4 text-sm font-bold text-slate-500 md:text-xl">
+    <p className="mb-4 text-sm font-bold text-gray-500 md:text-xl">
       <SanitizedTextSpan text={meaning.definition} />
     </p>
   )

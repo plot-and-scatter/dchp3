@@ -25,9 +25,12 @@ export type OwnCitation = Pick<
     place_name: BankPlace["name"]
   } & Pick<User, "email">
 
+/**
+ * @deprecated
+ */
 export default async function (
   email: string,
-  skip?: number,
+  skip: number = 0,
   take: number = 20
 ) {
   const userId = await getUserIdByEmailOrThrow({ email })
@@ -68,7 +71,7 @@ export default async function (
 
   ORDER BY c.created DESC
 
-  LIMIT 100`
+  LIMIT ${take} OFFSET ${skip}`
 
   return results
 }

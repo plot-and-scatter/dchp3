@@ -12,7 +12,7 @@ export default function AddSeeAlso({ meaningId, headword }: AddSeeAlsoProps) {
   return (
     <Form
       method="post"
-      className="my-2 flex flex-row items-center justify-between border bg-slate-100 p-5"
+      className="my-2 flex flex-row items-center justify-between border bg-gray-100 p-5"
     >
       <div className="flex">
         <input type="hidden" name="attributeID" value={meaningId} />

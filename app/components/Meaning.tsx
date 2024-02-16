@@ -24,7 +24,7 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
   return (
     <>
       <div
-        className="-mx-3 my-3 border-l-8 border-slate-200 md:my-8 md:text-lg"
+        className="-mx-3 my-3 border-l-8 border-gray-200 md:my-8 md:text-lg"
         id={`meaning-${meaning.id}`}
       >
         <MeaningHeader

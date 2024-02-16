@@ -35,7 +35,7 @@ const Headword = ({
 }: HeadwordProps): JSX.Element => {
   return (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
-      <div className="flex items-center justify-between border-b-2 border-slate-500 py-4">
+      <div className="flex items-center justify-between border-b-2 border-gray-500 py-4">
         <div className="flex items-center">
           <div className="flex justify-center align-middle">
             <h1 className="text-3xl leading-tight md:text-5xl">
@@ -56,12 +56,12 @@ const Headword = ({
       <Alternatives alternatives={alternatives} />
 
       {handNote && (
-        <HandNoteBlock className="text-xs text-slate-500 md:text-lg">
+        <HandNoteBlock className="text-xs text-gray-500 md:text-lg">
           {handNote}
         </HandNoteBlock>
       )}
       {isNonCanadian && (
-        <div className="border border-red-300 bg-red-200 p-3 font-bold">
+        <div className="border-red-300 bg-red-200 border p-3 font-bold">
           Non-Canadianism
         </div>
       )}

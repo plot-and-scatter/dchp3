@@ -14,7 +14,7 @@ const Entry = ({ entry, canUserEditEntry }: EntryProps): JSX.Element => {
   const bgColor = entry.is_legacy
     ? "bg-amber-100"
     : entry.no_cdn_conf
-    ? "bg-red-100"
+    ? "bg-primary-lightest"
     : ""
 
   return (

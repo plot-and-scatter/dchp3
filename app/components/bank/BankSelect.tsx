@@ -26,8 +26,9 @@ export default function BankSelect({
         name={name}
         onChange={onChange}
         className={clsx(
-          className || `rounded border border-slate-700 py-2 px-4`,
-          hasErrors && "border-red-700 bg-red-100 outline-red-700"
+          className || `rounded border border-gray-700 py-2 px-4`,
+          hasErrors &&
+            "border-primary-dark bg-primary-lightest outline-primary-dark"
         )}
         {...rest}
       >

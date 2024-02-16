@@ -21,7 +21,7 @@ export default function BankSearchResult({
   const headwordText =
     searchOptions.searchField === "headword" ? (
       <Highlighter
-        highlightClassName="font-bold text-red-500 font-italic bg-transparent"
+        highlightClassName="font-bold text-primary font-italic bg-transparent"
         searchWords={[searchTerm]}
         textToHighlight={citation.headword?.headword || ""}
       />
@@ -37,7 +37,7 @@ export default function BankSearchResult({
   const citationText =
     searchOptions.searchField === "citation" ? (
       <Highlighter
-        highlightClassName="font-bold text-red-500 font-italic bg-transparent"
+        highlightClassName="font-bold text-primary font-italic bg-transparent"
         searchWords={[searchTerm]}
         textToHighlight={_citationText || ""}
       />
@@ -48,7 +48,11 @@ export default function BankSearchResult({
   return (
     <div key={citation.id} className="mb-4">
       <div className="text-lg font-bold">
-        <NavLink to={`/bank/edit/${citation.id}`} className="text-blue-500">
+        <NavLink
+          to={`/bank/edit/${citation.id}`}
+          target="_blank"
+          className="text-action-500"
+        >
           {headwordText}
         </NavLink>
       </div>

@@ -72,7 +72,7 @@ export default function CitationTextAndClip({
             />
             <code style={{ fontFamily: "Charter, Georgia, serif" }}>
               {citationText.substring(0, clipStart)}
-              <span className="bg-red-300">
+              <span className="bg-primary-light">
                 {citationText.substring(clipStart, clipEnd)}
               </span>
               {citationText.substring(clipEnd)}

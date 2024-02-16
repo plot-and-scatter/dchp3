@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { Link } from "../elements/LinksAndButtons/Link"
+import FAIcon from "../elements/Icons/FAIcon"
 
 const buildUrl = (
   baseLink: string,
@@ -49,8 +50,8 @@ export default function PaginationControl({
         key={`page-link-${pageNumber}`}
         to={buildUrl(baseLink, pageNumber, useSearch, url)}
         className={clsx(
-          "block px-2 py-1",
-          pageNumber === currentPage && " bg-red-700 font-bold text-white"
+          "block px-1 py-1 md:px-2",
+          pageNumber === currentPage && " bg-primary-dark font-bold text-white"
         )}
       >
         {pageNumber}
@@ -90,14 +91,15 @@ export default function PaginationControl({
   }
 
   return (
-    <div className="flex items-center justify-between gap-x-8">
+    <div className="flex w-full items-center justify-between gap-x-8">
       <Link
         buttonVariant="outline"
         asButton
         to={buildUrl(baseLink, currentPage - 1, useSearch, url)}
         className={showPrevious ? "visible" : "invisible"}
       >
-        &larr; Previous page
+        <FAIcon iconName="fa-arrow-left" />
+        &nbsp;Prev<span className="hidden md:inline">ious page</span>
       </Link>
       <div className="flex grow flex-row justify-center text-center">
         {middlePageLinks}
@@ -108,7 +110,8 @@ export default function PaginationControl({
         to={buildUrl(baseLink, currentPage + 1, useSearch, url)}
         className={showNext ? "visible" : "invisible"}
       >
-        Next page &rarr;
+        Next<span className="hidden md:inline"> page</span>&nbsp;
+        <FAIcon iconName="fa-arrow-right" />
       </Link>
     </div>
   )
