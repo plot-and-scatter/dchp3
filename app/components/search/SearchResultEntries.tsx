@@ -14,7 +14,7 @@ const SearchResultEntries = ({ text, data }: Props) => {
     <>
       {data.map((e) => {
         return (
-          <p key={e.id}>
+          <p key={e.id} className="flex items-center">
             <Link
               to={`/entries/${e.headword}`}
               appearance="primary"
@@ -22,6 +22,13 @@ const SearchResultEntries = ({ text, data }: Props) => {
             >
               {e.headword}
             </Link>
+            {e.is_public ? (
+              ""
+            ) : (
+              <span className="ml-1 bg-alert-200 px-1 py-0.5 text-xs uppercase">
+                Draft
+              </span>
+            )}
           </p>
         )
       })}
