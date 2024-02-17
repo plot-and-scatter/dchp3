@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 cd /var/www/dchp3
 sudo /usr/bin/npm i
