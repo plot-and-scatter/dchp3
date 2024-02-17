@@ -11,6 +11,7 @@ import { type AllSearchResults, getSearchResults } from "~/models/search.server"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
+import { userHasPermission } from "~/services/auth/session.server"
 
 export async function action({ request, params }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -58,14 +59,16 @@ export async function loader({ request, params }: LoaderArgs) {
     canadianismTypes
   )
 
-  const searchResults: AllSearchResults = await getSearchResults(
+  const isUserAdmin = await userHasPermission(request, "det:viewEdits")
+
+  const searchResults: AllSearchResults = await getSearchResults({
     text,
-    pageNumber,
+    page: pageNumber,
     caseSensitive,
-    undefined,
     dchpVersions,
-    canadianismTypes
-  )
+    canadianismTypesArg: canadianismTypes,
+    isUserAdmin,
+  })
 
   return searchResults
 }
