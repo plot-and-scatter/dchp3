@@ -3,7 +3,7 @@ import { useLoaderData } from "@remix-run/react"
 import BankSearchResult from "~/components/bank/BankSearchResult"
 
 // We just import and re-export the JSON-based loader.
-import { loader } from "~/routes/api/citations/$searchTerm.$pageNumber[.json]"
+import { loader } from "~/routes/api/citations/$searchTerm[.json]"
 import PaginationControl from "~/components/bank/PaginationControl"
 export { loader }
 
