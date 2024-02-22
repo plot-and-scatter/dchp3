@@ -17,7 +17,6 @@ export default function BankTextArea({
   name,
   defaultValue,
   showField = true,
-  onChange,
   ...rest
 }: BankTextAreaProps) {
   const defaultValueNoNulls = defaultValue === null ? undefined : defaultValue
