@@ -1,7 +1,7 @@
 import { resetFetcher } from "~/routes/api/reset-fetcher"
 import { useFetcher } from "@remix-run/react"
 import BankInput from "../bank/BankInput"
-import type { CitationSearchLoaderData } from "~/routes/api/citations/$searchTerm.$pageNumber[.json]"
+import type { CitationSearchLoaderData } from "~/routes/api/citations/$searchTerm[.json]"
 import BankRadioOrCheckbox from "../bank/BankRadioOrCheckbox"
 import Button from "../elements/LinksAndButtons/Button"
 import LabelledField from "../bank/LabelledField"

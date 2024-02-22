@@ -5,9 +5,8 @@ import type { LoaderArgs } from "@remix-run/server-runtime"
 import type { SearchOptions } from "~/services/bank/searchCitations"
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const { searchTerm, pageNumber } = params
+  const { searchTerm } = params
   invariant(searchTerm, `No search term provided`)
-  invariant(pageNumber, `No page number provided`)
 
   const url = new URL(request.url)
 
@@ -23,13 +22,13 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const searchOptions = { ...partialSearchOptions, searchTerm }
 
-  const { count, citations } = await searchCitations(searchOptions)
+  const { count, citations, page } = await searchCitations(searchOptions)
 
   return {
     searchTerm,
     citations,
     searchOptions,
-    pageNumber,
+    pageNumber: page,
     pageCount: Math.ceil(count / PAGE_SIZE),
     citationCount: count,
     url,

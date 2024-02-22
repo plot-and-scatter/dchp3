@@ -16,3 +16,7 @@ update headword set headword = "Fête nationale" where headword like "FÃªte na
 -- Set all users to inactive. If/when they log in via Auth0 we will reset them
 -- to active.
 update user set is_active = 0
+
+-- Update the timestamps to prevent errors with '0000-00-00 00:00:00'
+set sql_mode=(select replace(@@sql_mode,"NO_ZERO_DATE", ""));
+update citation set last_modified = null WHERE last_modified = '0000-00-00 00:00:00';

@@ -128,5 +128,5 @@ export default async function (opts: SearchOptions) {
     },
   })
 
-  return { count, citations: results }
+  return { count, page: opts.page || 1, citations: results }
 }
