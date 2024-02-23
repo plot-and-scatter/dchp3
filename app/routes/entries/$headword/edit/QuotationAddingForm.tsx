@@ -2,14 +2,14 @@ import { resetFetcher } from "~/routes/api/reset-fetcher"
 import { Form, useFetcher } from "@remix-run/react"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import type { CitationSearchLoaderData } from "~/routes/api/citations/$searchTerm[.json]"
-import BankInput from "~/components/bank/BankInput"
+import Input from "~/components/bank/Input"
 import LabelledField from "~/components/bank/LabelledField"
-import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
+import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import { attributeEnum } from "~/components/editing/attributeEnum"
 import { useState } from "react"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
-import BankSelect from "~/components/bank/BankSelect"
+import Select from "~/components/bank/Select"
 import { PAGE_SIZE } from "~/services/bank/searchCitations"
 
 interface QuotationAddingFormProps {
@@ -85,7 +85,7 @@ export default function QuotationAddingForm({
       <form onSubmit={onSubmit}>
         <div className="flex">
           <div className="w-full">
-            <BankInput
+            <Input
               placeholder="Enter text to search citations by headword"
               name="searchText"
               // onChange={onChangeAction}
@@ -93,7 +93,7 @@ export default function QuotationAddingForm({
             {citations.data && (
               <label className="block" htmlFor="pageNumber">
                 Page number:
-                <BankSelect
+                <Select
                   name="pageNumber"
                   options={pageCountOptions}
                   onChange={(e) => setPageNumber(+e.target.value)}
@@ -103,7 +103,7 @@ export default function QuotationAddingForm({
             <LabelledField
               label="Sort by"
               field={
-                <BankRadioOrCheckbox
+                <RadioOrCheckbox
                   type="radio"
                   className="flex"
                   optionSetClassName="flex gap-x-2 mr-4"
@@ -120,7 +120,7 @@ export default function QuotationAddingForm({
             <LabelledField
               label="Order"
               field={
-                <BankRadioOrCheckbox
+                <RadioOrCheckbox
                   type="radio"
                   className="flex"
                   optionSetClassName="flex gap-x-2 mr-4"

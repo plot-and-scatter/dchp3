@@ -1,5 +1,5 @@
 import { useNavigate } from "@remix-run/react"
-import BankSelect from "./BankSelect"
+import Select from "./Select"
 import type { EditCitationIdLoaderData } from "~/routes/bank/edit/$citationId"
 import type { SerializeFrom } from "@remix-run/server-runtime"
 
@@ -17,7 +17,7 @@ export default function BankHeadwordCitationSelect({
   return (
     <div>
       {/* TODO: Improve the appearance of this. */}
-      <BankSelect
+      <Select
         name={`headword--citation-select`}
         defaultValue={currentCitation.id}
         options={citations.map((c) => ({

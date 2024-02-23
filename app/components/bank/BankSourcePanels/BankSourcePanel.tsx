@@ -5,7 +5,7 @@ import PeriodicalPanel from "./PeriodicalPanel"
 import SiteFlierPanel from "./SiteFlierPanel"
 import SpokenLanguagePanel from "./SpokenLanguagePanel"
 import ActiveSourcePicker from "./ActiveSourcePicker"
-import BankInput from "../BankInput"
+import Input from "../Input"
 import type { BankEditCitationFieldsProps } from "../BankEditCitationFields"
 
 export default function BankSourcePanel(props: BankEditCitationFieldsProps) {
@@ -19,13 +19,8 @@ export default function BankSourcePanel(props: BankEditCitationFieldsProps) {
         activeSourceType={activeSourceType}
         setActiveSourceType={setActiveSourceType}
       />
-      <BankInput
-        name={`source.type_id`}
-        value={activeSourceType}
-        readOnly
-        hidden
-      />
-      <BankInput
+      <Input name={`source.type_id`} value={activeSourceType} readOnly hidden />
+      <Input
         readOnly
         name={`source.id`}
         value={props.citation?.source_id || undefined}

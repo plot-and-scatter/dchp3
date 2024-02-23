@@ -1,13 +1,13 @@
 import { BankLegacyTypeEnum, BankPosEnum } from "~/models/bank.types"
 import { enumToOptions } from "~/utils/inputUtils"
-import BankInput from "./BankInput"
-import BankSelect from "./BankSelect"
-import BankTextArea from "./BankTextArea"
+import Input from "./Input"
+import Select from "./Select"
+import TextArea from "./TextArea"
 import CitationTextAndClip from "./CitationTextAndClip"
 import LabelledField from "./LabelledField"
 import type { EditCitationIdLoaderData } from "~/routes/bank/edit/$citationId"
 import type { SerializeFrom } from "@remix-run/server-runtime"
-import BankRadioOrCheckbox from "./BankRadioOrCheckbox"
+import RadioOrCheckbox from "./RadioOrCheckbox"
 
 export type BankEditCitationFieldsProps = {
   citation?: SerializeFrom<EditCitationIdLoaderData["citation"]>
@@ -27,7 +27,7 @@ export default function BankEditCitationFields({
       <LabelledField
         label={`Headword`}
         field={
-          <BankInput
+          <Input
             conformField={citationFields?.headword}
             name="citation.headword"
             defaultValue={citation?.headword?.headword}
@@ -37,7 +37,7 @@ export default function BankEditCitationFields({
       <LabelledField
         label={`Short Meaning`}
         field={
-          <BankTextArea
+          <TextArea
             conformField={citationFields?.short_meaning}
             name="citation.short_meaning"
             defaultValue={citation?.short_meaning}
@@ -47,7 +47,7 @@ export default function BankEditCitationFields({
       <LabelledField
         label={`Spelling Variant`}
         field={
-          <BankInput
+          <Input
             name="citation.spelling_variant"
             defaultValue={citation?.spelling_variant}
           />
@@ -56,7 +56,7 @@ export default function BankEditCitationFields({
       <LabelledField
         label={`POS`}
         field={
-          <BankSelect
+          <Select
             name={`citation.part_of_speech`}
             defaultValue={citation?.part_of_speech ?? undefined}
             options={enumToOptions(BankPosEnum)}
@@ -83,13 +83,13 @@ export default function BankEditCitationFields({
       <LabelledField
         label={`Memo`}
         field={
-          <BankTextArea name={`citation.memo`} defaultValue={citation?.memo} />
+          <TextArea name={`citation.memo`} defaultValue={citation?.memo} />
         }
       />
       <LabelledField
         label={`Data Type`}
         field={
-          <BankSelect
+          <Select
             name={`citation.legacy_id`}
             defaultValue={citation?.legacy_id || BankLegacyTypeEnum["DCHP-3"]}
             options={enumToOptions(BankLegacyTypeEnum)}
@@ -99,7 +99,7 @@ export default function BankEditCitationFields({
       <LabelledField
         label={`Incomplete?`}
         field={
-          <BankRadioOrCheckbox
+          <RadioOrCheckbox
             type="radio"
             className={`flex gap-x-4`}
             optionSetClassName={`flex gap-x-2`}

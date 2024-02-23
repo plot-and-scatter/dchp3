@@ -6,8 +6,8 @@ import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import invariant from "tiny-invariant"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import TopLabelledField from "~/components/bank/TopLabelledField"
-import BankInput from "~/components/bank/BankInput"
-import BankTextArea from "~/components/bank/BankTextArea"
+import Input from "~/components/bank/Input"
+import TextArea from "~/components/bank/TextArea"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 export async function action({ request }: ActionArgs) {
@@ -32,11 +32,11 @@ export default function ReferenceIdPage() {
         <input type="hidden" name="id" />
         <TopLabelledField
           label={<label htmlFor="shortDisplay">Short display text</label>}
-          field={<BankInput id="shortDisplay" name="shortDisplay" />}
+          field={<Input id="shortDisplay" name="shortDisplay" />}
         />
         <TopLabelledField
           label={<label htmlFor="referenceText">Reference text</label>}
-          field={<BankTextArea id="referenceText" name="referenceText" />}
+          field={<TextArea id="referenceText" name="referenceText" />}
         />
         <div className="flex w-full flex-row justify-between self-center">
           <Button name="updateReference" appearance="success">
