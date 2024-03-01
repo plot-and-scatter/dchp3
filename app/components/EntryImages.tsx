@@ -2,7 +2,9 @@ import { EntryImage } from "./EntryImage"
 import { type LoadedEntryDataType } from "~/routes/entries/$headword"
 
 const EntryImages = ({ data }: { data: LoadedEntryDataType }): JSX.Element => {
-  const images = data.images.sort((a, b) => (a.order || 0) - (b.order || 0))
+  const images = data.images
+    .filter((d) => d.path)
+    .sort((a, b) => (a.order || 0) - (b.order || 0))
 
   return (
     <div>
