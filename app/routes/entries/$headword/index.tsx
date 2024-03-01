@@ -23,8 +23,10 @@ export async function loader({ request, params }: LoaderArgs) {
   }
 
   // Rewrite image URLs
-  entry.images.forEach(
-    (i) => (i.path = `${process.env.IMAGE_BUCKET_PREFIX}${i.path}`)
+  entry.images.forEach((i) =>
+    i.path
+      ? (i.path = `${process.env.IMAGE_BUCKET_PREFIX}${i.path}`)
+      : undefined
   )
 
   const canUserEditEntry = await _canUserEditEntry(request, params.headword)
