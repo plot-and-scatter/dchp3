@@ -1,22 +1,22 @@
-import type { BankInputOption } from "./BankInputOption"
+import type { InputOption } from "./InputOption"
 import clsx from "clsx"
 import ValidationErrorText from "../elements/Form/ValidationErrorText"
 
-type BankSelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
+type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
   conformField?: any
-  options: BankInputOption[]
+  options: InputOption[]
   name: string
   onChange?: React.ChangeEventHandler<HTMLSelectElement>
 }
 
-export default function BankSelect({
+export default function Select({
   conformField,
   name,
   options,
   onChange,
   className,
   ...rest
-}: BankSelectProps) {
+}: SelectProps) {
   const error = conformField?.errors
   const hasErrors = !!conformField?.errors && conformField?.errors.length > 0
 

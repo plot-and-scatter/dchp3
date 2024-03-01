@@ -1,7 +1,7 @@
 import { resetFetcher } from "~/routes/api/reset-fetcher"
 import { useDebouncedCallback } from "use-debounce"
 import { useFetcher } from "@remix-run/react"
-import BankInput from "../bank/BankInput"
+import Input from "../bank/Input"
 
 const HEADWORD_DATA_URL = `/api/entries/headwords.json`
 
@@ -26,7 +26,7 @@ export default function HeadwordAutocomplete() {
     <div className="w-96">
       <div className="flex">
         <div className="w-72">
-          <BankInput
+          <Input
             placeholder="Enter text to search entry headwords"
             name="headwords"
             onChange={onChangeAction}

@@ -1,8 +1,8 @@
-import clsx from "clsx"
 import ValidationErrorText from "../elements/Form/ValidationErrorText"
+import clsx from "clsx"
 
-type BankTextAreaProps = Omit<
-  React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+export type InputProps = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
   "defaultValue"
 > & {
   conformField?: any
@@ -11,14 +11,14 @@ type BankTextAreaProps = Omit<
   showField?: boolean // If true, show the defaultValue. If not, do not.
 }
 
-export default function BankTextArea({
+export default function Input({
   conformField,
-  className,
   name,
   defaultValue,
-  showField = true,
+  className,
+  showField,
   ...rest
-}: BankTextAreaProps) {
+}: InputProps) {
   const defaultValueNoNulls = defaultValue === null ? undefined : defaultValue
 
   const error = conformField?.errors
@@ -26,19 +26,21 @@ export default function BankTextArea({
 
   return (
     <>
-      <textarea
-        defaultValue={showField !== false ? defaultValueNoNulls : undefined}
+      <input
         name={name}
         className={clsx(
+          "my-0 w-full rounded border border-gray-700 px-4 py-2",
           className,
-          `w-full rounded border border-gray-700 px-4 py-2`,
           hasErrors &&
             "border-primary-dark bg-primary-lightest outline-primary-dark"
         )}
-        {...rest}
+        {...rest} // defaultValue MUST come after this line.
+        defaultValue={showField !== false ? defaultValueNoNulls : undefined}
       />
       {hasErrors && (
-        <ValidationErrorText className="flex-wrap">{error}</ValidationErrorText>
+        <ValidationErrorText className="flex-wrap">
+          {name} {error}
+        </ValidationErrorText>
       )}
     </>
   )

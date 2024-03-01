@@ -11,10 +11,10 @@ import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
 import { type ActionArgs, redirect, json } from "@remix-run/server-runtime"
 import { z } from "zod"
 import ActionButton from "~/components/elements/LinksAndButtons/ActionButton"
-import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
+import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 import FAIcon from "~/components/elements/Icons/FAIcon"
 import Main from "~/components/elements/Main"
-import BankInput from "~/components/bank/BankInput"
+import Input from "~/components/bank/Input"
 import { useForm } from "@conform-to/react"
 import { parse } from "@conform-to/zod"
 
@@ -88,13 +88,14 @@ export default function SearchPage() {
       >
         <div className="flex flex-col gap-4 lg:flex-row">
           <div className="flex flex-col gap-2">
-            <BankInput
+            <Input
               type="text"
               placeholder="Search term"
               className="border border-gray-700 p-2 text-2xl"
               name="searchTerm"
               defaultValue={params.searchTerm}
               conformField={fields.searchTerm}
+              autoFocus
             />
             <p className="text-sm">
               <FAIcon
@@ -105,7 +106,7 @@ export default function SearchPage() {
               You can enter <strong>*</strong> to match all entries.
             </p>
             <div className="whitespace-nowrap">
-              <BankRadioOrCheckbox
+              <RadioOrCheckbox
                 type="checkbox"
                 name="caseSensitive"
                 optionSetClassName="flex gap-x-2 mr-4"
@@ -126,7 +127,7 @@ export default function SearchPage() {
             <div className="mr-4">
               <strong>Database</strong>
             </div>
-            <BankRadioOrCheckbox
+            <RadioOrCheckbox
               type="checkbox"
               name="database"
               optionSetClassName="flex gap-x-2 mr-4"
@@ -143,7 +144,7 @@ export default function SearchPage() {
             <div className="mr-4">
               <strong>Canadianism type</strong>
             </div>
-            <BankRadioOrCheckbox
+            <RadioOrCheckbox
               type="checkbox"
               name="canadianismType"
               optionSetClassName="flex gap-x-2 mr-4"

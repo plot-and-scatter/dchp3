@@ -1,8 +1,8 @@
 import { useState } from "react"
 import LabelledField from "./LabelledField"
-import BankTextArea from "./BankTextArea"
-import BankNumericInput from "./BankNumericInput"
-import BankInput from "./BankInput"
+import TextArea from "./TextArea"
+import NumericInput from "./NumericInput"
+import Input from "./Input"
 import type { BankEditCitationFieldsProps } from "./BankEditCitationFields"
 
 export default function CitationTextAndClip({
@@ -17,7 +17,7 @@ export default function CitationTextAndClip({
       <LabelledField
         label={`Citation`}
         field={
-          <BankTextArea
+          <TextArea
             name="citation.text"
             defaultValue={citation?.text}
             rows={10}
@@ -35,7 +35,7 @@ export default function CitationTextAndClip({
         field={
           <div className="flex items-center gap-x-4">
             <div>Start:</div>
-            <BankNumericInput
+            <NumericInput
               name="citation.clip_start"
               defaultValue={clipStart}
               onChange={(e) => {
@@ -48,7 +48,7 @@ export default function CitationTextAndClip({
               max={citationText.length}
             />
             <div>End:</div>
-            <BankNumericInput
+            <NumericInput
               name="citation.clip_end"
               defaultValue={clipEnd}
               onChange={(e) => setClipEnd(parseInt(e.target.value))}
@@ -64,7 +64,7 @@ export default function CitationTextAndClip({
           // TODO: Put this elsewhere. We are using the <code> tag because
           // the smartquotes feature does not apply to it.
           <>
-            <BankInput
+            <Input
               name={`citation.clipped_text`}
               hidden
               value={citationText.substring(clipStart, clipEnd)}

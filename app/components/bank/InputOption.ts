@@ -1,4 +1,4 @@
-export type BankInputOption = {
+export type InputOption = {
   label: string
   value: string
   defaultChecked?: boolean

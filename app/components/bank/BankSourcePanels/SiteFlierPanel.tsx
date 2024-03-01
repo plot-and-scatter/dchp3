@@ -1,5 +1,5 @@
 import { BankSourceTypeEnum } from "~/models/bank.types"
-import BankInput from "../BankInput"
+import Input from "../Input"
 import LabelledField from "../LabelledField"
 import type { BankEditCitationFieldsProps } from "../BankEditCitationFields"
 
@@ -14,7 +14,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
       <LabelledField
         label={`Year Pub`}
         field={
-          <BankInput
+          <Input
             name={`source.year_published`}
             showField={showField}
             defaultValue={source?.year_published}
@@ -24,7 +24,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
       <LabelledField
         label={`Year Comp`}
         field={
-          <BankInput
+          <Input
             name={`source.year_composed`}
             showField={showField}
             defaultValue={source?.year_composed}
@@ -34,7 +34,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
       <LabelledField
         label={`Title of website`}
         field={
-          <BankInput
+          <Input
             name={`title`}
             showField={showField}
             defaultValue={source?.title?.name}
@@ -44,7 +44,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
       <LabelledField
         label={`Date`}
         field={
-          <BankInput
+          <Input
             name={`source.periodical_date`}
             showField={showField}
             defaultValue={source?.periodical_date}
@@ -54,7 +54,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
       <LabelledField
         label={`Author`}
         field={
-          <BankInput
+          <Input
             name={`author`}
             showField={showField}
             defaultValue={source?.author?.name}
@@ -65,7 +65,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
       <LabelledField
         label={`Place`}
         field={
-          <BankInput
+          <Input
             name={`place`}
             showField={showField}
             defaultValue={source?.place?.name}
@@ -75,7 +75,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
       <LabelledField
         label={`URL`}
         field={
-          <BankInput
+          <Input
             name={`source.url`}
             showField={showField}
             defaultValue={source?.url}
@@ -85,7 +85,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
       <LabelledField
         label={`URL Acc. Date`}
         field={
-          <BankInput
+          <Input
             name={`source.url_access_date`}
             showField={showField}
             defaultValue={source?.url_access_date}
@@ -95,7 +95,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
       <LabelledField
         label={`Evidence for Cdn. Usage:`}
         field={
-          <BankInput
+          <Input
             name={`source.evidence`}
             showField={showField}
             defaultValue={source?.evidence}

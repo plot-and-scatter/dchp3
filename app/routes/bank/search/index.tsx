@@ -6,10 +6,10 @@ import { getStringFromFormInput } from "~/utils/generalUtils"
 import { json, redirect } from "@remix-run/server-runtime"
 import { PageHeader } from "~/components/elements/PageHeader"
 import { z } from "zod"
-import BankInput from "~/components/bank/BankInput"
-import BankNumericInput from "~/components/bank/BankNumericInput"
-import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
-import BankSelect from "~/components/bank/BankSelect"
+import Input from "~/components/bank/Input"
+import NumericInput from "~/components/bank/NumericInput"
+import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
+import Select from "~/components/bank/Select"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import LabelledField from "~/components/bank/LabelledField"
 import type { ActionArgs } from "@remix-run/server-runtime"
@@ -66,22 +66,19 @@ export default function SearchIndex() {
   return (
     <Form method="POST" className="flex flex-col gap-y-4">
       <PageHeader>Search</PageHeader>
-      <LabelledField
-        label="Search term"
-        field={<BankInput name="searchTerm" />}
-      />
+      <LabelledField label="Search term" field={<Input name="searchTerm" />} />
       <LabelledField
         label="Select"
         field={
           <div className="flex">
-            <BankRadioOrCheckbox
+            <RadioOrCheckbox
               type="checkbox"
               name="exactPhrase"
               className="flex"
               optionSetClassName="flex gap-x-2 mr-4"
               options={[{ label: "Exact phrase", value: "exactPhrase" }]}
             />
-            <BankRadioOrCheckbox
+            <RadioOrCheckbox
               type="checkbox"
               name="caseSensitive"
               className="flex"
@@ -99,7 +96,7 @@ export default function SearchIndex() {
       <LabelledField
         label="Search field"
         field={
-          <BankSelect
+          <Select
             name="searchField"
             options={[
               { label: "Citation (Full Text)", value: "citation" },
@@ -111,7 +108,7 @@ export default function SearchIndex() {
       <LabelledField
         label="Data type"
         field={
-          <BankSelect
+          <Select
             name="legacyType"
             options={[
               { label: "All", value: "all" },
@@ -123,7 +120,7 @@ export default function SearchIndex() {
       <LabelledField
         label="Source type"
         field={
-          <BankSelect
+          <Select
             name="sourceType"
             options={[
               { label: "All", value: "all" },
@@ -134,17 +131,17 @@ export default function SearchIndex() {
       />
       <LabelledField
         label="Source floor (year)"
-        field={<BankNumericInput name="sourceFloorYear" />}
+        field={<NumericInput name="sourceFloorYear" />}
       />
       <LabelledField
         label="Source ceiling (year)"
-        field={<BankNumericInput name="sourceCeilingYear" />}
+        field={<NumericInput name="sourceCeilingYear" />}
       />
-      <LabelledField label="Place" field={<BankInput name="placeName" />} />
+      <LabelledField label="Place" field={<Input name="placeName" />} />
       <LabelledField
         label="Sort by"
         field={
-          <BankRadioOrCheckbox
+          <RadioOrCheckbox
             type="radio"
             className="flex"
             optionSetClassName="flex gap-x-2 mr-4"
@@ -161,7 +158,7 @@ export default function SearchIndex() {
       <LabelledField
         label="Order"
         field={
-          <BankRadioOrCheckbox
+          <RadioOrCheckbox
             type="radio"
             className="flex"
             optionSetClassName="flex gap-x-2 mr-4"
@@ -177,7 +174,7 @@ export default function SearchIndex() {
       <LabelledField
         label="Horizon"
         field={
-          <BankRadioOrCheckbox
+          <RadioOrCheckbox
             type="radio"
             className="flex"
             optionSetClassName="flex gap-x-2 mr-4"

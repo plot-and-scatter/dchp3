@@ -1,16 +1,16 @@
-import type { BankInputProps } from "./BankInput"
-import type { BankInputOption } from "./BankInputOption"
+import type { InputProps } from "./Input"
+import type { InputOption } from "./InputOption"
 import ValidationErrorText from "../elements/Form/ValidationErrorText"
 
-type BankCheckboxProps = BankInputProps & {
+type RadioOrCheckboxProps = InputProps & {
   conformField?: any
-  options: BankInputOption[]
+  options: InputOption[]
   optionSetClassName?: string
   direction?: "horizontal" | "vertical"
   type: "radio" | "checkbox"
 }
 
-export default function BankRadioOrCheckbox(props: BankCheckboxProps) {
+export default function RadioOrCheckbox(props: RadioOrCheckboxProps) {
   const {
     conformField,
     className,

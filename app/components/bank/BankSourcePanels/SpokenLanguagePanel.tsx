@@ -1,5 +1,5 @@
 import { BankSourceTypeEnum } from "~/models/bank.types"
-import BankInput from "../BankInput"
+import Input from "../Input"
 import LabelledField from "../LabelledField"
 import type { BankEditCitationFieldsProps } from "../BankEditCitationFields"
 
@@ -16,7 +16,7 @@ export default function SpokenLanguagePanel(
       <LabelledField
         label={`Year Heard`}
         field={
-          <BankInput
+          <Input
             name={`source.year_published`}
             showField={showField}
             defaultValue={source?.year_published}
@@ -26,7 +26,7 @@ export default function SpokenLanguagePanel(
       <LabelledField
         label={`Year Recorded`}
         field={
-          <BankInput
+          <Input
             name={`source.year_composed`}
             showField={showField}
             defaultValue={source?.year_composed}
@@ -36,7 +36,7 @@ export default function SpokenLanguagePanel(
       <LabelledField
         label={`Uttered By:`}
         field={
-          <BankInput
+          <Input
             name={`author`}
             showField={showField}
             defaultValue={source?.author?.name}
@@ -46,7 +46,7 @@ export default function SpokenLanguagePanel(
       <LabelledField
         label={`Media Name:`}
         field={
-          <BankInput
+          <Input
             name={`source.utterance_media`}
             showField={showField}
             defaultValue={source?.utterance_media}
@@ -56,7 +56,7 @@ export default function SpokenLanguagePanel(
       <LabelledField
         label={`Broadcast Name:`}
         field={
-          <BankInput
+          <Input
             name={`source.utterance_broadcast`}
             showField={showField}
             defaultValue={source?.utterance_broadcast}
@@ -66,7 +66,7 @@ export default function SpokenLanguagePanel(
       <LabelledField
         label={`Date of Utterance:`}
         field={
-          <BankInput
+          <Input
             name={`source.periodical_date`}
             showField={showField}
             defaultValue={source?.periodical_date}
@@ -76,7 +76,7 @@ export default function SpokenLanguagePanel(
       <LabelledField
         label={`Time Apx.:`}
         field={
-          <BankInput
+          <Input
             name={`source.utterance_time`}
             showField={showField}
             defaultValue={source?.utterance_time}
@@ -86,7 +86,7 @@ export default function SpokenLanguagePanel(
       <LabelledField
         label={`Place:`}
         field={
-          <BankInput
+          <Input
             name={`place`}
             showField={showField}
             defaultValue={source?.place?.name}
@@ -96,7 +96,7 @@ export default function SpokenLanguagePanel(
       <LabelledField
         label={`Witnessed by:`}
         field={
-          <BankInput
+          <Input
             name={`source.utterance_witness`}
             showField={showField}
             defaultValue={source?.utterance_witness}
@@ -106,7 +106,7 @@ export default function SpokenLanguagePanel(
       <LabelledField
         label={`URL`}
         field={
-          <BankInput
+          <Input
             name={`source.url`}
             showField={showField}
             defaultValue={source?.url}
@@ -116,7 +116,7 @@ export default function SpokenLanguagePanel(
       <LabelledField
         label={`URL Acc. Date`}
         field={
-          <BankInput
+          <Input
             name={`source.url_access_date`}
             showField={showField}
             defaultValue={source?.url_access_date}

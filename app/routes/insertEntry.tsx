@@ -7,9 +7,9 @@ import { insertEntry } from "~/models/entry.server"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 import LabelledField from "~/components/bank/LabelledField"
-import BankInput from "~/components/bank/BankInput"
-import BankTextArea from "~/components/bank/BankTextArea"
-import BankRadioOrCheckbox from "~/components/bank/BankRadioOrCheckbox"
+import Input from "~/components/bank/Input"
+import TextArea from "~/components/bank/TextArea"
+import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 
 export async function action({ request }: ActionArgs) {
   const data = Object.fromEntries(await request.formData())
@@ -36,32 +36,29 @@ export default function Index() {
         <div className="my-4 flex flex-col gap-2">
           <LabelledField
             label="Headword"
-            field={<BankInput name="headword" className="py-4 text-2xl" />}
+            field={<Input name="headword" className="py-4 text-2xl" />}
           />
         </div>
         <div className="flex w-full flex-col gap-4">
           <LabelledField
             label="Spelling variants"
-            field={<BankInput name="spellingVariants" />}
+            field={<Input name="spellingVariants" />}
           />
-          <LabelledField
-            label="Etymology"
-            field={<BankInput name="etymology" />}
-          />
+          <LabelledField label="Etymology" field={<Input name="etymology" />} />
           <LabelledField
             label="General labels"
-            field={<BankInput name="generalLabels" />}
+            field={<Input name="generalLabels" />}
           />
 
           <LabelledField
             label="Fistnote"
-            field={<BankTextArea name="fistnote" />}
+            field={<TextArea name="fistnote" />}
           />
 
           <LabelledField
             label="Dagger"
             field={
-              <BankRadioOrCheckbox
+              <RadioOrCheckbox
                 type="checkbox"
                 options={[
                   {
@@ -77,7 +74,7 @@ export default function Index() {
           <LabelledField
             label="Is non-Canadian"
             field={
-              <BankRadioOrCheckbox
+              <RadioOrCheckbox
                 type="checkbox"
                 options={[
                   {
@@ -93,7 +90,7 @@ export default function Index() {
           <LabelledField
             label="DCHP version"
             field={
-              <BankRadioOrCheckbox
+              <RadioOrCheckbox
                 type="radio"
                 name="dchpVersion"
                 direction="vertical"

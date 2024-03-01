@@ -1,8 +1,8 @@
 import { resetFetcher } from "~/routes/api/reset-fetcher"
 import { useFetcher } from "@remix-run/react"
-import BankInput from "../bank/BankInput"
+import Input from "../bank/Input"
 import type { CitationSearchLoaderData } from "~/routes/api/citations/$searchTerm[.json]"
-import BankRadioOrCheckbox from "../bank/BankRadioOrCheckbox"
+import RadioOrCheckbox from "../bank/RadioOrCheckbox"
 import Button from "../elements/LinksAndButtons/Button"
 import LabelledField from "../bank/LabelledField"
 import { Link } from "../elements/LinksAndButtons/Link"
@@ -48,7 +48,7 @@ export default function CitationSearch() {
       <form onSubmit={onSubmit}>
         <div className="flex">
           <div className="w-full">
-            <BankInput
+            <Input
               placeholder="Enter text to search citations by headword"
               name="searchText"
               // onChange={onChangeAction}
@@ -56,7 +56,7 @@ export default function CitationSearch() {
             <LabelledField
               label="Sort by"
               field={
-                <BankRadioOrCheckbox
+                <RadioOrCheckbox
                   type="radio"
                   className="flex"
                   optionSetClassName="flex gap-x-2 mr-4"
@@ -73,7 +73,7 @@ export default function CitationSearch() {
             <LabelledField
               label="Order"
               field={
-                <BankRadioOrCheckbox
+                <RadioOrCheckbox
                   type="radio"
                   className="flex"
                   optionSetClassName="flex gap-x-2 mr-4"
@@ -103,7 +103,7 @@ export default function CitationSearch() {
           <ul>
             {citations.data.citations.map((citation) => (
               <li key={citation.id} className="flex">
-                <BankRadioOrCheckbox
+                <RadioOrCheckbox
                   type="checkbox"
                   name="citationId"
                   options={[{ label: "", value: String(citation.id) }]}

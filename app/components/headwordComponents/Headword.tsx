@@ -6,6 +6,7 @@ import Alternatives from "./Alternatives"
 import { Link } from "../elements/LinksAndButtons/Link"
 import type { LogEntry } from "@prisma/client"
 import type { SerializeFrom } from "@remix-run/server-runtime"
+import SanitizedTextSpan from "../SanitizedTextSpan"
 
 interface HeadwordProps {
   alternatives?: string
@@ -57,11 +58,11 @@ const Headword = ({
 
       {handNote && (
         <HandNoteBlock className="text-xs text-gray-500 md:text-lg">
-          {handNote}
+          <SanitizedTextSpan text={handNote} />
         </HandNoteBlock>
       )}
       {isNonCanadian && (
-        <div className="border-red-300 bg-red-200 border p-3 font-bold">
+        <div className="border border-red-300 bg-red-200 p-3 font-bold">
           Non-Canadianism
         </div>
       )}
