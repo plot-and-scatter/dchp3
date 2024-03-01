@@ -95,6 +95,7 @@ export default function SearchPage() {
               name="searchTerm"
               defaultValue={params.searchTerm}
               conformField={fields.searchTerm}
+              autoFocus
             />
             <p className="text-sm">
               <FAIcon
