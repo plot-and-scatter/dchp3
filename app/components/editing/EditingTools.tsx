@@ -23,7 +23,7 @@ const EditingTools = ({ data }: EditingToolsProps) => {
         <TertiaryHeader>Editing tools</TertiaryHeader>
         <div>
           <label className="mx-2">
-            Publically Visible
+            Publicly visible
             <input
               name="isPublic"
               className="m-1"
@@ -33,7 +33,7 @@ const EditingTools = ({ data }: EditingToolsProps) => {
             />
           </label>
           <label className="mx-2">
-            Is Legacy
+            Is legacy
             <input
               name="isLegacy"
               className="m-1"
@@ -43,7 +43,6 @@ const EditingTools = ({ data }: EditingToolsProps) => {
             />
           </label>
         </div>
-
         <input
           type="hidden"
           name="attributeType"

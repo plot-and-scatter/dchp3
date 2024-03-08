@@ -8,6 +8,7 @@ import EntryEditingForm from "~/routes/entries/$headword/edit/EntryEditingForm"
 import MeaningEditingForms from "~/routes/entries/$headword/edit/MeaningEditingForms"
 import type { EntryEditLoaderData } from "~/routes/entries/$headword/edit"
 import EntryComment from "../EntryComment"
+import ImageEditingForm from "~/routes/entries/$headword/edit/ImageEditingForm"
 
 export default function EditEntry({ entry }: EntryEditLoaderData) {
   const { id, headword } = entry
@@ -45,6 +46,7 @@ export default function EditEntry({ entry }: EntryEditLoaderData) {
         </div>
         <EntryEditingForm data={entry} />
         <MeaningEditingForms data={entry} />
+        <ImageEditingForm data={entry} />
       </div>
     </div>
   )

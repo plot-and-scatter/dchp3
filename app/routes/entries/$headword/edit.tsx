@@ -14,9 +14,11 @@ import {
   addMeaningToEntry,
   addQuotations,
   addSeeAlso,
+  deleteImage,
   deleteMeaning,
   deleteQuotations,
   deleteSeeAlso,
+  editImage,
   updateEditingComment,
   updateEditingStatus,
   updateEditingTools,
@@ -53,6 +55,14 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 })
   }
 
+  // Rewrite image URLs
+  // TODO: Factor this out into a function
+  entry.images.forEach((i) =>
+    i.path
+      ? (i.path = `${process.env.IMAGE_BUCKET_PREFIX}${i.path}`)
+      : undefined
+  )
+
   return { entry }
 }
 
@@ -67,6 +77,9 @@ export async function action({ params, request }: ActionArgs) {
 
   const headword = params.headword
   await updateLogEntries(headword, request)
+
+  console.log("=============")
+  console.log(data)
 
   switch (type) {
     case attributeEnum.ENTRY:
@@ -107,6 +120,15 @@ export async function action({ params, request }: ActionArgs) {
       break
     case attributeEnum.COMMENT:
       await updateEditingComment(data)
+      break
+    case attributeEnum.DELETE_IMAGE:
+      await deleteImage(data)
+      break
+    // case attributeEnum.ADD_IMAGE:
+    //   await addImage(data)
+    //   break
+    case attributeEnum.EDIT_IMAGE:
+      await editImage(data)
       break
     default:
       throw new Error("attribute enum unknown")

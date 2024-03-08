@@ -23,4 +23,7 @@ export enum attributeEnum {
   EDITING_TOOLS = "EditingTools",
   EDITING_STATUS = "EditingStatus",
   COMMENT = "Comment",
+  DELETE_IMAGE = "DeleteImage",
+  ADD_IMAGE = "AddImage",
+  EDIT_IMAGE = "EditImage",
 }

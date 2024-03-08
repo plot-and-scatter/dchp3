@@ -34,10 +34,8 @@ const EditingStatus = ({ data }: EditingStatusProps) => {
       method="post"
     >
       <div className="flex flex-col">
-        <h3 className="my-3 text-lg underline">Editing Status</h3>
-        <div className="grid grid-flow-col grid-rows-5">
-          {getEditingStatusInputs(data)}
-        </div>
+        <h3 className="my-3 text-lg font-semibold">Editing status</h3>
+        <div className="flex flex-col">{getEditingStatusInputs(data)}</div>
       </div>
       <input
         type="hidden"
@@ -124,16 +122,16 @@ function getEditingStatusInputs(data: LoadedEntryDataType) {
 
     return (
       <label key={"Editing Status - " + inputGrouping.label} className="mx-2">
-        {inputGrouping.label}
         <input
           name={inputGrouping.type}
-          className="m-1"
+          className="m-1 mr-2"
           type="checkbox"
           checked={checked}
           onChange={(e) => {
             setChecked(e.target.checked)
           }}
         />
+        {inputGrouping.label}
       </label>
     )
   })

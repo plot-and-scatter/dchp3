@@ -18,7 +18,7 @@ const EntryComment = ({ data }: EntryCommentProps) => {
       method="post"
     >
       <div className="flex flex-col">
-        <h3 className="text-xl underline">Comment</h3>
+        <h3 className="text-xl">Comment</h3>
         <textarea
           className="h-40 border p-2"
           name="comment"
