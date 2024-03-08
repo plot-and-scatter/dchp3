@@ -9,6 +9,7 @@ import MeaningEditingForms from "~/routes/entries/$headword/edit/MeaningEditingF
 import type { EntryEditLoaderData } from "~/routes/entries/$headword/edit"
 import EntryComment from "../EntryComment"
 import ImageEditingForm from "~/routes/entries/$headword/edit/ImageEditingForm"
+import AddIcon from "~/components/elements/Icons/AddIcon"
 
 export default function EditEntry({ entry }: EntryEditLoaderData) {
   const { id, headword } = entry
@@ -24,7 +25,7 @@ export default function EditEntry({ entry }: EntryEditLoaderData) {
             className="my-5"
           >
             <Button appearance="success" variant="outline">
-              Add new meaning
+              <AddIcon /> Add new meaning
             </Button>
             <input
               type="hidden"

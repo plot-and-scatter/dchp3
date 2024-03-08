@@ -18,6 +18,8 @@ import LabelledField from "~/components/bank/LabelledField"
 import Input from "~/components/bank/Input"
 import Select from "~/components/bank/Select"
 import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
+import AddIcon from "~/components/elements/Icons/AddIcon"
+import SaveIcon from "~/components/elements/Icons/SaveIcon"
 
 interface MeaningEditingFormProps {
   entry: LoadedEntryDataType
@@ -197,7 +199,7 @@ export default function MeaningEditingForm({
                 name="attributeType"
                 value={attributeEnum.ADD_MEANING}
               >
-                Add new meaning
+                <AddIcon /> Add new meaning
               </Button>
             </div>
             <Button
@@ -206,7 +208,7 @@ export default function MeaningEditingForm({
               name="attributeType"
               value={attributeEnum.MEANING}
             >
-              Save meaning
+              <SaveIcon /> Save meaning
             </Button>
             <input type="hidden" name="attributeID" value={entry.id} />
           </div>

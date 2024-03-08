@@ -47,7 +47,7 @@ export default function ReferenceIndexPage() {
               </p>
               <div className="col-span-1">
                 {canUserAddReference && (
-                  <Link bold className="col-span-1" to={`/reference/${e.id}`}>
+                  <Link bold className="col-span-1" to={`/references/${e.id}`}>
                     Edit
                   </Link>
                 )}

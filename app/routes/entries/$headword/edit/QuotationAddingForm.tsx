@@ -27,7 +27,7 @@ const citationSearchUrl = (
   const url = `/api/citations/${searchTerm}.json`
 
   const searchParams = new URLSearchParams()
-  searchParams.set("searchField", "headword") // should this be headword or citation?
+  searchParams.set("searchField", "citation")
   if (orderBy) searchParams.set("orderBy", orderBy)
   if (orderDirection) searchParams.set("orderDirection", orderDirection)
   if (page) searchParams.set("page", page)

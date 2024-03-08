@@ -19,7 +19,7 @@ export default function ImageEditingForm({ data }: ImageEditingFormProps) {
               <EditImageForm entry={data} image={image} />
             </div>
           ))}
-          <div className="bg-gray-200 p-4" key={"add-image"}>
+          <div className="bg-success-50 p-4" key={"add-image"}>
             <AddImageForm entry={data} />
           </div>
         </div>
