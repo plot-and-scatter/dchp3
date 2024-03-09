@@ -1,6 +1,6 @@
-import EditImageForm from "~/components/editing/entry/EditImageForm"
+import EditImageForm from "~/components/EntryEditor/EditImages/EditImageForm"
 import { type LoadedEntryDataType } from ".."
-import AddImageForm from "~/components/editing/entry/AddImageForm"
+import AddImageForm from "~/components/EntryEditor/EditImages/AddImageForm"
 
 interface ImageEditingFormProps {
   data: LoadedEntryDataType

@@ -5,7 +5,7 @@ import {
   useParams,
   useSearchParams,
 } from "@remix-run/react"
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { SearchResultEnum } from "./search/searchResultEnum"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
 import { type ActionArgs, redirect, json } from "@remix-run/server-runtime"

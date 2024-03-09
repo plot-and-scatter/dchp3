@@ -1,6 +1,6 @@
 import type { Entry } from "@prisma/client"
 import invariant from "tiny-invariant"
-import { attributeEnum } from "~/components/editing/attributeEnum"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
 import { getEmailFromSession, getUserId } from "~/services/auth/session.server"
 import {
@@ -167,7 +167,7 @@ export function getEntriesByInitialLetters(
 }
 
 export async function updateRecordByAttributeAndType(
-  type: attributeEnum,
+  type: EntryEditorFormActionEnum,
   id: number,
   value: string
 ) {
@@ -179,13 +179,13 @@ export async function updateRecordByAttributeAndType(
   }
 
   switch (type) {
-    case attributeEnum.HEADWORD:
+    case EntryEditorFormActionEnum.HEADWORD:
       await updateEntryHeadword(id, value)
       break
-    case attributeEnum.ETYMOLOGY:
+    case EntryEditorFormActionEnum.ETYMOLOGY:
       await updateEntryEtymology(id, value)
       break
-    case attributeEnum.LABELS:
+    case EntryEditorFormActionEnum.LABELS:
       await updateEntryLabels(id, value)
       break
     default:

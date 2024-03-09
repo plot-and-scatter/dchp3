@@ -1,4 +1,4 @@
-import { attributeEnum } from "~/components/editing/attributeEnum"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { Form } from "@remix-run/react"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import SeeAlsoInput from "./SeeAlsoInput"
@@ -27,7 +27,7 @@ export default function AddSeeAlso({ meaningId, headword }: AddSeeAlsoProps) {
         type="submit"
         size="medium"
         name="attributeType"
-        value={attributeEnum.SEE_ALSO}
+        value={EntryEditorFormActionEnum.SEE_ALSO}
         className="mx-2"
       >
         Add See Also

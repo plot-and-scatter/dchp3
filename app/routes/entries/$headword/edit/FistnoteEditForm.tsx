@@ -1,7 +1,7 @@
 import { type UsageNote } from "@prisma/client"
 import { Form } from "@remix-run/react"
 import { useState } from "react"
-import { attributeEnum } from "~/components/editing/attributeEnum"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import Button from "~/components/elements/LinksAndButtons/Button"
 
 interface FistnoteEditFormProps {
@@ -28,7 +28,7 @@ export default function FistnoteEditForm({
       <input
         type="hidden"
         name="attributeType"
-        value={attributeEnum.DEFINITION_FIST_NOTE}
+        value={EntryEditorFormActionEnum.DEFINITION_FIST_NOTE}
       />
       <input type="hidden" name="usageNoteId" value={usageNote.id} />
       <Button> submit </Button>

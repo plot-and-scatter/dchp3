@@ -6,7 +6,7 @@ import {
 } from "@remix-run/react"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { redirect } from "@remix-run/node"
-import { SecondaryHeader } from "~/components/elements/SecondaryHeader"
+import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 import { type AllSearchResults, getSearchResults } from "~/models/search.server"
 import invariant from "tiny-invariant"
 import SearchResults from "~/components/SearchResults"

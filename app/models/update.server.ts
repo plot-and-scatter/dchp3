@@ -1,5 +1,4 @@
-import { EditingStatusType } from "~/components/editing/EditingStatus"
-import { attributeEnum } from "~/components/editing/attributeEnum"
+import { EditingStatusTypeEnum } from "~/components/EntryEditor/EntryEditorSidebar/EditingStatus/EditingStatusTypeEnum"
 import { prisma } from "~/db.server"
 import {
   getCheckboxValueAsBoolean,
@@ -7,25 +6,6 @@ import {
   getStringFromFormInput,
 } from "~/utils/generalUtils"
 import { assertIsValidId } from "~/utils/numberUtils"
-
-const ENTRY_TYPE_MAP: Partial<Record<attributeEnum, string>> = {
-  [attributeEnum.HEADWORD]: "headword",
-  [attributeEnum.ETYMOLOGY]: "etymology",
-  [attributeEnum.LABELS]: "general_labels",
-  [attributeEnum.SPELLING_VARIANT]: "spelling_variants",
-  [attributeEnum.FIST_NOTE]: "fist_note",
-  [attributeEnum.DAGGER]: "dagger",
-}
-
-export async function updateRecordByAttributeAndType(
-  type: attributeEnum,
-  data: { [k: string]: FormDataEntryValue }
-) {
-  const id = getNumberFromFormInput(data.attributeID)
-  const value = getStringFromFormInput(data.newValue)
-  assertIsValidId(id)
-  await updateEntry(id, type, value)
-}
 
 export async function addMeaningToEntry(data: {
   [k: string]: FormDataEntryValue
@@ -81,22 +61,6 @@ export async function updateMeaningDefinition(data: {
     data: {
       definition: definition,
     },
-  })
-}
-
-async function updateEntry(
-  entryId: number,
-  type: attributeEnum,
-  newValue: string
-) {
-  const fieldName = ENTRY_TYPE_MAP[type]
-
-  // If we don't know the fieldName, this is a no-op.
-  if (!fieldName) return
-
-  await prisma.entry.update({
-    where: { id: entryId },
-    data: { [fieldName]: newValue },
   })
 }
 
@@ -268,16 +232,16 @@ export async function deleteSeeAlso(data: { [k: string]: FormDataEntryValue }) {
   })
 }
 
-const EditingStatusMap: Record<EditingStatusType, string> = {
-  [EditingStatusType.FIRST_DRAFT]: "first_draft",
-  [EditingStatusType.REVISED_DRAFT]: "revised_draft",
-  [EditingStatusType.SEMANT_REVISED]: "semantically_revised",
-  [EditingStatusType.EDITED_FOR_STYLE]: "edited_for_style",
-  [EditingStatusType.CHIEF_EDITOR_OK]: "chief_editor_ok",
-  [EditingStatusType.NO_CDN_SUSP]: "no_cdn_susp",
-  [EditingStatusType.NO_CDN_CONF]: "no_cdn_conf",
-  [EditingStatusType.COPY_EDITED]: "final_proofing", // TODO: Confirm this with old codebase
-  [EditingStatusType.PROOF_READING]: "proofread", // TODO: Also confirm this with above
+const EditingStatusMap: Record<EditingStatusTypeEnum, string> = {
+  [EditingStatusTypeEnum.FIRST_DRAFT]: "first_draft",
+  [EditingStatusTypeEnum.REVISED_DRAFT]: "revised_draft",
+  [EditingStatusTypeEnum.SEMANT_REVISED]: "semantically_revised",
+  [EditingStatusTypeEnum.EDITED_FOR_STYLE]: "edited_for_style",
+  [EditingStatusTypeEnum.CHIEF_EDITOR_OK]: "chief_editor_ok",
+  [EditingStatusTypeEnum.NO_CDN_SUSP]: "no_cdn_susp",
+  [EditingStatusTypeEnum.NO_CDN_CONF]: "no_cdn_conf",
+  [EditingStatusTypeEnum.COPY_EDITED]: "final_proofing", // TODO: Confirm this with old codebase
+  [EditingStatusTypeEnum.PROOF_READING]: "proofread", // TODO: Also confirm this with above
 }
 
 export async function updateEditingStatus(data: {
@@ -303,7 +267,7 @@ async function updateSingleEditingStatus(
   editingStatus: string,
   value: FormDataEntryValue
 ) {
-  const fieldName = EditingStatusMap[editingStatus as EditingStatusType]
+  const fieldName = EditingStatusMap[editingStatus as EditingStatusTypeEnum]
   const bool = getCheckboxValueAsBoolean(value)
 
   // no-op if fieldname somehow doesn't exist

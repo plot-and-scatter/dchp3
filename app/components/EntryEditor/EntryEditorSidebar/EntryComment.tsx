@@ -1,20 +1,20 @@
 import { Form } from "@remix-run/react"
 import { useState } from "react"
 import { type LoadedEntryDataType } from "~/routes/entries/$headword"
-import { attributeEnum } from "./attributeEnum"
-import Button from "../elements/LinksAndButtons/Button"
+import { EntryEditorFormActionEnum } from "../EntryEditorForm/EntryEditorFormActionEnum"
+import Button from "../../elements/LinksAndButtons/Button"
 
 interface EntryCommentProps {
-  data: LoadedEntryDataType
+  entry: LoadedEntryDataType
 }
 
-const EntryComment = ({ data }: EntryCommentProps) => {
-  let [comment, setComment] = useState(data.comment)
+const EntryComment = ({ entry }: EntryCommentProps) => {
+  let [comment, setComment] = useState(entry.comment)
 
   return (
     <Form
       reloadDocument
-      action={`/entries/${data.headword}/edit`}
+      action={`/entries/${entry.headword}/edit`}
       method="post"
     >
       <div className="flex flex-col">
@@ -29,9 +29,9 @@ const EntryComment = ({ data }: EntryCommentProps) => {
         <input
           type="hidden"
           name="attributeType"
-          value={attributeEnum.COMMENT}
+          value={EntryEditorFormActionEnum.COMMENT}
         />
-        <input type="hidden" name="headword" value={data.headword} />
+        <input type="hidden" name="headword" value={entry.headword} />
         <Button
           appearance="primary"
           variant="outline"

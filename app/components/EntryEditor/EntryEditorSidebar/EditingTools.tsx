@@ -1,28 +1,29 @@
 import { Form } from "@remix-run/react"
 import { type LoadedEntryDataType } from "~/routes/entries/$headword"
-import { attributeEnum } from "./attributeEnum"
+import { EntryEditorFormActionEnum } from "../EntryEditorForm/EntryEditorFormActionEnum"
 import { useState } from "react"
-import Button from "../elements/LinksAndButtons/Button"
-import { TertiaryHeader } from "../elements/TertiaryHeader"
+import Button from "../../elements/LinksAndButtons/Button"
+import { TertiaryHeader } from "../../elements/Headings/TertiaryHeader"
+import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 
 interface EditingToolsProps {
-  data: LoadedEntryDataType
+  entry: LoadedEntryDataType
 }
 
-const EditingTools = ({ data }: EditingToolsProps) => {
-  const [isPublic, setIsPublic] = useState(data.is_public)
-  const [isLegacy, setIsLegacy] = useState(data.is_legacy)
+const EditingTools = ({ entry }: EditingToolsProps) => {
+  const [isPublic, setIsPublic] = useState(entry.is_public)
+  const [isLegacy, setIsLegacy] = useState(entry.is_legacy)
 
   return (
     <Form
       reloadDocument
-      action={`/entries/${data.headword}/edit`}
+      action={`/entries/${entry.headword}/edit`}
       method="post"
     >
       <div className="flex flex-col">
-        <TertiaryHeader>Editing tools</TertiaryHeader>
+        <SecondaryHeader>Editing tools</SecondaryHeader>
         <div>
-          <label className="mx-2">
+          <label>
             Publicly visible
             <input
               name="isPublic"
@@ -46,9 +47,9 @@ const EditingTools = ({ data }: EditingToolsProps) => {
         <input
           type="hidden"
           name="attributeType"
-          value={attributeEnum.EDITING_TOOLS}
+          value={EntryEditorFormActionEnum.EDITING_TOOLS}
         />
-        <input type="hidden" name="headword" value={data.headword} />
+        <input type="hidden" name="headword" value={entry.headword} />
         <Button variant="outline" size="small" className="w-full">
           Save editing tools
         </Button>

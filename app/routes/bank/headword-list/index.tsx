@@ -1,5 +1,5 @@
 import { Link } from "~/components/elements/LinksAndButtons/Link"
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { A_TO_Z } from "~/routes/entries/index"
 
 export default function HeadwordListIndexPage() {

@@ -1,6 +1,6 @@
-import { attributeEnum } from "~/components/editing/attributeEnum"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
-import { EditFormInput } from "~/components/editing/EditFormInput"
+import { EditFormInput } from "~/components/EntryEditor/EntryEditorForm/EditFormInput"
 import { Form } from "@remix-run/react"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { type LoadedEntryDataType } from ".."
@@ -63,7 +63,7 @@ export default function MeaningEditingForm({
             appearance="danger"
             variant="outline"
             name="attributeType"
-            value={attributeEnum.DELETE_MEANING}
+            value={EntryEditorFormActionEnum.DELETE_MEANING}
           >
             <FAIcon iconName="fa-remove mr-2" /> Delete meaning
           </Button>
@@ -190,23 +190,11 @@ export default function MeaningEditingForm({
             className="col-span-7"
           />
           <div className="col-span-full flex flex-row justify-between">
-            <div className="flex gap-x-4">
-              <Link asButton to={`/entries/${entry.headword}`}>
-                &larr; Return to headword
-              </Link>
-              <Button
-                variant="outline"
-                name="attributeType"
-                value={attributeEnum.ADD_MEANING}
-              >
-                <AddIcon /> Add new meaning
-              </Button>
-            </div>
             <Button
               appearance="success"
               type="submit"
               name="attributeType"
-              value={attributeEnum.MEANING}
+              value={EntryEditorFormActionEnum.MEANING}
             >
               <SaveIcon /> Save meaning
             </Button>

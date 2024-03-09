@@ -1,4 +1,4 @@
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import TextPageMain from "~/components/elements/TextPageMain"
 
 export default function About() {

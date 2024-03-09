@@ -6,7 +6,7 @@ import Input from "~/components/bank/Input"
 import LabelledField from "~/components/bank/LabelledField"
 import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 import Button from "~/components/elements/LinksAndButtons/Button"
-import { attributeEnum } from "~/components/editing/attributeEnum"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { useState } from "react"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import Select from "~/components/bank/Select"
@@ -156,7 +156,7 @@ export default function QuotationAddingForm({
           <input
             type="hidden"
             name="attributeType"
-            value={attributeEnum.QUOTATION}
+            value={EntryEditorFormActionEnum.QUOTATION}
           />
           <input type="hidden" name="meaningId" value={meaningId} />
           <div className="max-h-96 overflow-y-scroll">

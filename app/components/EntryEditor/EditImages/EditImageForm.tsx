@@ -3,7 +3,7 @@ import Input from "~/components/bank/Input"
 import LabelledField from "~/components/bank/LabelledField"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
-import { attributeEnum } from "../attributeEnum"
+import { EntryEditorFormActionEnum } from "../EntryEditorForm/EntryEditorFormActionEnum"
 
 type EditImageFormProps = {
   entry: LoadedEntryDataType
@@ -21,7 +21,7 @@ export default function EditImageForm({ entry, image }: EditImageFormProps) {
         <input
           type="hidden"
           name="attributeType"
-          value={attributeEnum.EDIT_IMAGE}
+          value={EntryEditorFormActionEnum.EDIT_IMAGE}
         />
         <input type="hidden" name="imageId" value={image.id} />
         <div className="flex items-center justify-between">
@@ -64,7 +64,7 @@ export default function EditImageForm({ entry, image }: EditImageFormProps) {
           <input
             type="hidden"
             name="attributeType"
-            value={attributeEnum.DELETE_IMAGE}
+            value={EntryEditorFormActionEnum.DELETE_IMAGE}
           />
           <input type="hidden" name="imageId" value={image.id} />
           <Button

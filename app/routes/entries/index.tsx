@@ -1,5 +1,5 @@
 import { Link } from "~/components/elements/LinksAndButtons/Link"
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 
 export const A_TO_Z = [...Array(26)].map((_, i) => String.fromCharCode(i + 65))
 

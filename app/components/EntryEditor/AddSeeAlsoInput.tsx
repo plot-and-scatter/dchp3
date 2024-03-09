@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import { attributeEnum } from "./attributeEnum"
+import { EntryEditorFormActionEnum } from "./EntryEditorForm/EntryEditorFormActionEnum"
 import Button from "../elements/LinksAndButtons/Button"
 
 const AddSeeAlsoInput = () => {
@@ -21,7 +21,7 @@ const AddSeeAlsoInput = () => {
       <input
         type="hidden"
         name="attributeType"
-        value={attributeEnum.SEE_ALSO}
+        value={EntryEditorFormActionEnum.SEE_ALSO}
       />
       <Button type="submit"></Button>
     </div>

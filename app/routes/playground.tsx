@@ -1,4 +1,4 @@
-import CitationSearch from "~/components/editing/CitationSearch"
+import CitationSearch from "~/components/EntryEditor/CitationSearch"
 import Main from "~/components/elements/Main"
 
 export default function Playground() {

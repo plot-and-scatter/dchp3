@@ -1,5 +1,5 @@
 import { Outlet, useLoaderData } from "@remix-run/react"
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import {
   getEmailFromSession,
   getUserPermissions,
@@ -8,7 +8,7 @@ import {
 import { type LoaderArgs } from "@remix-run/server-runtime"
 import LogoutButton from "~/components/auth/LogoutButton"
 import Main from "~/components/elements/Main"
-import { SecondaryHeader } from "~/components/elements/SecondaryHeader"
+import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 import type { AuthRole } from "~/services/auth/AuthRole"
 
 export const loader = async ({ request }: LoaderArgs) => {

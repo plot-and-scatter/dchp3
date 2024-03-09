@@ -1,4 +1,4 @@
-import { attributeEnum } from "~/components/editing/attributeEnum"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { Form } from "@remix-run/react"
 import { type SeeAlsoList } from "~/components/SeeAlsoItems"
 import IconButton from "~/components/elements/LinksAndButtons/IconButton"
@@ -42,7 +42,7 @@ const SeeAlsoItems = ({
               <input
                 type="hidden"
                 name="attributeType"
-                value={attributeEnum.DELETE_SEE_ALSO}
+                value={EntryEditorFormActionEnum.DELETE_SEE_ALSO}
               ></input>
               <input type="hidden" name="headword" value={headword}></input>
               <IconButton

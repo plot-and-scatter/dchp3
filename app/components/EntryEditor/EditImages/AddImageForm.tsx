@@ -4,7 +4,7 @@ import Input from "~/components/bank/Input"
 import LabelledField from "~/components/bank/LabelledField"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
-import { attributeEnum } from "../attributeEnum"
+import { EntryEditorFormActionEnum } from "../EntryEditorForm/EntryEditorFormActionEnum"
 
 type AddImageFormProps = {
   entry: LoadedEntryDataType
@@ -43,7 +43,7 @@ export default function AddImageForm({ entry }: AddImageFormProps) {
       <input
         type="hidden"
         name="attributeType"
-        value={attributeEnum.ADD_IMAGE}
+        value={EntryEditorFormActionEnum.ADD_IMAGE}
       />
       <input type="hidden" name="entryId" value={entry.id} />
       <h3 className="text-2xl font-bold">New image</h3>

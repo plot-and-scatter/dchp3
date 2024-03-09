@@ -2,8 +2,8 @@ import { Form } from "@remix-run/react"
 import { useState } from "react"
 import { type LoadedEntryDataType } from ".."
 import Button from "~/components/elements/LinksAndButtons/Button"
-import { attributeEnum } from "~/components/editing/attributeEnum"
-import { EditFormInput } from "~/components/editing/EditFormInput"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
+import { EditFormInput } from "~/components/EntryEditor/EntryEditorForm/EditFormInput"
 
 interface EntryEditingFormProps {
   data: LoadedEntryDataType
@@ -26,9 +26,13 @@ export default function EntryEditingForm({ data }: EntryEditingFormProps) {
     <Form method="post">
       <div className="grid grid-cols-6">
         <input type="hidden" name="id" value={id} />
-        <input type="hidden" name="attributeType" value={attributeEnum.ENTRY} />
+        <input
+          type="hidden"
+          name="attributeType"
+          value={EntryEditorFormActionEnum.ENTRY}
+        />
         <EditFormInput
-          label="headword: "
+          label="Headword: "
           name="headword"
           value={headword}
           onChangeFunction={setHeadword}

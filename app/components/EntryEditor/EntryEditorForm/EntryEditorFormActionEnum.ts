@@ -1,4 +1,4 @@
-export enum attributeEnum {
+export enum EntryEditorFormActionEnum {
   ENTRY = "Entry",
   MEANING = "Meaning",
   HEADWORD = "Headword",

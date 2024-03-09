@@ -1,6 +1,6 @@
-import { attributeEnum } from "~/components/editing/attributeEnum"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { useLoaderData } from "@remix-run/react"
-import { getAttributeEnumFromFormInput } from "~/utils/generalUtils"
+import { getEntryEditorFormAction } from "~/utils/generalUtils"
 import {
   getEntryByHeadword,
   updateEntry,
@@ -26,7 +26,7 @@ import {
   updateOrDeleteDefinitionFistNote,
 } from "~/models/update.server"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
-import EditEntry from "~/components/editing/entry/EditEntry"
+import EntryEditor from "~/components/EntryEditor/EntryEditor"
 import {
   redirectIfUserLacksPermission,
   userHasPermission,
@@ -73,69 +73,68 @@ export type EntryEditLoaderData = SerializeFrom<
 export async function action({ params, request }: ActionArgs) {
   invariant(params.headword)
   const data = Object.fromEntries(await request.formData())
-  const type = getAttributeEnumFromFormInput(data.attributeType)
+  const entryEditorFormAction = getEntryEditorFormAction(
+    data.entryEditorFormAction
+  )
 
   const headword = params.headword
   await updateLogEntries(headword, request)
 
-  console.log("=============")
-  console.log(data)
-
-  switch (type) {
-    case attributeEnum.ENTRY:
+  switch (entryEditorFormAction) {
+    case EntryEditorFormActionEnum.ENTRY:
       await updateEntry(data)
       break
-    case attributeEnum.ADD_MEANING:
+    case EntryEditorFormActionEnum.ADD_MEANING:
       await addMeaningToEntry(data)
       break
-    case attributeEnum.MEANING:
+    case EntryEditorFormActionEnum.MEANING:
       await updateMeaning(data)
       break
-    case attributeEnum.DELETE_MEANING:
+    case EntryEditorFormActionEnum.DELETE_MEANING:
       await deleteMeaning(data)
       break
-    case attributeEnum.QUOTATION:
+    case EntryEditorFormActionEnum.QUOTATION:
       await addQuotations(data)
       break
-    case attributeEnum.DELETE_QUOTATION:
+    case EntryEditorFormActionEnum.DELETE_QUOTATION:
       await deleteQuotations(data)
       break
-    case attributeEnum.SEE_ALSO:
+    case EntryEditorFormActionEnum.SEE_ALSO:
       await addSeeAlso(data)
       break
-    case attributeEnum.DELETE_SEE_ALSO:
+    case EntryEditorFormActionEnum.DELETE_SEE_ALSO:
       await deleteSeeAlso(data)
       break
-    case attributeEnum.DEFINITION_FIST_NOTE:
+    case EntryEditorFormActionEnum.DEFINITION_FIST_NOTE:
       await updateOrDeleteDefinitionFistNote(data)
       break
-    case attributeEnum.ADD_DEFINITION_FIST_NOTE:
+    case EntryEditorFormActionEnum.ADD_DEFINITION_FIST_NOTE:
       await addDefinitionFistNote(data)
       break
-    case attributeEnum.EDITING_TOOLS:
+    case EntryEditorFormActionEnum.EDITING_TOOLS:
       await updateEditingTools(data)
       break
-    case attributeEnum.EDITING_STATUS:
+    case EntryEditorFormActionEnum.EDITING_STATUS:
       await updateEditingStatus(data)
       break
-    case attributeEnum.COMMENT:
+    case EntryEditorFormActionEnum.COMMENT:
       await updateEditingComment(data)
       break
-    case attributeEnum.DELETE_IMAGE:
+    case EntryEditorFormActionEnum.DELETE_IMAGE:
       await deleteImage(data)
       break
     // case attributeEnum.ADD_IMAGE:
     //   await addImage(data)
     //   break
-    case attributeEnum.EDIT_IMAGE:
+    case EntryEditorFormActionEnum.EDIT_IMAGE:
       await editImage(data)
       break
     default:
-      throw new Error("attribute enum unknown")
+      throw new Error(`Unknown entryEditorFormAction ${entryEditorFormAction}`)
   }
 
-  // headword may have changed and data.headword exists-- so redirect
-  if (type === attributeEnum.ENTRY) {
+  // headword may have changed and data.headword exists -- so redirect
+  if (entryEditorFormAction === EntryEditorFormActionEnum.ENTRY) {
     return redirect(`/entries/${data.headword}/edit`)
   }
 
@@ -145,7 +144,7 @@ export async function action({ params, request }: ActionArgs) {
 export default function EntryDetailsPage() {
   const { entry } = useLoaderData()
 
-  return <EditEntry entry={entry} />
+  return <EntryEditor entry={entry} />
 }
 
 export const ErrorBoundary = DefaultErrorBoundary

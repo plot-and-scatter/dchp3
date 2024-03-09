@@ -5,7 +5,7 @@ import { useLoaderData } from "@remix-run/react"
 import LogoutButton from "~/components/auth/LogoutButton"
 import type { AuthRole } from "~/services/auth/AuthRole"
 import { getPermissionsMap } from "~/services/auth/AuthRole"
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import TextPageMain from "~/components/elements/TextPageMain"
 
 export const loader = async ({ request }: LoaderArgs) => {

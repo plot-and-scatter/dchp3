@@ -10,7 +10,7 @@ import { useLoaderData } from "@remix-run/react"
 import invariant from "tiny-invariant"
 import type { LoaderArgs } from "@remix-run/node"
 import PaginationControl from "~/components/bank/PaginationControl"
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 
 export async function loader({ params }: LoaderArgs) {
   const { initialLetters, pageNumber } = params

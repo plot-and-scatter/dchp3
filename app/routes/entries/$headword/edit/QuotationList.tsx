@@ -1,6 +1,6 @@
 import { Form } from "@remix-run/react"
 import { type MeaningType } from "~/components/Meaning"
-import { attributeEnum } from "~/components/editing/attributeEnum"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 
@@ -69,7 +69,7 @@ function CitationItem({ citation, meaningId }: CitationItemProps) {
           <input
             type="hidden"
             name="attributeType"
-            value={attributeEnum.DELETE_QUOTATION}
+            value={EntryEditorFormActionEnum.DELETE_QUOTATION}
           />
           <input type="hidden" name="quotationId" value={citation.id} />
           <input type="hidden" name="meaningId" value={meaningId} />

@@ -1,4 +1,4 @@
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { useLoaderData } from "@remix-run/react"
 import BankSearchResult from "~/components/bank/BankSearchResult"
 
