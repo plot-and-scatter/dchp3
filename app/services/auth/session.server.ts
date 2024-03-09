@@ -143,3 +143,24 @@ export const canUserEditEntry = async (
   // They're not allowed to edit.
   return false
 }
+
+// Tidy this up, it seems redundant with canUserEditEntry above.
+export async function redirectIfUserLacksEntryEditPermission(
+  request: Request,
+  headword: string
+) {
+  if (await userHasPermission(request, "det:editAny")) {
+    return
+  }
+
+  await redirectIfUserLacksPermission(request, "det:editOwn")
+  await redirectIfUserLacksEntry(request, headword)
+}
+
+export async function redirectIfUserLacksEntry(
+  request: Request,
+  headword: string
+) {
+  if (await userOwnsEntry(request, headword)) return
+  throw redirect(`${NOT_ALLOWED_PATH}`)
+}
