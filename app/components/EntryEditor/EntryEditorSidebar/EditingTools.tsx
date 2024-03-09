@@ -1,10 +1,9 @@
-import { Form } from "@remix-run/react"
-import { type LoadedEntryDataType } from "~/routes/entries/$headword"
 import { EntryEditorFormActionEnum } from "../EntryEditorForm/EntryEditorFormActionEnum"
+import { Form } from "@remix-run/react"
+import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
+import { type LoadedEntryDataType } from "~/routes/entries/$headword"
 import { useState } from "react"
 import Button from "../../elements/LinksAndButtons/Button"
-import { TertiaryHeader } from "../../elements/Headings/TertiaryHeader"
-import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 
 interface EditingToolsProps {
   entry: LoadedEntryDataType
@@ -51,7 +50,7 @@ const EditingTools = ({ entry }: EditingToolsProps) => {
         />
         <input type="hidden" name="headword" value={entry.headword} />
         <Button variant="outline" size="small" className="w-full">
-          Save editing tools
+          Save status
         </Button>
       </div>
     </Form>

@@ -2,7 +2,6 @@ import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorF
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
 import { EditFormInput } from "~/components/EntryEditor/EntryEditorForm/EditFormInput"
 import { Form } from "@remix-run/react"
-import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { type LoadedEntryDataType } from ".."
 import { type MeaningType } from "~/components/Meaning"
 import { useState } from "react"
@@ -18,7 +17,6 @@ import LabelledField from "~/components/bank/LabelledField"
 import Input from "~/components/bank/Input"
 import Select from "~/components/bank/Select"
 import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
-import AddIcon from "~/components/elements/Icons/AddIcon"
 import SaveIcon from "~/components/elements/Icons/SaveIcon"
 
 interface MeaningEditingFormProps {

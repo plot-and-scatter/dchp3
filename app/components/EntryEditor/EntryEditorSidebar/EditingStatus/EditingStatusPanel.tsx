@@ -4,8 +4,6 @@ import { Form } from "@remix-run/react"
 import { type LoadedEntryDataType } from "~/routes/entries/$headword"
 import Button from "../../../elements/LinksAndButtons/Button"
 import EditingStatusInput from "./EditingStatusInput"
-import { Subheading1 } from "~/components/elements/Headings/Subheading1"
-import { Subheading2 } from "~/components/elements/Headings/Subheading2"
 import { TertiaryHeader } from "~/components/elements/Headings/TertiaryHeader"
 
 const EDITING_STATUS_INPUTS: { type: EditingStatusTypeEnum; label: string }[] =

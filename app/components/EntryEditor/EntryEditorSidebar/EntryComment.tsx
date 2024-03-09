@@ -1,8 +1,9 @@
-import { Form } from "@remix-run/react"
-import { useState } from "react"
-import { type LoadedEntryDataType } from "~/routes/entries/$headword"
 import { EntryEditorFormActionEnum } from "../EntryEditorForm/EntryEditorFormActionEnum"
+import { type LoadedEntryDataType } from "~/routes/entries/$headword"
+import { useState } from "react"
 import Button from "../../elements/LinksAndButtons/Button"
+import EntryEditorForm from "../EntryEditorForm/EntryEditorForm"
+import SaveIcon from "~/components/elements/Icons/SaveIcon"
 
 interface EntryCommentProps {
   entry: LoadedEntryDataType
@@ -12,10 +13,9 @@ const EntryComment = ({ entry }: EntryCommentProps) => {
   let [comment, setComment] = useState(entry.comment)
 
   return (
-    <Form
-      reloadDocument
-      action={`/entries/${entry.headword}/edit`}
-      method="post"
+    <EntryEditorForm
+      entry={entry}
+      formAction={EntryEditorFormActionEnum.COMMENT}
     >
       <div className="flex flex-col">
         <h3 className="text-xl">Comment</h3>
@@ -26,22 +26,11 @@ const EntryComment = ({ entry }: EntryCommentProps) => {
         >
           {comment}
         </textarea>
-        <input
-          type="hidden"
-          name="attributeType"
-          value={EntryEditorFormActionEnum.COMMENT}
-        />
-        <input type="hidden" name="headword" value={entry.headword} />
-        <Button
-          appearance="primary"
-          variant="outline"
-          size="small"
-          className="mt-4"
-        >
-          Apply Comment
+        <Button appearance="success" variant="outline" size="small">
+          <SaveIcon /> Save comment
         </Button>
       </div>
-    </Form>
+    </EntryEditorForm>
   )
 }
 

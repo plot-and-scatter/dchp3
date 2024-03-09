@@ -9,23 +9,14 @@ type AddNewMeaningFormProps = {
 }
 
 export default function AddNewMeaningForm({ entry }: AddNewMeaningFormProps) {
-  const { id, headword } = entry
-
   return (
     <EntryEditorForm
-      headword={headword}
+      entry={entry}
       formAction={EntryEditorFormActionEnum.ADD_MEANING}
     >
       <Button appearance="success" variant="outline">
         <AddIcon /> Add new meaning
       </Button>
-      <input
-        type="hidden"
-        name="attributeType"
-        value={EntryEditorFormActionEnum.ADD_MEANING}
-      />
-      <input type="hidden" name="attributeID" value={id} />
-      <input type="hidden" name="headword" value={headword} />
     </EntryEditorForm>
   )
 }
