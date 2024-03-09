@@ -5,7 +5,7 @@ import {
 } from "~/utils/generalUtils"
 
 export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
-  const meaningId = getNumberFromFormInput(data.attributeID)
+  const meaningId = getNumberFromFormInput(data.meaningId)
   const headword = getStringFromFormInput(data.headwordToAdd)
   const linkNote = getStringFromFormInput(data.linkNote)
 

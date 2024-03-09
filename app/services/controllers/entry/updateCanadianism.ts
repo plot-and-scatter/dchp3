@@ -7,7 +7,7 @@ import {
 export async function updateCanadianism(data: {
   [k: string]: FormDataEntryValue
 }) {
-  const meaningId = getNumberFromFormInput(data.attributeID)
+  const meaningId = getNumberFromFormInput(data.meaningId)
   const newTypeComment = getStringFromFormInput(data.newValue)
 
   await prisma.meaning.update({

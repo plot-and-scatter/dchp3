@@ -54,13 +54,13 @@ export default function MeaningEditingForm({
       <div className="flex items-center justify-between">
         <h3 className="text-4xl font-bold">Meaning {meaning.order}</h3>
         <Form method="post">
-          <input type="hidden" name="id" value={meaning.id} />
+          <input type="hidden" name="meaningId" value={meaning.id} />
           <input type="hidden" name="headword" value={headword} />
           <Button
             type="submit"
             appearance="danger"
             variant="outline"
-            name="attributeType"
+            name="entryEditorFormAction"
             value={EntryEditorFormActionEnum.DELETE_MEANING}
           >
             <FAIcon iconName="fa-remove mr-2" /> Delete meaning
@@ -196,7 +196,7 @@ export default function MeaningEditingForm({
             >
               <SaveIcon /> Save meaning
             </Button>
-            <input type="hidden" name="attributeID" value={entry.id} />
+            <input type="hidden" name="entryId" value={entry.id} />
           </div>
         </div>
       </Form>

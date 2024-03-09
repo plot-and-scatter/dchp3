@@ -1,7 +1,6 @@
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { getEntryByHeadword, updateLogEntries } from "~/models/entry.server"
-import { getEntryEditorFormAction } from "~/utils/generalUtils"
 import { handleEditFormAction } from "./handleEditFormAction"
 import { prefixImageUrls } from "~/services/controllers/image/prefixImageUrls"
 import { redirect } from "@remix-run/node"
@@ -17,20 +16,19 @@ export type EntryEditLoaderData = SerializeFrom<
 
 export async function action({ params, request }: ActionArgs) {
   invariant(params.headword)
-  const data = Object.fromEntries(await request.formData())
-  const entryEditorFormAction = getEntryEditorFormAction(
-    data.entryEditorFormAction
-  )
 
-  await handleEditFormAction(entryEditorFormAction, data)
+  const formData = await request.formData()
+
+  await handleEditFormAction(formData)
 
   const headword = params.headword
   await updateLogEntries(headword, request)
 
   // Headword may have changed and data.headword exists; redirect if so
-  if (entryEditorFormAction === EntryEditorFormActionEnum.ENTRY) {
-    return redirect(`/entries/${data.headword}/edit`)
-  }
+  // TODO: RESTORE
+  // if (entryEditorFormAction === EntryEditorFormActionEnum.ENTRY) {
+  //   return redirect(`/entries/${data.headword}/edit`)
+  // }
 
   return null
 }

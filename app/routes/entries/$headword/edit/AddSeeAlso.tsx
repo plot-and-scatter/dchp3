@@ -15,7 +15,7 @@ export default function AddSeeAlso({ meaningId, headword }: AddSeeAlsoProps) {
       className="my-2 flex flex-row items-center justify-between border bg-gray-100 p-5"
     >
       <div className="flex">
-        <input type="hidden" name="attributeID" value={meaningId} />
+        <input type="hidden" name="meaningId" value={meaningId} />
         <label className="mx-2 p-1">New See Also:</label>
         <SeeAlsoInput name="headwordToAdd" />
         <label htmlFor="linkNote" className="mx-2 p-1">

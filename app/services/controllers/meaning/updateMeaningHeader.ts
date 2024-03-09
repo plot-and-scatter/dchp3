@@ -8,7 +8,7 @@ import { assertIsValidId } from "~/utils/numberUtils"
 export async function updateMeaningHeader(data: {
   [k: string]: FormDataEntryValue
 }) {
-  const id = getNumberFromFormInput(data.attributeID)
+  const id = getNumberFromFormInput(data.meaningId)
   assertIsValidId(id)
   const dagger = data.dagger ? true : false
   const order = getStringFromFormInput(data.order)

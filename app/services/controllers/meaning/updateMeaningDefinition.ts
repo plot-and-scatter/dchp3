@@ -8,7 +8,7 @@ import { assertIsValidId } from "~/utils/numberUtils"
 export async function updateMeaningDefinition(data: {
   [k: string]: FormDataEntryValue
 }) {
-  const id = getNumberFromFormInput(data.attributeID)
+  const id = getNumberFromFormInput(data.meaningId)
   assertIsValidId(id)
   const definition = getStringFromFormInput(data.newValue)
 

@@ -1,14 +1,17 @@
 import { prisma } from "~/db.server"
-import { getNumberFromFormInput } from "~/utils/generalUtils"
-import { assertIsValidId } from "~/utils/numberUtils"
+import { z } from "zod"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
+import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
 
-export async function deleteMeaning(data: { [k: string]: FormDataEntryValue }) {
-  const id = getNumberFromFormInput(data.id)
-  assertIsValidId(id)
+export const DeleteMeaningSchema = z.object({
+  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.DELETE_MEANING),
+  meaningId: ZPrimaryKeyInt,
+})
 
+export async function deleteMeaning(data: z.infer<typeof DeleteMeaningSchema>) {
   await prisma.meaning.delete({
     where: {
-      id: id,
+      id: data.meaningId,
     },
   })
 }
