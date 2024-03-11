@@ -18,13 +18,15 @@ const Entry = ({ entry, canUserEditEntry }: EntryProps): JSX.Element => {
     : ""
 
   return (
-    <div className="mx-auto flex max-w-full flex-row justify-around">
+    <div className="mx-auto flex min-w-full max-w-full flex-row justify-around">
       <div className="mx-auto mt-2 mr-5 hidden w-96 max-w-2xl shrink-0 overflow-x-hidden overflow-y-visible md:block">
         <div className="fixed h-3/4 w-96 overflow-y-auto overflow-x-hidden">
           <QuickLinks data={entry} />
         </div>
       </div>
-      <div className={`md:max-w-2xl lg:max-w-6xl ${bgColor} pl-4 pr-5 pt-1`}>
+      <div
+        className={`md:max-w-2xl lg:max-w-6xl ${bgColor} flex-1 pl-4 pr-5 pt-1`}
+      >
         <Headword
           word={entry.headword}
           id={entry.id}
