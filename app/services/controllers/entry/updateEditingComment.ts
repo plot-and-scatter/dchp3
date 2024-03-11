@@ -1,18 +1,20 @@
+import { z } from "zod"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import { getStringFromFormInput } from "~/utils/generalUtils"
 
-export async function updateEditingComment(data: {
-  [k: string]: FormDataEntryValue
-}) {
-  const headword = getStringFromFormInput(data.headword)
-  const comment = getStringFromFormInput(data.comment)
+export const UpdateEditingCommentSchema = z.object({
+  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.COMMENT),
+  headword: z.string(),
+  comment: z.string(),
+})
+
+export async function updateEditingComment(
+  data: z.infer<typeof UpdateEditingCommentSchema>
+) {
+  const { headword, comment } = data
 
   await prisma.entry.update({
-    where: {
-      headword: headword,
-    },
-    data: {
-      comment: comment,
-    },
+    where: { headword },
+    data: { comment },
   })
 }

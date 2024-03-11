@@ -61,7 +61,6 @@ export default function QuotationAddingForm({
         orderDirection,
         page,
       })
-      console.log("url", url)
       citations.load(url)
     } else {
       resetFetcher(citations)
@@ -156,7 +155,7 @@ export default function QuotationAddingForm({
           <input
             type="hidden"
             name="attributeType"
-            value={EntryEditorFormActionEnum.QUOTATION}
+            value={EntryEditorFormActionEnum.ADD_QUOTATIONS}
           />
           <input type="hidden" name="meaningId" value={meaningId} />
           <div className="max-h-96 overflow-y-scroll">

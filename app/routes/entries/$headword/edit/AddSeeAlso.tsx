@@ -27,7 +27,7 @@ export default function AddSeeAlso({ meaningId, headword }: AddSeeAlsoProps) {
         type="submit"
         size="medium"
         name="attributeType"
-        value={EntryEditorFormActionEnum.SEE_ALSO}
+        value={EntryEditorFormActionEnum.ADD_SEE_ALSO}
         className="mx-2"
       >
         Add See Also

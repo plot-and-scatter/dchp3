@@ -1,35 +1,30 @@
+import { z } from "zod"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import {
-  getCheckboxValueAsBoolean,
-  getNumberFromFormInput,
-  getStringFromFormInput,
-} from "~/utils/generalUtils"
-import { assertIsValidId } from "~/utils/numberUtils"
+import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
+import { ZCheckboxValueToBoolean } from "../ZCheckboxValueToBoolean"
 
-export async function updateMeaning(data: { [k: string]: FormDataEntryValue }) {
-  const id = getNumberFromFormInput(data.id)
-  assertIsValidId(id)
+export const UpdateMeaningSchema = z.object({
+  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.UPDATE_MEANING),
+  meaningId: ZPrimaryKeyInt,
+  definition: z.string(),
+  order: z.string(),
+  partOfSpeech: z.string(),
+  canadianismType: z.string(),
+  canadianismTypeComment: z.string(),
+  dagger: ZCheckboxValueToBoolean,
+})
 
-  const definition = getStringFromFormInput(data.definition)
-  const order = getStringFromFormInput(data.order)
-  const partOfSpeech = getStringFromFormInput(data.partOfSpeech)
-  const canadianismType = getStringFromFormInput(data.canadianismType)
-  const canadianismTypeComment = getStringFromFormInput(
-    data.canadianismTypeComment
-  )
-  const dagger = getCheckboxValueAsBoolean(data.dagger)
-
+export async function updateMeaning(data: z.infer<typeof UpdateMeaningSchema>) {
   await prisma.meaning.update({
-    where: {
-      id: id,
-    },
+    where: { id: data.meaningId },
     data: {
-      definition: definition,
-      order: order,
-      partofspeech: partOfSpeech,
-      dagger: dagger,
-      canadianism_type: canadianismType,
-      canadianism_type_comment: canadianismTypeComment,
+      definition: data.definition,
+      order: data.order,
+      partofspeech: data.partOfSpeech,
+      canadianism_type: data.canadianismType,
+      canadianism_type_comment: data.canadianismTypeComment,
+      dagger: data.dagger,
     },
   })
 }

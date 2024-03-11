@@ -1,24 +1,28 @@
+import { z } from "zod"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import { getNumberFromFormInput } from "~/utils/generalUtils"
-import { assertIsValidId } from "~/utils/numberUtils"
+import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
 
-export async function addQuotations(data: { [k: string]: FormDataEntryValue }) {
-  const meaningId = getNumberFromFormInput(data.meaningId)
-  assertIsValidId(meaningId)
+export const AddQuotationsSchema = z.object({
+  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_QUOTATIONS),
+  meaningId: ZPrimaryKeyInt,
+  citationIds: z.array(ZPrimaryKeyInt),
+})
 
+// TODO: This one will take a bit of extra doing. We need to figure out how to
+// use conform's built-in helpers to add an array of citationIds.
+export async function addQuotations(data: z.infer<typeof AddQuotationsSchema>) {
   let citationsToInsert = []
 
-  for (let index in data) {
-    if (index.startsWith("citationId-")) {
-      let citationId = getNumberFromFormInput(data[index])
-      citationsToInsert.push({ meaning_id: meaningId, citation_id: citationId })
-    }
+  for (const citationId of data.citationIds) {
+    citationsToInsert.push({
+      meaning_id: data.meaningId,
+      citation_id: citationId,
+    })
   }
 
   await prisma.meaningDetCitations.createMany({
     data: citationsToInsert,
     skipDuplicates: true,
   })
-
-  return null
 }

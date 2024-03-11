@@ -1,101 +1,124 @@
-import { addDefinitionFistNote } from "~/services/controllers/entry/addDefinitionFistNote"
+import {
+  AddDefinitionFistNoteSchema,
+  addDefinitionFistNote,
+} from "~/services/controllers/entry/addDefinitionFistNote"
 import {
   AddMeaningToEntrySchema,
   addMeaningToEntry,
 } from "~/services/controllers/entry/addMeaningToEntry"
-import { addQuotations } from "~/services/controllers/meaning/addQuotations"
-import { addSeeAlso } from "~/services/controllers/meaning/addSeeAlso"
-import { deleteImage } from "~/services/controllers/image/deleteImage"
+import {
+  AddQuotationsSchema,
+  addQuotations,
+} from "~/services/controllers/meaning/addQuotations"
+import {
+  AddSeeAlsoSchema,
+  addSeeAlso,
+} from "~/services/controllers/meaning/addSeeAlso"
 import {
   DeleteMeaningSchema,
   deleteMeaning,
 } from "~/services/controllers/meaning/deleteMeaning"
-import { deleteQuotations } from "~/services/controllers/entry/deleteQuotations"
-import { deleteSeeAlso } from "~/services/controllers/entry/deleteSeeAlso"
-import { editImage } from "~/services/controllers/image/updateImage"
+import {
+  DeleteQuotationSchema,
+  deleteQuotation,
+} from "~/services/controllers/entry/deleteQuotation"
+import {
+  DeleteSeeAlsoSchema,
+  deleteSeeAlso,
+} from "~/services/controllers/entry/deleteSeeAlso"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
-import { updateEditingComment } from "~/services/controllers/entry/updateEditingComment"
-import { updateEditingStatus } from "~/services/controllers/entry/updateEditingStatus"
-import { updateEditingTools } from "~/services/controllers/entry/updateEditingTools"
-import { updateEntry } from "~/models/entry.server"
-import { updateMeaning } from "~/services/controllers/meaning/updateMeaning"
-import { updateOrDeleteDefinitionFistNote } from "~/services/controllers/entry/updateDefinitionFistNote"
+import {
+  UpdateEditingCommentSchema,
+  updateEditingComment,
+} from "~/services/controllers/entry/updateEditingComment"
+import {
+  UpdateEditingStatusSchema,
+  updateEditingStatus,
+} from "~/services/controllers/entry/updateEditingStatus"
+import {
+  UpdateEditingToolsSchema,
+  updateEditingTools,
+} from "~/services/controllers/entry/updateEditingTools"
+import {
+  UpdateMeaningSchema,
+  updateMeaning,
+} from "~/services/controllers/meaning/updateMeaning"
+import {
+  UpdateOrDeleteDefinitionFistNoteSchema,
+  updateOrDeleteDefinitionFistNote,
+} from "~/services/controllers/entry/updateOrDeleteDefinitionFistNote"
 import { parse } from "@conform-to/zod"
 import { json } from "@remix-run/server-runtime"
 import { z } from "zod"
+import {
+  UpdateEntrySchema,
+  updateEntry,
+} from "~/services/controllers/entry/updateEntry"
+
+const unionSchema = z.discriminatedUnion("entryEditorFormAction", [
+  UpdateEntrySchema,
+  AddMeaningToEntrySchema,
+  UpdateMeaningSchema,
+  DeleteMeaningSchema,
+  AddQuotationsSchema,
+  DeleteQuotationSchema,
+  AddSeeAlsoSchema,
+  DeleteSeeAlsoSchema,
+  UpdateOrDeleteDefinitionFistNoteSchema,
+  AddDefinitionFistNoteSchema,
+  UpdateEditingToolsSchema,
+  UpdateEditingStatusSchema,
+  UpdateEditingCommentSchema,
+])
+
+type ActionMap = {
+  [K in EntryEditorFormActionEnum]: (
+    value: Extract<SubmissionValue, { entryEditorFormAction: K }>
+  ) => Promise<void>
+}
+
+const actionMap: ActionMap = {
+  [EntryEditorFormActionEnum.UPDATE_ENTRY]: updateEntry,
+  [EntryEditorFormActionEnum.ADD_MEANING]: addMeaningToEntry,
+  [EntryEditorFormActionEnum.UPDATE_MEANING]: updateMeaning,
+  [EntryEditorFormActionEnum.DELETE_MEANING]: deleteMeaning,
+  [EntryEditorFormActionEnum.ADD_QUOTATIONS]: addQuotations,
+  [EntryEditorFormActionEnum.DELETE_QUOTATION]: deleteQuotation,
+  [EntryEditorFormActionEnum.ADD_SEE_ALSO]: addSeeAlso,
+  [EntryEditorFormActionEnum.DELETE_SEE_ALSO]: deleteSeeAlso,
+  [EntryEditorFormActionEnum.DEFINITION_FIST_NOTE]:
+    updateOrDeleteDefinitionFistNote,
+  [EntryEditorFormActionEnum.ADD_DEFINITION_FIST_NOTE]: addDefinitionFistNote,
+  [EntryEditorFormActionEnum.EDITING_TOOLS]: updateEditingTools,
+  [EntryEditorFormActionEnum.EDITING_STATUS]: updateEditingStatus,
+  [EntryEditorFormActionEnum.COMMENT]: updateEditingComment,
+  [EntryEditorFormActionEnum.DELETE_IMAGE]: async () => {
+    throw new Error("Not implemented")
+  },
+  [EntryEditorFormActionEnum.ADD_IMAGE]: async () => {
+    throw new Error("Not implemented")
+  },
+  [EntryEditorFormActionEnum.EDIT_IMAGE]: async () => {
+    throw new Error("Not implemented")
+  },
+}
+
+type SubmissionValue = z.infer<typeof unionSchema>
 
 export async function handleEditFormAction(formData: FormData) {
-  for (const key of formData.keys()) {
-    console.log(key, formData.get(key))
-  }
-
-  const submission = parse(formData, {
-    schema: z.discriminatedUnion("entryEditorFormAction", [
-      AddMeaningToEntrySchema,
-      DeleteMeaningSchema,
-    ]),
-  })
-
-  console.log(submission)
+  const submission = parse(formData, { schema: unionSchema })
 
   if (submission.intent !== "submit" || !submission.value) {
     return json(submission)
   }
 
-  const entryEditorFormAction = formData.get("entryEditorFormAction")
+  const action = submission.value.entryEditorFormAction
 
-  const data = Object.fromEntries(formData)
-
-  switch (submission.value.entryEditorFormAction) {
-    case EntryEditorFormActionEnum.ENTRY:
-      await updateEntry(data)
-      break
-    case EntryEditorFormActionEnum.ADD_MEANING:
-      await addMeaningToEntry(submission.value)
-      break
-    case EntryEditorFormActionEnum.MEANING:
-      await updateMeaning(data)
-      break
-    case EntryEditorFormActionEnum.DELETE_MEANING:
-      await deleteMeaning(submission.value)
-      break
-    case EntryEditorFormActionEnum.QUOTATION:
-      await addQuotations(data)
-      break
-    case EntryEditorFormActionEnum.DELETE_QUOTATION:
-      await deleteQuotations(data)
-      break
-    case EntryEditorFormActionEnum.SEE_ALSO:
-      await addSeeAlso(data)
-      break
-    case EntryEditorFormActionEnum.DELETE_SEE_ALSO:
-      await deleteSeeAlso(data)
-      break
-    case EntryEditorFormActionEnum.DEFINITION_FIST_NOTE:
-      await updateOrDeleteDefinitionFistNote(data)
-      break
-    case EntryEditorFormActionEnum.ADD_DEFINITION_FIST_NOTE:
-      await addDefinitionFistNote(data)
-      break
-    case EntryEditorFormActionEnum.EDITING_TOOLS:
-      await updateEditingTools(data)
-      break
-    case EntryEditorFormActionEnum.EDITING_STATUS:
-      await updateEditingStatus(data)
-      break
-    case EntryEditorFormActionEnum.COMMENT:
-      await updateEditingComment(data)
-      break
-    case EntryEditorFormActionEnum.DELETE_IMAGE:
-      await deleteImage(data)
-      break
-    // case attributeEnum.ADD_IMAGE:
-    //   await addImage(data)
-    //   break
-    case EntryEditorFormActionEnum.EDIT_IMAGE:
-      await editImage(data)
-      break
-    default:
-      throw new Error(`Unknown entryEditorFormAction ${entryEditorFormAction}`)
+  if (actionMap[action]) {
+    await actionMap[action](
+      submission.value as Extract<SubmissionValue, typeof action>
+    )
+  } else {
+    throw new Error(`No action found for ${action}`)
   }
 }

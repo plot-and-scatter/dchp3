@@ -21,7 +21,6 @@ export default function EditingStatusInput({
         className="mr-2"
         type="checkbox"
         checked={checked}
-        defaultChecked={defaultChecked}
         onChange={(e) => {
           setChecked(e.target.checked)
         }}

@@ -9,7 +9,7 @@ type EntryWithImages = Entry & { images: Image[] }
  * @param entry - The entry object containing images.
  */
 export function prefixImageUrls(entry: EntryWithImages) {
-  entry.images.forEach((i) =>
+  entry?.images?.forEach((i) =>
     i.path
       ? (i.path = `${process.env.IMAGE_BUCKET_PREFIX}${i.path}`)
       : undefined

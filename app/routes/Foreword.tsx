@@ -5,7 +5,7 @@ export default function Foreword() {
   return (
     <TextPageMain>
       <PageHeader>Foreword</PageHeader>
-      <p>To come.</p>
+      <p>Foreword page.</p>
     </TextPageMain>
   )
 }

@@ -1,23 +1,23 @@
+import { z } from "zod"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import {
-  getCheckboxValueAsBoolean,
-  getStringFromFormInput,
-} from "~/utils/generalUtils"
+import { ZCheckboxValueToBoolean } from "../ZCheckboxValueToBoolean"
 
-export async function updateEditingTools(data: {
-  [k: string]: FormDataEntryValue
-}) {
-  const headword = getStringFromFormInput(data.headword)
-  const isPublic = getCheckboxValueAsBoolean(data.isPublic)
-  const isLegacy = getCheckboxValueAsBoolean(data.isLegacy)
+export const UpdateEditingToolsSchema = z.object({
+  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.EDITING_TOOLS),
+  headword: z.string(),
+  isPublic: ZCheckboxValueToBoolean,
+  isLegacy: ZCheckboxValueToBoolean,
+})
 
+export async function updateEditingTools(
+  data: z.infer<typeof UpdateEditingToolsSchema>
+) {
   await prisma.entry.update({
-    where: {
-      headword: headword,
-    },
+    where: { headword: data.headword },
     data: {
-      is_public: isPublic,
-      is_legacy: isLegacy,
+      is_public: data.isPublic,
+      is_legacy: data.isLegacy,
     },
   })
 }

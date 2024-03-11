@@ -1,9 +1,6 @@
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
-import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { getEntryByHeadword, updateLogEntries } from "~/models/entry.server"
 import { handleEditFormAction } from "./handleEditFormAction"
-import { prefixImageUrls } from "~/services/controllers/image/prefixImageUrls"
-import { redirect } from "@remix-run/node"
 import { redirectIfUserLacksEntryEditPermission } from "~/services/auth/session.server"
 import { useLoaderData } from "@remix-run/react"
 import EntryEditor from "~/components/EntryEditor/EntryEditor"
@@ -43,13 +40,11 @@ export async function loader({ request, params }: LoaderArgs) {
 
   // Find the entry and return a 404 if not found
   const entry = await getEntryByHeadword({ headword })
-  if (!entry)
+  if (!entry) {
     throw new Response(`Entry ${headword} not found`, {
       status: 404,
     })
-
-  // Prefix the image URLs
-  await prefixImageUrls(entry)
+  }
 
   return { entry }
 }

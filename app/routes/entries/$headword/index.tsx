@@ -22,13 +22,6 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 })
   }
 
-  // Rewrite image URLs
-  entry.images.forEach((i) =>
-    i.path
-      ? (i.path = `${process.env.IMAGE_BUCKET_PREFIX}${i.path}`)
-      : undefined
-  )
-
   const canUserEditEntry = await _canUserEditEntry(request, params.headword)
 
   return { entry, canUserEditEntry }

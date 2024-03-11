@@ -11,8 +11,6 @@ type EntryReferenceProps = {
 export default function EntryReference({
   referenceLink,
 }: EntryReferenceProps): JSX.Element {
-  console.log(referenceLink)
-
   /*  For some reason Prisma does not properly generate the 'reference'
       reference! (Maybe due to the name?) It does exist, though.
       @ts-ignore */

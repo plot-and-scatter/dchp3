@@ -50,15 +50,6 @@ export async function loader({ request, params }: LoaderArgs) {
   const canadianismTypes: string[] | undefined =
     url.searchParams.getAll("canadianismType")
 
-  console.log(
-    "####",
-    caseSensitive,
-    text,
-    pageNumber,
-    dchpVersions,
-    canadianismTypes
-  )
-
   const isUserAdmin = await userHasPermission(request, "det:viewEdits")
 
   const searchResults: AllSearchResults = await getSearchResults({

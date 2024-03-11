@@ -21,8 +21,6 @@ export async function loader({ params }: LoaderArgs) {
   const countResult = await countEntriesByInitialLetters(initialLetters)
   const entryCount = Number(countResult[0].count)
 
-  console.log("-->", countResult, entryCount)
-
   const entries = await getEntriesByInitialLettersAndPage(
     initialLetters,
     pageNumber
@@ -43,8 +41,6 @@ export async function loader({ params }: LoaderArgs) {
 export default function EntryDetailsPage() {
   const { entries, initialLetters, pageNumber, pageCount, entryCount } =
     useLoaderData<typeof loader>()
-
-  console.log(pageNumber, pageCount)
 
   const paginationBase = `/entries/browse/${initialLetters}`
 

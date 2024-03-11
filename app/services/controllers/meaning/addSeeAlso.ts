@@ -1,29 +1,29 @@
+import { z } from "zod"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import {
-  getNumberFromFormInput,
-  getStringFromFormInput,
-} from "~/utils/generalUtils"
+import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
 
-export async function addSeeAlso(data: { [k: string]: FormDataEntryValue }) {
-  const meaningId = getNumberFromFormInput(data.meaningId)
-  const headword = getStringFromFormInput(data.headwordToAdd)
-  const linkNote = getStringFromFormInput(data.linkNote)
+export const AddSeeAlsoSchema = z.object({
+  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_SEE_ALSO),
+  meaningId: ZPrimaryKeyInt,
+  headword: z.string(),
+  linkNote: z.string(),
+  citationId: ZPrimaryKeyInt,
+})
 
-  const entry = await prisma.entry.findUnique({
-    where: {
-      headword: headword,
-    },
-  })
+// TODO: Isn't there a way we could do this using the entryId instead...?
+export async function addSeeAlso(data: z.infer<typeof AddSeeAlsoSchema>) {
+  const { headword } = data
 
-  if (entry === null) {
-    throw new Error(`Entry "${headword}" could not be found`)
-  }
+  const entry = await prisma.entry.findUnique({ where: { headword } })
+
+  if (!entry) throw new Error(`Entry "${headword}" could not be found`)
 
   await prisma.seeAlso.create({
     data: {
-      meaning_id: meaningId,
+      meaning_id: data.meaningId,
       entry_id: entry.id,
-      linknote: linkNote,
+      linknote: data.linkNote,
     },
   })
 }

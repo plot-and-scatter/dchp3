@@ -11,7 +11,7 @@ type AddImageFormProps = {
 }
 
 export default function AddImageForm({ entry }: AddImageFormProps) {
-  const maxImageOrder = Math.max(entry.images.sort((i) => i.order || 0)) + 1
+  // const maxImageOrder = Math.max(entry.images.sort((i) => i.order || 0)) + 1
 
   const [fileName, setFileName] = useState<string>()
 
@@ -50,9 +50,7 @@ export default function AddImageForm({ entry }: AddImageFormProps) {
       <LabelledField
         breakAfterLabel
         label="Order"
-        field={
-          <Input name="order" type="number" defaultValue={maxImageOrder} />
-        }
+        field={<Input name="order" type="number" />}
       />
       <LabelledField
         breakAfterLabel

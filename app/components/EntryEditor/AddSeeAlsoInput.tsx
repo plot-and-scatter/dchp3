@@ -21,7 +21,7 @@ const AddSeeAlsoInput = () => {
       <input
         type="hidden"
         name="attributeType"
-        value={EntryEditorFormActionEnum.SEE_ALSO}
+        value={EntryEditorFormActionEnum.ADD_SEE_ALSO}
       />
       <Button type="submit"></Button>
     </div>

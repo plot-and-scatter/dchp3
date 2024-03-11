@@ -76,8 +76,6 @@ export default function SearchPage() {
     },
   })
 
-  console.log("form", form, "fields", fields)
-
   return (
     <Main center>
       <PageHeader>Search entries</PageHeader>

@@ -1,16 +1,22 @@
+import { z } from "zod"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import { getNumberFromFormInput } from "~/utils/generalUtils"
+import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
 
-export async function addDefinitionFistNote(data: {
-  [k: string]: FormDataEntryValue
-}) {
-  const meaningId = getNumberFromFormInput(data.meaningId)
-  const defaultFistnoteText = ""
+export const AddDefinitionFistNoteSchema = z.object({
+  entryEditorFormAction: z.literal(
+    EntryEditorFormActionEnum.ADD_DEFINITION_FIST_NOTE
+  ),
+  meaningId: ZPrimaryKeyInt,
+})
 
+export async function addDefinitionFistNote(
+  data: z.infer<typeof AddDefinitionFistNoteSchema>
+) {
   await prisma.usageNote.create({
     data: {
-      meaning_id: meaningId,
-      text: defaultFistnoteText,
+      meaning_id: data.meaningId,
+      text: "", // Default text is empty.
     },
   })
 }

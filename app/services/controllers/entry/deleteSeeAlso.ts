@@ -1,15 +1,20 @@
+import { z } from "zod"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import { getNumberFromFormInput } from "~/utils/generalUtils"
+import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
 
-export async function deleteSeeAlso(data: { [k: string]: FormDataEntryValue }) {
-  const meaningId = getNumberFromFormInput(data.meaningId)
-  const entryId = getNumberFromFormInput(data.entryId)
+export const DeleteSeeAlsoSchema = z.object({
+  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.DELETE_SEE_ALSO),
+  meaningId: ZPrimaryKeyInt,
+  entryId: ZPrimaryKeyInt,
+})
 
+export async function deleteSeeAlso(data: z.infer<typeof DeleteSeeAlsoSchema>) {
   await prisma.seeAlso.delete({
     where: {
       meaning_id_entry_id: {
-        meaning_id: meaningId,
-        entry_id: entryId,
+        meaning_id: data.meaningId,
+        entry_id: data.entryId,
       },
     },
   })

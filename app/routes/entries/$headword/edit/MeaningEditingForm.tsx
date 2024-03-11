@@ -192,7 +192,7 @@ export default function MeaningEditingForm({
               appearance="success"
               type="submit"
               name="attributeType"
-              value={EntryEditorFormActionEnum.MEANING}
+              value={EntryEditorFormActionEnum.UPDATE_MEANING}
             >
               <SaveIcon /> Save meaning
             </Button>

@@ -37,8 +37,6 @@ export const action = async ({ request }: ActionArgs) => {
   const data = Object.fromEntries(await request.formData())
   const parsedData = BankCitationSearchFormDataSchema.parse(data)
 
-  console.log("--->>>> request", request)
-
   const searchTerm = parsedData["searchTerm"]
   if (!searchTerm)
     throw json({ message: "Search term missing from search" }, { status: 400 })
