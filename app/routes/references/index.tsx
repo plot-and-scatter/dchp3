@@ -7,6 +7,7 @@ import { userHasPermission } from "~/services/auth/session.server"
 import type { LoaderArgs } from "@remix-run/server-runtime"
 import AddIcon from "~/components/elements/Icons/AddIcon"
 import EditIcon from "~/components/elements/Icons/EditIcon"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 
 export async function loader({ request }: LoaderArgs) {
   const references = await getReferences()
@@ -27,6 +28,7 @@ export default function ReferenceIndexPage() {
 
   return (
     <div className="flex flex-col gap-4">
+      <PageHeader>References</PageHeader>
       {canUserAddReference && (
         <Link
           asButton
