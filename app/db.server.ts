@@ -10,8 +10,8 @@ declare global {
 
 const imagePathPrefixMiddleware: Prisma.Middleware = async (params, next) => {
   if (
-    (params.model === "Image" || params.args.include.images) &&
-    params.action.startsWith("find")
+    (params.model === "Image" || params.args?.include?.images) &&
+    params.action?.startsWith("find")
   ) {
     const result = await next(params)
     prefixImageUrls(result)
