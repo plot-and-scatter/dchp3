@@ -2,72 +2,109 @@ import DictionaryVersion from "../DictionaryVersion"
 import HandNoteBlock from "../HandNoteBlock"
 import GeneralLabels from "./GeneralLabels"
 import Etymology from "./Etymology"
-import Alternatives from "./Alternatives"
+import SpellingVariants from "./SpellingVariants"
 import { Link } from "../elements/LinksAndButtons/Link"
-import type { LogEntry } from "@prisma/client"
-import type { SerializeFrom } from "@remix-run/server-runtime"
 import SanitizedTextSpan from "../SanitizedTextSpan"
+import EditIcon from "../elements/Icons/EditIcon"
+import type { LoadedEntryDataType } from "~/routes/entries/$headword"
+import HeadwordText from "./HeadwordText"
+import Dagger from "./Dagger"
+import HeadwordHandNote from "./HeadwordHandNote"
+import clsx from "clsx"
+import NonCanadianism from "./NonCanadianism"
+import EntryEditorForm from "../EntryEditor/EntryEditorForm/EntryEditorForm"
+import { EntryEditorFormActionEnum } from "../EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
+import Button from "../elements/LinksAndButtons/Button"
+import SaveIcon from "../elements/Icons/SaveIcon"
+import { SecondaryHeader } from "../elements/Headings/SecondaryHeader"
+import BackIcon from "../elements/Icons/BackIcon"
 
 interface HeadwordProps {
-  alternatives?: string
-  etymology?: string
-  generalLabels?: string
-  handNote?: string
-  hasDagger?: boolean
-  dchpVersion: string | null
-  isNonCanadian?: boolean
-  word: string
-  id: number
-  logEntries?: SerializeFrom<LogEntry>[]
+  entry: LoadedEntryDataType
   showEditButton?: boolean
+  isEditingMode?: boolean
 }
 
 const Headword = ({
-  alternatives,
-  etymology,
-  generalLabels,
-  handNote,
-  hasDagger,
-  dchpVersion,
-  isNonCanadian,
-  word,
-  logEntries,
+  entry,
   showEditButton,
+  isEditingMode,
 }: HeadwordProps): JSX.Element => {
-  return (
+  const contents = (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
-      <div className="flex items-center justify-between border-b-2 border-gray-500 py-4">
-        <div className="flex items-center">
-          <div className="flex justify-center align-middle">
-            <h1 className="text-3xl leading-tight md:text-5xl">
-              {word}
-              {hasDagger && <span className="align-super">&dagger;</span>}
-            </h1>
-          </div>
-          {showEditButton && (
-            <Link asButton className="ml-4" to={`/entries/${word}/edit`}>
-              Edit
-            </Link>
+      <div className="flex items-start justify-between border-b-2 border-gray-500 py-4">
+        <div
+          className={clsx(
+            `flex`,
+            isEditingMode
+              ? `flex-1 flex-col items-start gap-4`
+              : `flex-row items-center gap-1`
           )}
-          <Etymology etymology={etymology} />
-          <GeneralLabels generalLabels={generalLabels} />
+        >
+          <h1
+            className={clsx(
+              `gap-x- flex flex-row whitespace-nowrap text-3xl leading-tight md:text-5xl`,
+              isEditingMode ? "gap-x-4" : "gap-x-1"
+            )}
+          >
+            <HeadwordText
+              headword={entry.headword}
+              isEditingMode={isEditingMode}
+            />
+            <Dagger dagger={entry.dagger} isEditingMode={isEditingMode} />
+            <NonCanadianism
+              isNonCanadianism={entry.no_cdn_conf}
+              isEditingMode={isEditingMode}
+            />
+          </h1>
+          <div
+            className={clsx(
+              "flex flex-row gap-x-2",
+              isEditingMode ? `w-full items-start gap-x-4` : `items-center`
+            )}
+          >
+            <Etymology entry={entry} isEditingMode={isEditingMode} />
+            <GeneralLabels entry={entry} isEditingMode={isEditingMode} />
+          </div>
         </div>
-        <DictionaryVersion dchpVersion={dchpVersion} logEntries={logEntries} />
+        <DictionaryVersion entry={entry} isEditingMode={isEditingMode} />
       </div>
-      <Alternatives alternatives={alternatives} />
-
-      {handNote && (
-        <HandNoteBlock className="text-xs text-gray-500 md:text-lg">
-          <SanitizedTextSpan text={handNote} />
-        </HandNoteBlock>
-      )}
-      {isNonCanadian && (
+      <SpellingVariants entry={entry} isEditingMode={isEditingMode} />
+      <HeadwordHandNote entry={entry} isEditingMode={isEditingMode} />
+      {/* {entry.no_cdn_conf && (
         <div className="border border-red-300 bg-red-200 p-3 font-bold">
           Non-Canadianism
         </div>
-      )}
+      )} */}
     </div>
   )
+
+  if (isEditingMode) {
+    return (
+      <EntryEditorForm
+        entry={entry}
+        formAction={EntryEditorFormActionEnum.UPDATE_ENTRY}
+        className="border border-gray-400 p-8 shadow-lg"
+      >
+        <div className="mb-8">
+          <Link to={`/references`} className="w-fit" appearance="secondary">
+            <BackIcon /> Return to headword
+          </Link>
+        </div>
+        <SecondaryHeader>
+          <EditIcon /> Edit headword
+        </SecondaryHeader>
+        {contents}
+        <div className="mt-8">
+          <Button appearance="success" type="submit" size="large">
+            <SaveIcon /> Save changes to headword
+          </Button>
+        </div>
+      </EntryEditorForm>
+    )
+  }
+
+  return contents
 }
 
 export default Headword

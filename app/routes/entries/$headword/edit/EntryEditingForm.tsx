@@ -1,43 +1,48 @@
-import { Form } from "@remix-run/react"
+import { Form, Link } from "@remix-run/react"
 import { useState } from "react"
 import { type LoadedEntryDataType } from ".."
 import Button from "~/components/elements/LinksAndButtons/Button"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { EditFormInput } from "~/components/EntryEditor/EntryEditorForm/EditFormInput"
+import Headword from "~/components/headwordComponents/Headword"
+import DictionaryVersion from "~/components/DictionaryVersion"
+import HandNoteBlock from "~/components/HandNoteBlock"
+import SanitizedTextSpan from "~/components/SanitizedTextSpan"
+import EditIcon from "~/components/elements/Icons/EditIcon"
+import SpellingVariants from "~/components/headwordComponents/SpellingVariants"
+import Etymology from "~/components/headwordComponents/Etymology"
+import GeneralLabels from "~/components/headwordComponents/GeneralLabels"
+import Input from "~/components/bank/Input"
+import TopLabelledField from "~/components/bank/TopLabelledField"
 
 interface EntryEditingFormProps {
-  data: LoadedEntryDataType
+  entry: LoadedEntryDataType
 }
 
-export default function EntryEditingForm({ data }: EntryEditingFormProps) {
-  const id = data.id
-  const [headword, setHeadword] = useState(data.headword)
+export default function EntryEditingForm({ entry }: EntryEditingFormProps) {
+  const id = entry.id
+  const [headword, setHeadword] = useState(entry.headword)
   const [spellingVariant, setSpellingVariant] = useState(
-    data.spelling_variants || ""
+    entry.spelling_variants || ""
   )
-  const [generalLabels, setGeneralLabels] = useState(data.general_labels || "")
-  const [handNote, setHandnote] = useState(data.fist_note || "")
-  const [dagger, setDagger] = useState(data.dagger)
-  const [etymology, setEtymology] = useState(data.etymology || "")
-  const [isLegacy, setIsLegacy] = useState(data.is_legacy)
-  const [isNonCanadian, setIsNonCanadian] = useState(data.no_cdn_conf)
+  const [generalLabels, setGeneralLabels] = useState(entry.general_labels || "")
+  const [handNote, setHandnote] = useState(entry.fist_note || "")
+  const [dagger, setDagger] = useState(entry.dagger)
+  const [etymology, setEtymology] = useState(entry.etymology || "")
+  const [isLegacy, setIsLegacy] = useState(entry.is_legacy)
+  const [isNonCanadian, setIsNonCanadian] = useState(entry.no_cdn_conf)
 
   return (
     <Form method="post">
+      <input type="hidden" name="id" value={id} />
+
       <div className="grid grid-cols-6">
-        <input type="hidden" name="id" value={id} />
         <input
           type="hidden"
           name="attributeType"
-          value={EntryEditorFormActionEnum.ENTRY}
+          value={EntryEditorFormActionEnum.UPDATE_ENTRY}
         />
-        <EditFormInput
-          label="Headword: "
-          name="headword"
-          value={headword}
-          onChangeFunction={setHeadword}
-          className="col-span-2"
-        />
+
         <EditFormInput
           label="Spelling Variants: "
           name="spellingVariant"
@@ -59,16 +64,7 @@ export default function EntryEditingForm({ data }: EntryEditingFormProps) {
           onChangeFunction={setEtymology}
           className="col-span-2"
         />
-        <label className="col-span-1 m-2">
-          Dagger
-          <input
-            name="dagger"
-            checked={dagger}
-            onChange={(e) => setDagger(e.target.checked)}
-            type="checkBox"
-            className="mx-3 border p-1"
-          />
-        </label>
+
         <label className="col-span-1 m-2">
           Legacy:
           <input

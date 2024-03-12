@@ -1,9 +1,12 @@
 import type { LogEntry } from "@prisma/client"
 import type { SerializeFrom } from "@remix-run/server-runtime"
+import type { LoadedEntryDataType } from "~/routes/entries/$headword"
+import Select from "./bank/Select"
+import TopLabelledField from "./bank/TopLabelledField"
 
 interface DictionaryVersionProps {
-  dchpVersion: string | null
-  logEntries?: SerializeFrom<LogEntry>[]
+  entry: LoadedEntryDataType
+  isEditingMode?: boolean
 }
 
 const calculateDictionaryVersion = (
@@ -35,9 +38,11 @@ const calculateDictionaryVersion = (
 }
 
 const DictionaryVersion = ({
-  dchpVersion,
-  logEntries,
+  entry,
+  isEditingMode,
 }: DictionaryVersionProps): JSX.Element => {
+  const { dchp_version: dchpVersion, logEntries } = entry
+
   const version = calculateDictionaryVersion(dchpVersion, logEntries)
 
   const color =
@@ -45,12 +50,32 @@ const DictionaryVersion = ({
       ? "border-amber-300 bg-amber-200"
       : "border-gray-200 bg-gray-100"
 
+  if (!isEditingMode) {
+    return (
+      <div
+        className={`border ${color} ml-2 py-1 px-2 text-xs text-gray-700 shadow-sm md:px-4 md:text-sm`}
+      >
+        {version.version} ({version.date})
+      </div>
+    )
+  }
+
   return (
-    <div
-      className={`border ${color} py-1 px-2 text-xs text-gray-700 shadow-sm md:px-4 md:text-sm`}
-    >
-      {version.version} ({version.date})
-    </div>
+    <TopLabelledField
+      label="DCHP version"
+      field={
+        <Select
+          name="dchp_version"
+          defaultValue={dchpVersion || ""}
+          lightBorder
+          options={[
+            { value: "dchp1", label: "DCHP-1" },
+            { value: "dchp2", label: "DCHP-2" },
+            { value: "dchp3", label: "DCHP-3" },
+          ]}
+        />
+      }
+    />
   )
 }
 

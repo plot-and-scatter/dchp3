@@ -18,7 +18,7 @@ const HandNoteBlock = ({
       ].join(" ")}
     >
       <i className="fa-regular fa-hand-point-right mt-1 w-8 shrink-0"></i>
-      <div>{children}</div>
+      {children}
     </div>
   )
 }

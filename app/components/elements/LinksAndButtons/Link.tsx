@@ -37,6 +37,7 @@ export const Link = ({
           ? [
               buttonAppearanceClass(appearance, buttonVariant),
               buttonSizeClass(buttonSize),
+              "inline-block",
             ]
           : linkAppearanceClass(appearance),
         className

@@ -9,6 +9,7 @@ type TextAreaProps = Omit<
   name: string
   defaultValue?: string | number | null
   showField?: boolean // If true, show the defaultValue. If not, do not.
+  lightBorder?: boolean
 }
 
 export default function TextArea({
@@ -17,6 +18,7 @@ export default function TextArea({
   name,
   defaultValue,
   showField = true,
+  lightBorder,
   ...rest
 }: TextAreaProps) {
   const defaultValueNoNulls = defaultValue === null ? undefined : defaultValue
@@ -30,8 +32,9 @@ export default function TextArea({
         defaultValue={showField !== false ? defaultValueNoNulls : undefined}
         name={name}
         className={clsx(
+          lightBorder ? `border-gray-300` : `border-gray-700`,
           className,
-          `w-full rounded border border-gray-700 px-4 py-2`,
+          `w-full rounded border px-4 py-2`,
           hasErrors &&
             "border-primary-dark bg-primary-lightest outline-primary-dark"
         )}

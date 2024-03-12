@@ -34,7 +34,7 @@ export type LoadedEntryDataType = SerializeFrom<
 export default function EntryDetailsPage() {
   const data = useLoaderData<typeof loader>()
 
-  return <Entry {...data} />
+  return <Entry data-id="Entry" {...data} />
 }
 
 export const ErrorBoundary = DefaultErrorBoundary

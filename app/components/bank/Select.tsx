@@ -7,6 +7,7 @@ type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
   options: InputOption[]
   name: string
   onChange?: React.ChangeEventHandler<HTMLSelectElement>
+  lightBorder?: boolean
 }
 
 export default function Select({
@@ -15,6 +16,7 @@ export default function Select({
   options,
   onChange,
   className,
+  lightBorder,
   ...rest
 }: SelectProps) {
   const error = conformField?.errors
@@ -26,7 +28,8 @@ export default function Select({
         name={name}
         onChange={onChange}
         className={clsx(
-          className || `rounded border border-gray-700 py-2 px-4`,
+          lightBorder ? `border-gray-300` : `border-gray-700`,
+          className || `rounded border py-2 px-4`,
           hasErrors &&
             "border-primary-dark bg-primary-lightest outline-primary-dark"
         )}

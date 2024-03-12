@@ -20,3 +20,6 @@ update user set is_active = 0
 -- Update the timestamps to prevent errors with '0000-00-00 00:00:00'
 set sql_mode=(select replace(@@sql_mode,"NO_ZERO_DATE", ""));
 update citation set last_modified = null WHERE last_modified = '0000-00-00 00:00:00';
+
+-- TODO: Remove the is_legacy column. We are now keeping track of this data in
+-- the dchp_version column.
