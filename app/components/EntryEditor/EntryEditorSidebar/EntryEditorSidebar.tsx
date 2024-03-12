@@ -9,8 +9,9 @@ type EditingSidebarProps = {
 }
 
 export default function EntryEditorSidebar({ entry }: EditingSidebarProps) {
+  // TODO: Restore fixed status?
   return (
-    <div className="fixed">
+    <div>
       <AddNewMeaningForm entry={entry} />
       <EditingTools entry={entry} />
       <hr />

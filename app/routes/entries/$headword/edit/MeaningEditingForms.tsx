@@ -1,3 +1,4 @@
+import AddNewMeaningForm from "~/components/EntryEditor/EntryEditorForm/AddNewMeaningForm"
 import { type LoadedEntryDataType } from ".."
 import MeaningEditingForm from "./MeaningEditingForm"
 
@@ -13,6 +14,9 @@ export default function MeaningEditingForms({ data }: MeaningEditingFormProps) {
         .map((meaning) => (
           <MeaningEditingForm key={meaning.id} entry={data} meaning={meaning} />
         ))}
+      <div className="text-center">
+        <AddNewMeaningForm entry={data} />
+      </div>
     </div>
   )
 }

@@ -7,7 +7,7 @@ export type InputProps = Omit<
 > & {
   conformField?: any
   name: string
-  defaultValue?: string | number | null
+  defaultValue?: string | number | null | readonly string[]
   showField?: boolean // If true, show the defaultValue. If not, do not.
   lightBorder?: boolean
 }

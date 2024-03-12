@@ -15,11 +15,11 @@ export default function Dagger({ dagger, isEditingMode }: DaggerProps) {
       labelWidth="w-fit"
       label={<div className="text-base">Dagger?</div>}
       field={
-        <div className="flex gap-x-2">
+        <div className="flex gap-x-2 text-3xl leading-tight md:text-5xl">
           <input
             name="dagger"
             type="checkbox"
-            className="h-6 w-6 border border-gray-300"
+            className="my-2 h-6 w-6 border border-gray-300"
             defaultChecked={dagger}
           />
           <div>&dagger;</div>

@@ -23,6 +23,7 @@ const SpellingVariants = ({
             className="italic text-gray-900"
             lightBorder
             defaultValue={entry?.spelling_variants}
+            placeholder="e.g. Kanuck, kanaka"
           />
         ) : (
           <SanitizedTextSpan text={entry?.spelling_variants} />

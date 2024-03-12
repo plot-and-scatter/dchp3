@@ -14,7 +14,7 @@ export default function AddNewMeaningForm({ entry }: AddNewMeaningFormProps) {
       entry={entry}
       formAction={EntryEditorFormActionEnum.ADD_MEANING}
     >
-      <Button appearance="success" variant="outline">
+      <Button appearance="success" variant="outline" size="large">
         <AddIcon /> Add new meaning
       </Button>
     </EntryEditorForm>

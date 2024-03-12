@@ -31,7 +31,7 @@ export default function HeadwordHandNote({
         defaultValue={entry.fist_note}
         className="w-full text-gray-900"
         lightBorder
-        placeholder={"Enter hand note"}
+        placeholder={"Enter fist note"}
       />
     </HandNoteBlock>
   )

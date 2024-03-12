@@ -1,37 +1,36 @@
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
-import { Form } from "@remix-run/react"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import SeeAlsoInput from "./SeeAlsoInput"
+import MeaningEditorForm from "~/components/EntryEditor/EntryEditorForm/MeaningEditorForm"
+import type { MeaningType } from "~/components/Meaning"
+import SaveIcon from "~/components/elements/Icons/SaveIcon"
+import TopLabelledField from "~/components/bank/TopLabelledField"
+import Input from "~/components/bank/Input"
+import AddIcon from "~/components/elements/Icons/AddIcon"
 
 interface AddSeeAlsoProps {
-  meaningId: number
+  meaning: MeaningType
   headword: string
 }
 
-export default function AddSeeAlso({ meaningId, headword }: AddSeeAlsoProps) {
+export default function AddSeeAlso({ meaning, headword }: AddSeeAlsoProps) {
   return (
-    <Form
-      method="post"
-      className="my-2 flex flex-row items-center justify-between border bg-gray-100 p-5"
+    <MeaningEditorForm
+      headword={headword}
+      meaning={meaning}
+      formAction={EntryEditorFormActionEnum.ADD_SEE_ALSO}
+      className={"mt-4 rounded border border-gray-400 bg-gray-300 p-4 shadow"}
     >
-      <div className="flex">
-        <input type="hidden" name="meaningId" value={meaningId} />
-        <label className="mx-2 p-1">New See Also:</label>
+      <h4 className="mb-4 text-base font-bold">
+        <AddIcon /> Add see also
+      </h4>
+      <div className="flex items-end gap-x-4 text-sm">
         <SeeAlsoInput name="headwordToAdd" />
-        <label htmlFor="linkNote" className="mx-2 p-1">
-          See Also Comment:
-        </label>
-        <input name="linkNote" className="mx-2 h-9 w-auto rounded border p-1" />
+        <TopLabelledField label="Comment" field={<Input name="linkNote" />} />
+        <Button appearance="success">
+          <SaveIcon /> Save see also
+        </Button>
       </div>
-      <Button
-        type="submit"
-        size="medium"
-        name="attributeType"
-        value={EntryEditorFormActionEnum.ADD_SEE_ALSO}
-        className="mx-2"
-      >
-        Add See Also
-      </Button>
-    </Form>
+    </MeaningEditorForm>
   )
 }

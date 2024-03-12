@@ -1,5 +1,6 @@
 import { Form } from "@remix-run/react"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
+import AddIcon from "~/components/elements/Icons/AddIcon"
 import Button from "~/components/elements/LinksAndButtons/Button"
 
 interface FistnoteAddingFormProps {
@@ -14,10 +15,12 @@ export default function FistnoteAddingForm({
       <input type="hidden" name="meaningId" value={meaningId} />
       <input
         type="hidden"
-        name="attributeType"
+        name="entryEditorFormAction"
         value={EntryEditorFormActionEnum.ADD_DEFINITION_FIST_NOTE}
       />
-      <Button type="submit">Add Fistnote</Button>
+      <Button type="submit">
+        <AddIcon /> Add fist note
+      </Button>
     </Form>
   )
 }

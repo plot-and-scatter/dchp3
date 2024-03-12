@@ -18,12 +18,19 @@ const Etymology = ({ entry, isEditingMode }: etymologyProps) => {
         <TopLabelledField
           label={<div className="text-base">Etymology</div>}
           field={
-            <Input
-              name="etymology"
-              className="italic"
-              lightBorder
-              defaultValue={entry?.etymology}
-            />
+            <>
+              <Input
+                name="etymology"
+                className="italic"
+                lightBorder
+                defaultValue={entry?.etymology}
+                placeholder="e.g. [&lt; Canadian French <i>guichet</i> 'counter']"
+              />
+              {/* TODO: Come up with a note reminder of the use of HTML */}
+              {/* <span className="text-xs text-gray-400">
+                You can use HTML tags in this field
+              </span> */}
+            </>
           }
         />
       ) : (

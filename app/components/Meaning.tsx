@@ -14,12 +14,7 @@ interface MeaningProps {
 }
 
 const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
-  const {
-    order: number,
-    partofspeech: partOfSpeech,
-    usage: usageNote,
-    dagger,
-  } = meaning
+  const { order: number, partofspeech: partOfSpeech, usage, dagger } = meaning
 
   return (
     <>
@@ -31,7 +26,7 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
           number={number}
           dagger={dagger}
           partOfSpeech={partOfSpeech}
-          usageNote={usageNote}
+          usage={usage}
         />
         <div className="flex flex-col gap-2 p-2 md:p-4 md:px-6">
           <Definition meaning={meaning} />

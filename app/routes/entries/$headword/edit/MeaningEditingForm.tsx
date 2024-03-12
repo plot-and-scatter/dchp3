@@ -1,26 +1,26 @@
-import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
-import { EditFormInput } from "~/components/EntryEditor/EntryEditorForm/EditFormInput"
-import { Form } from "@remix-run/react"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
+import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
+import { TertiaryHeader } from "~/components/elements/Headings/TertiaryHeader"
 import { type LoadedEntryDataType } from ".."
 import { type MeaningType } from "~/components/Meaning"
-import { useState } from "react"
 import AddSeeAlso from "./AddSeeAlso"
 import Button from "~/components/elements/LinksAndButtons/Button"
+import Dagger from "~/components/headwordComponents/Dagger"
+import Definition from "~/components/Definition"
+import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
+import EditIcon from "~/components/elements/Icons/EditIcon"
 import FistnoteAddingForm from "./FistnoteAddingForm"
 import FistnoteEditForm from "./FistnoteEditForm"
+import Input from "~/components/bank/Input"
+import MeaningEditorForm from "~/components/EntryEditor/EntryEditorForm/MeaningEditorForm"
 import QuotationAddingForm from "./QuotationAddingForm"
 import QuotationList from "./QuotationList"
-import SeeAlsoEditing from "./SeeAlsoEditing"
-import FAIcon from "~/components/elements/Icons/FAIcon"
-import LabelledField from "~/components/bank/LabelledField"
-import Input from "~/components/bank/Input"
-import Select from "~/components/bank/Select"
-import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 import SaveIcon from "~/components/elements/Icons/SaveIcon"
-import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
-import EditIcon from "~/components/elements/Icons/EditIcon"
-import MeaningEditorForm from "~/components/EntryEditor/EntryEditorForm/MeaningEditorForm"
+import SeeAlsoEditing from "./SeeAlsoEditing"
+import Select from "~/components/bank/Select"
+import TextArea from "~/components/bank/TextArea"
+import TopLabelledField from "~/components/bank/TopLabelledField"
 
 interface MeaningEditingFormProps {
   entry: LoadedEntryDataType
@@ -31,31 +31,13 @@ export default function MeaningEditingForm({
   entry,
   meaning,
 }: MeaningEditingFormProps) {
-  const {
-    definition,
-    order,
-    partofspeech,
-    dagger,
-    canadianism_type,
-    canadianism_type_comment,
-  } = meaning
-
-  const [definitionValue, setDefinition] = useState(definition)
-  const [orderValue, setOrder] = useState(order ?? "")
-  const [daggerValue, setDagger] = useState(dagger)
-  const [partOfSpeech, setPartOfSpeech] = useState(partofspeech)
-  const [canadianismType, setCanadianismType] = useState(canadianism_type)
-  const [canadianismTypeComment, setCanadianismTypeComment] = useState(
-    canadianism_type_comment
-  )
-
   const headword = entry.headword
   //   const [usageNoteValue, setUsageNote] = useState(usageNote)
 
   return (
-    <div className="my-12 mb-56 border border-gray-700 bg-gray-100 p-8">
-      <div className="flex w-full items-center justify-between">
-        <SecondaryHeader>
+    <div className="my-12 rounded border border-gray-400 bg-gray-100 p-8 shadow-lg">
+      <div className="mb-4 flex w-full items-center justify-between">
+        <SecondaryHeader noMargin>
           <EditIcon /> Edit meaning {meaning.order}
         </SecondaryHeader>
         <MeaningEditorForm
@@ -73,143 +55,144 @@ export default function MeaningEditingForm({
               }
             }}
           >
-            <FAIcon iconName="fa-remove mr-2" /> Delete meaning
+            <DeleteIcon /> Delete meaning
           </Button>
         </MeaningEditorForm>
       </div>
-      <Form method="post" className="my-6">
-        <div className="flex flex-col">
-          <input type="hidden" name="id" value={meaning.id} />
-          <input type="hidden" name="headword" value={headword} />
+      <MeaningEditorForm
+        formAction={EntryEditorFormActionEnum.UPDATE_MEANING}
+        meaning={meaning}
+        headword={entry.headword}
+        className="flex flex-col gap-y-4"
+      >
+        <div className="flex gap-x-4">
+          <TopLabelledField
+            label="Order"
+            field={
+              <Input
+                name="order"
+                defaultValue={meaning.order}
+                lightBorder
+                placeholder="e.g. 1a"
+                className="font-bold"
+              />
+            }
+          />
+          <Dagger dagger={meaning.dagger} isEditingMode />
+          <TopLabelledField
+            label="Part of speech"
+            field={
+              <Input
+                className="italic text-gray-900"
+                name="partOfSpeech"
+                defaultValue={meaning.partofspeech}
+                lightBorder
+                placeholder="e.g. n."
+              />
+            }
+          />
+          <TopLabelledField
+            label="Usage"
+            field={
+              <Input
+                className="italic text-gray-900"
+                name="usage"
+                defaultValue={meaning.usage}
+                lightBorder
+                placeholder="e.g. Slang, dated"
+              />
+            }
+          />
+        </div>
+        <div>
+          <Definition meaning={meaning} isEditingMode />
+        </div>
+        <div className="my-2 flex items-start justify-between gap-x-4">
           <div>
-            <LabelledField
-              label={`Definition`}
-              breakAfterLabel
+            <TopLabelledField
+              label="Canadianism type"
               field={
-                <Input
-                  // conformField={citationFields?.short_meaning}
-                  name="definition"
-                  defaultValue={definitionValue}
-                  onChange={(e) => setDefinition(e.target.value)}
+                <Select
+                  lightBorder
+                  options={[
+                    { label: "None", value: "" },
+                    {
+                      label: CanadianismTypeEnum.ONE_ORIGIN,
+                      value: CanadianismTypeEnum.ONE_ORIGIN,
+                    },
+                    {
+                      label: CanadianismTypeEnum.TWO_PRESERVATION,
+                      value: CanadianismTypeEnum.TWO_PRESERVATION,
+                    },
+                    {
+                      label: CanadianismTypeEnum.THREE_SEMANTIC_CHANGE,
+                      value: CanadianismTypeEnum.THREE_SEMANTIC_CHANGE,
+                    },
+                    {
+                      label: CanadianismTypeEnum.FOUR_CULTURALLY_SIGNIFICANT,
+                      value: CanadianismTypeEnum.FOUR_CULTURALLY_SIGNIFICANT,
+                    },
+                    {
+                      label: CanadianismTypeEnum.FIVE_FREQUENCY,
+                      value: CanadianismTypeEnum.FIVE_FREQUENCY,
+                    },
+                    {
+                      label: CanadianismTypeEnum.SIX_MEMORIAL,
+                      value: CanadianismTypeEnum.SIX_MEMORIAL,
+                    },
+                  ]}
+                  name="canadianismType"
+                  defaultValue={meaning.canadianism_type ?? ""}
                 />
               }
             />
           </div>
-          <div className="my-2 flex items-start justify-between gap-x-4">
-            <div>
-              <LabelledField
-                label="Order"
-                breakAfterLabel
-                field={
-                  <Input
-                    name="order"
-                    defaultValue={orderValue}
-                    onChange={(e) => setOrder(e.target.value)}
-                  />
-                }
-              />
-            </div>
-            <div>
-              <LabelledField
-                label="Part of speech"
-                breakAfterLabel
-                field={
-                  <Input
-                    name="partOfSpeech"
-                    defaultValue={partOfSpeech}
-                    onChange={(e) => setPartOfSpeech(e.target.value)}
-                  />
-                }
-              />
-            </div>
-            <div>
-              <LabelledField
-                label="Canadianism type"
-                breakAfterLabel
-                field={
-                  <Select
-                    options={[
-                      { label: "None", value: "" },
-                      {
-                        label: CanadianismTypeEnum.ONE_ORIGIN,
-                        value: CanadianismTypeEnum.ONE_ORIGIN,
-                      },
-                      {
-                        label: CanadianismTypeEnum.TWO_PRESERVATION,
-                        value: CanadianismTypeEnum.TWO_PRESERVATION,
-                      },
-                      {
-                        label: CanadianismTypeEnum.THREE_SEMANTIC_CHANGE,
-                        value: CanadianismTypeEnum.THREE_SEMANTIC_CHANGE,
-                      },
-                      {
-                        label: CanadianismTypeEnum.FOUR_CULTURALLY_SIGNIFICANT,
-                        value: CanadianismTypeEnum.FOUR_CULTURALLY_SIGNIFICANT,
-                      },
-                      {
-                        label: CanadianismTypeEnum.FIVE_FREQUENCY,
-                        value: CanadianismTypeEnum.FIVE_FREQUENCY,
-                      },
-                      {
-                        label: CanadianismTypeEnum.SIX_MEMORIAL,
-                        value: CanadianismTypeEnum.SIX_MEMORIAL,
-                      },
-                    ]}
-                    name="canadianismType"
-                    onChange={(e) => setCanadianismType(e.target.value)}
-                    defaultValue={canadianismType ?? ""}
-                  />
-                }
-              />
-            </div>
-            <div>
-              <LabelledField
-                label="Dagger"
-                breakAfterLabel
-                field={
-                  <RadioOrCheckbox
-                    type="checkbox"
-                    name="citationId"
-                    options={[{ label: "", value: "dagger" }]}
-                    className="mr-2"
-                    onChange={(e) => setDagger(e.target.checked)}
-                  />
-                }
-              />
-            </div>
-          </div>
-
-          <label className="col-span-1">
-            Dagger:
-            <input
-              name="dagger"
-              checked={daggerValue}
-              type="checkbox"
-              onChange={(e) => setDagger(e.target.checked)}
-              className="mx-4"
+          <div className="flex-1">
+            <TopLabelledField
+              labelWidth="w-fit"
+              label="Canadianism type comment"
+              field={
+                <TextArea
+                  lightBorder
+                  value={meaning.canadianism_type_comment || ""}
+                  name="canadianismTypeComment"
+                  rows={5}
+                />
+              }
             />
-          </label>
-          <EditFormInput
-            label="Canadianism Type Comment:"
-            value={canadianismTypeComment || ""}
-            name="canadianismTypeComment"
-            type="textarea"
-            onChangeFunction={setCanadianismTypeComment}
-            className="col-span-7"
-          />
-          <div className="col-span-full flex flex-row justify-between">
-            <Button
-              appearance="success"
-              type="submit"
-              name="attributeType"
-              value={EntryEditorFormActionEnum.UPDATE_MEANING}
-            >
-              <SaveIcon /> Save meaning
-            </Button>
-            <input type="hidden" name="entryId" value={entry.id} />
           </div>
         </div>
-      </Form>
+
+        <div className="col-span-full flex flex-row justify-between">
+          <Button appearance="success" type="submit" size="large">
+            <SaveIcon /> Save changes to meaning
+          </Button>
+          <input type="hidden" name="entryId" value={entry.id} />
+        </div>
+      </MeaningEditorForm>
+
+      <div className="mt-8 rounded border border-gray-400 bg-gray-200 p-4">
+        <TertiaryHeader>
+          <EditIcon /> Edit see alsos
+        </TertiaryHeader>
+        <SeeAlsoEditing headword={headword} seeAlsoItems={meaning.seeAlso} />
+        <AddSeeAlso headword={headword} meaning={meaning} />
+      </div>
+
+      <div className="mt-8 rounded border border-gray-400 bg-gray-200 p-4">
+        <TertiaryHeader>
+          <EditIcon /> Edit fist notes
+        </TertiaryHeader>
+
+        <div className="mb-4">
+          {meaning.usageNotes.map((usageNote) => (
+            <div key={`usage-note-div-${usageNote.id}`} className="mb-2">
+              <FistnoteEditForm usageNote={usageNote} />
+            </div>
+          ))}
+        </div>
+        <FistnoteAddingForm meaningId={meaning.id} />
+      </div>
 
       <div className="my-2 flex flex-col justify-center bg-gray-200 p-2">
         <h2 className=" my-2 text-2xl font-bold">Quotation Adding</h2>
@@ -217,22 +200,7 @@ export default function MeaningEditingForm({
         <QuotationAddingForm meaningId={meaning.id} />
       </div>
 
-      <div className="my-2 bg-gray-200 p-2">
-        <h2 className=" my-2 text-2xl">See Also</h2>
-        <SeeAlsoEditing headword={headword} seeAlsoItems={meaning.seeAlso} />
-        <AddSeeAlso headword={headword} meaningId={meaning.id} />
-      </div>
-      <div className="my-2 bg-gray-200 p-2">
-        <div className="flex justify-between">
-          <h2 className=" my-2 text-2xl">Fistnotes</h2>
-          <FistnoteAddingForm meaningId={meaning.id} />
-        </div>
-        {meaning.usageNotes.map((usageNote, index) => (
-          <div className="col-span-full" key={`usage-note-div-${usageNote.id}`}>
-            <FistnoteEditForm usageNote={usageNote} index={index} />
-          </div>
-        ))}
-      </div>
+      <hr className="my-8 border-b-2 border-gray-500" />
     </div>
   )
 }

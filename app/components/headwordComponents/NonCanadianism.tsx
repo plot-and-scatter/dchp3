@@ -24,7 +24,7 @@ export default function NonCanadianism({
             type="checkbox"
             name="isNonCanadian"
             optionSetClassName="flex gap-x-2 mr-4"
-            inputClassName="h-6 w-6 border border-gray-300"
+            inputClassName="my-2 h-6 w-6 border border-gray-300"
             options={[
               {
                 label: "",

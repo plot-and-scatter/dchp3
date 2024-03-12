@@ -1,6 +1,8 @@
 import { useFetcher } from "@remix-run/react"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
+import Input from "~/components/bank/Input"
+import TopLabelledField from "~/components/bank/TopLabelledField"
 import { resetFetcher } from "~/routes/api/reset-fetcher"
 
 interface SeeAlsoInputProps
@@ -10,7 +12,7 @@ interface SeeAlsoInputProps
 
 const HEADWORD_DATA_URL = `/api/entries/headwords.json`
 const DEBOUNCE_DELAY_IN_MS = 200
-const MAX_HEADWORDS_DISPLAYED = 8
+const MAX_HEADWORDS_DISPLAYED = 500
 
 export default function SeeAlsoInput({ name, ...rest }: SeeAlsoInputProps) {
   const [text, setText] = useState<string>()
@@ -20,7 +22,7 @@ export default function SeeAlsoInput({ name, ...rest }: SeeAlsoInputProps) {
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const text = event.target.value
       if (text.length >= 2) {
-        headwords.load(`${HEADWORD_DATA_URL}?startsWith=${text}`)
+        headwords.load(`${HEADWORD_DATA_URL}?startsWith=${text}&take=10000`)
       } else {
         resetFetcher(headwords)
       }
@@ -28,46 +30,60 @@ export default function SeeAlsoInput({ name, ...rest }: SeeAlsoInputProps) {
     DEBOUNCE_DELAY_IN_MS
   )
 
-  const onChangeFunctions = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setText(event.target.value)
-    getHeadwords(event)
-  }
+  const showPopup = headwords.state === "idle" && headwords.data?.length
 
   return (
-    <div className="w-96">
+    <div className="relative">
       <div className="flex">
-        <div className="flex w-64 justify-between">
-          <input
-            name={name}
-            value={text}
-            autoComplete="off"
-            onChange={onChangeFunctions}
-            className="mx-2 w-full rounded border p-1"
-            {...rest}
-          />
-        </div>
-        <div className="w-32">
-          {headwords.state === "loading" && <div>Loading...</div>}
-        </div>
+        <TopLabelledField
+          label="Headword to link"
+          field={
+            <div className="flex items-center">
+              <Input
+                name={name}
+                value={text}
+                autoComplete="off"
+                onChange={(event) => {
+                  setText(event.target.value)
+                  getHeadwords(event)
+                }}
+                className="w-full rounded border p-1"
+                {...rest}
+              />
+              <div className="ml-2 w-6">
+                {headwords.state === "loading" && (
+                  <i className="fas fa-spin fa-spinner" />
+                )}
+              </div>
+            </div>
+          }
+        />
       </div>
-      {headwords.data && (
-        <>
-          <strong>{headwords.data.length} headwords</strong>
+      {showPopup && (
+        <div
+          className="absolute h-64 w-96 overflow-y-auto rounded border border-gray-400 bg-gray-100 p-3 shadow"
+          id="HeadwordPopup"
+        >
+          <strong>
+            {headwords.data?.length} headwords starting with &ldquo;{text}
+            &rdquo;
+          </strong>
           <ul>
-            {headwords.data.map(
+            {headwords.data?.map(
               (headword, index) =>
                 index < MAX_HEADWORDS_DISPLAYED && (
                   <li
                     onClick={() => setText(headword.headword)}
                     key={headword.id}
+                    className="cursor-pointer p-1 hover:bg-gray-200"
                   >
                     {headword.headword}
                   </li>
                 )
             )}
-            <AdditionalHeadwordCount length={headwords.data.length} />
+            <AdditionalHeadwordCount length={headwords.data?.length || 0} />
           </ul>
-        </>
+        </div>
       )}
     </div>
   )
