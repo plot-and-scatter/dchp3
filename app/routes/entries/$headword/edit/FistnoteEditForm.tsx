@@ -1,7 +1,7 @@
 import { type UsageNote } from "@prisma/client"
 import { Form } from "@remix-run/react"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
-import HandNoteBlock from "~/components/EntryEditor/HandNoteBlock"
+import HandNoteBlock from "~/components/Entry/Common/HandNoteBlock"
 import TextArea from "~/components/bank/TextArea"
 import SaveIcon from "~/components/elements/Icons/SaveIcon"
 import Button from "~/components/elements/LinksAndButtons/Button"

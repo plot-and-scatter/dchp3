@@ -1,6 +1,6 @@
 import { Link } from "../elements/LinksAndButtons/Link"
 import ReferencePopover from "./ReferencePopover"
-import SanitizedTextSpan from "./SanitizedTextSpan"
+import SanitizedTextSpan from "../Entry/Common/SanitizedTextSpan"
 import type { Reference, ReferenceLink } from "@prisma/client"
 import type { SerializeFrom } from "@remix-run/server-runtime"
 

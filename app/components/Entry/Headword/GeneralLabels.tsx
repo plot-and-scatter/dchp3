@@ -1,7 +1,7 @@
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
-import SanitizedTextSpan from "../EntryEditor/SanitizedTextSpan"
-import TopLabelledField from "../bank/TopLabelledField"
-import Input from "../bank/Input"
+import SanitizedTextSpan from "../Common/SanitizedTextSpan"
+import TopLabelledField from "../../bank/TopLabelledField"
+import Input from "../../bank/Input"
 import clsx from "clsx"
 
 interface generalLabelsProps {

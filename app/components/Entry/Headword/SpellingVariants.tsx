@@ -1,6 +1,6 @@
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
-import SanitizedTextSpan from "../EntryEditor/SanitizedTextSpan"
-import Input from "../bank/Input"
+import SanitizedTextSpan from "../Common/SanitizedTextSpan"
+import Input from "../../bank/Input"
 
 interface alternativesProps {
   entry: LoadedEntryDataType

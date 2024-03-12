@@ -1,7 +1,7 @@
-import SanitizedTextSpan from "~/components/EntryEditor/SanitizedTextSpan"
+import SanitizedTextSpan from "~/components/Entry/Common/SanitizedTextSpan"
 import type { MeaningType } from "./Meaning"
-import LabelledField from "../bank/LabelledField"
-import Input from "../bank/Input"
+import LabelledField from "../../bank/LabelledField"
+import Input from "../../bank/Input"
 
 interface DefinitionProps {
   meaning: MeaningType
@@ -27,6 +27,7 @@ const Definition = ({ meaning, isEditingMode }: DefinitionProps) => {
           defaultValue={meaning.definition}
           lightBorder
           className="font-bold md:text-xl"
+          placeholder="Enter definition"
         />
       }
     />

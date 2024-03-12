@@ -1,9 +1,9 @@
 import { Form } from "@remix-run/react"
-import { type MeaningType } from "~/components/EntryEditor/Meaning"
+import { type MeaningType } from "~/components/Entry/Meanings/Meaning"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
-import SanitizedTextSpan from "~/components/EntryEditor/SanitizedTextSpan"
+import SanitizedTextSpan from "~/components/Entry/Common/SanitizedTextSpan"
 import EditIcon from "~/components/elements/Icons/EditIcon"
 import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
 

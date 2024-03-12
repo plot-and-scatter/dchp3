@@ -1,4 +1,4 @@
-import SanitizedTextSpan from "../EntryEditor/SanitizedTextSpan"
+import SanitizedTextSpan from "../Common/SanitizedTextSpan"
 
 interface MeaningHeaderProps {
   number: string | null

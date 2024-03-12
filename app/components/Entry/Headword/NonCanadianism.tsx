@@ -1,5 +1,5 @@
-import RadioOrCheckbox from "../bank/RadioOrCheckbox"
-import TopLabelledField from "../bank/TopLabelledField"
+import RadioOrCheckbox from "../../bank/RadioOrCheckbox"
+import TopLabelledField from "../../bank/TopLabelledField"
 
 type DaggerProps = {
   isNonCanadianism: boolean
@@ -23,7 +23,7 @@ export default function NonCanadianism({
           <RadioOrCheckbox
             type="checkbox"
             name="isNonCanadian"
-            optionSetClassName="flex gap-x-2 mr-4"
+            optionSetClassName="flex"
             inputClassName="my-2 h-6 w-6 border border-gray-300"
             options={[
               {

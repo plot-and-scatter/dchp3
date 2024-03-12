@@ -1,5 +1,5 @@
 import EntryEditorSidebar from "./EntryEditorSidebar/EntryEditorSidebar"
-import Headword from "../headwordComponents/Headword"
+import Headword from "../Entry/Headword/Headword"
 import ImageEditingForm from "~/routes/entries/$headword/edit/ImageEditingForm"
 import MeaningEditingForms from "~/routes/entries/$headword/edit/MeaningEditingForms"
 import type { EntryEditLoaderData } from "~/routes/entries/$headword/edit"

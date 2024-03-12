@@ -1,5 +1,3 @@
-import React from "react"
-
 import type { MeaningType } from "./Meaning"
 import Meaning from "./Meaning"
 

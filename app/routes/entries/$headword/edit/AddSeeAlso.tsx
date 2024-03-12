@@ -2,7 +2,7 @@ import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorF
 import Button from "~/components/elements/LinksAndButtons/Button"
 import SeeAlsoInput from "./SeeAlsoInput"
 import MeaningEditorForm from "~/components/EntryEditor/EntryEditorForm/MeaningEditorForm"
-import type { MeaningType } from "~/components/EntryEditor/Meaning"
+import type { MeaningType } from "~/components/Entry/Meanings/Meaning"
 import SaveIcon from "~/components/elements/Icons/SaveIcon"
 import TopLabelledField from "~/components/bank/TopLabelledField"
 import Input from "~/components/bank/Input"

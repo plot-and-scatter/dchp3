@@ -1,8 +1,8 @@
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { Form } from "@remix-run/react"
-import { type SeeAlsoList } from "~/components/EntryEditor/SeeAlsoItems"
+import { type SeeAlsoList } from "~/components/Entry/Meanings/SeeAlsoItems"
 import IconButton from "~/components/elements/LinksAndButtons/IconButton"
-import SeeAlsoItem from "~/components/EntryEditor/SeeAlsoItem"
+import SeeAlsoItem from "~/components/Entry/Meanings/SeeAlsoItem"
 
 interface SeeAlsoEditingProps {
   headword: string

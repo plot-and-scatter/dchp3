@@ -2,7 +2,7 @@ import { Popover } from "@headlessui/react"
 
 import { usePopper } from "react-popper"
 import { useState } from "react"
-import SanitizedTextSpan from "./SanitizedTextSpan"
+import SanitizedTextSpan from "../Entry/Common/SanitizedTextSpan"
 
 interface ReferencePopoverProps {
   text: string

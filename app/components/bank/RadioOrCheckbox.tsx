@@ -43,7 +43,7 @@ export default function RadioOrCheckbox(props: RadioOrCheckboxProps) {
                 {...rest}
                 className={inputClassName} // This line MUST be here.
               />
-              <label htmlFor={idKey}>{label || <>&nbsp;</>}</label>
+              {label && <label htmlFor={idKey}>{label || <>&nbsp;</>}</label>}
             </span>
           )
         })}

@@ -1,5 +1,5 @@
-import Input from "../bank/Input"
-import TopLabelledField from "../bank/TopLabelledField"
+import Input from "../../bank/Input"
+import TopLabelledField from "../../bank/TopLabelledField"
 
 type HeadwordTextProps = {
   headword: string

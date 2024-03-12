@@ -1,5 +1,5 @@
 import type { Image } from "@prisma/client"
-import SanitizedTextSpan from "./SanitizedTextSpan"
+import SanitizedTextSpan from "../Entry/Common/SanitizedTextSpan"
 
 type EntryImageProps = {
   image: Image
