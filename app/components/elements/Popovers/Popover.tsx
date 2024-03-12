@@ -4,12 +4,13 @@ import { Fragment } from "react"
 interface PopoverProps {
   title: React.ReactNode
   children: React.ReactNode
+  show?: boolean
 }
 
-export default function Popover({ title, children }: PopoverProps) {
+export default function Popover({ title, children, show }: PopoverProps) {
   return (
     <HeadlessPopover className="relative">
-      {({ open }) => (
+      {({ open: show }) => (
         <>
           <HeadlessPopover.Button
             className={

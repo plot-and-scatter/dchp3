@@ -1,8 +1,8 @@
 import { useFetcher } from "@remix-run/react"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
-import Input from "~/components/bank/Input"
 import TopLabelledField from "~/components/bank/TopLabelledField"
+import Combobox from "~/components/elements/Combobox/Combobox"
 import { resetFetcher } from "~/routes/api/reset-fetcher"
 
 interface SeeAlsoInputProps
@@ -32,59 +32,81 @@ export default function SeeAlsoInput({ name, ...rest }: SeeAlsoInputProps) {
 
   const showPopup = headwords.state === "idle" && headwords.data?.length
 
+  console.log("headwords.data", headwords.data)
+
   return (
     <div className="relative">
       <div className="flex">
         <TopLabelledField
           label="Headword to link"
           field={
-            <div className="flex items-center">
-              <Input
-                name={name}
-                value={text}
-                autoComplete="off"
-                onChange={(event) => {
-                  setText(event.target.value)
-                  getHeadwords(event)
-                }}
-                className="w-full rounded border p-1"
-                {...rest}
-              />
-              <div className="ml-2 w-6">
-                {headwords.state === "loading" && (
-                  <i className="fas fa-spin fa-spinner" />
-                )}
-              </div>
-            </div>
+            // <div className="flex items-center">
+            //   <Input
+            //     name={name}
+            //     value={text}
+            //     autoComplete="off"
+            //     onChange={(event) => {
+            //       setText(event.target.value)
+            //       getHeadwords(event)
+            //     }}
+            //     className="w-full rounded border p-1"
+            //     {...rest}
+            //   />
+            //   <div className="ml-2 w-6">
+            //     {headwords.state === "loading" && (
+            //       <i className="fas fa-spin fa-spinner" />
+            //     )}
+            //   </div>
+            // </div>
+            <Combobox
+              options={headwords.data?.map((h) => ({
+                label: h.headword,
+                value: `${h.id}`,
+              }))}
+              onChange={(e) => {
+                setText(e.target.value)
+                getHeadwords(e)
+              }}
+              name="headword"
+            />
           }
         />
       </div>
-      {showPopup && (
-        <div
-          className="absolute h-64 w-96 overflow-y-auto rounded border border-gray-400 bg-gray-100 p-3 shadow"
-          id="HeadwordPopup"
+      {/* {showPopup && (
+        <Popover
+        hide
+          title={
+            <div className="flex items-center">
+              <i className="fas fa-user mr-1 sm:mr-2" />
+            </div>
+          }
         >
-          <strong>
-            {headwords.data?.length} headwords starting with &ldquo;{text}
-            &rdquo;
-          </strong>
-          <ul>
-            {headwords.data?.map(
-              (headword, index) =>
-                index < MAX_HEADWORDS_DISPLAYED && (
-                  <li
-                    onClick={() => setText(headword.headword)}
-                    key={headword.id}
-                    className="cursor-pointer p-1 hover:bg-gray-200"
-                  >
-                    {headword.headword}
-                  </li>
-                )
-            )}
-            <AdditionalHeadwordCount length={headwords.data?.length || 0} />
-          </ul>
-        </div>
-      )}
+          <div
+            className="absolute h-64 w-96 overflow-y-auto rounded border border-gray-400 bg-gray-100 p-3 shadow"
+            id="HeadwordPopup"
+          >
+            <strong>
+              {headwords.data?.length} headwords starting with &ldquo;{text}
+              &rdquo;
+            </strong>
+            <ul>
+              {headwords.data?.map(
+                (headword, index) =>
+                  index < MAX_HEADWORDS_DISPLAYED && (
+                    <li
+                      onClick={() => setText(headword.headword)}
+                      key={headword.id}
+                      className="cursor-pointer p-1 hover:bg-gray-200"
+                    >
+                      {headword.headword}
+                    </li>
+                  )
+              )}
+              <AdditionalHeadwordCount length={headwords.data?.length || 0} />
+            </ul>
+          </div>
+        </Popover>
+      )} */}
     </div>
   )
 }
