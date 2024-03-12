@@ -1,5 +1,3 @@
-import React from "react"
-
 interface BibliographyItemProps {
   label: string
   value: React.ReactNode

@@ -1,5 +1,3 @@
-import React from "react"
-
 interface MainProps {
   center?: boolean
   children: React.ReactNode

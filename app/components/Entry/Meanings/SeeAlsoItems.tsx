@@ -1,4 +1,5 @@
 import React from "react"
+
 import type { MeaningType } from "./Meaning"
 import SeeAlsoItem from "./SeeAlsoItem"
 

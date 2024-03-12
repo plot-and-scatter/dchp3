@@ -1,4 +1,3 @@
-import React from "react"
 import Citation from "./Citation"
 import type { MeaningType } from "../Entry/Meanings/Meaning"
 

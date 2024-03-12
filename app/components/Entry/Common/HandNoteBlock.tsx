@@ -1,5 +1,3 @@
-import React from "react"
-
 interface HandNoteBlockProps {
   children: React.ReactNode
   className?: string

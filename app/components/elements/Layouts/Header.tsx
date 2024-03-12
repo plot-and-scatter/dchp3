@@ -1,8 +1,6 @@
-import React from "react"
-
 const Header = (): JSX.Element => {
   return (
-    <header className="text-white fixed top-0 z-50 flex h-12 w-full items-center justify-center bg-gray-700 md:h-16">
+    <header className="fixed top-0 z-50 flex h-12 w-full items-center justify-center bg-gray-700 text-white md:h-16">
       <div className="hidden text-2xl sm:block md:text-3xl">
         Dictionary of Canadianisms on Historical Principles{" "}
         <span className="italic">
