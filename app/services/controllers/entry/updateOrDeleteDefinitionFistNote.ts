@@ -3,13 +3,15 @@ import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorF
 import { prisma } from "~/db.server"
 import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
 
-export const UpdateOrDeleteDefinitionFistNoteSchema = z.object({
-  entryEditorFormAction: z.literal(
-    EntryEditorFormActionEnum.DEFINITION_FIST_NOTE
-  ),
-  usageNoteId: ZPrimaryKeyInt,
-  usageNoteText: z.string(),
-})
+export const UpdateOrDeleteDefinitionFistNoteSchema = z
+  .object({
+    entryEditorFormAction: z.literal(
+      EntryEditorFormActionEnum.DEFINITION_FIST_NOTE
+    ),
+    usageNoteId: ZPrimaryKeyInt,
+    usageNoteText: z.string(),
+  })
+  .strict()
 
 export async function updateOrDeleteDefinitionFistNote(
   data: z.infer<typeof UpdateOrDeleteDefinitionFistNoteSchema>

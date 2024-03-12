@@ -3,13 +3,15 @@ import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorF
 import { prisma } from "~/db.server"
 import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
 
-export const AddSeeAlsoSchema = z.object({
-  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_SEE_ALSO),
-  meaningId: ZPrimaryKeyInt,
-  headword: z.string(),
-  linkNote: z.string(),
-  citationId: ZPrimaryKeyInt,
-})
+export const AddSeeAlsoSchema = z
+  .object({
+    entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_SEE_ALSO),
+    meaningId: ZPrimaryKeyInt,
+    headword: z.string(),
+    linkNote: z.string(),
+    citationId: ZPrimaryKeyInt,
+  })
+  .strict()
 
 // TODO: Isn't there a way we could do this using the entryId instead...?
 export async function addSeeAlso(data: z.infer<typeof AddSeeAlsoSchema>) {

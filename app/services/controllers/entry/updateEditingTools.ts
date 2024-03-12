@@ -3,12 +3,14 @@ import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorF
 import { prisma } from "~/db.server"
 import { ZCheckboxValueToBoolean } from "../ZCheckboxValueToBoolean"
 
-export const UpdateEditingToolsSchema = z.object({
-  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.EDITING_TOOLS),
-  headword: z.string(),
-  isPublic: ZCheckboxValueToBoolean,
-  isLegacy: ZCheckboxValueToBoolean,
-})
+export const UpdateEditingToolsSchema = z
+  .object({
+    entryEditorFormAction: z.literal(EntryEditorFormActionEnum.EDITING_TOOLS),
+    headword: z.string(),
+    isPublic: ZCheckboxValueToBoolean,
+    isLegacy: ZCheckboxValueToBoolean,
+  })
+  .strict()
 
 export async function updateEditingTools(
   data: z.infer<typeof UpdateEditingToolsSchema>

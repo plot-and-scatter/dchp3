@@ -23,9 +23,9 @@ const EntryComment = ({ entry }: EntryCommentProps) => {
           className="h-40 border p-2"
           name="comment"
           onChange={(e) => setComment(e.target.value)}
-        >
-          {comment}
-        </textarea>
+          defaultValue={comment || ""}
+          placeholder="Enter a comment"
+        />
         <Button appearance="success" variant="outline" size="small">
           <SaveIcon /> Save comment
         </Button>

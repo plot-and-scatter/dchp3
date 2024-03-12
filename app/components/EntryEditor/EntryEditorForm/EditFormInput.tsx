@@ -35,7 +35,7 @@ function getEditFormInput({
           name={name}
           onChange={(e) => onChangeFunction(e.target.value)}
           className="m-1 h-24 w-full border p-1"
-        ></textarea>
+        />
       )
     default:
       return (

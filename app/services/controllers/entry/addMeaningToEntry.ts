@@ -3,10 +3,12 @@ import { prisma } from "~/db.server"
 import { z } from "zod"
 import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
 
-export const AddMeaningToEntrySchema = z.object({
-  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_MEANING),
-  entryId: ZPrimaryKeyInt,
-})
+export const AddMeaningToEntrySchema = z
+  .object({
+    entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_MEANING),
+    entryId: ZPrimaryKeyInt,
+  })
+  .strict()
 
 export async function addMeaningToEntry(
   data: z.infer<typeof AddMeaningToEntrySchema>

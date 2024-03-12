@@ -4,16 +4,18 @@ import { prisma } from "~/db.server"
 import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
 import { ZCheckboxValueToBoolean } from "../ZCheckboxValueToBoolean"
 
-export const UpdateMeaningSchema = z.object({
-  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.UPDATE_MEANING),
-  meaningId: ZPrimaryKeyInt,
-  definition: z.string(),
-  order: z.string(),
-  partOfSpeech: z.string(),
-  canadianismType: z.string(),
-  canadianismTypeComment: z.string(),
-  dagger: ZCheckboxValueToBoolean,
-})
+export const UpdateMeaningSchema = z
+  .object({
+    entryEditorFormAction: z.literal(EntryEditorFormActionEnum.UPDATE_MEANING),
+    meaningId: ZPrimaryKeyInt,
+    definition: z.string(),
+    order: z.string(),
+    partOfSpeech: z.string(),
+    canadianismType: z.string(),
+    canadianismTypeComment: z.string(),
+    dagger: ZCheckboxValueToBoolean,
+  })
+  .strict()
 
 export async function updateMeaning(data: z.infer<typeof UpdateMeaningSchema>) {
   await prisma.meaning.update({

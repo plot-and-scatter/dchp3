@@ -18,6 +18,9 @@ import Input from "~/components/bank/Input"
 import Select from "~/components/bank/Select"
 import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 import SaveIcon from "~/components/elements/Icons/SaveIcon"
+import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
+import EditIcon from "~/components/elements/Icons/EditIcon"
+import MeaningEditorForm from "~/components/EntryEditor/EntryEditorForm/MeaningEditorForm"
 
 interface MeaningEditingFormProps {
   entry: LoadedEntryDataType
@@ -50,22 +53,29 @@ export default function MeaningEditingForm({
   //   const [usageNoteValue, setUsageNote] = useState(usageNote)
 
   return (
-    <div className="my-12 mb-56 bg-gray-100 p-5">
-      <div className="flex items-center justify-between">
-        <h3 className="text-4xl font-bold">Meaning {meaning.order}</h3>
-        <Form method="post">
-          <input type="hidden" name="meaningId" value={meaning.id} />
-          <input type="hidden" name="headword" value={headword} />
+    <div className="my-12 mb-56 border border-gray-700 bg-gray-100 p-8">
+      <div className="flex w-full items-center justify-between">
+        <SecondaryHeader>
+          <EditIcon /> Edit meaning {meaning.order}
+        </SecondaryHeader>
+        <MeaningEditorForm
+          headword={entry.headword}
+          meaning={meaning}
+          formAction={EntryEditorFormActionEnum.DELETE_MEANING}
+        >
           <Button
             type="submit"
             appearance="danger"
             variant="outline"
-            name="entryEditorFormAction"
-            value={EntryEditorFormActionEnum.DELETE_MEANING}
+            onClick={(e) => {
+              if (!confirm("Are you sure you want to delete this meaning?")) {
+                e.preventDefault()
+              }
+            }}
           >
             <FAIcon iconName="fa-remove mr-2" /> Delete meaning
           </Button>
-        </Form>
+        </MeaningEditorForm>
       </div>
       <Form method="post" className="my-6">
         <div className="flex flex-col">

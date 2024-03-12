@@ -15,19 +15,21 @@ import { ZCheckboxValueToBoolean } from "../ZCheckboxValueToBoolean"
 //   [EditingStatusTypeEnum.PROOF_READING]: "proofread",
 // }
 
-export const UpdateEditingStatusSchema = z.object({
-  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.EDITING_STATUS),
-  headword: z.string(),
-  first_draft: ZCheckboxValueToBoolean,
-  revised_draft: ZCheckboxValueToBoolean,
-  semantically_revised: ZCheckboxValueToBoolean,
-  edited_for_style: ZCheckboxValueToBoolean,
-  chief_editor_ok: ZCheckboxValueToBoolean,
-  no_cdn_susp: ZCheckboxValueToBoolean,
-  no_cdn_conf: ZCheckboxValueToBoolean,
-  final_proofing: ZCheckboxValueToBoolean,
-  proofread: ZCheckboxValueToBoolean,
-})
+export const UpdateEditingStatusSchema = z
+  .object({
+    entryEditorFormAction: z.literal(EntryEditorFormActionEnum.EDITING_STATUS),
+    headword: z.string(),
+    first_draft: ZCheckboxValueToBoolean,
+    revised_draft: ZCheckboxValueToBoolean,
+    semantically_revised: ZCheckboxValueToBoolean,
+    edited_for_style: ZCheckboxValueToBoolean,
+    chief_editor_ok: ZCheckboxValueToBoolean,
+    no_cdn_susp: ZCheckboxValueToBoolean,
+    no_cdn_conf: ZCheckboxValueToBoolean,
+    final_proofing: ZCheckboxValueToBoolean,
+    proofread: ZCheckboxValueToBoolean,
+  })
+  .strict()
 
 export async function updateEditingStatus(
   data: z.infer<typeof UpdateEditingStatusSchema>

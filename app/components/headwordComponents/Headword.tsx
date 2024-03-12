@@ -97,7 +97,7 @@ const Headword = ({
             className="w-fit"
             appearance="secondary"
           >
-            <BackIcon /> Return to headword
+            <BackIcon /> Return to entry
           </Link>
         </div>
         <SecondaryHeader>

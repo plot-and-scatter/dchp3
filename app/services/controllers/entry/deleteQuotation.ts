@@ -3,11 +3,15 @@ import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorF
 import { prisma } from "~/db.server"
 import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
 
-export const DeleteQuotationSchema = z.object({
-  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.DELETE_QUOTATION),
-  meaningId: ZPrimaryKeyInt,
-  citationId: ZPrimaryKeyInt,
-})
+export const DeleteQuotationSchema = z
+  .object({
+    entryEditorFormAction: z.literal(
+      EntryEditorFormActionEnum.DELETE_QUOTATION
+    ),
+    meaningId: ZPrimaryKeyInt,
+    citationId: ZPrimaryKeyInt,
+  })
+  .strict()
 
 export async function deleteQuotation(
   data: z.infer<typeof DeleteQuotationSchema>
