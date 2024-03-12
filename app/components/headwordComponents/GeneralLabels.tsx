@@ -22,7 +22,7 @@ const GeneralLabels = ({
           label={<div className="text-base">General labels</div>}
           field={
             <Input
-              name="headword"
+              name="generalLabels"
               className="italic"
               lightBorder
               defaultValue={entry.general_labels}

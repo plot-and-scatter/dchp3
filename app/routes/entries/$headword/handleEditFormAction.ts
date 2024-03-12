@@ -108,6 +108,14 @@ type SubmissionValue = z.infer<typeof unionSchema>
 export async function handleEditFormAction(formData: FormData) {
   const submission = parse(formData, { schema: unionSchema })
 
+  console.log(submission)
+
+  // TODO: When we link this up with the form that actually shows errors,
+  // we can remove this.
+  if (Object.keys(submission.error).length > 0) {
+    throw new Error(JSON.stringify(submission.error))
+  }
+
   if (submission.intent !== "submit" || !submission.value) {
     return json(submission)
   }

@@ -19,7 +19,7 @@ const Etymology = ({ entry, isEditingMode }: etymologyProps) => {
           label={<div className="text-base">Etymology</div>}
           field={
             <Input
-              name="headword"
+              name="etymology"
               className="italic"
               lightBorder
               defaultValue={entry?.etymology}

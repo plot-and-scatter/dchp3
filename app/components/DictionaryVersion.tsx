@@ -65,7 +65,7 @@ const DictionaryVersion = ({
       label="DCHP version"
       field={
         <Select
-          name="dchp_version"
+          name="dchpVersion"
           defaultValue={dchpVersion || ""}
           lightBorder
           options={[

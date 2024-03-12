@@ -4,25 +4,38 @@ import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { ZCheckboxValueToBoolean } from "../ZCheckboxValueToBoolean"
 
-export const UpdateEntrySchema = z.object({
-  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.UPDATE_ENTRY),
-  entryId: ZPrimaryKeyInt,
-  headword: z.string(),
-  spellingVariant: z.string(),
-  generalLabels: z.string(),
-  etymology: z.string(),
-  fistNote: z.string(),
-  dagger: ZCheckboxValueToBoolean,
-  isLegacy: ZCheckboxValueToBoolean,
-  isNonCanadian: ZCheckboxValueToBoolean,
-})
+export const UpdateEntrySchema = z
+  .object({
+    entryEditorFormAction: z.literal(EntryEditorFormActionEnum.UPDATE_ENTRY),
+    entryId: ZPrimaryKeyInt,
+    headword: z.string(),
+    spellingVariant: z.string(),
+    generalLabels: z.string(),
+    etymology: z.string(),
+    fistNote: z.string(),
+    dagger: ZCheckboxValueToBoolean,
+    isLegacy: ZCheckboxValueToBoolean,
+    isNonCanadian: ZCheckboxValueToBoolean,
+    dchpVersion: z.enum(["dchp1", "dchp2", "dchp3"]),
+  })
+  .strict()
 
 export async function updateEntry(data: z.infer<typeof UpdateEntrySchema>) {
   await assertNonDuplicateHeadword(data.entryId, data.headword)
 
   await prisma.entry.update({
     where: { id: data.entryId },
-    data,
+    data: {
+      headword: data.headword,
+      spelling_variants: data.spellingVariant,
+      general_labels: data.generalLabels,
+      etymology: data.etymology,
+      fist_note: data.fistNote,
+      dagger: data.dagger,
+      is_legacy: data.isLegacy,
+      no_cdn_conf: data.isNonCanadian,
+      dchp_version: data.dchpVersion,
+    },
   })
 }
 

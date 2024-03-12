@@ -6,6 +6,7 @@ type RadioOrCheckboxProps = InputProps & {
   conformField?: any
   options: InputOption[]
   optionSetClassName?: string
+  inputClassName?: string
   direction?: "horizontal" | "vertical"
   type: "radio" | "checkbox"
 }
@@ -17,6 +18,7 @@ export default function RadioOrCheckbox(props: RadioOrCheckboxProps) {
     name,
     options,
     optionSetClassName,
+    inputClassName,
     defaultValue,
     direction = "horizontal",
     ...rest
@@ -39,6 +41,7 @@ export default function RadioOrCheckbox(props: RadioOrCheckboxProps) {
                 defaultChecked={defaultChecked || value === defaultValue}
                 name={name}
                 {...rest}
+                className={inputClassName} // This line MUST be here.
               />
               <label htmlFor={idKey}>{label || <>&nbsp;</>}</label>
             </span>

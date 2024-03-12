@@ -18,6 +18,7 @@ import Button from "../elements/LinksAndButtons/Button"
 import SaveIcon from "../elements/Icons/SaveIcon"
 import { SecondaryHeader } from "../elements/Headings/SecondaryHeader"
 import BackIcon from "../elements/Icons/BackIcon"
+import { TertiaryHeader } from "../elements/Headings/TertiaryHeader"
 
 interface HeadwordProps {
   entry: LoadedEntryDataType
@@ -71,11 +72,15 @@ const Headword = ({
       </div>
       <SpellingVariants entry={entry} isEditingMode={isEditingMode} />
       <HeadwordHandNote entry={entry} isEditingMode={isEditingMode} />
-      {/* {entry.no_cdn_conf && (
-        <div className="border border-red-300 bg-red-200 p-3 font-bold">
-          Non-Canadianism
+      {entry.no_cdn_conf && !isEditingMode && (
+        <div className="border border-red-700 bg-red-300 p-3">
+          <TertiaryHeader>Non-Canadianism</TertiaryHeader>
+          <p>
+            This is a word that our editors have determined is not a
+            Canadianism.
+          </p>
         </div>
-      )} */}
+      )}
     </div>
   )
 
@@ -87,7 +92,11 @@ const Headword = ({
         className="border border-gray-400 p-8 shadow-lg"
       >
         <div className="mb-8">
-          <Link to={`/references`} className="w-fit" appearance="secondary">
+          <Link
+            to={`/entries/${entry.headword}`}
+            className="w-fit"
+            appearance="secondary"
+          >
             <BackIcon /> Return to headword
           </Link>
         </div>
@@ -96,7 +105,7 @@ const Headword = ({
         </SecondaryHeader>
         {contents}
         <div className="mt-8">
-          <Button appearance="success" type="submit" size="large">
+          <Button appearance="success" size="large">
             <SaveIcon /> Save changes to headword
           </Button>
         </div>

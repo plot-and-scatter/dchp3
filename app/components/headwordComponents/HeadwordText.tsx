@@ -15,7 +15,7 @@ export default function HeadwordText({
   return (
     <TopLabelledField
       label={<div className="text-base">Headword</div>}
-      field={<Input lightBorder name="headword" value={headword} />}
+      field={<Input lightBorder name="headword" defaultValue={headword} />}
     />
   )
 }
