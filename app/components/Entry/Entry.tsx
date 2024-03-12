@@ -21,7 +21,10 @@ const Entry = ({ entry, canUserEditEntry }: EntryProps): JSX.Element => {
     : "bg-gray-50"
 
   return (
-    <div className="mx-auto flex min-w-full max-w-full flex-row justify-around gap-4">
+    <div
+      className="mx-auto flex min-w-full max-w-full flex-row justify-around gap-4"
+      data-id={`entry-${entry?.id}`}
+    >
       <div className="w-96 max-w-2xl bg-gray-300">
         {canUserEditEntry && (
           <Link

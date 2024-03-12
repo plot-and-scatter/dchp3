@@ -1,5 +1,5 @@
 import EditImageForm from "~/components/EntryEditor/EditImages/EditImageForm"
-import { type LoadedEntryDataType } from ".."
+import { type LoadedEntryDataType } from "../../routes/entries/$headword"
 import AddImageForm from "~/components/EntryEditor/EditImages/AddImageForm"
 
 interface ImageEditingFormProps {

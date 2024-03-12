@@ -7,6 +7,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRouteError,
 } from "@remix-run/react"
 
 import smartquotes from "smartquotes"
@@ -17,6 +18,9 @@ import additionalStylesUrl from "./styles/additional.css"
 import Header from "./components/elements/Layouts/Header"
 import Nav from "./components/elements/Layouts/Nav"
 import { getUserFromSession } from "./services/auth/session.server"
+import { DefaultErrorBoundary } from "./components/elements/DefaultErrorBoundary"
+import type { LoggedInUser } from "./services/auth/auth.server"
+import TextPageMain from "./components/elements/Layouts/TextPageMain"
 
 export const BASE_APP_TITLE = "DCHP-3"
 
@@ -36,13 +40,13 @@ export async function loader({ request }: LoaderArgs) {
   return { user }
 }
 
-export default function App() {
-  const { user } = useLoaderData<typeof loader>()
-
-  useEffect(() => {
-    smartquotes().listen()
-  }, [])
-
+const defaultApp = ({
+  user,
+  error,
+}: {
+  user: LoggedInUser | undefined
+  error?: boolean
+}) => {
   return (
     <html lang="en" className="h-full">
       <head>
@@ -59,7 +63,13 @@ export default function App() {
         <div className="relative">
           <Header />
           <Nav user={user} />
-          <Outlet />
+          {error ? (
+            <TextPageMain>
+              <DefaultErrorBoundary />
+            </TextPageMain>
+          ) : (
+            <Outlet />
+          )}
         </div>
         <ScrollRestoration />
         <Scripts />
@@ -67,4 +77,18 @@ export default function App() {
       </body>
     </html>
   )
+}
+
+export default function App() {
+  const { user } = useLoaderData<typeof loader>()
+
+  useEffect(() => {
+    smartquotes().listen()
+  }, [])
+
+  return defaultApp({ user })
+}
+
+export function ErrorBoundary() {
+  return defaultApp({ user: undefined, error: true })
 }

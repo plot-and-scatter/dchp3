@@ -1,5 +1,5 @@
 import AddNewMeaningForm from "~/components/EntryEditor/EntryEditorForm/AddNewMeaningForm"
-import { type LoadedEntryDataType } from ".."
+import { type LoadedEntryDataType } from "../../routes/entries/$headword"
 import MeaningEditingForm from "./MeaningEditingForm"
 
 interface MeaningEditingFormProps {
