@@ -1,5 +1,5 @@
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
-import TextPageMain from "~/components/elements/TextPageMain"
+import TextPageMain from "~/components/elements/Layouts/TextPageMain"
 
 export default function Index() {
   return (

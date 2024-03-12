@@ -1,4 +1,4 @@
-import { Link } from "./elements/LinksAndButtons/Link"
+import { Link } from "../elements/LinksAndButtons/Link"
 import ReferencePopover from "./ReferencePopover"
 import SanitizedTextSpan from "./SanitizedTextSpan"
 import type { Reference, ReferenceLink } from "@prisma/client"

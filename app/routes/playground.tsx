@@ -1,5 +1,5 @@
 import CitationSearch from "~/components/EntryEditor/CitationSearch"
-import Main from "~/components/elements/Main"
+import Main from "~/components/elements/Layouts/Main"
 
 export default function Playground() {
   return (

@@ -1,8 +1,8 @@
 import React from "react"
-import SanitizedTextSpan from "~/components/SanitizedTextSpan"
-import BibliographyPopover from "./elements/BibliographyPopover"
+import SanitizedTextSpan from "~/components/EntryEditor/SanitizedTextSpan"
+import BibliographyPopover from "../elements/Popovers/BibliographyPopover"
 import type { MeaningType } from "./Meaning"
-import { Link } from "./elements/LinksAndButtons/Link"
+import { Link } from "../elements/LinksAndButtons/Link"
 
 export type CitationType = MeaningType["citations"][0]["citation"]
 

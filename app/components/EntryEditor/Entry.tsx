@@ -1,11 +1,11 @@
 import EntryImages from "./EntryImages"
 import EntryReferences from "./EntryReferences"
 import Headword from "~/components/headwordComponents/Headword"
-import Meanings from "~/components/Meanings"
-import QuickLinks from "./quicklinks/QuickLinks"
+import Meanings from "~/components/EntryEditor/Meanings"
+import QuickLinks from "../quicklinks/QuickLinks"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
-import { Link } from "./elements/LinksAndButtons/Link"
-import EditIcon from "./elements/Icons/EditIcon"
+import { Link } from "../elements/LinksAndButtons/Link"
+import EditIcon from "../elements/Icons/EditIcon"
 
 type EntryProps = {
   entry: LoadedEntryDataType

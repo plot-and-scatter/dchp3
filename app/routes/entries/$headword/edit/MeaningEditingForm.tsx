@@ -3,11 +3,11 @@ import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorF
 import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 import { TertiaryHeader } from "~/components/elements/Headings/TertiaryHeader"
 import { type LoadedEntryDataType } from ".."
-import { type MeaningType } from "~/components/Meaning"
+import { type MeaningType } from "~/components/EntryEditor/Meaning"
 import AddSeeAlso from "./AddSeeAlso"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import Dagger from "~/components/headwordComponents/Dagger"
-import Definition from "~/components/Definition"
+import Definition from "~/components/EntryEditor/Definition"
 import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
 import EditIcon from "~/components/elements/Icons/EditIcon"
 import FistnoteAddingForm from "./FistnoteAddingForm"
@@ -17,7 +17,7 @@ import MeaningEditorForm from "~/components/EntryEditor/EntryEditorForm/MeaningE
 import QuotationAddingForm from "./QuotationAddingForm"
 import QuotationList from "./QuotationList"
 import SaveIcon from "~/components/elements/Icons/SaveIcon"
-import SeeAlsoEditing from "./SeeAlsoEditing"
+import SeeAlsoEditing from "./EditSees"
 import Select from "~/components/bank/Select"
 import TextArea from "~/components/bank/TextArea"
 import TopLabelledField from "~/components/bank/TopLabelledField"
@@ -165,13 +165,13 @@ export default function MeaningEditingForm({
 
         <div className="col-span-full flex flex-row justify-between">
           <Button appearance="success" type="submit" size="large">
-            <SaveIcon /> Save changes to meaning
+            <SaveIcon /> Save changes to meaning {meaning.order}
           </Button>
           <input type="hidden" name="entryId" value={entry.id} />
         </div>
       </MeaningEditorForm>
 
-      <div className="mt-8 rounded border border-gray-400 bg-gray-200 p-4">
+      <div className="mt-8 rounded border border-gray-400 bg-red-50 p-4">
         <TertiaryHeader>
           <EditIcon /> Edit see alsos
         </TertiaryHeader>
@@ -179,7 +179,7 @@ export default function MeaningEditingForm({
         <AddSeeAlso headword={headword} meaning={meaning} />
       </div>
 
-      <div className="mt-8 rounded border border-gray-400 bg-gray-200 p-4">
+      <div className="mt-8 rounded border border-gray-400 bg-action-50 p-4">
         <TertiaryHeader>
           <EditIcon /> Edit fist notes
         </TertiaryHeader>
@@ -194,8 +194,12 @@ export default function MeaningEditingForm({
         <FistnoteAddingForm meaningId={meaning.id} />
       </div>
 
-      <div className="my-2 flex flex-col justify-center bg-gray-200 p-2">
-        <h2 className=" my-2 text-2xl font-bold">Quotation Adding</h2>
+      <div className="mt-8 rounded border border-gray-400 bg-amber-50 p-4">
+        <TertiaryHeader>
+          <span className="text-amber-600">
+            <EditIcon /> Edit quotations
+          </span>
+        </TertiaryHeader>
         <QuotationList meaningId={meaning.id} citations={meaning.citations} />
         <QuotationAddingForm meaningId={meaning.id} />
       </div>

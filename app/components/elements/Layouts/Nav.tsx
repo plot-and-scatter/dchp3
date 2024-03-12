@@ -1,7 +1,7 @@
 import { NavLink } from "@remix-run/react"
 import type { LoggedInUser } from "~/services/auth/auth.server"
-import Popover from "./Popover"
-import NavPopoverContents from "./NavPopoverContents"
+import Popover from "../Popovers/Popover"
+import NavPopoverContents from "../Popovers/NavPopoverContents"
 
 interface NavProps {
   user?: LoggedInUser

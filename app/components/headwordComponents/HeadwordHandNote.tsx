@@ -1,6 +1,6 @@
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
-import HandNoteBlock from "../HandNoteBlock"
-import SanitizedTextSpan from "../SanitizedTextSpan"
+import HandNoteBlock from "../EntryEditor/HandNoteBlock"
+import SanitizedTextSpan from "../EntryEditor/SanitizedTextSpan"
 import TextArea from "../bank/TextArea"
 
 type HeadwordHandNoteProps = {

@@ -2,7 +2,7 @@ import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorF
 import Button from "~/components/elements/LinksAndButtons/Button"
 import SeeAlsoInput from "./SeeAlsoInput"
 import MeaningEditorForm from "~/components/EntryEditor/EntryEditorForm/MeaningEditorForm"
-import type { MeaningType } from "~/components/Meaning"
+import type { MeaningType } from "~/components/EntryEditor/Meaning"
 import SaveIcon from "~/components/elements/Icons/SaveIcon"
 import TopLabelledField from "~/components/bank/TopLabelledField"
 import Input from "~/components/bank/Input"
@@ -19,7 +19,7 @@ export default function AddSeeAlso({ meaning, headword }: AddSeeAlsoProps) {
       headword={headword}
       meaning={meaning}
       formAction={EntryEditorFormActionEnum.ADD_SEE_ALSO}
-      className={"mt-4 rounded border border-gray-400 bg-gray-300 p-4 shadow"}
+      className={"mt-4 rounded border border-gray-400 bg-red-100 p-4 shadow"}
     >
       <h4 className="mb-4 text-base font-bold">
         <AddIcon /> Add see also

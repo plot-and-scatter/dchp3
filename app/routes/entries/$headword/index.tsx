@@ -2,7 +2,7 @@ import { canUserEditEntry as _canUserEditEntry } from "~/services/auth/session.s
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { getEntryByHeadword } from "~/models/entry.server"
 import { useLoaderData } from "@remix-run/react"
-import Entry from "~/components/Entry"
+import Entry from "~/components/EntryEditor/Entry"
 import invariant from "tiny-invariant"
 import type { LoaderArgs, MetaFunction, SerializeFrom } from "@remix-run/node"
 import { BASE_APP_TITLE } from "~/root"

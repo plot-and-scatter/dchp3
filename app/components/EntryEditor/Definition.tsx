@@ -1,7 +1,7 @@
-import SanitizedTextSpan from "~/components/SanitizedTextSpan"
+import SanitizedTextSpan from "~/components/EntryEditor/SanitizedTextSpan"
 import type { MeaningType } from "./Meaning"
-import LabelledField from "./bank/LabelledField"
-import Input from "./bank/Input"
+import LabelledField from "../bank/LabelledField"
+import Input from "../bank/Input"
 
 interface DefinitionProps {
   meaning: MeaningType

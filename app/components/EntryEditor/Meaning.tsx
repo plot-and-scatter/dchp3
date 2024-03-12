@@ -1,11 +1,11 @@
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import Definition from "./Definition"
-import HandNoteBlock from "~/components/HandNoteBlock"
-import SanitizedTextSpan from "~/components/SanitizedTextSpan"
+import HandNoteBlock from "~/components/EntryEditor/HandNoteBlock"
+import SanitizedTextSpan from "~/components/EntryEditor/SanitizedTextSpan"
 import Canadianism from "./Canadianism"
 import Citations from "./Citations"
-import SeeAlsoItems from "~/components/SeeAlsoItems"
-import MeaningHeader from "./meaningComponents/MeaningHeader"
+import SeeAlsoItems from "~/components/EntryEditor/SeeAlsoItems"
+import MeaningHeader from "../meaningComponents/MeaningHeader"
 
 export type MeaningType = LoadedEntryDataType["meanings"][0]
 

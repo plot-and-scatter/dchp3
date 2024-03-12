@@ -1,4 +1,4 @@
-import SanitizedTextSpan from "../SanitizedTextSpan"
+import SanitizedTextSpan from "../EntryEditor/SanitizedTextSpan"
 import { Link } from "../elements/LinksAndButtons/Link"
 
 interface SearchResultProps {

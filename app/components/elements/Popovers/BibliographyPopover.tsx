@@ -1,10 +1,10 @@
 import { Popover } from "@headlessui/react"
-import type { CitationType } from "../Citation"
+import type { CitationType } from "../../EntryEditor/Citation"
 import BibliographyItem from "./BibliographyItem"
 
 import { usePopper } from "react-popper"
 import { useState } from "react"
-import { Link } from "./LinksAndButtons/Link"
+import { Link } from "../LinksAndButtons/Link"
 
 interface BibliographyPopoverProps {
   citation: CitationType

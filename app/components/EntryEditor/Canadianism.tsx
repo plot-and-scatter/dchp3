@@ -1,5 +1,5 @@
 import React from "react"
-import SanitizedTextSpan from "~/components/SanitizedTextSpan"
+import SanitizedTextSpan from "~/components/EntryEditor/SanitizedTextSpan"
 import type { MeaningType } from "./Meaning"
 
 interface CanadianismProps {

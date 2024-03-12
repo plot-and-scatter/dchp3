@@ -6,7 +6,7 @@ import LogoutButton from "~/components/auth/LogoutButton"
 import type { AuthRole } from "~/services/auth/AuthRole"
 import { getPermissionsMap } from "~/services/auth/AuthRole"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
-import TextPageMain from "~/components/elements/TextPageMain"
+import TextPageMain from "~/components/elements/Layouts/TextPageMain"
 
 export const loader = async ({ request }: LoaderArgs) => {
   const loggedIn = await isUserLoggedIn(request)

@@ -1,7 +1,7 @@
 import { redirect } from "@remix-run/node"
 import type { LoaderArgs, ActionArgs } from "@remix-run/node"
 import { Form } from "@remix-run/react"
-import Main from "~/components/elements/Main"
+import Main from "~/components/elements/Layouts/Main"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { insertEntry } from "~/models/entry.server"
 import Button from "~/components/elements/LinksAndButtons/Button"

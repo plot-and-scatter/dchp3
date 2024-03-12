@@ -4,15 +4,15 @@ import {
   SearchResultEnum,
   SearchResultEnumDisplay,
 } from "~/routes/search/searchResultEnum"
-import SearchResultEntries from "./search/SearchResultEntries"
-import SearchResultMeanings from "./search/SearchResultMeanings"
-import SearchResultUsageNotes from "./search/SearchResultUsageNotes"
-import SearchResultCanadianism from "./search/SearchResultCanadianism"
-import SearchResultFistNotes from "./search/SearchResultFistNotes"
-import SearchResultQuotations from "./search/SearchResultQuotations"
+import SearchResultEntries from "../search/SearchResultEntries"
+import SearchResultMeanings from "../search/SearchResultMeanings"
+import SearchResultUsageNotes from "../search/SearchResultUsageNotes"
+import SearchResultCanadianism from "../search/SearchResultCanadianism"
+import SearchResultFistNotes from "../search/SearchResultFistNotes"
+import SearchResultQuotations from "../search/SearchResultQuotations"
 import { type AllSearchResults } from "~/models/search.server"
 import { enumValues } from "~/utils/inputUtils"
-import Button from "./elements/LinksAndButtons/Button"
+import Button from "../elements/LinksAndButtons/Button"
 
 interface SearchResultsProps {
   data: AllSearchResults

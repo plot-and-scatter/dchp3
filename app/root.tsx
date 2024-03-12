@@ -14,8 +14,8 @@ import { useEffect } from "react"
 
 import tailwindStylesheetUrl from "./styles/tailwind.css"
 import additionalStylesUrl from "./styles/additional.css"
-import Header from "./components/elements/Header"
-import Nav from "./components/elements/Nav"
+import Header from "./components/elements/Layouts/Header"
+import Nav from "./components/elements/Layouts/Nav"
 import { getUserFromSession } from "./services/auth/session.server"
 
 export const BASE_APP_TITLE = "DCHP-3"

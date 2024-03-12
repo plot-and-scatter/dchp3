@@ -1,8 +1,8 @@
 import type { LogEntry } from "@prisma/client"
 import type { SerializeFrom } from "@remix-run/server-runtime"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
-import Select from "./bank/Select"
-import TopLabelledField from "./bank/TopLabelledField"
+import Select from "../bank/Select"
+import TopLabelledField from "../bank/TopLabelledField"
 
 interface DictionaryVersionProps {
   entry: LoadedEntryDataType

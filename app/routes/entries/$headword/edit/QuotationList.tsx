@@ -1,8 +1,11 @@
 import { Form } from "@remix-run/react"
-import { type MeaningType } from "~/components/Meaning"
+import { type MeaningType } from "~/components/EntryEditor/Meaning"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
+import SanitizedTextSpan from "~/components/EntryEditor/SanitizedTextSpan"
+import EditIcon from "~/components/elements/Icons/EditIcon"
+import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
 
 export type CitationType = MeaningType["citations"][0]
 
@@ -16,7 +19,7 @@ export default function QuotationList({
   meaningId,
 }: QuotationListProps) {
   return (
-    <>
+    <div className="flex flex-col gap-y-2">
       {citations
         .map((c) => c.citation)
         .sort((a, b) => {
@@ -32,7 +35,7 @@ export default function QuotationList({
         .map((c) => {
           return <CitationItem key={c?.id} meaningId={meaningId} citation={c} />
         })}
-    </>
+    </div>
   )
 }
 
@@ -48,36 +51,53 @@ function CitationItem({ citation, meaningId }: CitationItemProps) {
   if (!citation) return <></>
 
   return (
-    <div
-      className="flex justify-between gap-x-4"
-      key={meaningId + "-" + citation.id}
-    >
-      <p>
-        <strong> {citation.yearcomp || citation.yearpub}:</strong>{" "}
-        {citation.citation}
-      </p>
-      <div className="flex gap-x-2">
-        <Link
-          asButton
-          buttonSize="small"
-          to={`/bank/edit/${citation.id}`}
-          className="h-fit"
-        >
-          Edit
-        </Link>
-        <Form method="post">
-          <input
-            type="hidden"
-            name="attributeType"
-            value={EntryEditorFormActionEnum.DELETE_QUOTATION}
-          />
-          <input type="hidden" name="quotationId" value={citation.id} />
-          <input type="hidden" name="meaningId" value={meaningId} />
-          <Button type="submit" size="small" appearance="danger">
-            Remove
+    <Form method="post">
+      <div
+        className="flex justify-between gap-x-4 text-base"
+        key={meaningId + "-" + citation.id}
+      >
+        <input
+          type="hidden"
+          name="entryEditorFormAction"
+          value={EntryEditorFormActionEnum.DELETE_QUOTATION}
+        />
+        <input type="hidden" name="quotationId" value={citation.id} />
+        <input type="hidden" name="meaningId" value={meaningId} />
+        <div>
+          <span className="mr-2 font-bold leading-tight text-gray-500">
+            {citation.yearcomp || citation.yearpub}
+          </span>
+          <div className="inline">
+            <SanitizedTextSpan text={citation.citation} />
+          </div>
+          <Link
+            to={`/bank/edit/${citation.id}`}
+            className="ml-2 h-fit whitespace-nowrap"
+            target="_new"
+            asButton
+            appearance="primary"
+            buttonVariant="outline"
+            buttonSize="small"
+          >
+            <EditIcon />
+            Edit in BCE
+          </Link>
+          <Button
+            type="submit"
+            size="small"
+            appearance="danger"
+            variant="outline"
+            className="ml-2"
+            onClick={(e) => {
+              if (!confirm("Are you sure you want to unlink this quotation?")) {
+                e.preventDefault()
+              }
+            }}
+          >
+            <DeleteIcon /> Unlink
           </Button>
-        </Form>
+        </div>
       </div>
-    </div>
+    </Form>
   )
 }
