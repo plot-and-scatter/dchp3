@@ -28,6 +28,11 @@ export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: tailwindStylesheetUrl },
     { rel: "stylesheet", href: additionalStylesUrl },
+    {
+      rel: "stylesheet",
+      href: "https://kit.fontawesome.com/178b0761ed.css",
+      crossOrigin: "anonymous",
+    },
   ]
 }
 
@@ -54,10 +59,11 @@ const defaultApp = ({
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
-        <script
+
+        {/* <script
           src="https://kit.fontawesome.com/178b0761ed.js"
           crossOrigin="anonymous"
-        ></script>
+        ></script> */}
       </head>
       <body className="h-full">
         <div className="relative">

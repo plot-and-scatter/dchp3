@@ -13,6 +13,7 @@ export default function SeeAlsoItem({ seeAlso }: SeeAlsoProps) {
       <NavLink
         className={`text-sm font-bold uppercase tracking-widest text-primary underline hover:text-primary-dark md:text-base md:tracking-wider`}
         to={`/entries/${seeAlso.entry.headword}`}
+        prefetch="intent"
       >
         {seeAlso.entry.headword}
       </NavLink>

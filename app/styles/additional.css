@@ -13,3 +13,11 @@ p {
   margin-left: 2rem;
   margin-bottom: 1rem;
 }
+
+/* Better spacing for <br /> inside .CanadianismTypeComment */
+.CanadianismTypeComment br {
+  display: block;
+  margin-top: 0.5rem;
+  line-height: 1rem;
+  content: " ";
+}

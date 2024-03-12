@@ -23,7 +23,7 @@ const QuickLink = ({ children, scrollToId }: QuickLinkProps): JSX.Element => {
     <li>
       <Button
         asLink
-        className="text-ellipsis whitespace-nowrap"
+        className="block w-full overflow-hidden text-ellipsis whitespace-nowrap text-left"
         onClick={() => scrollTo(scrollToId)}
       >
         {children}

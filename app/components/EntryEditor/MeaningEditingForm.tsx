@@ -154,9 +154,10 @@ export default function MeaningEditingForm({
               field={
                 <TextArea
                   lightBorder
-                  value={meaning.canadianism_type_comment || ""}
+                  defaultValue={meaning.canadianism_type_comment ?? ""}
                   name="canadianismTypeComment"
                   rows={5}
+                  placeholder="Enter Canadianism type comment"
                 />
               }
             />
@@ -167,7 +168,6 @@ export default function MeaningEditingForm({
           <Button appearance="success" type="submit" size="large">
             <SaveIcon /> Save changes to meaning {meaning.order}
           </Button>
-          <input type="hidden" name="entryId" value={entry.id} />
         </div>
       </MeaningEditorForm>
 

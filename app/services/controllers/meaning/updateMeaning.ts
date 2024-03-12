@@ -13,6 +13,7 @@ export const UpdateMeaningSchema = z
     partOfSpeech: z.string(),
     canadianismType: z.string(),
     canadianismTypeComment: z.string(),
+    usage: z.string(),
     dagger: ZCheckboxValueToBoolean,
   })
   .strict()
@@ -27,6 +28,7 @@ export async function updateMeaning(data: z.infer<typeof UpdateMeaningSchema>) {
       canadianism_type: data.canadianismType,
       canadianism_type_comment: data.canadianismTypeComment,
       dagger: data.dagger,
+      usage: data.usage,
     },
   })
 }
