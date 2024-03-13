@@ -35,11 +35,13 @@ export default function MeaningEditingForm({
   //   const [usageNoteValue, setUsageNote] = useState(usageNote)
 
   return (
-    <div className="my-12 rounded border border-gray-400 bg-gray-100 p-8 shadow-lg">
-      <div className="mb-4 flex w-full items-center justify-between">
+    <div className="my-12 rounded border border-gray-400 bg-gray-100 p-8 pt-4 shadow-lg">
+      <div className="sticky top-32 z-30 mb-2 border-b border-b-gray-400 bg-gray-100/95 py-2">
         <SecondaryHeader noMargin>
-          <EditIcon /> Edit meaning {meaning.order}
+          <EditIcon /> Edit meaning {meaning.order} ({meaning.definition})
         </SecondaryHeader>
+      </div>
+      <div className="mb-4 flex w-full items-center justify-between">
         <MeaningEditorForm
           headword={entry.headword}
           meaning={meaning}
@@ -171,15 +173,15 @@ export default function MeaningEditingForm({
         </div>
       </MeaningEditorForm>
 
-      <div className="mt-8 rounded border border-gray-400 bg-red-50 p-4">
+      <div className="mt-8 rounded border border-gray-400 bg-red-50 p-4 shadow">
         <TertiaryHeader>
-          <EditIcon /> Edit see alsos
+          <EditIcon /> Edit sees
         </TertiaryHeader>
         <SeeAlsoEditing headword={headword} seeAlsoItems={meaning.seeAlso} />
         <AddSeeAlso headword={headword} meaning={meaning} />
       </div>
 
-      <div className="mt-8 rounded border border-gray-400 bg-action-50 p-4">
+      <div className="mt-8 rounded border border-gray-400 bg-action-50 p-4 shadow">
         <TertiaryHeader>
           <EditIcon /> Edit fist notes
         </TertiaryHeader>
@@ -191,7 +193,7 @@ export default function MeaningEditingForm({
             </div>
           ))}
         </div>
-        <FistnoteAddingForm meaningId={meaning.id} />
+        <FistnoteAddingForm headword={headword} meaning={meaning} />
       </div>
 
       <div className="mt-8 rounded border border-gray-400 bg-amber-50 p-4">
@@ -203,8 +205,6 @@ export default function MeaningEditingForm({
         <QuotationList meaningId={meaning.id} citations={meaning.citations} />
         <QuotationAddingForm meaningId={meaning.id} />
       </div>
-
-      <hr className="my-8 border-b-2 border-gray-500" />
     </div>
   )
 }

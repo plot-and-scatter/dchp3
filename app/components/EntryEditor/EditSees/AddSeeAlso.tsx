@@ -27,8 +27,14 @@ export default function AddSeeAlso({ meaning, headword }: AddSeeAlsoProps) {
       <div className="flex items-end gap-x-4 text-sm">
         <SeeAlsoInput name="headwordToAdd" />
         <TopLabelledField
-          label="Comment"
-          field={<Input name="linkNote" lightBorder />}
+          label="Linking note"
+          field={
+            <Input
+              name="linkNote"
+              lightBorder
+              placeholder="e.g. definition 3"
+            />
+          }
         />
         <Button appearance="success">
           <SaveIcon /> Save see also

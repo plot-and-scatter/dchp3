@@ -9,6 +9,7 @@ type ComboboxProps = React.SelectHTMLAttributes<HTMLInputElement> & {
   name: string
   onChange?: React.ChangeEventHandler<HTMLInputElement>
   lightBorder?: boolean
+  showCount?: boolean
 }
 
 export default function Combobox({
@@ -19,12 +20,10 @@ export default function Combobox({
   className,
   lightBorder,
   defaultValue,
+  showCount,
   ...rest
 }: ComboboxProps) {
   const [selected, setSelected] = useState<InputOption>()
-
-  console.log("selected", selected)
-  console.log("options", options)
 
   return (
     <div className="w-72">
@@ -43,7 +42,8 @@ export default function Combobox({
                   onChange(event)
                 }
               }}
-              name={"headword"}
+              name={name}
+              {...rest}
             />
             <HeadlessCombobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
               <FAIcon

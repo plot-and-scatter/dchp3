@@ -19,7 +19,7 @@ const SeeAlsoItems = ({
 
   return (
     <div className="flex flex-row items-center">
-      <em>See also:</em>&nbsp;
+      <em>See:</em>&nbsp;
       {seeAlsoItems.map((seeAlso, index) => {
         return (
           <div

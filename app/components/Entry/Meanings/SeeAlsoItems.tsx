@@ -16,7 +16,7 @@ const SeeAlsoItems = ({ seeAlsoItems }: SeeAlsoItemsProps): JSX.Element => {
 
   return (
     <div>
-      <em>See also:</em>{" "}
+      <em>See:</em>{" "}
       {seeAlsoItems.map((seeAlso, index) => {
         return (
           <React.Fragment
