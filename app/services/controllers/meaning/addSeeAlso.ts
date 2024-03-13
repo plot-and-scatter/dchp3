@@ -9,7 +9,6 @@ export const AddSeeAlsoSchema = z
     meaningId: ZPrimaryKeyInt,
     headword: z.string(),
     linkNote: z.string(),
-    citationId: ZPrimaryKeyInt,
   })
   .strict()
 

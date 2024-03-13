@@ -30,8 +30,6 @@ export default function SeeAlsoInput({ name, ...rest }: SeeAlsoInputProps) {
     DEBOUNCE_DELAY_IN_MS
   )
 
-  const showPopup = headwords.state === "idle" && headwords.data?.length
-
   console.log("headwords.data", headwords.data)
 
   return (
@@ -59,10 +57,12 @@ export default function SeeAlsoInput({ name, ...rest }: SeeAlsoInputProps) {
             //   </div>
             // </div>
             <Combobox
-              options={headwords.data?.map((h) => ({
-                label: h.headword,
-                value: `${h.id}`,
-              }))}
+              options={
+                headwords.data?.map((h) => ({
+                  label: h.headword,
+                  value: `${h.id}`,
+                })) || []
+              }
               onChange={(e) => {
                 setText(e.target.value)
                 getHeadwords(e)
@@ -111,18 +111,18 @@ export default function SeeAlsoInput({ name, ...rest }: SeeAlsoInputProps) {
   )
 }
 
-interface AdditionalHeadwordCountProps {
-  length: number
-}
+// interface AdditionalHeadwordCountProps {
+//   length: number
+// }
 
-function AdditionalHeadwordCount({ length }: AdditionalHeadwordCountProps) {
-  return (
-    <>
-      {length - MAX_HEADWORDS_DISPLAYED > 0 && (
-        <li>
-          <i> ...{length - MAX_HEADWORDS_DISPLAYED} additional entries</i>
-        </li>
-      )}
-    </>
-  )
-}
+// function AdditionalHeadwordCount({ length }: AdditionalHeadwordCountProps) {
+//   return (
+//     <>
+//       {length - MAX_HEADWORDS_DISPLAYED > 0 && (
+//         <li>
+//           <i> ...{length - MAX_HEADWORDS_DISPLAYED} additional entries</i>
+//         </li>
+//       )}
+//     </>
+//   )
+// }
