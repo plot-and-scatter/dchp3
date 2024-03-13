@@ -8,6 +8,7 @@ type MeaningEditorFormProps = FormProps & {
   formAction: EntryEditorFormActionEnum
   headword: string
   children: React.ReactNode
+  reloadDocument?: boolean
 }
 
 export default function MeaningEditorForm({
@@ -15,6 +16,7 @@ export default function MeaningEditorForm({
   formAction,
   headword,
   meaning,
+  reloadDocument,
   ...rest
 }: MeaningEditorFormProps) {
   const { id } = meaning
@@ -22,7 +24,7 @@ export default function MeaningEditorForm({
   return (
     <Form
       {...rest} // This line MUST come first!
-      reloadDocument={true}
+      reloadDocument={reloadDocument}
       action={`/entries/${headword}/edit`}
       method="post"
     >

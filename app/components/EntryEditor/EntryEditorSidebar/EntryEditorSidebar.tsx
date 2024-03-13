@@ -1,3 +1,4 @@
+import { useNavigation } from "@remix-run/react"
 import AddNewMeaningForm from "../EntryEditorForm/AddNewMeaningForm"
 import EditingStatus from "./EditingStatus/EditingStatusPanel"
 import EditingTools from "./EditingTools"
@@ -9,9 +10,13 @@ type EditingSidebarProps = {
 }
 
 export default function EntryEditorSidebar({ entry }: EditingSidebarProps) {
+  const navigation = useNavigation()
+
   // TODO: Restore fixed status?
   return (
-    <div>
+    <div className="sticky">
+      <p>Action: {navigation.formAction}</p>
+      <p>State: {navigation.state}</p>
       <AddNewMeaningForm entry={entry} />
       <EditingTools entry={entry} />
       <hr />

@@ -20,7 +20,7 @@ export default function EditImageForm({ entry, image }: EditImageFormProps) {
       >
         <input
           type="hidden"
-          name="attributeType"
+          name="entryEditorFormAction"
           value={EntryEditorFormActionEnum.EDIT_IMAGE}
         />
         <input type="hidden" name="imageId" value={image.id} />
@@ -63,7 +63,7 @@ export default function EditImageForm({ entry, image }: EditImageFormProps) {
         >
           <input
             type="hidden"
-            name="attributeType"
+            name="entryEditorFormAction"
             value={EntryEditorFormActionEnum.DELETE_IMAGE}
           />
           <input type="hidden" name="imageId" value={image.id} />

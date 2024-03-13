@@ -1,5 +1,5 @@
 import { type LoadedEntryDataType } from "~/routes/entries/$headword"
-import EntryReference from "./EntryReference"
+import EntryReference from "../../EntryEditor/EntryReference"
 
 const EntryReferences = ({
   data,

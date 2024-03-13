@@ -7,12 +7,14 @@ type EntryEditorFormProps = FormProps & {
   entry: LoadedEntryDataType
   formAction: EntryEditorFormActionEnum
   children: React.ReactNode
+  reloadDocument?: boolean
 }
 
 export default function EntryEditorForm({
   children,
   formAction,
   entry,
+  reloadDocument,
   ...rest
 }: EntryEditorFormProps) {
   const { headword, id } = entry
@@ -20,7 +22,7 @@ export default function EntryEditorForm({
   return (
     <Form
       {...rest} // This line MUST come first!
-      reloadDocument={true}
+      reloadDocument={reloadDocument}
       action={`/entries/${headword}/edit`}
       method="post"
     >

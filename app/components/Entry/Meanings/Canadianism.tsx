@@ -1,5 +1,5 @@
 import SanitizedTextSpan from "~/components/Entry/Common/SanitizedTextSpan"
-import type { MeaningType } from "../Entry/Meanings/Meaning"
+import type { MeaningType } from "./Meaning"
 
 interface CanadianismProps {
   meaning: MeaningType

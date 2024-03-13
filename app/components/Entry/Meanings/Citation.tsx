@@ -1,7 +1,7 @@
 import SanitizedTextSpan from "~/components/Entry/Common/SanitizedTextSpan"
-import BibliographyPopover from "../elements/Popovers/BibliographyPopover"
-import type { MeaningType } from "../Entry/Meanings/Meaning"
-import { Link } from "../elements/LinksAndButtons/Link"
+import BibliographyPopover from "../../elements/Popovers/BibliographyPopover"
+import type { MeaningType } from "./Meaning"
+import { Link } from "../../elements/LinksAndButtons/Link"
 
 export type CitationType = MeaningType["citations"][0]["citation"]
 

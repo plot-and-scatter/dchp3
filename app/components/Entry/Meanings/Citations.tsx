@@ -1,5 +1,5 @@
 import Citation from "./Citation"
-import type { MeaningType } from "../Entry/Meanings/Meaning"
+import type { MeaningType } from "./Meaning"
 
 interface CitationsProps {
   meaning: MeaningType

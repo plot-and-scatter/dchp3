@@ -40,10 +40,9 @@ const SeeAlsoItems = ({
               ></input>
               <input
                 type="hidden"
-                name="attributeType"
+                name="entryEditorFormAction"
                 value={EntryEditorFormActionEnum.DELETE_SEE_ALSO}
               ></input>
-              <input type="hidden" name="headword" value={headword}></input>
               <IconButton
                 type="submit"
                 iconName="fa-trash-can"

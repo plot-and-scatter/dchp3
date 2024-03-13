@@ -1,5 +1,5 @@
 import { Popover } from "@headlessui/react"
-import type { CitationType } from "../../EntryEditor/Citation"
+import type { CitationType } from "../../Entry/Meanings/Citation"
 import BibliographyItem from "./BibliographyItem"
 
 import { usePopper } from "react-popper"

@@ -1,5 +1,5 @@
-import EntryImages from "../EntryEditor/EntryImages"
-import EntryReferences from "../EntryEditor/EntryReferences"
+import EntryImages from "./Images/EntryImages"
+import EntryReferences from "./References/EntryReferences"
 import Headword from "~/components/Entry/Headword/Headword"
 import Meanings from "~/components/Entry/Meanings/Meanings"
 import QuickLinks from "../quicklinks/QuickLinks"

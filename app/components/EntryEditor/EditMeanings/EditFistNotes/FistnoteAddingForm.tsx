@@ -1,14 +1,11 @@
-import { Form } from "@remix-run/react"
-import { Input } from "postcss"
-import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
+import HandNoteBlock from "~/components/Entry/Common/HandNoteBlock"
+import type { MeaningType } from "~/components/Entry/Meanings/Meaning"
+import TextArea from "~/components/bank/TextArea"
 import AddIcon from "~/components/elements/Icons/AddIcon"
+import SaveIcon from "~/components/elements/Icons/SaveIcon"
 import Button from "~/components/elements/LinksAndButtons/Button"
-import TopLabelledField from "../bank/TopLabelledField"
-import SaveIcon from "../elements/Icons/SaveIcon"
-import MeaningEditorForm from "./EntryEditorForm/MeaningEditorForm"
-import type { MeaningType } from "../Entry/Meanings/Meaning"
-import TextArea from "../bank/TextArea"
-import HandNoteBlock from "../Entry/Common/HandNoteBlock"
+import { EntryEditorFormActionEnum } from "../../EntryEditorForm/EntryEditorFormActionEnum"
+import MeaningEditorForm from "../../EntryEditorForm/MeaningEditorForm"
 
 interface FistnoteAddingFormProps {
   meaning: MeaningType
