@@ -15,10 +15,10 @@ type EntryProps = {
 const Entry = ({ entry, canUserEditEntry }: EntryProps): JSX.Element => {
   //  TODO: Don't rely on `is_legacy`; use `dchp_version` instead.
   const bgColor = entry.is_legacy
-    ? "bg-amber-100"
+    ? "bg-amber-50"
     : entry.no_cdn_conf
     ? "bg-red-200"
-    : "bg-gray-50"
+    : ""
 
   return (
     <div

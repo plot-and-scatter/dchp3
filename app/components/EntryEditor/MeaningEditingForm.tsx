@@ -35,37 +35,44 @@ export default function MeaningEditingForm({
   //   const [usageNoteValue, setUsageNote] = useState(usageNote)
 
   return (
-    <div className="my-12 rounded border border-gray-400 bg-gray-100 p-8 pt-4 shadow-lg">
-      <div className="sticky top-32 z-30 mb-2 border-b border-b-gray-400 bg-gray-100/95 py-2">
-        <SecondaryHeader noMargin>
-          <EditIcon /> Edit meaning {meaning.order} ({meaning.definition})
-        </SecondaryHeader>
-      </div>
-      <div className="mb-4 flex w-full items-center justify-between">
-        <MeaningEditorForm
-          headword={entry.headword}
-          meaning={meaning}
-          formAction={EntryEditorFormActionEnum.DELETE_MEANING}
-        >
-          <Button
-            type="submit"
-            appearance="danger"
-            variant="outline"
-            onClick={(e) => {
-              if (!confirm("Are you sure you want to delete this meaning?")) {
-                e.preventDefault()
-              }
-            }}
+    <div className="my-12 rounded border border-gray-400 bg-gray-100 p-8 pt-0 shadow-lg">
+      <div className="sticky top-32 z-30 -mx-8 rounded-t border-b border-b-gray-400 bg-gray-100/95 py-4 px-8 shadow">
+        <div className="flex items-center justify-between">
+          <div className="flex flex-1 items-center gap-x-6">
+            <SecondaryHeader noMargin>
+              <div className="whitespace-nowrap">
+                <EditIcon /> Edit meaning {meaning.order}
+              </div>
+            </SecondaryHeader>
+            <div className="relative shrink">{meaning.definition}</div>
+          </div>
+          <MeaningEditorForm
+            headword={entry.headword}
+            meaning={meaning}
+            formAction={EntryEditorFormActionEnum.DELETE_MEANING}
           >
-            <DeleteIcon /> Delete meaning
-          </Button>
-        </MeaningEditorForm>
+            <Button
+              type="submit"
+              appearance="danger"
+              variant="outline"
+              className="whitespace-nowrap"
+              onClick={(e) => {
+                if (!confirm("Are you sure you want to delete this meaning?")) {
+                  e.preventDefault()
+                }
+              }}
+            >
+              <DeleteIcon /> Delete meaning
+            </Button>
+          </MeaningEditorForm>
+        </div>
       </div>
+
       <MeaningEditorForm
         formAction={EntryEditorFormActionEnum.UPDATE_MEANING}
         meaning={meaning}
         headword={entry.headword}
-        className="flex flex-col gap-y-4"
+        className="mt-4 flex flex-col gap-y-4"
       >
         <div className="flex gap-x-4">
           <TopLabelledField

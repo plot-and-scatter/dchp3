@@ -22,7 +22,7 @@ const SeeAlsoItems = ({ seeAlsoItems }: SeeAlsoItemsProps): JSX.Element => {
           <React.Fragment
             key={`see-also-${seeAlso.meaning_id}-${seeAlso.entry_id}`}
           >
-            {index > 0 && <span className="mr-3">,</span>}
+            {index > 0 && <span className="mr-1">,</span>}
             <SeeAlsoItem seeAlso={seeAlso} />
           </React.Fragment>
         )

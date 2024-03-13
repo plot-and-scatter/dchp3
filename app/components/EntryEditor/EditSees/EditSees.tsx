@@ -18,15 +18,14 @@ const SeeAlsoItems = ({
   }
 
   return (
-    <div className="flex flex-row items-center">
-      <em>See:</em>&nbsp;
+    <div className="flex flex-col flex-wrap items-start gap-1">
+      <em>See:&nbsp;</em>
       {seeAlsoItems.map((seeAlso, index) => {
         return (
           <div
             key={`see-also-${seeAlso.meaning_id}-${seeAlso.entry_id}`}
-            className="flex flex-row items-center"
+            className="ml-2 flex flex-row items-center"
           >
-            {index > 0 && <span className="mr-6">,</span>}
             <SeeAlsoItem seeAlso={seeAlso} />
             <Form method="post" action={`/entries/${headword}/edit`}>
               <input
