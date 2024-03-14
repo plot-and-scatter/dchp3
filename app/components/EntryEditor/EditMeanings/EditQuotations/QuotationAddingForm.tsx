@@ -7,10 +7,16 @@ import LabelledField from "~/components/bank/LabelledField"
 import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
-import { useState } from "react"
+import React, { useRef, useState } from "react"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import Select from "~/components/bank/Select"
 import { PAGE_SIZE } from "~/services/bank/searchCitations"
+import TopLabelledField from "~/components/bank/TopLabelledField"
+import FAIcon from "~/components/elements/Icons/FAIcon"
+import SaveIcon from "~/components/elements/Icons/SaveIcon"
+import { TertiaryHeader } from "~/components/elements/Headings/TertiaryHeader"
+import { QuaternaryHeader } from "~/components/elements/Headings/QuaternaryHeader"
+import AddIcon from "~/components/elements/Icons/AddIcon"
 
 interface QuotationAddingFormProps {
   meaningId: number
@@ -40,7 +46,8 @@ export default function QuotationAddingForm({
 }: QuotationAddingFormProps) {
   const citations = useFetcher<CitationSearchLoaderData>()
   const [orderByValue, setOrderByValue] = useState("")
-  const [pageNumber, setPageNumber] = useState(1)
+  const [previousSearchText, setPreviousSearchText] = useState("")
+  const [pageNumber, setPageNumber] = useState("1")
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async (
     event: any
@@ -50,16 +57,21 @@ export default function QuotationAddingForm({
     const searchText = event.target.elements.searchText.value
     const orderBy = event.target.elements.orderBy.value
     const orderDirection = event.target.elements.orderDirection.value
-    const page = pageNumber.toString()
+    const pageNumber =
+      previousSearchText === searchText
+        ? event.target.elements.pageNumber?.value || "1"
+        : "1"
 
     setOrderByValue(orderBy)
+    setPreviousSearchText(searchText)
+    setPageNumber(pageNumber)
 
     if (searchText.length >= 0) {
       // await resetFetcher(citations)
       const url = citationSearchUrl(`${searchText}`, {
         orderBy,
         orderDirection,
-        page,
+        page: pageNumber,
       })
       citations.load(url)
     } else {
@@ -79,52 +91,55 @@ export default function QuotationAddingForm({
     }
   }
 
+  const quotationSearchButtonRef = useRef<HTMLButtonElement>(null)
+
   return (
-    <div className="m-2 w-full p-2">
-      <form onSubmit={onSubmit}>
-        <div className="flex">
-          <div className="w-full">
-            <Input
-              placeholder="Enter text to search citations by headword"
-              name="searchText"
-              // onChange={onChangeAction}
-            />
-            {citations.data && (
-              <label className="block" htmlFor="pageNumber">
-                Page number:
-                <Select
-                  name="pageNumber"
-                  options={pageCountOptions}
-                  onChange={(e) => setPageNumber(+e.target.value)}
-                />
-              </label>
-            )}
-            <LabelledField
+    <div className="w-full">
+      <QuaternaryHeader>
+        <AddIcon /> Add quotations
+      </QuaternaryHeader>
+      <Form onSubmit={onSubmit} reloadDocument={false}>
+        <div className="flex w-full items-center">
+          <div className="flex w-full items-start gap-x-4">
+            <div className="flex-1">
+              <TopLabelledField
+                label="Quotation text"
+                field={
+                  <Input
+                    placeholder="Enter text to find in quotation body"
+                    name="searchText"
+                  />
+                }
+              />
+            </div>
+            <TopLabelledField
               label="Sort by"
               field={
                 <RadioOrCheckbox
                   type="radio"
-                  className="flex"
+                  className="text-sm"
                   optionSetClassName="flex gap-x-2 mr-4"
                   name="orderBy"
+                  direction="vertical"
                   defaultValue={"year"}
                   options={[
                     { label: "Date Added (ID)", value: "dateAdded" },
-                    { label: "Year Published / Composed", value: "year" },
+                    { label: "Year Pub. / Comp.", value: "year" },
                     { label: "Place", value: "place" },
                   ]}
                 />
               }
             />
-            <LabelledField
+            <TopLabelledField
               label="Order"
               field={
                 <RadioOrCheckbox
                   type="radio"
-                  className="flex"
+                  className="text-sm"
                   optionSetClassName="flex gap-x-2 mr-4"
                   name="orderDirection"
                   defaultValue={"asc"}
+                  direction="vertical"
                   options={[
                     { label: "Ascending", value: "asc" },
                     { label: "Descending", value: "desc" },
@@ -133,42 +148,66 @@ export default function QuotationAddingForm({
               }
             />
           </div>
-          <div className="w-24">
-            {citations.state === "loading" && <div>Loading...</div>}
+          <div className="mb-4">
+            <div>
+              <Button
+                appearance="primary"
+                type="submit"
+                className="mt-2 w-48 whitespace-nowrap text-left"
+                ref={quotationSearchButtonRef}
+              >
+                <FAIcon iconName="fa-search" />{" "}
+                {citations.state === "loading"
+                  ? "Loading..."
+                  : "Search quotations"}
+              </Button>
+            </div>
           </div>
         </div>
-        <div className="mb-10">
-          <Button appearance="primary" type="submit" className="mt-2">
-            Search
-          </Button>
-        </div>
-      </form>
-      {citations.data && (
+
+        {citations.data &&
+          (citations.data.citations.length ? (
+            <div className="mb-2 flex items-center">
+              <div className="text-bold mr-4 flex items-center">
+                Showing page&nbsp;
+                <Select
+                  name="pageNumber"
+                  options={pageCountOptions}
+                  value={pageNumber}
+                  onChange={(e) => {
+                    // setPageNumber(+e.target.value)
+                    quotationSearchButtonRef.current?.click()
+                  }}
+                />
+                &nbsp; ({citationNumStart}&ndash;
+                {citationNumEnd} of {citations.data.citationCount} citations)
+              </div>
+            </div>
+          ) : (
+            <div className="mb-2">No citations found.</div>
+          ))}
+      </Form>
+      {citations.data && citations.data.citations.length > 0 && (
         <Form method="post">
-          <strong>
-            Showing {citationNumStart}–{citationNumEnd} of{" "}
-            {citations.data.citationCount} citations
-          </strong>
-          <Button type="submit" className="ml-3">
-            Link quotations
-          </Button>
           <input
             type="hidden"
             name="entryEditorFormAction"
             value={EntryEditorFormActionEnum.ADD_QUOTATIONS}
           />
           <input type="hidden" name="meaningId" value={meaningId} />
-          <div className="max-h-96 overflow-y-scroll">
-            <ul>
+          <div className="max-h-96 overflow-y-scroll rounded border border-amber-400 bg-amber-100 p-4 shadow">
+            <ul className="flex flex-col gap-y-2">
               {citations.data.citations.map((citation) => (
-                <li key={citation.id} className="flex flex-col justify-center">
-                  <div className="flex items-center pr-5">
-                    <input
-                      type="checkbox"
-                      name={`citationIds`}
-                      value={citation.id}
-                      className="mx-1 p-1"
-                    />
+                <li key={citation.id}>
+                  <div className="flex items-start pr-4">
+                    <div className="shrink-0 pt-1">
+                      <input
+                        type="checkbox"
+                        name={`citationIds`}
+                        value={citation.id}
+                        className="mr-2 h-5 w-5"
+                      />
+                    </div>
                     <p>
                       <Link to={`/bank/edit/${citation.id}`}>
                         <CitationPrefix
@@ -183,6 +222,9 @@ export default function QuotationAddingForm({
               ))}
             </ul>
           </div>
+          <Button type="submit" className="mt-2" appearance="success">
+            <SaveIcon /> Link checked quotations
+          </Button>
         </Form>
       )}
     </div>
@@ -202,9 +244,9 @@ function CitationPrefix({ citation, orderBy }: CitationPrefixProps) {
   }[orderBy]
 
   if (prefixText === undefined || prefixText === null || prefixText === "")
-    return <></>
+    return <em>[No metadata] </em>
 
-  return <strong>{prefixText}:</strong>
+  return <strong>{prefixText}: </strong>
 }
 
 export const ErrorBoundary = DefaultErrorBoundary

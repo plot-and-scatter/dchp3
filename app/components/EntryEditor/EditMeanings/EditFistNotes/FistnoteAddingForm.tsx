@@ -6,6 +6,7 @@ import SaveIcon from "~/components/elements/Icons/SaveIcon"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import { EntryEditorFormActionEnum } from "../../EntryEditorForm/EntryEditorFormActionEnum"
 import MeaningEditorForm from "../../EntryEditorForm/MeaningEditorForm"
+import { QuaternaryHeader } from "~/components/elements/Headings/QuaternaryHeader"
 
 interface FistnoteAddingFormProps {
   meaning: MeaningType
@@ -25,9 +26,9 @@ export default function FistnoteAddingForm({
         "mt-4 rounded border border-action-400 bg-action-100 p-4 shadow"
       }
     >
-      <h4 className="mb-4 text-base font-bold">
+      <QuaternaryHeader>
         <AddIcon /> Add fist note
-      </h4>
+      </QuaternaryHeader>
       <div className="flex items-center gap-x-4 text-sm">
         <HandNoteBlock className="w-full text-lg">
           <TextArea

@@ -10,6 +10,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const url = new URL(request.url)
 
+  console.log("GOT HERE")
+
   const partialSearchOptions: Omit<SearchOptions, "searchTerm"> =
     SEARCH_PARAMS.reduce((opts, key) => {
       return {

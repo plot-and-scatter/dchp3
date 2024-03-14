@@ -51,11 +51,10 @@ export default function EditMeaning({ entry, meaning }: EditMeaningProps) {
 
       <div className="mt-8 rounded border border-amber-400 bg-amber-50 p-4">
         <TertiaryHeader>
-          <span className="text-amber-600">
-            <EditIcon /> Edit quotations
-          </span>
+          <EditIcon /> Edit quotations
         </TertiaryHeader>
         <QuotationList meaningId={meaning.id} citations={meaning.citations} />
+        <hr className="border-b-1 my-4 border-amber-400" />
         <QuotationAddingForm meaningId={meaning.id} />
       </div>
     </EditingPanel>
