@@ -17,6 +17,7 @@ import SaveIcon from "~/components/elements/Icons/SaveIcon"
 import { TertiaryHeader } from "~/components/elements/Headings/TertiaryHeader"
 import { QuaternaryHeader } from "~/components/elements/Headings/QuaternaryHeader"
 import AddIcon from "~/components/elements/Icons/AddIcon"
+import EditIcon from "~/components/elements/Icons/EditIcon"
 
 interface QuotationAddingFormProps {
   meaningId: number
@@ -209,12 +210,22 @@ export default function QuotationAddingForm({
                       />
                     </div>
                     <p>
-                      <Link to={`/bank/edit/${citation.id}`}>
-                        <CitationPrefix
-                          citation={citation}
-                          orderBy={orderByValue}
-                        />
-                        {citation.clipped_text}
+                      <CitationPrefix
+                        citation={citation}
+                        orderBy={orderByValue}
+                      />
+                      {citation.clipped_text}
+                      <Link
+                        to={`/bank/edit/${citation.id}`}
+                        className="ml-2 h-fit whitespace-nowrap"
+                        target="_new"
+                        asButton
+                        appearance="primary"
+                        buttonVariant="outline"
+                        buttonSize="small"
+                      >
+                        <EditIcon />
+                        Edit in BCE
                       </Link>
                     </p>
                   </div>

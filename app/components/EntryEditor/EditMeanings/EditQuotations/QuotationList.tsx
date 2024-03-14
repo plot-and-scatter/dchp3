@@ -61,7 +61,7 @@ function CitationItem({ citation, meaningId }: CitationItemProps) {
           name="entryEditorFormAction"
           value={EntryEditorFormActionEnum.DELETE_QUOTATION}
         />
-        <input type="hidden" name="quotationId" value={citation.id} />
+        <input type="hidden" name="citationId" value={citation.id} />
         <input type="hidden" name="meaningId" value={meaningId} />
         <div>
           <span className="mr-2 font-bold leading-tight text-gray-500">

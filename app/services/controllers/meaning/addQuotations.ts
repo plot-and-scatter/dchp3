@@ -7,7 +7,11 @@ export const AddQuotationsSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_QUOTATIONS),
     meaningId: ZPositiveInt,
-    citationIds: z.array(ZPositiveInt),
+    citationIds: z
+      .union([ZPositiveInt, z.array(ZPositiveInt)])
+      .transform((v) => {
+        return Array.isArray(v) ? v : [v]
+      }), // We could get a single citationId (as an int), or multiple (int[])
   })
   .strict()
 
