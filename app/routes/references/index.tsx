@@ -2,9 +2,12 @@ import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { getReferences } from "~/models/reference.server"
 import { stripHtml } from "~/utils/generalUtils"
 import { useLoaderData } from "@remix-run/react"
-import SanitizedTextSpan from "~/components/SanitizedTextSpan"
+import SanitizedTextSpan from "~/components/Entry/Common/SanitizedTextSpan"
 import { userHasPermission } from "~/services/auth/session.server"
 import type { LoaderArgs } from "@remix-run/server-runtime"
+import AddIcon from "~/components/elements/Icons/AddIcon"
+import EditIcon from "~/components/elements/Icons/EditIcon"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 
 export async function loader({ request }: LoaderArgs) {
   const references = await getReferences()
@@ -24,13 +27,19 @@ export default function ReferenceIndexPage() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
+      <PageHeader>References</PageHeader>
       {canUserAddReference && (
-        <Link asButton to="add-reference" className="w-fit">
-          Add new reference
+        <Link
+          asButton
+          to="add-reference"
+          className="w-fit"
+          appearance="success"
+        >
+          <AddIcon /> Add new reference
         </Link>
       )}
-      <div className="my-8 grid grid-cols-7 justify-start gap-x-4">
+      <div className="flex flex-col">
         {references
           .sort((a, b) => {
             const first = stripHtml(a.short_display)
@@ -38,21 +47,19 @@ export default function ReferenceIndexPage() {
             return first.localeCompare(second, "en", options)
           })
           .map((e) => (
-            <>
-              <p className="col-span-1 break-words font-bold">
+            <div className="flex gap-x-2 py-1 hover:bg-gray-100" key={e.id}>
+              {canUserAddReference && (
+                <Link bold className="w-20 shrink-0" to={`/references/${e.id}`}>
+                  <EditIcon /> Edit
+                </Link>
+              )}
+              <div className="w-48 shrink-0 break-words font-bold">
                 <SanitizedTextSpan text={e.short_display} />
-              </p>
-              <p className="col-span-5">
-                <SanitizedTextSpan text={e.reference_text} />
-              </p>
-              <div className="col-span-1">
-                {canUserAddReference && (
-                  <Link bold className="col-span-1" to={`/reference/${e.id}`}>
-                    Edit
-                  </Link>
-                )}
               </div>
-            </>
+              <div className="">
+                <SanitizedTextSpan text={e.reference_text} />
+              </div>
+            </div>
           ))}
       </div>
     </div>

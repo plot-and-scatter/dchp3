@@ -15,7 +15,7 @@ import {
   type LoaderArgs,
   redirect,
 } from "@remix-run/server-runtime"
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { prisma } from "~/db.server"
 import BankEditCitationFields from "~/components/bank/BankEditCitationFields"
 import BankHeadwordCitationSelect from "~/components/bank/BankHeadwordCitationSelect"

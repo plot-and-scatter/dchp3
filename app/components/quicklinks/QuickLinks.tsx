@@ -1,5 +1,5 @@
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
-import SanitizedTextSpan from "../SanitizedTextSpan"
+import SanitizedTextSpan from "../Entry/Common/SanitizedTextSpan"
 import QuickLink from "./QuickLink"
 
 interface QuickLinksProps {

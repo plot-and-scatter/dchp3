@@ -1,6 +1,6 @@
 import { useMatches } from "@remix-run/react"
 import { useMemo } from "react"
-import { type attributeEnum } from "~/components/editing/attributeEnum"
+import { type EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { isNonPositive } from "./numberUtils"
 
 const DEFAULT_REDIRECT = "/"
@@ -79,9 +79,9 @@ export function getBooleanFromFormInput(formInput: FormDataEntryValue) {
   return Boolean(stringValue)
 }
 
-export function getAttributeEnumFromFormInput(formInput: FormDataEntryValue) {
+export function getEntryEditorFormAction(formInput: FormDataEntryValue) {
   const stringValue = formInput.toString()
-  const enumValue = stringValue as attributeEnum
+  const enumValue = stringValue as EntryEditorFormActionEnum
   return enumValue
 }
 

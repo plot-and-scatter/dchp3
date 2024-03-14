@@ -1,60 +1,11 @@
-import { attributeEnum } from "~/components/editing/attributeEnum"
-import { useLoaderData } from "@remix-run/react"
-import { getAttributeEnumFromFormInput } from "~/utils/generalUtils"
-import {
-  getEntryByHeadword,
-  updateEntry,
-  updateLogEntries,
-} from "~/models/entry.server"
-import { redirect } from "@remix-run/node"
-import type { SerializeFrom, ActionArgs, LoaderArgs } from "@remix-run/node"
-import invariant from "tiny-invariant"
-import {
-  addDefinitionFistNote,
-  addMeaningToEntry,
-  addQuotations,
-  addSeeAlso,
-  deleteMeaning,
-  deleteQuotations,
-  deleteSeeAlso,
-  updateEditingComment,
-  updateEditingStatus,
-  updateEditingTools,
-  updateMeaning,
-  updateOrDeleteDefinitionFistNote,
-} from "~/models/update.server"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
-import EditEntry from "~/components/editing/entry/EditEntry"
-import {
-  redirectIfUserLacksPermission,
-  userHasPermission,
-} from "~/services/auth/session.server"
-import { redirectIfUserLacksEntry } from "~/models/user.server"
-
-async function redirectIfUserLacksEditPermission(
-  request: Request,
-  headword: string
-) {
-  if (await userHasPermission(request, "det:editAny")) {
-    return
-  }
-
-  await redirectIfUserLacksPermission(request, "det:editOwn")
-  await redirectIfUserLacksEntry(request, headword)
-}
-
-export async function loader({ request, params }: LoaderArgs) {
-  invariant(params.headword, "headword not found")
-  await redirectIfUserLacksEditPermission(request, params.headword)
-
-  const entry = await getEntryByHeadword({ headword: params.headword })
-
-  if (!entry) {
-    throw new Response("Not Found", { status: 404 })
-  }
-
-  return { entry }
-}
+import { getEntryByHeadword, updateLogEntries } from "~/models/entry.server"
+import { handleEditFormAction } from "./handleEditFormAction"
+import { redirectIfUserLacksEntryEditPermission } from "~/services/auth/session.server"
+import { useLoaderData } from "@remix-run/react"
+import EntryEditor from "~/components/EntryEditor/EntryEditor"
+import invariant from "tiny-invariant"
+import type { SerializeFrom, ActionArgs, LoaderArgs } from "@remix-run/node"
 
 export type EntryEditLoaderData = SerializeFrom<
   Awaited<Promise<ReturnType<typeof loader>>>
@@ -62,68 +13,46 @@ export type EntryEditLoaderData = SerializeFrom<
 
 export async function action({ params, request }: ActionArgs) {
   invariant(params.headword)
-  const data = Object.fromEntries(await request.formData())
-  const type = getAttributeEnumFromFormInput(data.attributeType)
+
+  const formData = await request.formData()
+
+  await handleEditFormAction(formData)
 
   const headword = params.headword
   await updateLogEntries(headword, request)
 
-  switch (type) {
-    case attributeEnum.ENTRY:
-      await updateEntry(data)
-      break
-    case attributeEnum.ADD_MEANING:
-      await addMeaningToEntry(data)
-      break
-    case attributeEnum.MEANING:
-      await updateMeaning(data)
-      break
-    case attributeEnum.DELETE_MEANING:
-      await deleteMeaning(data)
-      break
-    case attributeEnum.QUOTATION:
-      await addQuotations(data)
-      break
-    case attributeEnum.DELETE_QUOTATION:
-      await deleteQuotations(data)
-      break
-    case attributeEnum.SEE_ALSO:
-      await addSeeAlso(data)
-      break
-    case attributeEnum.DELETE_SEE_ALSO:
-      await deleteSeeAlso(data)
-      break
-    case attributeEnum.DEFINITION_FIST_NOTE:
-      await updateOrDeleteDefinitionFistNote(data)
-      break
-    case attributeEnum.ADD_DEFINITION_FIST_NOTE:
-      await addDefinitionFistNote(data)
-      break
-    case attributeEnum.EDITING_TOOLS:
-      await updateEditingTools(data)
-      break
-    case attributeEnum.EDITING_STATUS:
-      await updateEditingStatus(data)
-      break
-    case attributeEnum.COMMENT:
-      await updateEditingComment(data)
-      break
-    default:
-      throw new Error("attribute enum unknown")
-  }
-
-  // headword may have changed and data.headword exists-- so redirect
-  if (type === attributeEnum.ENTRY) {
-    return redirect(`/entries/${data.headword}/edit`)
-  }
+  // Headword may have changed and data.headword exists; redirect if so
+  // TODO: RESTORE
+  // if (entryEditorFormAction === EntryEditorFormActionEnum.ENTRY) {
+  //   return redirect(`/entries/${data.headword}/edit`)
+  // }
 
   return null
+}
+
+export async function loader({ request, params }: LoaderArgs) {
+  const { headword } = params
+
+  invariant(headword, `No headword param provided`)
+
+  // Ensure user has permission to edit the entry
+  await redirectIfUserLacksEntryEditPermission(request, headword)
+
+  // Find the entry and return a 404 if not found
+  const entry = await getEntryByHeadword({ headword })
+  if (!entry) {
+    throw new Response(`Entry ${headword} not found`, {
+      status: 404,
+    })
+  }
+
+  return { entry }
 }
 
 export default function EntryDetailsPage() {
   const { entry } = useLoaderData()
 
-  return <EditEntry entry={entry} />
+  return <EntryEditor entry={entry} />
 }
 
 export const ErrorBoundary = DefaultErrorBoundary

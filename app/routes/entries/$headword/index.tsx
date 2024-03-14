@@ -2,34 +2,37 @@ import { canUserEditEntry as _canUserEditEntry } from "~/services/auth/session.s
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { getEntryByHeadword } from "~/models/entry.server"
 import { useLoaderData } from "@remix-run/react"
-import Entry from "~/components/Entry"
+import Entry from "~/components/Entry/Entry"
 import invariant from "tiny-invariant"
-import type { LoaderArgs, MetaFunction, SerializeFrom } from "@remix-run/node"
+import {
+  json,
+  type LoaderArgs,
+  type MetaFunction,
+  type SerializeFrom,
+} from "@remix-run/node"
 import { BASE_APP_TITLE } from "~/root"
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return {
-    title: `${BASE_APP_TITLE} | ${data.entry.headword}`,
+    title: `${BASE_APP_TITLE} | ${data?.entry?.headword || "Entry not found"}`,
   }
 }
 
 export async function loader({ request, params }: LoaderArgs) {
-  invariant(params.headword, "headword not found")
+  const headword = params.headword
 
-  const entry = await getEntryByHeadword({ headword: params.headword })
+  invariant(headword, "Headword not found")
+
+  const entry = await getEntryByHeadword({ headword: headword })
 
   if (!entry) {
-    throw new Response("Not Found", { status: 404 })
+    throw json(`No entry found for headword ${headword}.`, {
+      status: 404,
+      statusText: "entry-not-found",
+    })
   }
 
-  // Rewrite image URLs
-  entry.images.forEach((i) =>
-    i.path
-      ? (i.path = `${process.env.IMAGE_BUCKET_PREFIX}${i.path}`)
-      : undefined
-  )
-
-  const canUserEditEntry = await _canUserEditEntry(request, params.headword)
+  const canUserEditEntry = await _canUserEditEntry(request, headword)
 
   return { entry, canUserEditEntry }
 }

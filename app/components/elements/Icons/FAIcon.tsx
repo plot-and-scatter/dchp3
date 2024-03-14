@@ -1,15 +1,22 @@
 import clsx from "clsx"
 
-type FAIconProps = React.HTMLAttributes<HTMLElement> & {
+export type FAIconProps = React.HTMLAttributes<HTMLElement> & {
   iconStyle?: string
   iconName: string
+  margin?: string
 }
 
 export default function FAIcon({
   className,
   iconStyle = "fas",
   iconName,
+  margin,
   ...rest
 }: FAIconProps) {
-  return <i className={clsx(iconStyle, iconName, className)} {...rest} />
+  return (
+    <i
+      className={clsx(iconStyle, iconName, margin || "mr-1", className)}
+      {...rest}
+    />
+  )
 }

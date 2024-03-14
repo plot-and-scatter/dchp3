@@ -10,7 +10,7 @@ import { useLoaderData } from "@remix-run/react"
 import invariant from "tiny-invariant"
 import type { LoaderArgs } from "@remix-run/node"
 import PaginationControl from "~/components/bank/PaginationControl"
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 
 export async function loader({ params }: LoaderArgs) {
   const { initialLetters, pageNumber } = params
@@ -20,8 +20,6 @@ export async function loader({ params }: LoaderArgs) {
 
   const countResult = await countEntriesByInitialLetters(initialLetters)
   const entryCount = Number(countResult[0].count)
-
-  console.log("-->", countResult, entryCount)
 
   const entries = await getEntriesByInitialLettersAndPage(
     initialLetters,
@@ -43,8 +41,6 @@ export async function loader({ params }: LoaderArgs) {
 export default function EntryDetailsPage() {
   const { entries, initialLetters, pageNumber, pageCount, entryCount } =
     useLoaderData<typeof loader>()
-
-  console.log(pageNumber, pageCount)
 
   const paginationBase = `/entries/browse/${initialLetters}`
 

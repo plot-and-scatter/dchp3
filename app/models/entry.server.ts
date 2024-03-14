@@ -1,6 +1,6 @@
 import type { Entry } from "@prisma/client"
 import invariant from "tiny-invariant"
-import { attributeEnum } from "~/components/editing/attributeEnum"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
 import { getEmailFromSession, getUserId } from "~/services/auth/session.server"
 import {
@@ -166,58 +166,6 @@ export function getEntriesByInitialLetters(
   >`SELECT id, headword FROM det_entries WHERE LOWER(headword) LIKE LOWER(${initialLettersWildcard}) ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
-export async function updateRecordByAttributeAndType(
-  type: attributeEnum,
-  id: number,
-  value: string
-) {
-  // TODO: Factor
-  if (isNaN(id)) {
-    throw new Error(`Error Parsing ID of element being edited`)
-  } else if (isNonPositive(id)) {
-    throw new Error(`Error Parsing Type and ID of element being edited`)
-  }
-
-  switch (type) {
-    case attributeEnum.HEADWORD:
-      await updateEntryHeadword(id, value)
-      break
-    case attributeEnum.ETYMOLOGY:
-      await updateEntryEtymology(id, value)
-      break
-    case attributeEnum.LABELS:
-      await updateEntryLabels(id, value)
-      break
-    default:
-      throw new Error("Type of element being edited is not supported")
-  }
-}
-
-async function assertNonDuplicateHeadword(
-  id: number,
-  incomingHeadword: string
-) {
-  const entry = await prisma.entry.findUniqueOrThrow({
-    where: { id: id },
-    select: { headword: true },
-  })
-
-  const currentHeadword = entry.headword
-  const incomingHeadwordEntry = await prisma.entry.findUnique({
-    where: { headword: incomingHeadword },
-  })
-
-  const headwordsAreDifferent = entry.headword !== incomingHeadword
-  const newHeadwordWouldBeDuplicate =
-    incomingHeadwordEntry !== undefined && incomingHeadwordEntry !== null
-
-  if (headwordsAreDifferent && newHeadwordWouldBeDuplicate) {
-    throw new Error(
-      `"${currentHeadword}" can't be changed to "${incomingHeadword}" as an Entry for "${incomingHeadword}" already exists`
-    )
-  }
-}
-
 export async function updateLogEntries(headword: string, request: Request) {
   const entry = await prisma.entry.findUnique({
     where: {
@@ -236,37 +184,6 @@ export async function updateLogEntries(headword: string, request: Request) {
 
   await prisma.logEntry.create({
     data: { entry_id: entry.id, user_id: userId, created: currentTime },
-  })
-}
-
-export async function updateEntry(data: { [k: string]: FormDataEntryValue }) {
-  const id = getNumberFromFormInput(data.id)
-  assertIsValidId(id)
-
-  const headword = getStringFromFormInput(data.headword)
-  await assertNonDuplicateHeadword(id, headword)
-
-  const spellingVariant = getStringFromFormInput(data.spellingVariant)
-  const generalLabels = getStringFromFormInput(data.generalLabels)
-  const etymology = getStringFromFormInput(data.etymology)
-  const fistNote = getStringFromFormInput(data.fistNote)
-
-  const dagger = getCheckboxValueAsBoolean(data.dagger)
-  const isLegacy = getCheckboxValueAsBoolean(data.isLegacy)
-  const isNonCanadian = getCheckboxValueAsBoolean(data.isNonCanadian)
-
-  await prisma.entry.update({
-    where: { id: id },
-    data: {
-      headword: headword,
-      spelling_variants: spellingVariant,
-      general_labels: generalLabels,
-      etymology: etymology,
-      fist_note: fistNote,
-      dagger: dagger,
-      is_legacy: isLegacy,
-      no_cdn_conf: isNonCanadian,
-    },
   })
 }
 

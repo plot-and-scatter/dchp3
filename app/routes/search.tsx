@@ -5,7 +5,7 @@ import {
   useParams,
   useSearchParams,
 } from "@remix-run/react"
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { SearchResultEnum } from "./search/searchResultEnum"
 import { CanadianismTypeEnum } from "~/types/CanadianismTypeEnum"
 import { type ActionArgs, redirect, json } from "@remix-run/server-runtime"
@@ -13,7 +13,7 @@ import { z } from "zod"
 import ActionButton from "~/components/elements/LinksAndButtons/ActionButton"
 import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 import FAIcon from "~/components/elements/Icons/FAIcon"
-import Main from "~/components/elements/Main"
+import Main from "~/components/elements/Layouts/Main"
 import Input from "~/components/bank/Input"
 import { useForm } from "@conform-to/react"
 import { parse } from "@conform-to/zod"
@@ -75,8 +75,6 @@ export default function SearchPage() {
       return parse(formData, { schema: searchActionSchema })
     },
   })
-
-  console.log("form", form, "fields", fields)
 
   return (
     <Main center>

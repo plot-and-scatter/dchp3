@@ -6,10 +6,10 @@ import {
 } from "@remix-run/react"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { redirect } from "@remix-run/node"
-import { SecondaryHeader } from "~/components/elements/SecondaryHeader"
+import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 import { type AllSearchResults, getSearchResults } from "~/models/search.server"
 import invariant from "tiny-invariant"
-import SearchResults from "~/components/SearchResults"
+import SearchResults from "~/components/EntryEditor/SearchResults"
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 import { userHasPermission } from "~/services/auth/session.server"
 
@@ -49,15 +49,6 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const canadianismTypes: string[] | undefined =
     url.searchParams.getAll("canadianismType")
-
-  console.log(
-    "####",
-    caseSensitive,
-    text,
-    pageNumber,
-    dchpVersions,
-    canadianismTypes
-  )
 
   const isUserAdmin = await userHasPermission(request, "det:viewEdits")
 

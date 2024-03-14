@@ -4,7 +4,7 @@ import { enumToOptions } from "~/utils/inputUtils"
 import { Form } from "@remix-run/react"
 import { getStringFromFormInput } from "~/utils/generalUtils"
 import { json, redirect } from "@remix-run/server-runtime"
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { z } from "zod"
 import Input from "~/components/bank/Input"
 import NumericInput from "~/components/bank/NumericInput"
@@ -36,8 +36,6 @@ const BankCitationSearchFormDataSchema = z.object({
 export const action = async ({ request }: ActionArgs) => {
   const data = Object.fromEntries(await request.formData())
   const parsedData = BankCitationSearchFormDataSchema.parse(data)
-
-  console.log("--->>>> request", request)
 
   const searchTerm = parsedData["searchTerm"]
   if (!searchTerm)

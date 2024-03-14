@@ -7,8 +7,9 @@ export type InputProps = Omit<
 > & {
   conformField?: any
   name: string
-  defaultValue?: string | number | null
+  defaultValue?: string | number | null | readonly string[]
   showField?: boolean // If true, show the defaultValue. If not, do not.
+  lightBorder?: boolean
 }
 
 export default function Input({
@@ -17,6 +18,7 @@ export default function Input({
   defaultValue,
   className,
   showField,
+  lightBorder,
   ...rest
 }: InputProps) {
   const defaultValueNoNulls = defaultValue === null ? undefined : defaultValue
@@ -29,7 +31,8 @@ export default function Input({
       <input
         name={name}
         className={clsx(
-          "my-0 w-full rounded border border-gray-700 px-4 py-2",
+          lightBorder ? `border-gray-300` : `border-gray-700`,
+          "my-0 w-full rounded border px-4 py-2",
           className,
           hasErrors &&
             "border-primary-dark bg-primary-lightest outline-primary-dark"

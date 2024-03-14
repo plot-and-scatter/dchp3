@@ -2,13 +2,19 @@ import { addReference } from "~/models/reference.server"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { Form } from "@remix-run/react"
 import { getStringFromFormInput } from "~/utils/generalUtils"
-import { type ActionArgs, redirect } from "@remix-run/server-runtime"
-import invariant from "tiny-invariant"
-import Button from "~/components/elements/LinksAndButtons/Button"
-import TopLabelledField from "~/components/bank/TopLabelledField"
-import Input from "~/components/bank/Input"
-import TextArea from "~/components/bank/TextArea"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
+import { type ActionArgs, redirect } from "@remix-run/server-runtime"
+import AddIcon from "~/components/elements/Icons/AddIcon"
+import Button from "~/components/elements/LinksAndButtons/Button"
+import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
+import Input from "~/components/bank/Input"
+import invariant from "tiny-invariant"
+import ReturnToRefListLink from "./ReturnToRefListLink"
+import SaveIcon from "~/components/elements/Icons/SaveIcon"
+import TextArea from "~/components/bank/TextArea"
+import TopLabelledField from "~/components/bank/TopLabelledField"
 
 export async function action({ request }: ActionArgs) {
   await redirectIfUserLacksPermission(request, "det:editReferences")
@@ -26,8 +32,11 @@ export async function action({ request }: ActionArgs) {
 
 export default function ReferenceIdPage() {
   return (
-    <div className="flex w-full max-w-4xl flex-col">
-      <h2 className="my-4 text-2xl font-bold">Add reference</h2>
+    <div>
+      <ReturnToRefListLink />
+      <PageHeader>
+        <AddIcon /> Add reference
+      </PageHeader>
       <Form className="flex flex-col gap-y-4" method="post">
         <input type="hidden" name="id" />
         <TopLabelledField
@@ -38,13 +47,13 @@ export default function ReferenceIdPage() {
           label={<label htmlFor="referenceText">Reference text</label>}
           field={<TextArea id="referenceText" name="referenceText" />}
         />
-        <div className="flex w-full flex-row justify-between self-center">
-          <Button name="updateReference" appearance="success">
-            Save reference
+        <div className="flex items-center justify-between">
+          <Button name="updateReference" appearance="success" size="large">
+            <SaveIcon /> Save reference
           </Button>
-          <Button name="deleteReference" appearance="danger">
-            Cancel
-          </Button>
+          <Link to="/references" asButton appearance="danger">
+            <DeleteIcon /> Cancel
+          </Link>
         </div>
       </Form>
     </div>

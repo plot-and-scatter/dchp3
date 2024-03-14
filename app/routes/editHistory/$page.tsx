@@ -10,7 +10,7 @@ import invariant from "tiny-invariant"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
-import Main from "~/components/elements/Main"
+import Main from "~/components/elements/Layouts/Main"
 import { getAllEntryLogsByPage } from "~/models/user.server"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 import {

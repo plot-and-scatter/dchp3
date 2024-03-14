@@ -17,8 +17,19 @@ import {
   getStringFromFormInput,
 } from "~/utils/generalUtils"
 import Button from "~/components/elements/LinksAndButtons/Button"
+import EditIcon from "~/components/elements/Icons/EditIcon"
+import Input from "~/components/bank/Input"
+import TextArea from "~/components/bank/TextArea"
+import SaveIcon from "~/components/elements/Icons/SaveIcon"
+import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
+import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
+import TopLabelledField from "~/components/bank/TopLabelledField"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
+import ReturnToRefListLink from "./ReturnToRefListLink"
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params, request }: LoaderArgs) {
+  redirectIfUserLacksPermission(request, "det:editReferences")
+
   invariant(params.id)
   const id: number = parseInt(params.id)
   const data: Reference | null = await getReferenceById(id)
@@ -38,7 +49,7 @@ export async function action({ request, params }: ActionArgs) {
   const referenceText = getStringFromFormInput(data.referenceText)
 
   updateReferenceById(id, shortDisplay, referenceText)
-  return redirect(`/reference`)
+  return redirect(`/references`)
 }
 
 export default function ReferenceIdPage() {
@@ -47,39 +58,59 @@ export default function ReferenceIdPage() {
   let [referenceText, setReferenceText] = useState(data.reference_text)
 
   return (
-    <div className="flex w-full max-w-4xl flex-col">
-      <h2 className="text-2xl font-bold"> Reference Editor </h2>
-      <Form className="flex flex-col" method="post">
+    <div>
+      <ReturnToRefListLink />
+      <PageHeader>
+        <EditIcon /> Edit reference
+      </PageHeader>
+      <Form className="flex flex-col gap-y-4" method="post">
         <input type="hidden" name="id" value={data.id} />
-        <label>
-          Short Display Text:
-          <input
-            name="shortDisplay"
-            value={shortDisplay}
-            onChange={(e) => {
-              setShortDisplay(e.target.value)
-            }}
-            className="m-3 border-2 p-1"
-            type="text"
-          />
-        </label>
-        <label className="flex flex-col">
-          <p>Reference Text:</p>
-          <textarea
-            name="referenceText"
-            value={referenceText}
-            onChange={(e) => {
-              setReferenceText(e.target.value)
-            }}
-            className="my-1 border-2 p-2"
-          />
-        </label>
-        <div className="flex w-full flex-row justify-around self-center">
-          <Button type="submit" name="updateReference" appearance="success">
-            Save changes
+        <TopLabelledField
+          label="Short display text"
+          field={
+            <Input
+              name="shortDisplay"
+              value={shortDisplay}
+              onChange={(e) => {
+                setShortDisplay(e.target.value)
+              }}
+              type="text"
+            />
+          }
+        />
+        <TopLabelledField
+          breakAfterLabel
+          label="Reference text"
+          field={
+            <TextArea
+              name="referenceText"
+              value={referenceText}
+              onChange={(e) => {
+                setReferenceText(e.target.value)
+              }}
+            />
+          }
+        />
+        <div className="flex items-center justify-between">
+          <Button
+            type="submit"
+            name="updateReference"
+            appearance="success"
+            size="large"
+          >
+            <SaveIcon /> Save reference
           </Button>
-          <Button type="submit" name="deleteReference" appearance="danger">
-            Delete reference
+          <Button
+            type="submit"
+            name="deleteReference"
+            appearance="danger"
+            onClick={(e) => {
+              if (!confirm("Are you sure you want to delete this reference?")) {
+                e.preventDefault()
+              }
+            }}
+          >
+            <DeleteIcon /> Delete reference
           </Button>
         </div>
       </Form>

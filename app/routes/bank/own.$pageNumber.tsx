@@ -4,7 +4,7 @@ import {
 } from "~/services/auth/session.server"
 import { DEFAULT_CITATION_SELECT } from "~/services/bank/defaultCitationSelect"
 import { json, type LoaderArgs } from "@remix-run/server-runtime"
-import { PageHeader } from "~/components/elements/PageHeader"
+import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { prisma } from "~/db.server"
 import { useLoaderData } from "@remix-run/react"
 import BankOwnCitationResult from "~/components/bank/BankOwnCitationResult"
