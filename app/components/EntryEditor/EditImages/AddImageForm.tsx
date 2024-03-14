@@ -42,7 +42,7 @@ export default function AddImageForm({ entry }: AddImageFormProps) {
     >
       <input
         type="hidden"
-        name="attributeType"
+        name="entryEditorFormAction"
         value={EntryEditorFormActionEnum.ADD_IMAGE}
       />
       <input type="hidden" name="entryId" value={entry.id} />

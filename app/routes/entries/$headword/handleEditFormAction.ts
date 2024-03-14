@@ -54,6 +54,15 @@ import {
   UpdateEntrySchema,
   updateEntry,
 } from "~/services/controllers/entry/updateEntry"
+import { AddImageSchema, addImage } from "~/services/controllers/entry/addImage"
+import {
+  DeleteImageSchema,
+  deleteImage,
+} from "~/services/controllers/image/deleteImage"
+import {
+  UpdateImageSchema,
+  updateImage,
+} from "~/services/controllers/image/updateImage"
 
 const unionSchema = z.discriminatedUnion("entryEditorFormAction", [
   UpdateEntrySchema,
@@ -69,6 +78,9 @@ const unionSchema = z.discriminatedUnion("entryEditorFormAction", [
   UpdateEditingToolsSchema,
   UpdateEditingStatusSchema,
   UpdateEditingCommentSchema,
+  AddImageSchema,
+  DeleteImageSchema,
+  UpdateImageSchema,
 ])
 
 type ActionMap = {
@@ -92,15 +104,9 @@ const actionMap: ActionMap = {
   [EntryEditorFormActionEnum.EDITING_TOOLS]: updateEditingTools,
   [EntryEditorFormActionEnum.EDITING_STATUS]: updateEditingStatus,
   [EntryEditorFormActionEnum.COMMENT]: updateEditingComment,
-  [EntryEditorFormActionEnum.DELETE_IMAGE]: async () => {
-    throw new Error("Not implemented")
-  },
-  [EntryEditorFormActionEnum.ADD_IMAGE]: async () => {
-    throw new Error("Not implemented")
-  },
-  [EntryEditorFormActionEnum.EDIT_IMAGE]: async () => {
-    throw new Error("Not implemented")
-  },
+  [EntryEditorFormActionEnum.DELETE_IMAGE]: deleteImage,
+  [EntryEditorFormActionEnum.ADD_IMAGE]: addImage,
+  [EntryEditorFormActionEnum.EDIT_IMAGE]: updateImage,
 }
 
 type SubmissionValue = z.infer<typeof unionSchema>

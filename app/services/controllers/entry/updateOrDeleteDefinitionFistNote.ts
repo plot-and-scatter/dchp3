@@ -1,14 +1,14 @@
 import { z } from "zod"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
+import { ZPositiveInt } from "../ZPositiveInt"
 
 export const UpdateOrDeleteDefinitionFistNoteSchema = z
   .object({
     entryEditorFormAction: z.literal(
       EntryEditorFormActionEnum.DEFINITION_FIST_NOTE
     ),
-    usageNoteId: ZPrimaryKeyInt,
+    usageNoteId: ZPositiveInt,
     usageNoteText: z.string(),
   })
   .strict()

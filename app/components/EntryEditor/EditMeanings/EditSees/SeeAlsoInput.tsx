@@ -28,8 +28,6 @@ export default function SeeAlsoInput({ name, ...rest }: SeeAlsoInputProps) {
     DEBOUNCE_DELAY_IN_MS
   )
 
-  console.log("headwords.data", headwords.data)
-
   return (
     <div className="relative">
       <div className="flex">

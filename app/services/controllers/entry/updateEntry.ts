@@ -1,13 +1,13 @@
 import { z } from "zod"
 import { prisma } from "~/db.server"
-import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
+import { ZPositiveInt } from "../ZPositiveInt"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { ZCheckboxValueToBoolean } from "../ZCheckboxValueToBoolean"
 
 export const UpdateEntrySchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.UPDATE_ENTRY),
-    entryId: ZPrimaryKeyInt,
+    entryId: ZPositiveInt,
     headword: z.string(),
     spellingVariant: z.string(),
     generalLabels: z.string(),

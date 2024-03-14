@@ -1,13 +1,13 @@
 import { z } from "zod"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
+import { ZPositiveInt } from "../ZPositiveInt"
 
 export const DeleteSeeAlsoSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.DELETE_SEE_ALSO),
-    meaningId: ZPrimaryKeyInt,
-    entryId: ZPrimaryKeyInt,
+    meaningId: ZPositiveInt,
+    entryId: ZPositiveInt,
   })
   .strict()
 

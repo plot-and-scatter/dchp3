@@ -13,11 +13,7 @@ type EditImageFormProps = {
 export default function EditImageForm({ entry, image }: EditImageFormProps) {
   return (
     <>
-      <Form
-        method="post"
-        reloadDocument={true}
-        action={`/entries/${entry.headword}/edit`}
-      >
+      <Form method="post" action={`/entries/${entry.headword}/edit`}>
         <input
           type="hidden"
           name="entryEditorFormAction"
@@ -56,11 +52,7 @@ export default function EditImageForm({ entry, image }: EditImageFormProps) {
         alt={image.caption || "Caption unavailable"}
       />
       <div className="mt-4 flex items-center">
-        <Form
-          method="post"
-          reloadDocument={true}
-          action={`/entries/${entry.headword}/edit`}
-        >
+        <Form method="post" action={`/entries/${entry.headword}/edit`}>
           <input
             type="hidden"
             name="entryEditorFormAction"

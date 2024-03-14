@@ -1,12 +1,12 @@
 import { prisma } from "~/db.server"
 import { z } from "zod"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
-import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
+import { ZPositiveInt } from "../ZPositiveInt"
 
 export const DeleteMeaningSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.DELETE_MEANING),
-    meaningId: ZPrimaryKeyInt,
+    meaningId: ZPositiveInt,
   })
   .strict()
 

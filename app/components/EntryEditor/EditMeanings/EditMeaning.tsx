@@ -26,7 +26,7 @@ export default function EditMeaning({ entry, meaning }: EditMeaningProps) {
     >
       <EditMeaningFields entry={entry} meaning={meaning} />
 
-      <div className="mt-8 rounded border border-gray-400 bg-red-50 p-4 shadow">
+      <div className="mt-8 rounded border border-red-400 bg-red-50 p-4 shadow">
         <TertiaryHeader>
           <EditIcon /> Edit sees
         </TertiaryHeader>
@@ -34,7 +34,7 @@ export default function EditMeaning({ entry, meaning }: EditMeaningProps) {
         <AddSeeAlso headword={headword} meaning={meaning} />
       </div>
 
-      <div className="mt-8 rounded border border-gray-400 bg-action-50 p-4 shadow">
+      <div className="mt-8 rounded border border-action-400 bg-action-50 p-4 shadow">
         <TertiaryHeader>
           <EditIcon /> Edit fist notes
         </TertiaryHeader>
@@ -49,7 +49,7 @@ export default function EditMeaning({ entry, meaning }: EditMeaningProps) {
         <FistnoteAddingForm headword={headword} meaning={meaning} />
       </div>
 
-      <div className="mt-8 rounded border border-gray-400 bg-amber-50 p-4">
+      <div className="mt-8 rounded border border-amber-400 bg-amber-50 p-4">
         <TertiaryHeader>
           <span className="text-amber-600">
             <EditIcon /> Edit quotations

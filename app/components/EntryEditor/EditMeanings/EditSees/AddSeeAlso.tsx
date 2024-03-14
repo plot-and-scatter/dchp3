@@ -19,7 +19,7 @@ export default function AddSeeAlso({ meaning, headword }: AddSeeAlsoProps) {
       headword={headword}
       meaning={meaning}
       formAction={EntryEditorFormActionEnum.ADD_SEE_ALSO}
-      className={"mt-4 rounded border border-gray-400 bg-red-100 p-4 shadow"}
+      className={"mt-4 rounded border border-red-400 bg-red-100 p-4 shadow"}
     >
       <h4 className="mb-4 text-base font-bold">
         <AddIcon /> Add see also

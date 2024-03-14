@@ -150,11 +150,11 @@ export default function QuotationAddingForm({
             {citations.data.citationCount} citations
           </strong>
           <Button type="submit" className="ml-3">
-            Add Quotations
+            Link quotations
           </Button>
           <input
             type="hidden"
-            name="attributeType"
+            name="entryEditorFormAction"
             value={EntryEditorFormActionEnum.ADD_QUOTATIONS}
           />
           <input type="hidden" name="meaningId" value={meaningId} />
@@ -165,7 +165,7 @@ export default function QuotationAddingForm({
                   <div className="flex items-center pr-5">
                     <input
                       type="checkbox"
-                      name={`citationId-${citation.id}`}
+                      name={`citationIds`}
                       value={citation.id}
                       className="mx-1 p-1"
                     />

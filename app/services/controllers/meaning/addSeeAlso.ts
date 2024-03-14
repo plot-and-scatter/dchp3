@@ -1,12 +1,12 @@
 import { z } from "zod"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
+import { ZPositiveInt } from "../ZPositiveInt"
 
 export const AddSeeAlsoSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_SEE_ALSO),
-    meaningId: ZPrimaryKeyInt,
+    meaningId: ZPositiveInt,
     headword: z.string(),
     linkNote: z.string(),
   })

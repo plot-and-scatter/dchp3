@@ -15,8 +15,11 @@ export default function EntryEditorSidebar({ entry }: EditingSidebarProps) {
   // TODO: Restore fixed status?
   return (
     <div className="sticky">
-      <p>Action: {navigation.formAction}</p>
-      <p>State: {navigation.state}</p>
+      <p className="text-sm leading-tight">
+        Action: {navigation.formAction || "None"} / State: {navigation.state}
+        <br />
+        <span className="text-xs">(Temporary for debugging)</span>
+      </p>
       <AddNewMeaningForm entry={entry} />
       <EditingTools entry={entry} />
       <hr />

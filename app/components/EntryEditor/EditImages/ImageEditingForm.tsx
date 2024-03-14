@@ -11,7 +11,7 @@ export default function ImageEditingForm({ data }: ImageEditingFormProps) {
   const images = data.images.sort((a, b) => (a.order || 0) - (b.order || 0))
 
   return (
-    <div className="my-12 rounded border border-gray-400 bg-gray-50 p-4 shadow">
+    <div className="my-12 rounded border border-gray-400 bg-gray-50 p-4 shadow-lg">
       <div>
         <h1 className="mb-5 text-2xl font-bold">
           <EditIcon /> Edit images
@@ -25,7 +25,10 @@ export default function ImageEditingForm({ data }: ImageEditingFormProps) {
               <EditImageForm entry={data} image={image} />
             </div>
           ))}
-          <div className="bg-success-50 p-4" key={"add-image"}>
+          <div
+            className="rounded border border-success-400 bg-success-50 p-4 shadow"
+            key={"add-image"}
+          >
             <AddImageForm entry={data} />
           </div>
         </div>

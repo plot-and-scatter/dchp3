@@ -1,12 +1,17 @@
+import { z } from "zod"
 import { prisma } from "~/db.server"
-import { getNumberFromFormInput } from "~/utils/generalUtils"
+import { ZPositiveInt } from "../ZPositiveInt"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 
-export async function deleteImage(data: { [k: string]: FormDataEntryValue }) {
-  const imageId = getNumberFromFormInput(data.imageId)
+export const DeleteImageSchema = z.object({
+  entryEditorFormAction: z.literal(EntryEditorFormActionEnum.DELETE_IMAGE),
+  imageId: ZPositiveInt,
+})
 
+export async function deleteImage(data: z.infer<typeof DeleteImageSchema>) {
   await prisma.image.delete({
     where: {
-      id: imageId,
+      id: data.imageId,
     },
   })
 }

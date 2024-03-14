@@ -1,12 +1,12 @@
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
 import { z } from "zod"
-import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
+import { ZPositiveInt } from "../ZPositiveInt"
 
 export const AddMeaningToEntrySchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_MEANING),
-    entryId: ZPrimaryKeyInt,
+    entryId: ZPositiveInt,
   })
   .strict()
 

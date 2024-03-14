@@ -1,13 +1,13 @@
 import { z } from "zod"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
+import { ZPositiveInt } from "../ZPositiveInt"
 
 export const AddQuotationsSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_QUOTATIONS),
-    meaningId: ZPrimaryKeyInt,
-    citationIds: z.array(ZPrimaryKeyInt),
+    meaningId: ZPositiveInt,
+    citationIds: z.array(ZPositiveInt),
   })
   .strict()
 

@@ -21,7 +21,9 @@ export default function FistnoteAddingForm({
       headword={headword}
       meaning={meaning}
       formAction={EntryEditorFormActionEnum.ADD_DEFINITION_FIST_NOTE}
-      className={"mt-4 rounded border border-gray-400 bg-action-100 p-4 shadow"}
+      className={
+        "mt-4 rounded border border-action-400 bg-action-100 p-4 shadow"
+      }
     >
       <h4 className="mb-4 text-base font-bold">
         <AddIcon /> Add fist note

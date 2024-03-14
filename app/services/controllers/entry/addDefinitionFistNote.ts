@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
+import { ZPositiveInt } from "../ZPositiveInt"
 
 export const AddDefinitionFistNoteSchema = z
   .object({
@@ -9,7 +9,7 @@ export const AddDefinitionFistNoteSchema = z
       EntryEditorFormActionEnum.ADD_DEFINITION_FIST_NOTE
     ),
     text: z.string(),
-    meaningId: ZPrimaryKeyInt,
+    meaningId: ZPositiveInt,
   })
   .strict()
 

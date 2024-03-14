@@ -1,15 +1,15 @@
 import { z } from "zod"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
-import { ZPrimaryKeyInt } from "../ZPrimaryKeyInt"
+import { ZPositiveInt } from "../ZPositiveInt"
 
 export const DeleteQuotationSchema = z
   .object({
     entryEditorFormAction: z.literal(
       EntryEditorFormActionEnum.DELETE_QUOTATION
     ),
-    meaningId: ZPrimaryKeyInt,
-    citationId: ZPrimaryKeyInt,
+    meaningId: ZPositiveInt,
+    citationId: ZPositiveInt,
   })
   .strict()
 
