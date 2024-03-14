@@ -9,7 +9,7 @@ import type { EntryEditLoaderData } from "~/routes/entries/$headword/edit"
 export default function EntryEditor({ entry }: EntryEditLoaderData) {
   return (
     <div className="flex w-full flex-row items-start gap-4">
-      <div className="fixed w-96 border border-gray-400 bg-gray-200 p-4 shadow">
+      <div className="fixed w-96 border border-gray-400 bg-gray-100 p-4 shadow">
         <Link
           bold
           to={`/entries/${entry.headword}`}

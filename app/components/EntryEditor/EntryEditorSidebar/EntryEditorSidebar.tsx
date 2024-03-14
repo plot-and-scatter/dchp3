@@ -15,7 +15,7 @@ export default function EntryEditorSidebar({ entry }: EditingSidebarProps) {
   // TODO: Restore fixed status?
   return (
     <div className="sticky">
-      <p className="text-sm leading-tight">
+      <p className="my-4 text-sm leading-tight">
         Action: {navigation.formAction || "None"} / State: {navigation.state}
         <br />
         <span className="text-xs">(Temporary for debugging)</span>

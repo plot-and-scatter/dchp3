@@ -25,11 +25,11 @@ const Entry = ({ entry, canUserEditEntry }: EntryProps): JSX.Element => {
       className="mx-auto flex min-w-full max-w-full flex-row justify-around gap-4"
       data-id={`entry-${entry?.id}`}
     >
-      <div className="w-96 max-w-2xl bg-gray-300">
+      <div className="w-96 max-w-2xl">
         {canUserEditEntry && (
           <Link
             asButton
-            className="whitespace-nowrap"
+            className="mb-4 whitespace-nowrap"
             to={`/entries/${entry.headword}/edit`}
             appearance="success"
             buttonSize="large"
