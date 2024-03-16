@@ -1,32 +1,36 @@
 import { EntryEditorFormActionEnum } from "../EntryEditorForm/EntryEditorFormActionEnum"
 import { type LoadedEntryDataType } from "~/routes/entries/$headword"
-import { useState } from "react"
 import Button from "../../elements/LinksAndButtons/Button"
 import EntryEditorForm from "../EntryEditorForm/EntryEditorForm"
 import SaveIcon from "~/components/elements/Icons/SaveIcon"
+import { QuaternaryHeader } from "~/components/elements/Headings/QuaternaryHeader"
+import TextArea from "~/components/bank/TextArea"
 
 interface EntryCommentProps {
   entry: LoadedEntryDataType
 }
 
 const EntryComment = ({ entry }: EntryCommentProps) => {
-  let [comment, setComment] = useState(entry.comment)
-
   return (
     <EntryEditorForm
       entry={entry}
       formAction={EntryEditorFormActionEnum.COMMENT}
     >
       <div className="flex flex-col">
-        <h3 className="text-xl">Comment</h3>
-        <textarea
-          className="h-40 border p-2"
+        <QuaternaryHeader>Comment</QuaternaryHeader>
+        <TextArea
+          rows={8}
           name="comment"
-          onChange={(e) => setComment(e.target.value)}
-          defaultValue={comment || ""}
+          defaultValue={entry.comment}
           placeholder="Enter a comment"
+          className="-mt-3"
         />
-        <Button appearance="success" variant="outline" size="small">
+        <Button
+          appearance="success"
+          variant="outline"
+          size="small"
+          className="mt-2"
+        >
           <SaveIcon /> Save comment
         </Button>
       </div>

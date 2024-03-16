@@ -104,10 +104,11 @@ export default function QuotationAddingForm({
           <div className="flex w-full items-start gap-x-4">
             <div className="flex-1">
               <TopLabelledField
-                label="Quotation text"
+                labelWidth="w-fit"
+                label="Quotation text search"
                 field={
                   <Input
-                    placeholder="Enter text to find in quotation body"
+                    placeholder="Enter text to search for in quotation body"
                     name="searchText"
                   />
                 }

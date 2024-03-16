@@ -5,27 +5,41 @@ import { redirectIfUserLacksEntryEditPermission } from "~/services/auth/session.
 import { useLoaderData } from "@remix-run/react"
 import EntryEditor from "~/components/EntryEditor/EntryEditor"
 import invariant from "tiny-invariant"
-import type { SerializeFrom, ActionArgs, LoaderArgs } from "@remix-run/node"
+import {
+  type SerializeFrom,
+  type ActionArgs,
+  type LoaderArgs,
+  redirect,
+} from "@remix-run/node"
+import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 
 export type EntryEditLoaderData = SerializeFrom<
   Awaited<Promise<ReturnType<typeof loader>>>
 >
 
 export async function action({ params, request }: ActionArgs) {
-  invariant(params.headword)
+  invariant(params.headword, "No headword specified")
 
   const formData = await request.formData()
 
-  await handleEditFormAction(formData)
+  const result = await handleEditFormAction(formData)
 
   const headword = params.headword
-  await updateLogEntries(headword, request)
+
+  console.log("result", result.value.entryEditorFormAction)
 
   // Headword may have changed and data.headword exists; redirect if so
-  // TODO: RESTORE
-  // if (entryEditorFormAction === EntryEditorFormActionEnum.ENTRY) {
-  //   return redirect(`/entries/${data.headword}/edit`)
-  // }
+  if (
+    result.value.entryEditorFormAction ===
+    EntryEditorFormActionEnum.UPDATE_ENTRY
+  ) {
+    console.log("==> Redirecting....")
+    await updateLogEntries(result.value.headword, request)
+    return redirect(`/entries/${result.value.headword}/edit`)
+  } else {
+    console.log("==> No change.")
+    await updateLogEntries(headword, request)
+  }
 
   return null
 }

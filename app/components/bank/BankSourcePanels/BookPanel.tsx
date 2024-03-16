@@ -19,6 +19,7 @@ export default function BookPanel(props: BankEditCitationFieldsProps) {
             name={`source.year_published`}
             showField={showField}
             defaultValue={source?.year_published}
+            placeholder="e.g. 1861 (numbers ONLY)"
           />
         }
       />
@@ -29,6 +30,7 @@ export default function BookPanel(props: BankEditCitationFieldsProps) {
             name={`source.year_composed`}
             showField={showField}
             defaultValue={source?.year_composed}
+            placeholder="e.g. 1793-1796 (numbers and hyphens ONLY)"
           />
         }
       />
@@ -39,6 +41,7 @@ export default function BookPanel(props: BankEditCitationFieldsProps) {
             name={`author`}
             showField={showField}
             defaultValue={source?.author?.name}
+            placeholder="e.g. Johnston, John L."
           />
         }
       />
@@ -49,6 +52,7 @@ export default function BookPanel(props: BankEditCitationFieldsProps) {
             name={`source.editor`}
             showField={showField}
             defaultValue={source?.editor}
+            placeholder="e.g. Cruikshank, E. E."
           />
         }
       />
@@ -60,6 +64,7 @@ export default function BookPanel(props: BankEditCitationFieldsProps) {
             showField={showField}
             defaultValue={source?.title?.name}
             rows={3}
+            placeholder="e.g. The Diary of John L. Johnston, 1793-1796"
           />
         }
       />
@@ -70,6 +75,7 @@ export default function BookPanel(props: BankEditCitationFieldsProps) {
             name={`place`}
             showField={showField}
             defaultValue={source?.place?.name}
+            placeholder="e.g. Toronto, ON; London, UK; New York, USA"
           />
         }
       />
@@ -80,6 +86,7 @@ export default function BookPanel(props: BankEditCitationFieldsProps) {
             name={`source.publisher`}
             showField={showField}
             defaultValue={source?.publisher}
+            placeholder="e.g. Gage"
           />
         }
       />
@@ -90,6 +97,7 @@ export default function BookPanel(props: BankEditCitationFieldsProps) {
             name={`source.url`}
             showField={showField}
             defaultValue={source?.url}
+            placeholder="enter URL if electronic resource"
           />
         }
       />
@@ -100,6 +108,7 @@ export default function BookPanel(props: BankEditCitationFieldsProps) {
             name={`source.url_access_date`}
             showField={showField}
             defaultValue={source?.url_access_date}
+            placeholder="e.g. 1 Jul. 2007"
           />
         }
       />
@@ -110,6 +119,7 @@ export default function BookPanel(props: BankEditCitationFieldsProps) {
             name={`source.page`}
             showField={showField}
             defaultValue={source?.page}
+            placeholder="e.g. 133"
           />
         }
       />

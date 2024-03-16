@@ -10,9 +10,9 @@ import { getEmailFromSession } from "~/services/auth/session.server"
 import { getUserIdByEmailOrThrow } from "~/models/user.server"
 import { json, type ActionArgs, redirect } from "@remix-run/server-runtime"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
-import { parse } from "@conform-to/zod"
+import { parseWithZod } from "@conform-to/zod"
 import { prisma } from "~/db.server"
-import { useFieldset, useForm } from "@conform-to/react"
+import { getFormProps, useForm } from "@conform-to/react"
 import { z } from "zod"
 import BankEditCitationFields from "~/components/bank/BankEditCitationFields"
 import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
@@ -70,9 +70,14 @@ export const bankCitationFormDataSchema = z.object({
 
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData()
-  const submission = parse(formData, { schema: bankCitationFormDataSchema })
-  if (submission.intent !== "submit" || !submission.value) {
-    return json(submission)
+  const submission = parseWithZod(formData, {
+    schema: bankCitationFormDataSchema,
+  })
+
+  if (submission.status !== "success") {
+    return json(submission.reply(), {
+      status: submission.status === "error" ? 400 : 200,
+    })
   }
 
   const parsedData = submission.value
@@ -112,6 +117,10 @@ export const action = async ({ request }: ActionArgs) => {
     },
   })
 
+  if (!savedCitation) {
+    return json(submission.reply({ formErrors: ["Submission failed"] }))
+  }
+
   return redirect(`/bank/edit/${savedCitation.id}`)
 }
 
@@ -120,25 +129,25 @@ export const loader = async () => {
 }
 
 export default function BankCreate() {
-  const lastSubmission = useActionData<typeof action>()
+  const lastResult = useActionData<typeof action>()
 
-  const [form, { citation }] = useForm({
-    lastSubmission,
-    shouldValidate: "onInput", // Run the same validation logic on client
-    onValidate({ formData }) {
-      return parse(formData, { schema: bankCitationFormDataSchema })
-    },
+  const [form] = useForm({
+    lastResult,
+    shouldValidate: "onBlur",
   })
 
-  const citationFields = useFieldset(form.ref, citation)
+  // TODO: Restore this
+  // const citationFields = fields.citation.getFieldset()
 
   return (
-    <Form {...form.props} method="POST">
+    <Form {...getFormProps(form)} method="POST">
+      {/* <Form method="POST"> */}
       <PageHeader>Create citation</PageHeader>
       <hr className="my-6" />
       <div className="flex gap-x-12">
         <div className="flex w-1/2 flex-col gap-y-4">
-          <BankEditCitationFields citationFields={citationFields} />
+          {/* <BankEditCitationFields citationFields={citationFields} /> */}
+          <BankEditCitationFields />
         </div>
         <div className="flex w-1/2 flex-col gap-y-4">
           <BankSourcePanel />

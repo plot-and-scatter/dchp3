@@ -1,11 +1,12 @@
 import { z } from "zod"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
+import { ZPositiveInt } from "../ZPositiveInt"
 
 export const UpdateEditingCommentSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.COMMENT),
-    headword: z.string(),
+    entryId: ZPositiveInt,
     comment: z.string(),
   })
   .strict()
@@ -13,10 +14,10 @@ export const UpdateEditingCommentSchema = z
 export async function updateEditingComment(
   data: z.infer<typeof UpdateEditingCommentSchema>
 ) {
-  const { headword, comment } = data
+  const { entryId, comment } = data
 
   await prisma.entry.update({
-    where: { headword },
+    where: { id: entryId },
     data: { comment },
   })
 }

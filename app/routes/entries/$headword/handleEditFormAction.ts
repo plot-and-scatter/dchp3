@@ -47,7 +47,7 @@ import {
   UpdateOrDeleteDefinitionFistNoteSchema,
   updateOrDeleteDefinitionFistNote,
 } from "~/services/controllers/entry/updateOrDeleteDefinitionFistNote"
-import { parse } from "@conform-to/zod"
+import { parseWithZod } from "@conform-to/zod"
 import { json } from "@remix-run/server-runtime"
 import { z } from "zod"
 import {
@@ -112,18 +112,14 @@ const actionMap: ActionMap = {
 type SubmissionValue = z.infer<typeof unionSchema>
 
 export async function handleEditFormAction(formData: FormData) {
-  const submission = parse(formData, { schema: unionSchema })
+  const submission = parseWithZod(formData, { schema: unionSchema })
 
   console.log(submission)
 
   // TODO: When we link this up with the form that actually shows errors,
   // we can remove this.
-  if (Object.keys(submission.error).length > 0) {
+  if (submission.status !== "success") {
     throw new Error(JSON.stringify(submission.error))
-  }
-
-  if (submission.intent !== "submit" || !submission.value) {
-    return json(submission)
   }
 
   const action = submission.value.entryEditorFormAction
@@ -132,6 +128,7 @@ export async function handleEditFormAction(formData: FormData) {
     await actionMap[action](
       submission.value as Extract<SubmissionValue, typeof action>
     )
+    return submission
   } else {
     throw new Error(`No action found for ${action}`)
   }

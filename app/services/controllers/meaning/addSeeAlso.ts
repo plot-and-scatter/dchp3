@@ -8,7 +8,7 @@ export const AddSeeAlsoSchema = z
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_SEE_ALSO),
     meaningId: ZPositiveInt,
     headword: z.string(),
-    linkNote: z.string(),
+    linkNote: z.string().optional(),
   })
   .strict()
 
@@ -24,7 +24,7 @@ export async function addSeeAlso(data: z.infer<typeof AddSeeAlsoSchema>) {
     data: {
       meaning_id: data.meaningId,
       entry_id: entry.id,
-      linknote: data.linkNote,
+      linknote: data.linkNote || "",
     },
   })
 }

@@ -1,10 +1,11 @@
 import { EditingStatusTypeEnum } from "./EditingStatusTypeEnum"
 import { EntryEditorFormActionEnum } from "../../EntryEditorForm/EntryEditorFormActionEnum"
-import { Form } from "@remix-run/react"
 import { type LoadedEntryDataType } from "~/routes/entries/$headword"
 import Button from "../../../elements/LinksAndButtons/Button"
 import EditingStatusInput from "./EditingStatusInput"
-import { TertiaryHeader } from "~/components/elements/Headings/TertiaryHeader"
+import SaveIcon from "~/components/elements/Icons/SaveIcon"
+import { QuaternaryHeader } from "~/components/elements/Headings/QuaternaryHeader"
+import EntryEditorForm from "../../EntryEditorForm/EntryEditorForm"
 
 const EDITING_STATUS_INPUTS: { type: EditingStatusTypeEnum; label: string }[] =
   [
@@ -52,14 +53,14 @@ interface EditingStatusProps {
 
 export default function EditingStatusPanel({ entry }: EditingStatusProps) {
   return (
-    <Form
-      reloadDocument
+    <EntryEditorForm
+      entry={entry}
+      formAction={EntryEditorFormActionEnum.EDITING_STATUS}
       action={`/entries/${entry.headword}/edit`}
-      method="post"
     >
-      <div className="flex flex-col">
-        <TertiaryHeader>Editing status</TertiaryHeader>
-        <div className="flex flex-col">
+      <div className="my-2 flex flex-col">
+        <QuaternaryHeader>Editing status</QuaternaryHeader>
+        <div className="-mt-2 flex flex-row flex-wrap">
           {EDITING_STATUS_INPUTS.map((inputGrouping) => (
             <EditingStatusInput
               key={inputGrouping.type}
@@ -67,17 +68,16 @@ export default function EditingStatusPanel({ entry }: EditingStatusProps) {
               defaultChecked={entry[inputGrouping.type]}
             />
           ))}
+          <Button
+            variant="outline"
+            size="small"
+            className="w-1/2"
+            appearance="success"
+          >
+            <SaveIcon /> Save editing status
+          </Button>
         </div>
       </div>
-      <input
-        type="hidden"
-        name="attributeType"
-        value={EntryEditorFormActionEnum.EDITING_STATUS}
-      />
-      <input type="hidden" name="headword" value={entry.headword} />
-      <Button variant="outline" size="small" className="mt-4 w-full">
-        Save editing status
-      </Button>
-    </Form>
+    </EntryEditorForm>
   )
 }

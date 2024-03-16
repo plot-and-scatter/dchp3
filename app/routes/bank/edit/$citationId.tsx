@@ -22,15 +22,20 @@ import BankHeadwordCitationSelect from "~/components/bank/BankHeadwordCitationSe
 import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import invariant from "tiny-invariant"
-import { parse } from "@conform-to/zod"
+import { parseWithZod } from "@conform-to/zod"
 import { bankCitationFormDataSchema } from "../create"
-import { useFieldset, useForm } from "@conform-to/react"
+import { getFormProps, useForm } from "@conform-to/react"
 
 export const action = async ({ request, params }: ActionArgs) => {
   const formData = await request.formData()
-  const submission = parse(formData, { schema: bankCitationFormDataSchema })
-  if (submission.intent !== "submit" || !submission.value) {
-    return json(submission)
+  const submission = parseWithZod(formData, {
+    schema: bankCitationFormDataSchema,
+  })
+
+  if (submission.status !== "success") {
+    return json(submission.reply(), {
+      status: submission.status === "error" ? 400 : 200,
+    })
   }
 
   const parsedData = submission.value
@@ -113,20 +118,18 @@ export default function EditCitationId() {
 
   const { citation, headwordCitations } = data
 
-  const lastSubmission = useActionData<typeof action>()
+  const lastResult = useActionData<typeof action>()
 
-  const [form, { citation: _citation }] = useForm({
-    lastSubmission,
-    shouldValidate: "onInput", // Run the same validation logic on client
-    onValidate({ formData }) {
-      return parse(formData, { schema: bankCitationFormDataSchema })
-    },
+  const [form] = useForm({
+    lastResult,
+    shouldValidate: "onBlur",
   })
 
-  const citationFields = useFieldset(form.ref, _citation)
+  // TODO: Restore this
+  // const citationFields = fields.citation.getFieldset()
 
   return (
-    <Form {...form.props} method="POST">
+    <Form {...getFormProps(form)} method="POST">
       <PageHeader>Editing citation</PageHeader>
       <BankHeadwordCitationSelect
         citations={headwordCitations}
@@ -138,7 +141,7 @@ export default function EditCitationId() {
           <BankEditCitationFields
             {...data}
             key={citation.id}
-            citationFields={citationFields}
+            // citationFields={citationFields}
           />
         </div>
         <div className="flex w-1/2 flex-col gap-y-4">

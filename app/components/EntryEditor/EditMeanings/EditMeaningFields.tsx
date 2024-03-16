@@ -119,7 +119,7 @@ export default function EditMeaningFields({
                 lightBorder
                 defaultValue={meaning.canadianism_type_comment ?? ""}
                 name="canadianismTypeComment"
-                rows={5}
+                rows={8}
                 placeholder="Enter Canadianism type comment"
               />
             }

@@ -19,6 +19,7 @@ export default function PeriodicalPanel(props: BankEditCitationFieldsProps) {
             name={`source.year_published`}
             showField={showField}
             defaultValue={source?.year_published}
+            placeholder="e.g. 1861 (numbers ONLY)"
           />
         }
       />
@@ -29,6 +30,7 @@ export default function PeriodicalPanel(props: BankEditCitationFieldsProps) {
             name={`source.year_composed`}
             showField={showField}
             defaultValue={source?.year_composed}
+            placeholder="e.g. 1793-1796 (numbers and hyphens ONLY)"
           />
         }
       />
@@ -39,17 +41,19 @@ export default function PeriodicalPanel(props: BankEditCitationFieldsProps) {
             name={`author`}
             showField={showField}
             defaultValue={source?.author?.name}
+            placeholder="e.g. Johnston, John L."
           />
         }
       />
       <LabelledField
-        label={`Title`}
+        label={`Title of Per:`}
         field={
           <TextArea
             name={`title`}
             showField={showField}
             defaultValue={source?.title?.name}
             rows={3}
+            placeholder="e.g. The Globe and Mail"
           />
         }
       />
@@ -60,6 +64,7 @@ export default function PeriodicalPanel(props: BankEditCitationFieldsProps) {
             name={`source.periodical_date`}
             showField={showField}
             defaultValue={source?.periodical_date}
+            placeholder="e.g. 31 Mar. 1849"
           />
         }
       />
@@ -70,6 +75,7 @@ export default function PeriodicalPanel(props: BankEditCitationFieldsProps) {
             name={`place`}
             showField={showField}
             defaultValue={source?.place?.name}
+            placeholder="e.g. Toronto, ON; London, UK; New York, USA"
           />
         }
       />
@@ -80,6 +86,7 @@ export default function PeriodicalPanel(props: BankEditCitationFieldsProps) {
             name={`source.dateline`}
             showField={showField}
             defaultValue={source?.dateline}
+            placeholder="e.g. "
           />
         }
       />
@@ -90,6 +97,7 @@ export default function PeriodicalPanel(props: BankEditCitationFieldsProps) {
             name={`source.volume_issue`}
             showField={showField}
             defaultValue={source?.volume_issue}
+            placeholder="e.g. 29(4) — only when applicable (numbers and parentheses ONLY)"
           />
         }
       />
@@ -100,6 +108,7 @@ export default function PeriodicalPanel(props: BankEditCitationFieldsProps) {
             name={`source.url`}
             showField={showField}
             defaultValue={source?.url}
+            placeholder="enter URL if electronic resource"
           />
         }
       />
@@ -110,6 +119,7 @@ export default function PeriodicalPanel(props: BankEditCitationFieldsProps) {
             name={`source.url_access_date`}
             showField={showField}
             defaultValue={source?.url_access_date}
+            placeholder="e.g. 1 Jul. 2007"
           />
         }
       />
@@ -120,6 +130,7 @@ export default function PeriodicalPanel(props: BankEditCitationFieldsProps) {
             name={`source.page`}
             showField={showField}
             defaultValue={source?.page}
+            placeholder="e.g. B13"
           />
         }
       />

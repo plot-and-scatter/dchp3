@@ -18,6 +18,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
             name={`source.year_published`}
             showField={showField}
             defaultValue={source?.year_published}
+            placeholder="if no other indicator, access year, e.g. 2008"
           />
         }
       />
@@ -28,6 +29,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
             name={`source.year_composed`}
             showField={showField}
             defaultValue={source?.year_composed}
+            placeholder="if older text reprinted on site, e.g. 1971"
           />
         }
       />
@@ -38,6 +40,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
             name={`title`}
             showField={showField}
             defaultValue={source?.title?.name}
+            placeholder="e.g. DCHP-3 Homepage, UBC Homepage"
           />
         }
       />
@@ -48,6 +51,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
             name={`source.periodical_date`}
             showField={showField}
             defaultValue={source?.periodical_date}
+            placeholder="if available, e.g. 31 Mar. 2006"
           />
         }
       />
@@ -58,6 +62,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
             name={`author`}
             showField={showField}
             defaultValue={source?.author?.name}
+            placeholder="e.g. Johnston, John L."
           />
         }
       />
@@ -69,6 +74,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
             name={`place`}
             showField={showField}
             defaultValue={source?.place?.name}
+            placeholder="e.g. Toronto, ON; London, UK; New York, USA"
           />
         }
       />
@@ -79,6 +85,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
             name={`source.url`}
             showField={showField}
             defaultValue={source?.url}
+            placeholder="enter URL if electronic resource"
           />
         }
       />
@@ -89,6 +96,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
             name={`source.url_access_date`}
             showField={showField}
             defaultValue={source?.url_access_date}
+            placeholder="e.g. 1 Jul. 2007"
           />
         }
       />
@@ -99,6 +107,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
             name={`source.evidence`}
             showField={showField}
             defaultValue={source?.evidence}
+            placeholder="e.g. author says she is an Edmontonian"
           />
         }
       />

@@ -2,6 +2,7 @@ import { prisma } from "~/db.server"
 import { z } from "zod"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { ZCheckboxValueToBoolean } from "../ZCheckboxValueToBoolean"
+import { ZPositiveInt } from "../ZPositiveInt"
 
 // const EditingStatusMap: Record<EditingStatusTypeEnum, string> = {
 //   [EditingStatusTypeEnum.FIRST_DRAFT]: "first_draft",
@@ -18,7 +19,7 @@ import { ZCheckboxValueToBoolean } from "../ZCheckboxValueToBoolean"
 export const UpdateEditingStatusSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.EDITING_STATUS),
-    headword: z.string(),
+    entryId: ZPositiveInt,
     first_draft: ZCheckboxValueToBoolean,
     revised_draft: ZCheckboxValueToBoolean,
     semantically_revised: ZCheckboxValueToBoolean,
@@ -34,10 +35,10 @@ export const UpdateEditingStatusSchema = z
 export async function updateEditingStatus(
   data: z.infer<typeof UpdateEditingStatusSchema>
 ) {
-  const { entryEditorFormAction, headword, ...rest } = data
+  const { entryEditorFormAction, entryId, ...rest } = data
 
   await prisma.entry.update({
-    where: { headword },
+    where: { id: entryId },
     data: { ...rest },
   })
 
