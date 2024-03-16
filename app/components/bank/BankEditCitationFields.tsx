@@ -31,6 +31,7 @@ export default function BankEditCitationFields({
             conformField={citationFields?.headword}
             name="citation.headword"
             defaultValue={citation?.headword?.headword}
+            placeholder="e.g. Canuck"
           />
         }
       />
@@ -41,6 +42,7 @@ export default function BankEditCitationFields({
             conformField={citationFields?.short_meaning}
             name="citation.short_meaning"
             defaultValue={citation?.short_meaning}
+            placeholder="e.g. Native of Canada"
           />
         }
       />
@@ -50,6 +52,7 @@ export default function BankEditCitationFields({
           <Input
             name="citation.spelling_variant"
             defaultValue={citation?.spelling_variant}
+            placeholder="e.g. Kanuck (as it appears in citation)"
           />
         }
       />
@@ -86,7 +89,12 @@ export default function BankEditCitationFields({
       <LabelledField
         label={`Memo`}
         field={
-          <TextArea name={`citation.memo`} defaultValue={citation?.memo} />
+          <TextArea
+            rows={3}
+            name={`citation.memo`}
+            defaultValue={citation?.memo}
+            placeholder="information that pertains to this particular citation but cannot be entered elsewhere, e.g. meaning_short is ambiguous, even with more context than shown here"
+          />
         }
       />
       <LabelledField

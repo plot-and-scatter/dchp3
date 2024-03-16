@@ -20,6 +20,7 @@ export default function SpokenLanguagePanel(
             name={`source.year_published`}
             showField={showField}
             defaultValue={source?.year_published}
+            placeholder="e.g. 2007"
           />
         }
       />
@@ -30,6 +31,7 @@ export default function SpokenLanguagePanel(
             name={`source.year_composed`}
             showField={showField}
             defaultValue={source?.year_composed}
+            placeholder="if recorded, e.g. 1981"
           />
         }
       />
@@ -40,6 +42,7 @@ export default function SpokenLanguagePanel(
             name={`author`}
             showField={showField}
             defaultValue={source?.author?.name}
+            placeholder="e.g. Johnston, John L."
           />
         }
       />
@@ -50,6 +53,7 @@ export default function SpokenLanguagePanel(
             name={`source.utterance_media`}
             showField={showField}
             defaultValue={source?.utterance_media}
+            placeholder="e.g. CBC Radio One"
           />
         }
       />
@@ -60,6 +64,7 @@ export default function SpokenLanguagePanel(
             name={`source.utterance_broadcast`}
             showField={showField}
             defaultValue={source?.utterance_broadcast}
+            placeholder="e.g. Quirks and Quarks"
           />
         }
       />
@@ -70,6 +75,7 @@ export default function SpokenLanguagePanel(
             name={`source.periodical_date`}
             showField={showField}
             defaultValue={source?.periodical_date}
+            placeholder="if available, e.g. 17 May 1981"
           />
         }
       />
@@ -80,6 +86,7 @@ export default function SpokenLanguagePanel(
             name={`source.utterance_time`}
             showField={showField}
             defaultValue={source?.utterance_time}
+            placeholder="e.g. 1:15 PM"
           />
         }
       />
@@ -90,6 +97,7 @@ export default function SpokenLanguagePanel(
             name={`place`}
             showField={showField}
             defaultValue={source?.place?.name}
+            placeholder="e.g. Toronto, ON; London, UK; New York, USA"
           />
         }
       />
@@ -100,6 +108,7 @@ export default function SpokenLanguagePanel(
             name={`source.utterance_witness`}
             showField={showField}
             defaultValue={source?.utterance_witness}
+            placeholder="e.g. Fee, Margery"
           />
         }
       />
@@ -110,6 +119,7 @@ export default function SpokenLanguagePanel(
             name={`source.url`}
             showField={showField}
             defaultValue={source?.url}
+            placeholder="enter URL if electronic resource"
           />
         }
       />
@@ -120,6 +130,7 @@ export default function SpokenLanguagePanel(
             name={`source.url_access_date`}
             showField={showField}
             defaultValue={source?.url_access_date}
+            placeholder="e.g. 1 Jul. 2007"
           />
         }
       />

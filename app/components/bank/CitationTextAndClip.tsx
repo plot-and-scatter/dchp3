@@ -18,6 +18,7 @@ export default function CitationTextAndClip({
         label={`Citation`}
         field={
           <TextArea
+            placeholder="use [...] to leave out text. Code for <u>text</u> underscore, <b>text</b> bold, and <i>text</i> italics"
             name="citation.text"
             defaultValue={citation?.text}
             rows={10}
