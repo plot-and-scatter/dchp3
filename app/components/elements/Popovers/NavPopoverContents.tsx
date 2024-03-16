@@ -68,7 +68,7 @@ export default function NavPopoverContents({
     <>
       <div className="relative grid gap-2 bg-white p-4">
         {navItems.map((ni) => (
-          <NavItem key={ni.href} {...ni} />
+          <NavItem key={`${ni.name}-${ni.href}`} {...ni} />
         ))}
       </div>
     </>

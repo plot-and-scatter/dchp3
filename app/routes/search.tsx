@@ -15,8 +15,8 @@ import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 import FAIcon from "~/components/elements/Icons/FAIcon"
 import Main from "~/components/elements/Layouts/Main"
 import Input from "~/components/bank/Input"
-import { useForm } from "@conform-to/react"
-import { parse } from "@conform-to/zod"
+import { getFormProps, useForm } from "@conform-to/react"
+import { parseWithZod } from "@conform-to/zod"
 
 const searchActionSchema = z.object({
   searchTerm: z
@@ -35,10 +35,12 @@ const searchActionSchema = z.object({
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData()
 
-  const submission = parse(formData, { schema: searchActionSchema })
+  const submission = parseWithZod(formData, { schema: searchActionSchema })
 
-  if (submission.intent !== "submit" || !submission.value) {
-    return json(submission)
+  if (submission.status !== "success") {
+    return json(submission.reply(), {
+      status: submission.status === "error" ? 400 : 200,
+    })
   }
 
   // TODO: Is there an easier way to directly translate these validated form
@@ -66,13 +68,13 @@ export default function SearchPage() {
   const params = useParams<{ searchTerm?: string }>()
   const currentAttribute = searchParams.get("attribute") ?? SearchResultEnum.ALL
 
-  const lastSubmission = useActionData<typeof action>()
+  const lastResult = useActionData<typeof action>()
 
   const [form, fields] = useForm({
-    lastSubmission,
+    lastResult,
     shouldValidate: "onInput", // Run the same validation logic on client
     onValidate({ formData }) {
-      return parse(formData, { schema: searchActionSchema })
+      return parseWithZod(formData, { schema: searchActionSchema })
     },
   })
 
@@ -80,7 +82,7 @@ export default function SearchPage() {
     <Main center>
       <PageHeader>Search entries</PageHeader>
       <Form
-        {...form.props}
+        {...getFormProps(form)}
         className="flex flex-col gap-4 lg:flex-row lg:gap-8"
         method="post"
       >
@@ -113,7 +115,7 @@ export default function SearchPage() {
                   {
                     label: "Case sensitive search",
                     value: "on",
-                    defaultChecked: true,
+                    defaultChecked: false,
                   },
                 ]}
               />

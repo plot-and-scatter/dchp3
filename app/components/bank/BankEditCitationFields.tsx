@@ -63,7 +63,10 @@ export default function BankEditCitationFields({
           />
         }
       />
-      <CitationTextAndClip citation={citation} />
+      <CitationTextAndClip
+        citation={citation}
+        citationFields={citationFields}
+      />
       {citation && (
         <>
           <LabelledField
