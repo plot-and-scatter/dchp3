@@ -79,6 +79,7 @@ const Headword = ({ entry, isEditingMode }: HeadwordProps): JSX.Element => {
   if (isEditingMode) {
     return (
       <EntryEditorForm
+        reloadDocument={true}
         entry={entry}
         formAction={EntryEditorFormActionEnum.UPDATE_ENTRY}
         className="rounded border border-gray-400 p-8 shadow-lg"

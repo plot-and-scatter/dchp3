@@ -9,7 +9,7 @@ export const UpdateOrDeleteDefinitionFistNoteSchema = z
       EntryEditorFormActionEnum.DEFINITION_FIST_NOTE
     ),
     usageNoteId: ZPositiveInt,
-    usageNoteText: z.string(),
+    usageNoteText: z.string().optional(),
   })
   .strict()
 
@@ -19,7 +19,7 @@ export async function updateOrDeleteDefinitionFistNote(
   const { usageNoteId, usageNoteText } = data
 
   // Delete if the text is zero; otherwise, update.
-  if (usageNoteText === "") {
+  if (!usageNoteText) {
     await prisma.usageNote.delete({
       where: { id: usageNoteId },
     })

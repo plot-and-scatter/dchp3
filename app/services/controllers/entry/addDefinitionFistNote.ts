@@ -8,7 +8,7 @@ export const AddDefinitionFistNoteSchema = z
     entryEditorFormAction: z.literal(
       EntryEditorFormActionEnum.ADD_DEFINITION_FIST_NOTE
     ),
-    text: z.string(),
+    text: z.string().optional(),
     meaningId: ZPositiveInt,
   })
   .strict()
@@ -19,7 +19,7 @@ export async function addDefinitionFistNote(
   await prisma.usageNote.create({
     data: {
       meaning_id: data.meaningId,
-      text: data.text,
+      text: data.text || "",
     },
   })
 }

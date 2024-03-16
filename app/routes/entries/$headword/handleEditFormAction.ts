@@ -128,6 +128,7 @@ export async function handleEditFormAction(formData: FormData) {
     await actionMap[action](
       submission.value as Extract<SubmissionValue, typeof action>
     )
+    return submission
   } else {
     throw new Error(`No action found for ${action}`)
   }

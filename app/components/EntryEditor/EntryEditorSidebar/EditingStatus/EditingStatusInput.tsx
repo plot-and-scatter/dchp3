@@ -1,5 +1,5 @@
-import { useState } from "react"
 import type { EditingStatusTypeEnum } from "./EditingStatusTypeEnum"
+import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 
 export type EditingStatusInputProps = {
   type: EditingStatusTypeEnum
@@ -12,20 +12,21 @@ export default function EditingStatusInput({
   label,
   defaultChecked,
 }: EditingStatusInputProps) {
-  const [checked, setChecked] = useState(defaultChecked)
-
   return (
-    <label className="text-sm">
-      <input
-        name={type}
-        className="mr-2"
+    <div className="w-1/2 text-sm">
+      <RadioOrCheckbox
         type="checkbox"
-        checked={checked}
-        onChange={(e) => {
-          setChecked(e.target.checked)
-        }}
+        name={type}
+        optionSetClassName="flex gap-x-2"
+        inputClassName=" border border-gray-300"
+        options={[
+          {
+            label,
+            value: "true",
+            defaultChecked,
+          },
+        ]}
       />
-      {label}
-    </label>
+    </div>
   )
 }

@@ -22,6 +22,7 @@ export default function QuotationList({
     <div className="flex flex-col gap-y-2">
       {citations
         .map((c) => c.citation)
+        .filter((c) => c) // Filter out falsys
         .sort((a, b) => {
           if (!a || !b) return 0
           const aYearComp = a.yearcomp ? a.yearcomp.split("-")[0] : ""
@@ -32,9 +33,13 @@ export default function QuotationList({
             parseInt(aYearComp || aYearPub) - parseInt(bYearComp || bYearPub)
           )
         })
-        .map((c) => {
-          return <CitationItem key={c?.id} meaningId={meaningId} citation={c} />
-        })}
+        .map((c) => (
+          <CitationItem
+            key={`${meaningId}-${c?.id}`}
+            meaningId={meaningId}
+            citation={c}
+          />
+        ))}
     </div>
   )
 }
@@ -42,7 +47,7 @@ export default function QuotationList({
 type Citation = CitationType["citation"]
 
 interface CitationItemProps {
-  key: number | undefined
+  key: string
   meaningId: number
   citation: Citation
 }

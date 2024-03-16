@@ -8,12 +8,12 @@ export const UpdateMeaningSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.UPDATE_MEANING),
     meaningId: ZPositiveInt,
-    definition: z.string(),
-    order: z.string(),
-    partOfSpeech: z.string(),
-    canadianismType: z.string(),
-    canadianismTypeComment: z.string(),
-    usage: z.string(),
+    definition: z.string().optional(),
+    order: z.string().optional(),
+    partOfSpeech: z.string().optional(),
+    canadianismType: z.string().optional(),
+    canadianismTypeComment: z.string().optional(),
+    usage: z.string().optional(),
     dagger: ZCheckboxValueToBoolean,
   })
   .strict()
