@@ -7,6 +7,9 @@ import SaveIcon from "~/components/elements/Icons/SaveIcon"
 import TopLabelledField from "~/components/bank/TopLabelledField"
 import Input from "~/components/bank/Input"
 import AddIcon from "~/components/elements/Icons/AddIcon"
+// import { useActionData } from "@remix-run/react"
+// import type { action as EntryEditorAction } from "~/routes/entries/$headword/edit"
+// import { getFormProps, useForm } from "@conform-to/react"
 
 interface AddSeeAlsoProps {
   meaning: MeaningType
@@ -14,12 +17,20 @@ interface AddSeeAlsoProps {
 }
 
 export default function AddSeeAlso({ meaning, headword }: AddSeeAlsoProps) {
+  // const lastResult = useActionData<typeof EntryEditorAction>()
+
+  // const [form] = useForm({
+  //   lastResult,
+  //   shouldValidate: "onBlur",
+  // })
+
   return (
     <MeaningEditorForm
       headword={headword}
       meaning={meaning}
       formAction={EntryEditorFormActionEnum.ADD_SEE_ALSO}
       className={"mt-4 rounded border border-red-400 bg-red-100 p-4 shadow"}
+      // {...getFormProps(form)}
     >
       <h4 className="mb-4 text-base font-bold">
         <AddIcon /> Add see also

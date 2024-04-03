@@ -50,17 +50,25 @@ export default function AddImageForm({ entry }: AddImageFormProps) {
       <LabelledField
         breakAfterLabel
         label="Order"
-        field={<Input name="order" type="number" />}
+        field={
+          <Input lightBorder name="order" type="number" placeholder="e.g. 1" />
+        }
       />
       <LabelledField
         breakAfterLabel
         label="Caption"
-        field={<Input name="caption" />}
+        field={
+          <Input
+            name="caption"
+            lightBorder
+            placeholder="e.g. An image of a canoe"
+          />
+        }
       />
       <>
         <div className="mt-2 flex flex-row items-center gap-x-4">
           <label
-            className="block w-fit cursor-pointer rounded border border-gray-700 py-2 px-4 font-semibold transition-colors"
+            className="block w-fit cursor-pointer rounded border border-gray-500 py-2 px-4 font-semibold transition-colors"
             htmlFor="imageFile"
           >
             <i className="fa-sharp fa-regular fa-file-csv mr-2" /> Choose an

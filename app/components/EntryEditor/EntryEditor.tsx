@@ -3,6 +3,7 @@ import EntryEditorSidebar from "./EntryEditorSidebar/EntryEditorSidebar"
 import Headword from "../Entry/Headword/Headword"
 import ImageEditingForm from "~/components/EntryEditor/EditImages/ImageEditingForm"
 import type { EntryEditLoaderData } from "~/routes/entries/$headword/edit"
+import EditReferences from "./EditReferences/EditReferences"
 
 export default function EntryEditor({ entry }: EntryEditLoaderData) {
   return (
@@ -19,6 +20,7 @@ export default function EntryEditor({ entry }: EntryEditLoaderData) {
         </div>
         <div className="mt-12">
           <EditMeanings data={entry} />
+          <EditReferences entry={entry} />
           <ImageEditingForm data={entry} />
         </div>
       </div>

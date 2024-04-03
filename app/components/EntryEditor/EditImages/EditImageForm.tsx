@@ -4,6 +4,7 @@ import LabelledField from "~/components/bank/LabelledField"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import { EntryEditorFormActionEnum } from "../EntryEditorForm/EntryEditorFormActionEnum"
+import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
 
 type EditImageFormProps = {
   entry: LoadedEntryDataType
@@ -31,6 +32,7 @@ export default function EditImageForm({ entry, image }: EditImageFormProps) {
                 name="order"
                 type="number"
                 defaultValue={image.order}
+                lightBorder
               />
             }
           />
@@ -43,6 +45,7 @@ export default function EditImageForm({ entry, image }: EditImageFormProps) {
             name="caption"
             placeholder="Image caption"
             defaultValue={image.caption}
+            lightBorder
           />
         </div>
       </Form>
@@ -62,12 +65,14 @@ export default function EditImageForm({ entry, image }: EditImageFormProps) {
           <Button
             size="small"
             appearance="danger"
+            variant="outline"
             onClick={(e) => {
               if (!confirm("Are you sure you want to delete this image?")) {
                 e.preventDefault()
               }
             }}
           >
+            <DeleteIcon className="mr-2" />
             Delete
           </Button>
         </Form>

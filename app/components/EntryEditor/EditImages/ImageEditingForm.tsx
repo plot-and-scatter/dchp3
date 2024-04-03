@@ -2,6 +2,7 @@ import EditImageForm from "~/components/EntryEditor/EditImages/EditImageForm"
 import { type LoadedEntryDataType } from "../../../routes/entries/$headword"
 import AddImageForm from "~/components/EntryEditor/EditImages/AddImageForm"
 import EditIcon from "../../elements/Icons/EditIcon"
+import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 
 interface ImageEditingFormProps {
   data: LoadedEntryDataType
@@ -13,9 +14,9 @@ export default function ImageEditingForm({ data }: ImageEditingFormProps) {
   return (
     <div className="my-12 rounded border border-gray-400 bg-gray-50 p-4 shadow-lg">
       <div>
-        <h1 className="mb-5 text-2xl font-bold">
+        <SecondaryHeader>
           <EditIcon /> Edit images
-        </h1>
+        </SecondaryHeader>
         <div className="grid grid-cols-2 gap-4">
           {images.map((image) => (
             <div

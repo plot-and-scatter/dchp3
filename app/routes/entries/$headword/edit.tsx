@@ -10,6 +10,7 @@ import {
   type ActionArgs,
   type LoaderArgs,
   redirect,
+  json,
 } from "@remix-run/node"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 
@@ -22,26 +23,30 @@ export async function action({ params, request }: ActionArgs) {
 
   const formData = await request.formData()
 
-  const result = await handleEditFormAction(formData)
+  const submission = await handleEditFormAction(formData)
+
+  if (submission.status !== "success") {
+    return json(submission.reply(), {
+      status: submission.status === "error" ? 400 : 200,
+    })
+  }
 
   const headword = params.headword
 
-  console.log("result", result.value.entryEditorFormAction)
+  console.log("result", submission.value.entryEditorFormAction)
 
   // Headword may have changed and data.headword exists; redirect if so
   if (
-    result.value.entryEditorFormAction ===
+    submission.value.entryEditorFormAction ===
     EntryEditorFormActionEnum.UPDATE_ENTRY
   ) {
-    console.log("==> Redirecting....")
-    await updateLogEntries(result.value.headword, request)
-    return redirect(`/entries/${result.value.headword}/edit`)
+    await updateLogEntries(submission.value.headword, request)
+    return redirect(`/entries/${submission.value.headword}/edit`)
   } else {
-    console.log("==> No change.")
     await updateLogEntries(headword, request)
   }
 
-  return null
+  return json(submission.reply())
 }
 
 export async function loader({ request, params }: LoaderArgs) {

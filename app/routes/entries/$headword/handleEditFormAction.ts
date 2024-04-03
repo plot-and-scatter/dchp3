@@ -48,7 +48,6 @@ import {
   updateOrDeleteDefinitionFistNote,
 } from "~/services/controllers/entry/updateOrDeleteDefinitionFistNote"
 import { parseWithZod } from "@conform-to/zod"
-import { json } from "@remix-run/server-runtime"
 import { z } from "zod"
 import {
   UpdateEntrySchema,
@@ -63,6 +62,15 @@ import {
   UpdateImageSchema,
   updateImage,
 } from "~/services/controllers/image/updateImage"
+import {
+  AddReferenceSchema,
+  addReference,
+} from "~/services/controllers/entry/addReference"
+import {
+  DeleteReferenceSchema,
+  deleteReference,
+} from "~/services/controllers/entry/deleteReference"
+import { deleteReferenceById } from "~/models/reference.server"
 
 const unionSchema = z.discriminatedUnion("entryEditorFormAction", [
   UpdateEntrySchema,
@@ -81,6 +89,8 @@ const unionSchema = z.discriminatedUnion("entryEditorFormAction", [
   AddImageSchema,
   DeleteImageSchema,
   UpdateImageSchema,
+  AddReferenceSchema,
+  DeleteReferenceSchema,
 ])
 
 type ActionMap = {
@@ -107,6 +117,8 @@ const actionMap: ActionMap = {
   [EntryEditorFormActionEnum.DELETE_IMAGE]: deleteImage,
   [EntryEditorFormActionEnum.ADD_IMAGE]: addImage,
   [EntryEditorFormActionEnum.EDIT_IMAGE]: updateImage,
+  [EntryEditorFormActionEnum.ADD_REFERENCE]: addReference,
+  [EntryEditorFormActionEnum.DELETE_REFERENCE]: deleteReference,
 }
 
 type SubmissionValue = z.infer<typeof unionSchema>
@@ -116,20 +128,19 @@ export async function handleEditFormAction(formData: FormData) {
 
   console.log(submission)
 
-  // TODO: When we link this up with the form that actually shows errors,
-  // we can remove this.
   if (submission.status !== "success") {
-    throw new Error(JSON.stringify(submission.error))
+    throw new Error(`Error with submission: ${JSON.stringify(submission)}`)
   }
 
   const action = submission.value.entryEditorFormAction
 
-  if (actionMap[action]) {
-    await actionMap[action](
-      submission.value as Extract<SubmissionValue, typeof action>
-    )
-    return submission
-  } else {
+  if (!actionMap[action]) {
     throw new Error(`No action found for ${action}`)
   }
+
+  await actionMap[action](
+    submission.value as Extract<SubmissionValue, typeof action>
+  )
+
+  return submission
 }
