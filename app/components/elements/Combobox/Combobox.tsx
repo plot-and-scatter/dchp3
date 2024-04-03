@@ -2,6 +2,7 @@ import { Fragment, useState } from "react"
 import { Combobox as HeadlessCombobox, Transition } from "@headlessui/react"
 import FAIcon from "../Icons/FAIcon"
 import type { InputOption } from "~/components/bank/InputOption"
+import SanitizedTextSpan from "~/components/Entry/Common/SanitizedTextSpan"
 
 type ComboboxProps = React.SelectHTMLAttributes<HTMLInputElement> & {
   conformField?: any
@@ -23,26 +24,26 @@ export default function Combobox({
   showCount,
   ...rest
 }: ComboboxProps) {
-  const [selected, setSelected] = useState<InputOption>()
+  const [selectedOption, setSelectedOption] = useState<InputOption>()
 
   return (
-    <div className="w-72">
+    <div>
       <HeadlessCombobox
-        value={selected}
-        onChange={(e) => setSelected(e)}
+        value={selectedOption}
+        onChange={(e) => setSelectedOption(e)}
         by={(a, b) => a?.value === b?.value}
+        name={name}
       >
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded text-left">
             <HeadlessCombobox.Input
               className="w-full rounded border border-gray-300 py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-              displayValue={(person: InputOption) => person?.label}
+              displayValue={(option: InputOption) => option?.label}
               onChange={(event) => {
                 if (onChange) {
                   onChange(event)
                 }
               }}
-              name={name}
               {...rest}
             />
             <HeadlessCombobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -82,7 +83,7 @@ export default function Combobox({
                             selected ? "font-medium" : "font-normal"
                           }`}
                         >
-                          {option.label}
+                          <SanitizedTextSpan text={option.label} />
                         </span>
                         {selected ? (
                           <span

@@ -7,14 +7,15 @@ export const AddSeeAlsoSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_SEE_ALSO),
     meaningId: ZPositiveInt,
-    headword: z.string(),
+    [`headword[label]`]: z.string(),
+    [`headword[value]`]: ZPositiveInt,
     linkNote: z.string().optional(),
   })
   .strict()
 
 // TODO: Isn't there a way we could do this using the entryId instead...?
 export async function addSeeAlso(data: z.infer<typeof AddSeeAlsoSchema>) {
-  const { headword } = data
+  const headword = data[`headword[label]`]
 
   const entry = await prisma.entry.findUnique({ where: { headword } })
 
