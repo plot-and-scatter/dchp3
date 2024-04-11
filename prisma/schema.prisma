@@ -59,7 +59,7 @@ model BankCitation {
 model MeaningDetCitations {
   meaning_id  Int
   citation_id Int
-  meaning     Meaning?         @relation(fields: [meaning_id], references: [id])
+  meaning     Meaning?         @relation(fields: [meaning_id], references: [id], onDelete: Cascade)
   // citation    DetCitation? @relation(fields: [citation_id], references: [id])
   citation    DetBibliography? @relation(fields: [citation_id], references: [id])
 
@@ -165,8 +165,8 @@ model SeeAlso {
   entry_id   Int
   linknote   String  @db.VarChar(50)
   headword   String? @db.VarChar(255)
-  meaning    Meaning @relation(fields: [meaning_id], references: [id])
-  entry      Entry   @relation(fields: [entry_id], references: [id])
+  meaning    Meaning @relation(fields: [meaning_id], references: [id], onDelete: Cascade)
+  entry      Entry   @relation(fields: [entry_id], references: [id], onDelete: Cascade)
 
   @@id([meaning_id, entry_id])
   @@index([entry_id], map: "det_entries_meanings_entry_id_idxfk")
@@ -183,8 +183,8 @@ model ReferenceLink {
   link_text     String?   @db.VarChar(100)
   link_target   String?   @db.VarChar(1000)
   date_accessed DateTime? @db.DateTime(0)
-  reference     Reference @relation(fields: [reference_id], references: [id])
-  entry         Entry     @relation(fields: [entry_id], references: [id])
+  reference     Reference @relation(fields: [reference_id], references: [id], onDelete: Cascade)
+  entry         Entry     @relation(fields: [entry_id], references: [id], onDelete: Cascade)
 
   @@index([reference_id], map: "det_citations_meanings_citation_id_idx")
   @@index([entry_id], map: "det_citations_meanings_meaning_id_idxfk")
@@ -198,7 +198,7 @@ model Image {
   entry_id Int
   scale    Float?
   order    Int?
-  Entry    Entry?  @relation(fields: [entry_id], references: [id])
+  Entry    Entry?  @relation(fields: [entry_id], references: [id], onDelete: Cascade)
 
   @@map("det_images")
 }
@@ -235,7 +235,7 @@ model Meaning {
   canadianism_type_comment String?               @db.Text
   order                    String?               @db.VarChar(10)
   dagger                   Boolean
-  entry                    Entry                 @relation(fields: [entry_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  entry                    Entry                 @relation(fields: [entry_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   citations                MeaningDetCitations[]
   seeAlso                  SeeAlso[]
   usageNotes               UsageNote[]
@@ -257,7 +257,7 @@ model UsageNote {
   id         Int     @id @default(autoincrement())
   meaning_id Int
   text       String  @db.Text
-  meaning    Meaning @relation(fields: [meaning_id], references: [id])
+  meaning    Meaning @relation(fields: [meaning_id], references: [id], onDelete: Cascade)
 
   @@index([meaning_id], map: "meaning_id_idxfk")
   @@map("det_usage_notes")

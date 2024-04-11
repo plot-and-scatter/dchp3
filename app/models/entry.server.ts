@@ -106,12 +106,12 @@ export async function insertEntry(
     data: {
       id: undefined,
       headword: headword,
-      first_field: "first field",
+      first_field: "",
       etymology: etymology,
       is_legacy: isLegacy,
       is_public: false,
       spelling_variants: spellingVariants,
-      superscript: "Superscript",
+      superscript: "",
       dagger: dagger,
       general_labels: generalLabels,
       proofing_status: 1,
@@ -179,8 +179,8 @@ export async function updateLogEntries(headword: string, request: Request) {
   const userId = await getUserId(request)
   const currentTime = new Date()
 
-  invariant(entry)
-  invariant(userId)
+  invariant(entry, `Entry with headword "${headword}" not found`)
+  invariant(userId, `User ID not found`)
 
   await prisma.logEntry.create({
     data: { entry_id: entry.id, user_id: userId, created: currentTime },

@@ -70,10 +70,14 @@ import {
   DeleteReferenceSchema,
   deleteReference,
 } from "~/services/controllers/entry/deleteReference"
-import { deleteReferenceById } from "~/models/reference.server"
+import {
+  DeleteEntrySchema,
+  deleteEntry,
+} from "~/services/controllers/entry/deleteEntry"
 
 const unionSchema = z.discriminatedUnion("entryEditorFormAction", [
   UpdateEntrySchema,
+  DeleteEntrySchema,
   AddMeaningToEntrySchema,
   UpdateMeaningSchema,
   DeleteMeaningSchema,
@@ -101,6 +105,7 @@ type ActionMap = {
 
 const actionMap: ActionMap = {
   [EntryEditorFormActionEnum.UPDATE_ENTRY]: updateEntry,
+  [EntryEditorFormActionEnum.DELETE_ENTRY]: deleteEntry,
   [EntryEditorFormActionEnum.ADD_MEANING]: addMeaningToEntry,
   [EntryEditorFormActionEnum.UPDATE_MEANING]: updateMeaning,
   [EntryEditorFormActionEnum.DELETE_MEANING]: deleteMeaning,

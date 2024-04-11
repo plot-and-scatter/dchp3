@@ -21,6 +21,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       asLink,
       className,
       children,
+      disabled,
       ...rest
     }: ButtonProps,
     ref
@@ -32,7 +33,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         !asLink
           ? [buttonAppearanceClass(appearance, variant), buttonSizeClass(size)]
           : linkAppearanceClass(appearance),
-        className
+        className,
+        disabled && "cursor-not-allowed opacity-50"
       )}
       {...rest}
     >
