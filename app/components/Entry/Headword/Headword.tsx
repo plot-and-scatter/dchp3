@@ -15,6 +15,8 @@ import NonCanadianism from "./NonCanadianism"
 import SaveIcon from "../../elements/Icons/SaveIcon"
 import SpellingVariants from "./SpellingVariants"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
+import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
+import HeadwordDeleteButton from "./HeadwordDeleteButton"
 
 interface HeadwordProps {
   entry: LoadedEntryDataType
@@ -73,27 +75,41 @@ const Headword = ({ entry, isEditingMode }: HeadwordProps): JSX.Element => {
           </p>
         </div>
       )}
+      {entry.dchp_version === "dchp1" && !isEditingMode && (
+        <div className="border border-amber-700 bg-amber-200 p-3">
+          <TertiaryHeader>Entry from the DCHP-1 (pre-1967)</TertiaryHeader>
+          <p>
+            This entry may contain outdated or offensive information, terms, and
+            examples.
+          </p>
+        </div>
+      )}
     </div>
   )
 
   if (isEditingMode) {
     return (
-      <EntryEditorForm
-        reloadDocument={true}
-        entry={entry}
-        formAction={EntryEditorFormActionEnum.UPDATE_ENTRY}
-        className="rounded border border-gray-400 p-8 shadow-lg"
-      >
-        <SecondaryHeader>
-          <EditIcon /> Edit headword
-        </SecondaryHeader>
-        {contents}
-        <div className="mt-8">
-          <Button appearance="success" size="large">
-            <SaveIcon /> Save changes to headword
-          </Button>
+      <div className="rounded border border-gray-400 p-8 shadow-lg">
+        <div className="mb-6 flex items-center justify-between">
+          <SecondaryHeader noMargin>
+            <EditIcon /> Edit headword
+          </SecondaryHeader>
+          <HeadwordDeleteButton entry={entry} />
         </div>
-      </EntryEditorForm>
+        {contents}
+        <div className="mt-8 flex items-center justify-between">
+          <EntryEditorForm
+            reloadDocument={true}
+            entry={entry}
+            formAction={EntryEditorFormActionEnum.UPDATE_ENTRY}
+          >
+            <Button appearance="success" size="large">
+              <SaveIcon /> Save changes to headword
+            </Button>
+          </EntryEditorForm>
+          <span className="text-gray-400">Entry ID: {entry.id}</span>
+        </div>
+      </div>
     )
   }
 

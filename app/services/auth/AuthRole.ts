@@ -27,6 +27,7 @@ const STUDENT_EDITOR_PERMISSIONS: AuthPermission[] = [
   "bank:editOwn",
   "det:createDraft",
   "det:editOwn",
+  "det:viewEdits",
 ]
 const RESEARCH_ASSISTANT_PERMISSIONS: AuthPermission[] = [
   ...STUDENT_EDITOR_PERMISSIONS,

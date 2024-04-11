@@ -11,19 +11,27 @@ import invariant from "tiny-invariant"
 import type { LoaderArgs } from "@remix-run/node"
 import PaginationControl from "~/components/bank/PaginationControl"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
+import { userHasPermission } from "~/services/auth/session.server"
+import DraftLabel from "~/components/elements/Labels/DraftLabel"
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ request, params }: LoaderArgs) {
   const { initialLetters, pageNumber } = params
 
   invariant(initialLetters, "initialLetters not found")
   invariant(pageNumber, "pageNumber not found")
 
-  const countResult = await countEntriesByInitialLetters(initialLetters)
+  const isUserAdmin = await userHasPermission(request, "det:viewEdits")
+
+  const countResult = await countEntriesByInitialLetters(
+    initialLetters,
+    isUserAdmin
+  )
   const entryCount = Number(countResult[0].count)
 
   const entries = await getEntriesByInitialLettersAndPage(
     initialLetters,
-    pageNumber
+    pageNumber,
+    isUserAdmin
   )
 
   if (!entries) {
@@ -58,9 +66,12 @@ export default function EntryDetailsPage() {
       <hr className="my-4" />
       <div className="my-4 flex flex-col gap-y-1">
         {entries.map((e) => (
-          <Link to={`/entries/${e.headword}`} bold key={e.id}>
-            {e.headword}
-          </Link>
+          <p key={e.id} className="flex items-center">
+            <Link to={`/entries/${e.headword}`} bold key={e.id}>
+              {e.headword}
+            </Link>
+            <DraftLabel isPublic={e.is_public} />
+          </p>
         ))}
       </div>
       <hr className="my-4" />

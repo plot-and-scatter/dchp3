@@ -8,7 +8,8 @@ import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary
 import { Form, useActionData } from "@remix-run/react"
 import { getEmailFromSession } from "~/services/auth/session.server"
 import { getUserIdByEmailOrThrow } from "~/models/user.server"
-import { json, type ActionArgs, redirect } from "@remix-run/server-runtime"
+import { json, redirect } from "@remix-run/server-runtime"
+import type { MetaFunction, ActionArgs } from "@remix-run/server-runtime"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { parseWithZod } from "@conform-to/zod"
 import { prisma } from "~/db.server"
@@ -17,6 +18,12 @@ import { z } from "zod"
 import BankEditCitationFields from "~/components/bank/BankEditCitationFields"
 import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
 import Button from "~/components/elements/LinksAndButtons/Button"
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return {
+    title: `BCE | Create citation`,
+  }
+}
 
 export const emptyStringToNull = z
   .string()

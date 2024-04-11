@@ -1,3 +1,4 @@
+import DraftLabel from "../elements/Labels/DraftLabel"
 import { Link } from "../elements/LinksAndButtons/Link"
 
 interface Props {
@@ -22,13 +23,7 @@ const SearchResultEntries = ({ text, data }: Props) => {
             >
               {e.headword}
             </Link>
-            {e.is_public ? (
-              ""
-            ) : (
-              <span className="ml-1 bg-alert-200 px-1 py-0.5 text-xs uppercase">
-                Draft
-              </span>
-            )}
+            <DraftLabel isPublic={e.is_public} />
           </p>
         )
       })}

@@ -5,14 +5,23 @@ import { redirectIfUserLacksEntryEditPermission } from "~/services/auth/session.
 import { useLoaderData } from "@remix-run/react"
 import EntryEditor from "~/components/EntryEditor/EntryEditor"
 import invariant from "tiny-invariant"
-import {
-  type SerializeFrom,
-  type ActionArgs,
-  type LoaderArgs,
-  redirect,
-  json,
+import { redirect, json } from "@remix-run/node"
+import type {
+  MetaFunction,
+  SerializeFrom,
+  ActionArgs,
+  LoaderArgs,
 } from "@remix-run/node"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
+import { BASE_APP_TITLE } from "~/root"
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return {
+    title: `${BASE_APP_TITLE} | Editing ${
+      data?.entry?.headword || "Entry not found"
+    }`,
+  }
+}
 
 export type EntryEditLoaderData = SerializeFrom<
   Awaited<Promise<ReturnType<typeof loader>>>
@@ -22,6 +31,12 @@ export async function action({ params, request }: ActionArgs) {
   invariant(params.headword, "No headword specified")
 
   const formData = await request.formData()
+
+  // If we are deleting, we have to log an entry now, before the entry is
+  // deleted
+  if (formData.get("entryEditorFormAction") === "DELETE_ENTRY") {
+    await updateLogEntries(params.headword, request)
+  }
 
   const submission = await handleEditFormAction(formData)
 
@@ -42,9 +57,17 @@ export async function action({ params, request }: ActionArgs) {
   ) {
     await updateLogEntries(submission.value.headword, request)
     return redirect(`/entries/${submission.value.headword}/edit`)
-  } else {
-    await updateLogEntries(headword, request)
   }
+
+  // We may have deleted the entry; redirect to "insert entry" page
+  if (
+    submission.value.entryEditorFormAction ===
+    EntryEditorFormActionEnum.DELETE_ENTRY
+  ) {
+    return redirect(`/insertEntry`)
+  }
+
+  await updateLogEntries(headword, request)
 
   return json(submission.reply())
 }

@@ -1,4 +1,5 @@
 export enum EntryEditorFormActionEnum {
+  DELETE_ENTRY = "DeleteEntry",
   UPDATE_ENTRY = "UpdateEntry",
   UPDATE_MEANING = "UpdateMeaning",
   ADD_MEANING = "AddMeaning",
