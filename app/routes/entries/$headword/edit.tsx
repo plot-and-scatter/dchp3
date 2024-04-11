@@ -5,14 +5,23 @@ import { redirectIfUserLacksEntryEditPermission } from "~/services/auth/session.
 import { useLoaderData } from "@remix-run/react"
 import EntryEditor from "~/components/EntryEditor/EntryEditor"
 import invariant from "tiny-invariant"
-import {
-  type SerializeFrom,
-  type ActionArgs,
-  type LoaderArgs,
-  redirect,
-  json,
+import { redirect, json } from "@remix-run/node"
+import type {
+  MetaFunction,
+  SerializeFrom,
+  ActionArgs,
+  LoaderArgs,
 } from "@remix-run/node"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
+import { BASE_APP_TITLE } from "~/root"
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return {
+    title: `${BASE_APP_TITLE} | Editing ${
+      data?.entry?.headword || "Entry not found"
+    }`,
+  }
+}
 
 export type EntryEditLoaderData = SerializeFrom<
   Awaited<Promise<ReturnType<typeof loader>>>

@@ -9,11 +9,11 @@ import {
 } from "~/models/bank.server"
 import { getEmailFromSession } from "~/services/auth/session.server"
 import { getUserIdByEmailOrThrow } from "~/models/user.server"
-import {
-  json,
-  type ActionArgs,
-  type LoaderArgs,
-  redirect,
+import { json, redirect } from "@remix-run/server-runtime"
+import type {
+  MetaFunction,
+  ActionArgs,
+  LoaderArgs,
 } from "@remix-run/server-runtime"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { prisma } from "~/db.server"
@@ -25,6 +25,18 @@ import invariant from "tiny-invariant"
 import { parseWithZod } from "@conform-to/zod"
 import { bankCitationFormDataSchema } from "../create"
 import { getFormProps, useForm } from "@conform-to/react"
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  const { citation } = data
+
+  if (!citation || !citation.headword) {
+    return { title: `Citation not found` }
+  }
+
+  return {
+    title: `BCE | ${citation.headword.headword} (#${citation.id})`,
+  }
+}
 
 export const action = async ({ request, params }: ActionArgs) => {
   const formData = await request.formData()
