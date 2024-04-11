@@ -75,6 +75,15 @@ const Headword = ({ entry, isEditingMode }: HeadwordProps): JSX.Element => {
           </p>
         </div>
       )}
+      {entry.dchp_version === "dchp1" && !isEditingMode && (
+        <div className="border border-amber-700 bg-amber-200 p-3">
+          <TertiaryHeader>Entry from the DCHP-1 (pre-1967)</TertiaryHeader>
+          <p>
+            This entry may contain outdated or offensive information, terms, and
+            examples.
+          </p>
+        </div>
+      )}
     </div>
   )
 
