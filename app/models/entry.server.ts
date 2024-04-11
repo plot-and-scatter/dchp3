@@ -73,7 +73,8 @@ export function getEntries(skip?: number, take: number = 20) {
 
 export function getEntriesByInitialLettersAndPage(
   initialLetters: string,
-  page: string
+  page: string,
+  isUserAdmin: boolean = false
 ) {
   // TODO: Refactor stuff like this out
   const pageNumber = parseInt(page)
@@ -84,7 +85,12 @@ export function getEntriesByInitialLettersAndPage(
   }
 
   const skip: number = (pageNumber - 1) * DEFAULT_PAGE_SIZE
-  return getEntriesByInitialLetters(initialLetters, skip)
+  return getEntriesByInitialLetters(
+    initialLetters,
+    skip,
+    undefined,
+    isUserAdmin
+  )
 }
 
 export async function insertEntry(
@@ -136,24 +142,9 @@ export async function insertEntry(
   updateLogEntries(headword, request)
 }
 
-export function countEntriesByInitialLetters(initialLetters: string) {
-  if (initialLetters.length === 0) {
-    throw new Error(
-      `Initial letters ("${initialLetters}") length must be greater than zero`
-    )
-  }
-  const initialLettersWildcard = `${initialLetters}%`
-  return prisma.$queryRaw<
-    {
-      count: number
-    }[]
-  >`SELECT count(*) as count FROM det_entries WHERE LOWER(headword) LIKE LOWER(${initialLettersWildcard})`
-}
-
-export function getEntriesByInitialLetters(
+export function countEntriesByInitialLetters(
   initialLetters: string,
-  skip: number = 0,
-  take: number = DEFAULT_PAGE_SIZE
+  isUserAdmin: boolean = false
 ) {
   if (initialLetters.length === 0) {
     throw new Error(
@@ -161,9 +152,35 @@ export function getEntriesByInitialLetters(
     )
   }
   const initialLettersWildcard = `${initialLetters}%`
-  return prisma.$queryRaw<
-    Pick<Entry, "id" | "headword">[]
-  >`SELECT id, headword FROM det_entries WHERE LOWER(headword) LIKE LOWER(${initialLettersWildcard}) ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
+
+  return prisma.$queryRaw<{ count: number }[]>`
+    SELECT count(*) as count
+    FROM det_entries
+    WHERE
+      LOWER(headword) LIKE LOWER(${initialLettersWildcard})
+      AND (det_entries.is_public = 1 OR ${isUserAdmin})
+  `
+}
+
+export function getEntriesByInitialLetters(
+  initialLetters: string,
+  skip: number = 0,
+  take: number = DEFAULT_PAGE_SIZE,
+  isUserAdmin: boolean = false
+) {
+  if (initialLetters.length === 0) {
+    throw new Error(
+      `Initial letters ("${initialLetters}") length must be greater than zero`
+    )
+  }
+  const initialLettersWildcard = `${initialLetters}%`
+  return prisma.$queryRaw<Pick<Entry, "id" | "is_public" | "headword">[]>`
+    SELECT id, headword, is_public
+    FROM det_entries
+    WHERE
+      LOWER(headword) LIKE LOWER(${initialLettersWildcard})
+      AND (det_entries.is_public = 1 OR ${isUserAdmin})
+    ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
 export async function updateLogEntries(headword: string, request: Request) {
