@@ -18,6 +18,7 @@ export function getSearchResultFistNotes({
   caseSensitive = false,
   database,
   isUserAdmin = false,
+  nonCanadianism,
 }: SearchResultParams): Promise<FistNote[]> {
   const searchWildcard =
     searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
@@ -35,5 +36,6 @@ export function getSearchResultFistNotes({
       LOWER(fist_note) LIKE LOWER(${searchWildcard}))
     AND (det_entries.dchp_version IN (${Prisma.join(database)}))
     AND (det_entries.is_public = 1 OR ${isUserAdmin})
+    AND (det_entries.no_cdn_conf = 1 OR NOT ${nonCanadianism === true})
   ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }

@@ -146,7 +146,10 @@ export default function SearchPage() {
                   BASE_CANADANISM_TYPES.map((canadianismType) => ({
                     label: canadianismType,
                     value: canadianismType,
-                    defaultChecked: true,
+                    defaultChecked:
+                      data?.searchParams.canadianismType?.includes(
+                        canadianismType
+                      ) ?? true,
                   })) as InputOption[]
                 }
               />
@@ -160,7 +163,7 @@ export default function SearchPage() {
                   {
                     label: "Non-Canadian only",
                     value: "on",
-                    defaultChecked: false,
+                    defaultChecked: data?.searchParams.nonCanadianism ?? false,
                   },
                 ]}
               />
@@ -193,7 +196,7 @@ export default function SearchPage() {
                 <SearchResults
                   data={data.searchResults}
                   text={searchTerm || ""}
-                  pageNumber={data.searchParams.page}
+                  page={data.searchParams.page}
                   searchAttribute={data.searchParams.attribute}
                 />
               </div>

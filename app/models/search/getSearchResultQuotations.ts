@@ -1,12 +1,21 @@
-import { prisma } from "~/db.server"
 import { DEFAULT_PAGE_SIZE } from "../entry.server"
-import type { SearchResultParams } from "../search.server"
+import { prisma } from "~/db.server"
 import { SEARCH_WILDCARD } from "../search.server"
+import type { SearchResultParams } from "../search.server"
 
 export interface Quotation {
   id: number
-  headword: { headword: string } | null
-  text: string | null
+  citation: string | null
+  headword: string | null
+  meanings: {
+    meaning: {
+      entry: {
+        headword: string
+        is_public: boolean
+        no_cdn_conf: boolean
+      }
+    } | null
+  }[]
 }
 
 // case sensitivity not working; check collation
@@ -14,24 +23,58 @@ export function getSearchResultQuotations({
   searchTerm,
   skip = 0,
   take = DEFAULT_PAGE_SIZE,
+  isUserAdmin = false,
+  nonCanadianism,
 }: SearchResultParams): Promise<Quotation[]> {
   const searchWildcard =
     searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
 
-  return prisma.bankCitation.findMany({
+  const meaningCondition = {
+    meaning: {
+      entry: {
+        is_public: isUserAdmin ? undefined : true,
+        no_cdn_conf: nonCanadianism === true ? true : undefined,
+      },
+    },
+  }
+
+  const meaningSelect = {
+    meaning: {
+      select: {
+        entry: {
+          select: {
+            headword: true,
+            is_public: true,
+            no_cdn_conf: true,
+          },
+        },
+      },
+    },
+  }
+
+  return prisma.detCitation.findMany({
     where: {
-      OR: [
-        { text: { contains: searchWildcard } },
-        { headword: { headword: { contains: searchWildcard } } },
+      AND: [
+        { meanings: { some: meaningCondition } },
+        {
+          OR: [
+            { citation: { contains: searchWildcard } },
+            { headword: { contains: searchWildcard } },
+          ],
+        },
       ],
+    },
+    select: {
+      meanings: {
+        where: meaningCondition,
+        select: meaningSelect,
+      },
+      citation: true,
+      id: true,
+      headword: true,
     },
     skip: skip,
     take: take,
-    orderBy: { id: "asc" },
-    select: {
-      text: true,
-      id: true,
-      headword: { select: { headword: true } },
-    },
+    orderBy: { headword: "asc" },
   })
 }
