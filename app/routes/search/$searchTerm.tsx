@@ -59,6 +59,7 @@ export async function loader({ request, params }: LoaderArgs) {
     dchpVersions,
     canadianismTypesArg: canadianismTypes,
     isUserAdmin,
+    nonCanadianismOnly: url.searchParams.get("nonCanadianism") === "true",
   })
 
   return searchResults

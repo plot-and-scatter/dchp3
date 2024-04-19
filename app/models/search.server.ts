@@ -2,20 +2,12 @@ import { DEFAULT_PAGE_SIZE, calculatePageSkip } from "./entry.server"
 import { Prisma, type Entry } from "@prisma/client"
 import { prisma } from "~/db.server"
 import type { SearchResultEnum } from "~/routes/search/searchResultEnum"
+import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
 import { parsePageNumberOrError } from "~/utils/generalUtils"
 
 export type { Entry } from "@prisma/client"
 
 export const SEARCH_WILDCARD = "*"
-
-export const BASE_CANADANISM_TYPES = [
-  "1. Origin",
-  "2. Preservation",
-  "3. Semantic Change",
-  "4. Culturally Significant",
-  "5. Frequency",
-  "6. Memorial",
-]
 
 export type AllSearchResults = {
   [SearchResultEnum.HEADWORD]?: Pick<Entry, "id" | "headword">[]
@@ -34,6 +26,7 @@ type SearchResultParams = {
   versions: string[]
   canadianismTypes: string[]
   isUserAdmin: boolean
+  nonCanadianismOnly?: boolean
 }
 
 export async function getSearchResults({
@@ -44,6 +37,7 @@ export async function getSearchResults({
   dchpVersions,
   canadianismTypesArg,
   isUserAdmin,
+  nonCanadianismOnly,
 }: {
   text: string
   page: string | undefined
@@ -52,6 +46,7 @@ export async function getSearchResults({
   dchpVersions?: string[]
   canadianismTypesArg?: string[]
   isUserAdmin: boolean
+  nonCanadianismOnly?: boolean
 }): Promise<AllSearchResults> {
   const pageNumber = parsePageNumberOrError(page)
   const skip: number = calculatePageSkip(pageNumber)
@@ -65,6 +60,7 @@ export async function getSearchResults({
     versions,
     canadianismTypes,
     isUserAdmin,
+    nonCanadianismOnly,
   }
 
   const searchResults: AllSearchResults = {}
@@ -123,6 +119,7 @@ export function getSearchResultMeanings({
   skip = 0,
   take = DEFAULT_PAGE_SIZE,
   canadianismTypes = BASE_CANADANISM_TYPES,
+  nonCanadianismOnly = false,
 }: SearchResultParams): Promise<SearchResultMeaning[]> {
   if (text.length === 0) {
     throw new Response(null, {
@@ -134,6 +131,7 @@ export function getSearchResultMeanings({
   const where: any = {
     entry: {
       is_public: true,
+      no_cdn_conf: nonCanadianismOnly,
     },
     definition: {
       contains: text === SEARCH_WILDCARD ? "" : text,

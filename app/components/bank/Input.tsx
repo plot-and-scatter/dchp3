@@ -46,9 +46,7 @@ export default function Input({
         defaultValue={showField !== false ? defaultValueNoNulls : undefined}
       />
       {hasErrors && (
-        <ValidationErrorText className="flex-wrap">
-          {name} {error}
-        </ValidationErrorText>
+        <ValidationErrorText className="flex-wrap">{error}</ValidationErrorText>
       )}
     </>
   )
