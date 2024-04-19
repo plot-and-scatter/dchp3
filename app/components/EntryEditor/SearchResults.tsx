@@ -1,28 +1,27 @@
-import React from "react"
-import type JSXNode from "~/types/JSXNode"
+import { enumValues } from "~/utils/inputUtils"
 import {
   SearchResultEnum,
   SearchResultEnumDisplay,
 } from "~/routes/search/searchResultEnum"
-import SearchResultEntries from "../search/SearchResultEntries"
-import SearchResultMeanings from "../search/SearchResultMeanings"
-import SearchResultUsageNotes from "../search/SearchResultUsageNotes"
-import SearchResultCanadianism from "../search/SearchResultCanadianism"
-import SearchResultFistNotes from "../search/SearchResultFistNotes"
-import SearchResultQuotations from "../search/SearchResultQuotations"
 import { type AllSearchResults } from "~/models/search.server"
-import { enumValues } from "~/utils/inputUtils"
 import Button from "../elements/LinksAndButtons/Button"
+import SearchResultCanadianism from "../search/SearchResultCanadianism"
+import SearchResultEntries from "../search/SearchResultEntries"
+import SearchResultFistNotes from "../search/SearchResultFistNotes"
+import SearchResultMeanings from "../search/SearchResultMeanings"
+import SearchResultQuotations from "../search/SearchResultQuotations"
+import SearchResultUsageNotes from "../search/SearchResultUsageNotes"
+import type JSXNode from "~/types/JSXNode"
 
 interface SearchResultsProps {
   data: AllSearchResults
   text: string
-  pageNumber: string | null
+  page: number
   searchAttribute: string | null
 }
 
 function getSearchResults(
-  pageNumber: string,
+  page: number,
   text: string,
   data: AllSearchResults,
   attribute: string | null
@@ -54,11 +53,9 @@ function getSearchResults(
 const SearchResults = ({
   data,
   text,
-  pageNumber,
+  page,
   searchAttribute,
 }: SearchResultsProps): JSXNode => {
-  const page = pageNumber ?? "1"
-
   return (
     <div className="mx-auto flex w-full flex-col justify-center align-middle lg:w-fit lg:max-w-3xl">
       <div className="mb-2 flex flex-row flex-wrap gap-2 border-gray-700 lg:-mb-[1px] lg:border-b">

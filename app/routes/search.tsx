@@ -1,8 +1,7 @@
 import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
-import { Form, useActionData, useLoaderData } from "@remix-run/react"
+import { Form, useLoaderData } from "@remix-run/react"
 import { getFormProps, useForm } from "@conform-to/react"
 import { getSearchResults } from "~/models/search.server"
-import { json } from "@remix-run/server-runtime"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { parseWithZod } from "@conform-to/zod"
 import { SearchResultEnum } from "./search/searchResultEnum"
@@ -17,7 +16,7 @@ import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 import SearchResults from "~/components/EntryEditor/SearchResults"
 import type { AllSearchResults } from "~/models/search.server"
 import type { InputOption } from "~/components/bank/InputOption"
-import type { LoaderArgs, type ActionArgs } from "@remix-run/server-runtime"
+import type { LoaderArgs } from "@remix-run/server-runtime"
 
 const searchActionSchema = z.object({
   searchTerm: z
@@ -30,64 +29,31 @@ const searchActionSchema = z.object({
   canadianismType: z.array(z.string()),
   nonCanadianism: z.boolean().nullish(),
   caseSensitive: z.boolean().nullish(),
-  attribute: z
-    .array(z.string())
-    .min(1, "You must select at least one data type"),
+  page: z.number().int().positive().default(1),
+  attribute: z.string(),
 })
 
-export async function action({ request }: ActionArgs) {
-  // This action is only for validating the form. The actual search is done in
-  // the loader, because we're using GET for the search.
-
-  const formData = await request.formData()
-
-  const submission = parseWithZod(formData, { schema: searchActionSchema })
-
-  if (submission.status !== "success") {
-    return json(submission.reply(), {
-      status: submission.status === "error" ? 400 : 200,
-    })
-  }
-
-  return json(submission.reply(), { status: 200 })
-}
+export type SearchActionSchema = z.infer<typeof searchActionSchema>
 
 export async function loader({ request }: LoaderArgs) {
-  const url = new URL(request.url)
-  const searchParams = url.searchParams
+  const parsedParams = parseWithZod(new URL(request.url).searchParams, {
+    schema: searchActionSchema,
+  })
 
-  const params = parseWithZod(searchParams, { schema: searchActionSchema })
+  if (parsedParams.status !== "success") {
+    return null
+  }
 
-  console.log("PARAMS", params)
-
-  console.log("searchParams", searchParams)
-
-  const searchTerm = url.searchParams.get("searchTerm")
-  const caseSensitive: boolean =
-    url.searchParams.get("caseSensitive") === "true"
-  const pageNumber: string | undefined =
-    url.searchParams.get("pageNumber") ?? undefined
-  const dchpVersions: string[] | undefined = url.searchParams.getAll("database")
-
-  const canadianismTypes: string[] | undefined =
-    url.searchParams.getAll("canadianismType")
-
-  const isUserAdmin = await userHasPermission(request, "det:viewEdits")
+  const searchTerm = parsedParams.value.searchTerm
 
   if (searchTerm) {
-    const searchResults: AllSearchResults = await getSearchResults({
-      text: searchTerm,
-      page: pageNumber,
-      caseSensitive,
-      dchpVersions,
-      canadianismTypesArg: canadianismTypes,
-      isUserAdmin,
-      nonCanadianismOnly: url.searchParams.get("nonCanadianism") === "true",
-    })
+    const isUserAdmin = await userHasPermission(request, "det:viewEdits")
+    const searchResults: AllSearchResults = await getSearchResults(
+      parsedParams.value,
+      isUserAdmin
+    )
 
-    return { searchResults, searchParams: params }
-  } else {
-    return null
+    return { searchResults, searchParams: parsedParams.value }
   }
 }
 
@@ -95,10 +61,8 @@ const SEARCH_PATH = "/search"
 
 export default function SearchPage() {
   const data = useLoaderData<typeof loader>()
-  const lastResult = useActionData<typeof action>()
 
   const [form, fields] = useForm({
-    lastResult,
     shouldValidate: "onInput", // Run the same validation logic on client
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: searchActionSchema })
@@ -106,7 +70,7 @@ export default function SearchPage() {
   })
   const hasResults = data !== null
 
-  const searchTerm = data?.searchParams.payload.searchTerm
+  const searchTerm = data?.searchParams.searchTerm
 
   return (
     <Main center>
@@ -120,7 +84,7 @@ export default function SearchPage() {
                 placeholder="Search term"
                 className="border border-gray-700 p-2 text-2xl"
                 name="searchTerm"
-                defaultValue={data?.searchParams?.payload.searchTerm}
+                defaultValue={data?.searchParams?.searchTerm}
                 conformField={fields.searchTerm}
                 autoFocus
               />
@@ -206,9 +170,7 @@ export default function SearchPage() {
             <ActionButton
               size="large"
               name="attribute"
-              value={
-                data?.searchParams.payload.attribute ?? SearchResultEnum.ALL
-              }
+              value={data?.searchParams.attribute ?? SearchResultEnum.ALL}
               className="mx-auto w-fit whitespace-nowrap"
               formActionPath={SEARCH_PATH}
             >
@@ -222,7 +184,7 @@ export default function SearchPage() {
             <SecondaryHeader>
               Search results for &ldquo;{searchTerm}
               &rdquo;
-              {data.searchParams.payload.caseSensitive !== "undefined" && (
+              {data.searchParams.caseSensitive !== undefined && (
                 <> (case sensitive)</>
               )}
             </SecondaryHeader>
@@ -231,8 +193,8 @@ export default function SearchPage() {
                 <SearchResults
                   data={data.searchResults}
                   text={searchTerm || ""}
-                  pageNumber={data.searchParams.payload.pageNumber}
-                  searchAttribute={data.searchParams.payload.attribute}
+                  pageNumber={data.searchParams.page}
+                  searchAttribute={data.searchParams.attribute}
                 />
               </div>
             </div>
