@@ -1,8 +1,8 @@
-import { DEFAULT_PAGE_SIZE } from "../entry.server"
 import { Prisma } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
+import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
 
 export interface FistNote {
   headword: string

@@ -1,9 +1,9 @@
-import { DEFAULT_PAGE_SIZE } from "../entry.server"
 import { Prisma } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { SEARCH_WILDCARD } from "../search.server"
 import type { Entry } from "../entry.server"
 import type { SearchResultParams } from "../search.server"
+import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
 
 export function getHeadwordCount({
   searchTerm,

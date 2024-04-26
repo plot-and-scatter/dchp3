@@ -43,16 +43,7 @@ export async function getCounts(params: SearchResultParams) {
         getHeadwordCount(params).then((response) => Number(response[0].count)),
       ])
 
-      const allCount =
-        headwordCount +
-        meaningCount +
-        canadianismCount +
-        usageNoteCount +
-        fistNoteCount +
-        quotationCount
-
       const counts = {
-        [SearchResultEnum.ALL]: allCount,
         [SearchResultEnum.HEADWORD]: headwordCount,
         [SearchResultEnum.MEANING]: meaningCount,
         [SearchResultEnum.CANADIANISM]: canadianismCount,

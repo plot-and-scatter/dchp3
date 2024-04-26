@@ -1,5 +1,5 @@
 import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
-import { DEFAULT_PAGE_SIZE, calculatePageSkip } from "./entry.server"
+import { calculatePageSkip } from "./entry.server"
 import { getEntriesByBasicTextSearch } from "./search/getEntriesByBasicTextSearch"
 import { getSearchResultCanadianisms } from "./search/getSearchResultCanadianisms"
 import { getSearchResultFistNotes } from "./search/getSearchResultFistNotes"
@@ -15,6 +15,7 @@ import type { SearchResultMeaning } from "./search/getSearchResultMeanings"
 import type { UsageNote } from "./search/getSearchResultUsageNotes"
 import { SearchResultEnum } from "~/routes/search/searchResultEnum"
 import { getCounts } from "./search/getCounts.server"
+import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
 
 export const SEARCH_WILDCARD = "*"
 
@@ -26,7 +27,6 @@ export type SearchResultParams = SearchActionSchema & {
 
 export type AllSearchResults = {
   counts: {
-    [SearchResultEnum.ALL]: number
     [SearchResultEnum.HEADWORD]: number
     [SearchResultEnum.MEANING]: number
     [SearchResultEnum.CANADIANISM]: number
@@ -36,7 +36,7 @@ export type AllSearchResults = {
   }
   data:
     | {
-        type: SearchResultEnum.HEADWORD | SearchResultEnum.ALL
+        type: SearchResultEnum.HEADWORD
         entries: Pick<Entry, "id" | "headword">[]
       }
     | { type: SearchResultEnum.MEANING; entries: SearchResultMeaning[] }

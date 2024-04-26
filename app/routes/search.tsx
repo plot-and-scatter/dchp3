@@ -177,7 +177,7 @@ export default function SearchPage() {
             <ActionButton
               size="large"
               name="attribute"
-              value={data?.searchParams.attribute ?? SearchResultEnum.ALL}
+              value={data?.searchParams.attribute || SearchResultEnum.HEADWORD}
               className="mx-auto w-fit whitespace-nowrap"
               formActionPath={SEARCH_PATH}
             >
@@ -201,7 +201,9 @@ export default function SearchPage() {
                   data={data.searchResults}
                   text={searchTerm || ""}
                   page={data.searchParams.page}
-                  searchAttribute={data.searchParams.attribute}
+                  searchAttribute={
+                    data.searchParams.attribute || SearchResultEnum.HEADWORD
+                  }
                   url={data.url}
                 />
               </div>

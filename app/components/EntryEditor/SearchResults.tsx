@@ -12,9 +12,8 @@ import SearchResultMeanings from "../search/SearchResultMeanings"
 import SearchResultQuotations from "../search/SearchResultQuotations"
 import SearchResultUsageNotes from "../search/SearchResultUsageNotes"
 import type JSXNode from "~/types/JSXNode"
-import { Link } from "../elements/LinksAndButtons/Link"
 import PaginationControl from "../bank/PaginationControl"
-import { DEFAULT_PAGE_SIZE } from "~/models/entry.server"
+import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
 
 interface SearchResultsProps {
   data: AllSearchResults
@@ -24,14 +23,8 @@ interface SearchResultsProps {
   url: string
 }
 
-function getSearchResults(
-  page: number,
-  text: string,
-  data: AllSearchResults,
-  attribute: string | null
-) {
+function getSearchResults(text: string, data: AllSearchResults) {
   switch (data.data.type) {
-    case SearchResultEnum.ALL: // By default, show headwords
     case SearchResultEnum.HEADWORD:
       return <SearchResultEntries text={text} data={data.data.entries ?? []} />
     case SearchResultEnum.MEANING:
@@ -67,38 +60,33 @@ const SearchResults = ({
   searchAttribute,
   url,
 }: SearchResultsProps): JSXNode => {
+  const pageCount = Math.ceil(
+    data.counts[searchAttribute as SearchResultEnum] / DEFAULT_PAGE_SIZE
+  )
+
   return (
-    <div className="mx-auto flex w-full flex-col justify-center align-middle lg:w-fit lg:max-w-3xl">
+    <div className="mx-auto flex w-full flex-col justify-center align-middle lg:w-full lg:max-w-7xl">
       <div className="mb-2 flex flex-row flex-wrap gap-2 border-gray-700 lg:-mb-[1px] lg:border-b">
-        {enumValues(SearchResultEnum)
-          .filter((value) => value !== SearchResultEnum.ALL)
-          .map((value, index) => (
-            <Button
-              size="small"
-              key={value}
-              name="attribute"
-              value={value}
-              variant={
-                searchAttribute === value ||
-                (searchAttribute === SearchResultEnum.ALL && index === 0)
-                  ? "solid"
-                  : "outline"
-              }
-              className="lg:whitespace-nowrap lg:rounded-bl-none lg:rounded-br-none lg:border-b-0"
-            >
-              {SearchResultEnumDisplay[value as SearchResultEnum]} (
-              {data.counts[value as SearchResultEnum]})
-            </Button>
-          ))}
+        {enumValues(SearchResultEnum).map((value, index) => (
+          <Button
+            size="small"
+            key={value}
+            name="attribute"
+            value={value}
+            variant={searchAttribute === value ? "solid" : "outline"}
+            className="lg:whitespace-nowrap lg:rounded-bl-none lg:rounded-br-none lg:border-b-0"
+          >
+            {SearchResultEnumDisplay[value as SearchResultEnum]} (
+            {data.counts[value as SearchResultEnum].toLocaleString()})
+          </Button>
+        ))}
       </div>
       <div className="w-full border border-gray-700 bg-gray-50 p-4">
-        <div>{getSearchResults(page, text, data, searchAttribute)}</div>
+        <div>{getSearchResults(text, data)}</div>
         <PaginationControl
           baseLink={`/search`}
           currentPage={+page}
-          pageCount={Math.ceil(
-            data.counts[searchAttribute as SearchResultEnum] / DEFAULT_PAGE_SIZE
-          )}
+          pageCount={pageCount}
           useSearch="page"
           url={url}
         />

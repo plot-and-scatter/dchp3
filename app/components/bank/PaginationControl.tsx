@@ -18,8 +18,6 @@ const buildUrl = (
     const _url = new URL(url)
     _url.searchParams.set(useSearch, String(pageNumber))
 
-    console.log(_url, String(_url))
-
     return String(_url)
   }
 }

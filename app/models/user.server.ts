@@ -2,14 +2,13 @@ import type { User, LogEntry, Prisma, Entry } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { getEmailFromSession } from "~/services/auth/session.server"
 import { calculatePageSkip } from "./entry.server"
+import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
 
 export type { Entry } from "@prisma/client"
 export type LogEntries = (LogEntry & { entry: Entry | null } & {
   user: User | null
 })[]
 export type { User } from "@prisma/client"
-
-export const DEFAULT_PAGE_SIZE = 100
 
 export async function getAllUsers() {
   return prisma.user.findMany({
