@@ -27,10 +27,10 @@ export async function updateEntry(data: z.infer<typeof UpdateEntrySchema>) {
     where: { id: data.entryId },
     data: {
       headword: data.headword,
-      spelling_variants: data.spellingVariant,
-      general_labels: data.generalLabels,
+      spelling_variants: data.spellingVariant || "",
+      general_labels: data.generalLabels || "",
       etymology: data.etymology || "",
-      fist_note: data.fistNote,
+      fist_note: data.fistNote || "",
       dagger: data.dagger,
       is_legacy: data.isLegacy,
       no_cdn_conf: data.isNonCanadian,

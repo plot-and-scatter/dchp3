@@ -7,7 +7,7 @@ export const UpdateEditingCommentSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.COMMENT),
     entryId: ZPositiveInt,
-    comment: z.string(),
+    comment: z.string().optional(),
   })
   .strict()
 
@@ -18,6 +18,6 @@ export async function updateEditingComment(
 
   await prisma.entry.update({
     where: { id: entryId },
-    data: { comment },
+    data: { comment: comment || "" },
   })
 }

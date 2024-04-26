@@ -20,8 +20,8 @@ export const AddImageSchema = z
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_IMAGE),
     imageFile: z.instanceof(File, { message: "Image is required" }),
     entryId: ZPositiveInt,
-    order: z.coerce.number().int().nullable(),
-    caption: z.string().nullable(),
+    order: z.coerce.number().int().optional(),
+    caption: z.string().optional(),
   })
   .strict()
 
