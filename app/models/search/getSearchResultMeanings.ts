@@ -1,5 +1,4 @@
 import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
-import { DEFAULT_PAGE_SIZE } from "../entry.server"
 import { prisma } from "~/db.server"
 import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
@@ -10,34 +9,46 @@ export interface SearchResultMeaning {
   entry: { headword: string }
 }
 
-// TODO: refactor to use Case Sensitive
-export function getSearchResultMeanings({
+function getWhereClause({
+  nonCanadianism,
   searchTerm,
-  skip = 0,
-  take = DEFAULT_PAGE_SIZE,
-  canadianismType = BASE_CANADANISM_TYPES,
-  nonCanadianism = false,
-}: SearchResultParams): Promise<SearchResultMeaning[]> {
+  canadianismType,
+}: SearchResultParams) {
   const where: any = {
     entry: {
       is_public: true,
       no_cdn_conf: nonCanadianism,
     },
-    definition: { contains: searchTerm === SEARCH_WILDCARD ? "" : searchTerm },
+    definition: {
+      contains: searchTerm === SEARCH_WILDCARD ? "" : searchTerm,
+    },
   }
 
   if (canadianismType.length !== BASE_CANADANISM_TYPES.length) {
     where.canadianism_type = { in: canadianismType }
   }
 
+  return where
+}
+
+export function getMeaningsCount(params: SearchResultParams) {
+  return prisma.meaning.count({
+    where: getWhereClause(params),
+  })
+}
+
+// TODO: refactor to use Case Sensitive
+export function getSearchResultMeanings(
+  params: SearchResultParams
+): Promise<SearchResultMeaning[]> {
   return prisma.meaning.findMany({
-    where,
+    where: getWhereClause(params),
     select: {
       entry: { select: { headword: true } },
       definition: true,
       id: true,
     },
-    skip: skip,
-    take: take,
+    skip: params.skip,
+    take: params.take,
   })
 }

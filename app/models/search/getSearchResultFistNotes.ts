@@ -10,6 +10,32 @@ export interface FistNote {
   id: number
 }
 
+export function getFistNotesCount({
+  searchTerm,
+  skip = 0,
+  take = DEFAULT_PAGE_SIZE,
+  caseSensitive = false,
+  database,
+  isUserAdmin = false,
+  nonCanadianism,
+}: SearchResultParams) {
+  const searchWildcard =
+    searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
+
+  // TODO: Change this
+  return prisma.$queryRaw<{ count: number }[]>`
+    SELECT
+      count(*) as count
+    FROM det_entries
+    WHERE
+      IF(${caseSensitive},
+        (fist_note) LIKE (${searchWildcard}),
+        LOWER(fist_note) LIKE LOWER(${searchWildcard}))
+      AND (det_entries.dchp_version IN (${Prisma.join(database)}))
+      AND (det_entries.is_public = 1 OR ${isUserAdmin})
+      AND (det_entries.no_cdn_conf = 1 OR NOT ${nonCanadianism === true})`
+}
+
 // case sensitivity not working; check collation
 export function getSearchResultFistNotes({
   searchTerm,

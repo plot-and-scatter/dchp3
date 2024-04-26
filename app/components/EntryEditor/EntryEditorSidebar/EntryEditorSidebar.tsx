@@ -19,7 +19,6 @@ export default function EntryEditorSidebar({ entry }: EditingSidebarProps) {
   const [statusMessage, setStatusMessage] = useState("")
 
   useEffect(() => {
-    console.log("navigation.state", navigation.state)
     if (navigation.state === "submitting") {
       setStatusMessage("Submitting...")
     }

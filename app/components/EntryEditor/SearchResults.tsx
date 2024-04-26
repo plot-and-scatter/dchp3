@@ -12,12 +12,16 @@ import SearchResultMeanings from "../search/SearchResultMeanings"
 import SearchResultQuotations from "../search/SearchResultQuotations"
 import SearchResultUsageNotes from "../search/SearchResultUsageNotes"
 import type JSXNode from "~/types/JSXNode"
+import { Link } from "../elements/LinksAndButtons/Link"
+import PaginationControl from "../bank/PaginationControl"
+import { DEFAULT_PAGE_SIZE } from "~/models/entry.server"
 
 interface SearchResultsProps {
   data: AllSearchResults
   text: string
   page: number
   searchAttribute: string | null
+  url: string
 }
 
 function getSearchResults(
@@ -26,22 +30,28 @@ function getSearchResults(
   data: AllSearchResults,
   attribute: string | null
 ) {
-  switch (attribute) {
+  switch (data.data.type) {
     case SearchResultEnum.ALL: // By default, show headwords
     case SearchResultEnum.HEADWORD:
-      return <SearchResultEntries text={text} data={data.Headword ?? []} />
+      return <SearchResultEntries text={text} data={data.data.entries ?? []} />
     case SearchResultEnum.MEANING:
-      return <SearchResultMeanings text={text} data={data.Meaning ?? []} />
+      return <SearchResultMeanings text={text} data={data.data.entries ?? []} />
     case SearchResultEnum.CANADIANISM:
       return (
-        <SearchResultCanadianism text={text} data={data.Canadianism ?? []} />
+        <SearchResultCanadianism text={text} data={data.data.entries ?? []} />
       )
     case SearchResultEnum.USAGE_NOTE:
-      return <SearchResultUsageNotes text={text} data={data.UsageNote ?? []} />
+      return (
+        <SearchResultUsageNotes text={text} data={data.data.entries ?? []} />
+      )
     case SearchResultEnum.FIST_NOTE:
-      return <SearchResultFistNotes text={text} data={data.FistNote ?? []} />
+      return (
+        <SearchResultFistNotes text={text} data={data.data.entries ?? []} />
+      )
     case SearchResultEnum.QUOTATION:
-      return <SearchResultQuotations text={text} data={data.Quotation ?? []} />
+      return (
+        <SearchResultQuotations text={text} data={data.data.entries ?? []} />
+      )
     default:
       throw new Response(null, {
         status: 400,
@@ -55,6 +65,7 @@ const SearchResults = ({
   text,
   page,
   searchAttribute,
+  url,
 }: SearchResultsProps): JSXNode => {
   return (
     <div className="mx-auto flex w-full flex-col justify-center align-middle lg:w-fit lg:max-w-3xl">
@@ -65,7 +76,7 @@ const SearchResults = ({
             <Button
               size="small"
               key={value}
-              name={"attribute"}
+              name="attribute"
               value={value}
               variant={
                 searchAttribute === value ||
@@ -76,23 +87,21 @@ const SearchResults = ({
               className="lg:whitespace-nowrap lg:rounded-bl-none lg:rounded-br-none lg:border-b-0"
             >
               {SearchResultEnumDisplay[value as SearchResultEnum]} (
-              {data[value as keyof AllSearchResults]?.length})
+              {data.counts[value as SearchResultEnum]})
             </Button>
           ))}
       </div>
-      {/* <h2 className="my-5 mb-10 text-4xl font-extrabold">
-        Page {page} results for: "{text}"
-      </h2> */}
       <div className="w-full border border-gray-700 bg-gray-50 p-4">
         <div>{getSearchResults(page, text, data, searchAttribute)}</div>
-        {/* <div className="flex justify-between gap-x-2 pt-4 text-center">
-          <Button type="submit" size="small" name="nextPage" value="false">
-            &larr; Previous page
-          </Button>
-          <Button type="submit" size="small" name="nextPage" value="true">
-            Next page &rarr;
-          </Button>
-        </div> */}
+        <PaginationControl
+          baseLink={`/search`}
+          currentPage={+page}
+          pageCount={Math.ceil(
+            data.counts[searchAttribute as SearchResultEnum] / DEFAULT_PAGE_SIZE
+          )}
+          useSearch="page"
+          url={url}
+        />
       </div>
     </div>
   )

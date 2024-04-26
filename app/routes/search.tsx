@@ -17,6 +17,7 @@ import SearchResults from "~/components/EntryEditor/SearchResults"
 import type { AllSearchResults } from "~/models/search.server"
 import type { InputOption } from "~/components/bank/InputOption"
 import type { LoaderArgs } from "@remix-run/server-runtime"
+import { enumValues } from "~/utils/inputUtils"
 
 const searchActionSchema = z.object({
   searchTerm: z
@@ -30,7 +31,7 @@ const searchActionSchema = z.object({
   nonCanadianism: z.boolean().nullish(),
   caseSensitive: z.boolean().nullish(),
   page: z.number().int().positive().default(1),
-  attribute: z.string(),
+  attribute: z.enum(enumValues(SearchResultEnum) as [string, ...string[]]),
 })
 
 export type SearchActionSchema = z.infer<typeof searchActionSchema>
@@ -44,6 +45,8 @@ export async function loader({ request }: LoaderArgs) {
     return null
   }
 
+  const url = new URL(request.url)
+
   const searchTerm = parsedParams.value.searchTerm
 
   if (searchTerm) {
@@ -53,7 +56,7 @@ export async function loader({ request }: LoaderArgs) {
       isUserAdmin
     )
 
-    return { searchResults, searchParams: parsedParams.value }
+    return { searchResults, searchParams: parsedParams.value, url }
   }
 }
 
@@ -65,7 +68,8 @@ export default function SearchPage() {
   const [form, fields] = useForm({
     shouldValidate: "onInput", // Run the same validation logic on client
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema: searchActionSchema })
+      const parsing = parseWithZod(formData, { schema: searchActionSchema })
+      return parsing
     },
   })
   const hasResults = data !== null
@@ -198,6 +202,7 @@ export default function SearchPage() {
                   text={searchTerm || ""}
                   page={data.searchParams.page}
                   searchAttribute={data.searchParams.attribute}
+                  url={data.url}
                 />
               </div>
             </div>

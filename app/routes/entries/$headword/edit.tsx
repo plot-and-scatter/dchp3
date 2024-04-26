@@ -48,8 +48,6 @@ export async function action({ params, request }: ActionArgs) {
 
   const headword = params.headword
 
-  console.log("result", submission.value.entryEditorFormAction)
-
   // Headword may have changed and data.headword exists; redirect if so
   if (
     submission.value.entryEditorFormAction ===

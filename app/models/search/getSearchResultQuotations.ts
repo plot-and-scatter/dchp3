@@ -1,4 +1,3 @@
-import { DEFAULT_PAGE_SIZE } from "../entry.server"
 import { prisma } from "~/db.server"
 import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
@@ -18,18 +17,11 @@ export interface Quotation {
   }[]
 }
 
-// case sensitivity not working; check collation
-export function getSearchResultQuotations({
-  searchTerm,
-  skip = 0,
-  take = DEFAULT_PAGE_SIZE,
-  isUserAdmin = false,
+function getMeaningCondition({
+  isUserAdmin,
   nonCanadianism,
-}: SearchResultParams): Promise<Quotation[]> {
-  const searchWildcard =
-    searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
-
-  const meaningCondition = {
+}: SearchResultParams) {
+  return {
     meaning: {
       entry: {
         is_public: isUserAdmin ? undefined : true,
@@ -37,7 +29,35 @@ export function getSearchResultQuotations({
       },
     },
   }
+}
 
+function getWhereClause(params: SearchResultParams) {
+  const searchWildcard =
+    params.searchTerm === SEARCH_WILDCARD ? "%" : `%${params.searchTerm}%`
+
+  const where: any = {
+    AND: [
+      { meanings: { some: getMeaningCondition(params) } },
+      {
+        OR: [
+          { citation: { contains: searchWildcard } },
+          { headword: { contains: searchWildcard } },
+        ],
+      },
+    ],
+  }
+
+  return where
+}
+
+export function getQuotationsCount(params: SearchResultParams) {
+  return prisma.detCitation.count({
+    where: getWhereClause(params),
+  })
+}
+
+// case sensitivity not working; check collation
+export function getSearchResultQuotations(params: SearchResultParams) {
   const meaningSelect = {
     meaning: {
       select: {
@@ -53,28 +73,18 @@ export function getSearchResultQuotations({
   }
 
   return prisma.detCitation.findMany({
-    where: {
-      AND: [
-        { meanings: { some: meaningCondition } },
-        {
-          OR: [
-            { citation: { contains: searchWildcard } },
-            { headword: { contains: searchWildcard } },
-          ],
-        },
-      ],
-    },
+    where: getWhereClause(params),
     select: {
       meanings: {
-        where: meaningCondition,
+        where: getMeaningCondition(params),
         select: meaningSelect,
       },
       citation: true,
       id: true,
       headword: true,
     },
-    skip: skip,
-    take: take,
+    skip: params.skip,
+    take: params.take,
     orderBy: { headword: "asc" },
   })
 }

@@ -11,6 +11,33 @@ export interface UsageNote {
   id: number
 }
 
+export function getUsageNotesCount({
+  searchTerm,
+  skip = 0,
+  take = DEFAULT_PAGE_SIZE,
+  caseSensitive = false,
+  database,
+  isUserAdmin = false,
+  nonCanadianism = false,
+}: SearchResultParams) {
+  const searchWildcard =
+    searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
+
+  return prisma.$queryRaw<{ count: number }[]>`
+  SELECT
+    count(*) as count
+  FROM det_meanings, det_entries
+  WHERE
+    det_meanings.entry_id = det_entries.id
+    AND IF(${caseSensitive},
+      (det_meanings.usage) LIKE (${searchWildcard}),
+      LOWER(det_meanings.usage) LIKE LOWER(${searchWildcard})
+    )
+    AND (det_entries.dchp_version IN (${Prisma.join(database)}))
+    AND (det_entries.is_public = 1 OR ${isUserAdmin})
+    AND (det_entries.no_cdn_conf = 1 OR NOT ${nonCanadianism === true})`
+}
+
 // case sensitivity not working; check collation
 export function getSearchResultUsageNotes({
   searchTerm,
@@ -20,7 +47,7 @@ export function getSearchResultUsageNotes({
   database,
   isUserAdmin = false,
   nonCanadianism = false,
-}: SearchResultParams): Promise<UsageNote[]> {
+}: SearchResultParams) {
   const searchWildcard =
     searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
 
