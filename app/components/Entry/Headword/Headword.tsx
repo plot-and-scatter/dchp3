@@ -96,19 +96,19 @@ const Headword = ({ entry, isEditingMode }: HeadwordProps): JSX.Element => {
           </SecondaryHeader>
           <HeadwordDeleteButton entry={entry} />
         </div>
-        {contents}
-        <div className="mt-8 flex items-center justify-between">
-          <EntryEditorForm
-            reloadDocument={true}
-            entry={entry}
-            formAction={EntryEditorFormActionEnum.UPDATE_ENTRY}
-          >
+        <EntryEditorForm
+          reloadDocument={true}
+          entry={entry}
+          formAction={EntryEditorFormActionEnum.UPDATE_ENTRY}
+        >
+          {contents}
+          <div className="mt-8 flex items-center justify-between">
             <Button appearance="success" size="large">
               <SaveIcon /> Save changes to headword
             </Button>
-          </EntryEditorForm>
-          <span className="text-gray-400">Entry ID: {entry.id}</span>
-        </div>
+            <span className="text-gray-400">Entry ID: {entry.id}</span>
+          </div>
+        </EntryEditorForm>
       </div>
     )
   }

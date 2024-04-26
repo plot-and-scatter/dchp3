@@ -7,8 +7,8 @@ export const UpdateImageSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.EDIT_IMAGE),
     imageId: ZPositiveInt,
-    order: z.coerce.number().int().nullable(),
-    caption: z.string().nullable(),
+    order: z.coerce.number().int().optional(),
+    caption: z.string().optional(),
   })
   .strict()
 
