@@ -7,7 +7,6 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
-  useRouteError,
 } from "@remix-run/react"
 
 import smartquotes from "smartquotes"
