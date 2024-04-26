@@ -15,7 +15,6 @@ import NonCanadianism from "./NonCanadianism"
 import SaveIcon from "../../elements/Icons/SaveIcon"
 import SpellingVariants from "./SpellingVariants"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
-import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
 import HeadwordDeleteButton from "./HeadwordDeleteButton"
 
 interface HeadwordProps {
