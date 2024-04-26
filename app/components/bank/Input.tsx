@@ -23,11 +23,6 @@ export default function Input({
 }: InputProps) {
   const defaultValueNoNulls = defaultValue === null ? undefined : defaultValue
 
-  // if (rest.type === "number") {
-  //   console.log("defaultValueNoNulls", defaultValueNoNulls)
-  //   console.log("...rest", rest)
-  // }
-
   const error = conformField?.errors
   const hasErrors = !!conformField?.errors && conformField?.errors.length > 0
 
@@ -46,9 +41,7 @@ export default function Input({
         defaultValue={showField !== false ? defaultValueNoNulls : undefined}
       />
       {hasErrors && (
-        <ValidationErrorText className="flex-wrap">
-          {name} {error}
-        </ValidationErrorText>
+        <ValidationErrorText className="flex-wrap">{error}</ValidationErrorText>
       )}
     </>
   )

@@ -1,18 +1,15 @@
 import type { Entry } from "@prisma/client"
 import invariant from "tiny-invariant"
-import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
 import { getEmailFromSession, getUserId } from "~/services/auth/session.server"
 import {
   getCheckboxValueAsBoolean,
-  getNumberFromFormInput,
   getStringFromFormInput,
 } from "~/utils/generalUtils"
-import { assertIsValidId, isNonPositive } from "~/utils/numberUtils"
+import { isNonPositive } from "~/utils/numberUtils"
+import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
 
 export type { Entry } from "@prisma/client"
-
-export const DEFAULT_PAGE_SIZE = 100
 
 export function calculatePageSkip(pageNumber: number): number {
   return (pageNumber - 1) * DEFAULT_PAGE_SIZE

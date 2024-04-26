@@ -1,5 +1,4 @@
 export enum SearchResultEnum {
-  ALL = "All",
   HEADWORD = "Headword",
   MEANING = "Meaning",
   CANADIANISM = "Canadianism",
@@ -9,7 +8,6 @@ export enum SearchResultEnum {
 }
 
 export const SearchResultEnumDisplay: Record<SearchResultEnum, string> = {
-  All: "All",
   Headword: "Headword",
   Meaning: "Meaning",
   Canadianism: "Canadianism",

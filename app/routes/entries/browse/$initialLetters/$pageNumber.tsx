@@ -1,6 +1,5 @@
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import {
-  DEFAULT_PAGE_SIZE,
   countEntriesByInitialLetters,
   getEntriesByInitialLettersAndPage,
 } from "~/models/entry.server"
@@ -13,6 +12,7 @@ import PaginationControl from "~/components/bank/PaginationControl"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { userHasPermission } from "~/services/auth/session.server"
 import DraftLabel from "~/components/elements/Labels/DraftLabel"
+import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
 
 export async function loader({ request, params }: LoaderArgs) {
   const { initialLetters, pageNumber } = params

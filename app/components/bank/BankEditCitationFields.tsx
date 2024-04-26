@@ -19,8 +19,6 @@ export default function BankEditCitationFields({
   citationFields,
   citation,
 }: BankEditCitationFieldsProps) {
-  console.log("citationFields", citationFields)
-
   return (
     <>
       {citation?.id && <LabelledField label={`ID`} field={citation.id} />}

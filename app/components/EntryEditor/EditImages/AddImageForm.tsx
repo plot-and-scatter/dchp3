@@ -19,18 +19,6 @@ export default function AddImageForm({ entry }: AddImageFormProps) {
     const file = e.target.files?.[0]
     if (file) {
       setFileName(file.name)
-      //   const reader = new FileReader()
-      //   reader.readAsText(file)
-      //   reader.onload = async () => {
-      //     try {
-      //       const data = await validateFile((reader.result as string) || '')
-      //       console.log(data)
-      //       fileIsValidCallback?.(true)
-      //     } catch (e) {
-      //       setFileError((e as any).message)
-      //       fileIsValidCallback?.(false)
-      //     }
-      //   }
     }
   }
 

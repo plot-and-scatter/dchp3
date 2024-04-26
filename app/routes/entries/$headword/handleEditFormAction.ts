@@ -131,8 +131,6 @@ type SubmissionValue = z.infer<typeof unionSchema>
 export async function handleEditFormAction(formData: FormData) {
   const submission = parseWithZod(formData, { schema: unionSchema })
 
-  console.log(submission)
-
   if (submission.status !== "success") {
     throw new Error(`Error with submission: ${JSON.stringify(submission)}`)
   }

@@ -62,6 +62,7 @@ model MeaningDetCitations {
   meaning     Meaning?         @relation(fields: [meaning_id], references: [id], onDelete: Cascade)
   // citation    DetCitation? @relation(fields: [citation_id], references: [id])
   citation    DetBibliography? @relation(fields: [citation_id], references: [id])
+  detCitation DetCitation?     @relation(fields: [citation_id], references: [id], map: "meanings_det_citations")
 
   @@id([meaning_id, citation_id])
   @@index([citation_id])
@@ -106,28 +107,28 @@ model Entry {
 }
 
 model DetCitation {
-  id          Int     @id
-  headword    String? @db.VarChar(400)
-  citation    String? @db.Text
-  meanshort   String? @db.VarChar(200)
-  spellvar    String? @db.VarChar(200)
-  dchp_1      Int?    @db.TinyInt
-  yearpub     String? @db.VarChar(100)
-  page        String? @db.VarChar(300)
-  author      String? @db.VarChar(500)
-  place       String? @db.VarChar(500)
-  title       String? @db.Text
-  yearcomp    String? @db.VarChar(400)
-  perio_date  String? @db.VarChar(200)
-  vol_iss     String? @db.VarChar(200)
-  url         String? @db.Text
-  uttered     String? @db.VarChar(500)
-  media       String? @db.VarChar(500)
-  broadcast   String? @db.VarChar(500)
-  evidence    String? @db.VarChar(500)
-  dateline    String? @db.VarChar(300)
-  short_title String? @db.MediumText
-  // meanings    MeaningDetCitations[]
+  id          Int                   @id
+  headword    String?               @db.VarChar(400)
+  citation    String?               @db.Text
+  meanshort   String?               @db.VarChar(200)
+  spellvar    String?               @db.VarChar(200)
+  dchp_1      Int?                  @db.TinyInt
+  yearpub     String?               @db.VarChar(100)
+  page        String?               @db.VarChar(300)
+  author      String?               @db.VarChar(500)
+  place       String?               @db.VarChar(500)
+  title       String?               @db.Text
+  yearcomp    String?               @db.VarChar(400)
+  perio_date  String?               @db.VarChar(200)
+  vol_iss     String?               @db.VarChar(200)
+  url         String?               @db.Text
+  uttered     String?               @db.VarChar(500)
+  media       String?               @db.VarChar(500)
+  broadcast   String?               @db.VarChar(500)
+  evidence    String?               @db.VarChar(500)
+  dateline    String?               @db.VarChar(300)
+  short_title String?               @db.MediumText
+  meanings    MeaningDetCitations[]
 
   @@map("det_citations")
 }
@@ -215,7 +216,7 @@ model LogEntry {
   user_id  Int
   created  DateTime @db.DateTime(0)
   headword String?  @db.VarChar(255)
-  user  User?    @relation(fields: [user_id], references: [id])
+  user     User?    @relation(fields: [user_id], references: [id])
   entry    Entry?   @relation(fields: [entry_id], references: [id])
 
   @@index([entry_id, headword], map: "entry_id_idxfk")

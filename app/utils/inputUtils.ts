@@ -17,5 +17,5 @@ export const enumValues = (enumLike: EnumLike): string[] => {
     .filter((enumKey) => !Number.isInteger(parseInt(enumKey)))
     .map((enumKey) => enumLike[enumKey])
 
-  return values
+  return values as string[]
 }

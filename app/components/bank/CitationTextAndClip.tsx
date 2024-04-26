@@ -49,7 +49,6 @@ export default function CitationTextAndClip({
               value={clipStart}
               onChange={(e) => {
                 const startNumber = parseInt(e.target.value)
-                console.log("startNumber", startNumber)
                 // if (startNumber > clipEnd) {
                 //   setClipEnd(startNumber)
                 // }
@@ -66,7 +65,6 @@ export default function CitationTextAndClip({
               value={clipEnd}
               onChange={(e) => {
                 const endNumber = parseInt(e.target.value)
-                console.log("endNumber", endNumber)
                 // if (endNumber < clipStart) {
                 //   setClipStart(endNumber)
                 // }

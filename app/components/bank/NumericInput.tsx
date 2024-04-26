@@ -2,8 +2,6 @@ import type { InputProps } from "./Input"
 import Input from "./Input"
 
 export default function NumericInput(props: InputProps) {
-  console.log("props", props.onChange)
-
   return (
     <Input
       type="number"
