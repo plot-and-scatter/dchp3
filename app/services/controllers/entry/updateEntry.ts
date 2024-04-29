@@ -3,16 +3,17 @@ import { prisma } from "~/db.server"
 import { ZPositiveInt } from "../ZPositiveInt"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { ZCheckboxValueToBoolean } from "../ZCheckboxValueToBoolean"
+import { ZOptionalStringToEmptyString } from "../ZOptionalStringToEmptyString"
 
 export const UpdateEntrySchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.UPDATE_ENTRY),
     entryId: ZPositiveInt,
     headword: z.string(),
-    spellingVariant: z.string().optional(),
-    generalLabels: z.string().optional(),
-    etymology: z.string().optional(),
-    fistNote: z.string().optional(),
+    spellingVariant: ZOptionalStringToEmptyString,
+    generalLabels: ZOptionalStringToEmptyString,
+    etymology: ZOptionalStringToEmptyString,
+    fistNote: ZOptionalStringToEmptyString,
     dagger: ZCheckboxValueToBoolean,
     isLegacy: ZCheckboxValueToBoolean,
     isNonCanadian: ZCheckboxValueToBoolean,
@@ -27,10 +28,10 @@ export async function updateEntry(data: z.infer<typeof UpdateEntrySchema>) {
     where: { id: data.entryId },
     data: {
       headword: data.headword,
-      spelling_variants: data.spellingVariant || "",
-      general_labels: data.generalLabels || "",
-      etymology: data.etymology || "",
-      fist_note: data.fistNote || "",
+      spelling_variants: data.spellingVariant,
+      general_labels: data.generalLabels,
+      etymology: data.etymology,
+      fist_note: data.fistNote,
       dagger: data.dagger,
       is_legacy: data.isLegacy,
       no_cdn_conf: data.isNonCanadian,
