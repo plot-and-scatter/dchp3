@@ -25,6 +25,7 @@ export default function FistnoteAddingForm({
       className={
         "mt-4 rounded border border-action-400 bg-action-100 p-4 shadow"
       }
+      resetOnSuccess
     >
       <QuaternaryHeader>
         <AddIcon /> Add fist note
