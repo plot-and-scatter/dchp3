@@ -2,6 +2,7 @@ import { z } from "zod"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { prisma } from "~/db.server"
 import { ZPositiveInt } from "../ZPositiveInt"
+import { ZOptionalStringToEmptyString } from "../ZOptionalStringToEmptyString"
 
 export const AddSeeAlsoSchema = z
   .object({
@@ -9,7 +10,7 @@ export const AddSeeAlsoSchema = z
     meaningId: ZPositiveInt,
     [`headword[label]`]: z.string(),
     [`headword[value]`]: ZPositiveInt,
-    linkNote: z.string().optional(),
+    linkNote: ZOptionalStringToEmptyString,
   })
   .strict()
 
@@ -25,7 +26,7 @@ export async function addSeeAlso(data: z.infer<typeof AddSeeAlsoSchema>) {
     data: {
       meaning_id: data.meaningId,
       entry_id: entry.id,
-      linknote: data.linkNote || "",
+      linknote: data.linkNote,
     },
   })
 }

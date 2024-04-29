@@ -3,17 +3,18 @@ import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorF
 import { prisma } from "~/db.server"
 import { ZPositiveInt } from "../ZPositiveInt"
 import { ZCheckboxValueToBoolean } from "../ZCheckboxValueToBoolean"
+import { ZOptionalStringToEmptyString } from "../ZOptionalStringToEmptyString"
 
 export const UpdateMeaningSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.UPDATE_MEANING),
     meaningId: ZPositiveInt,
-    definition: z.string().optional(),
-    order: z.string().optional(),
-    partOfSpeech: z.string().optional(),
-    canadianismType: z.string().optional(),
-    canadianismTypeComment: z.string().optional(),
-    usage: z.string().optional(),
+    definition: ZOptionalStringToEmptyString,
+    order: ZOptionalStringToEmptyString,
+    partOfSpeech: ZOptionalStringToEmptyString,
+    canadianismType: ZOptionalStringToEmptyString,
+    canadianismTypeComment: ZOptionalStringToEmptyString,
+    usage: ZOptionalStringToEmptyString,
     dagger: ZCheckboxValueToBoolean,
   })
   .strict()
