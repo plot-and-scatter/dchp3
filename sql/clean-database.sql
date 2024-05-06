@@ -42,6 +42,7 @@ update citation set last_modified = null WHERE last_modified = '0000-00-00 00:00
 
 -- DET_ENTRIES_MEANINGS table:
 -- * Remove any rows where either the meaning_id or entry_id are orphans.
+-- * [Investigate]: what is the `headword` column for? It's completely null.
 
 -- DET_ENTRIES_REFERENCES table:
 -- * Remove any rows where either the entry_id or reference_id are orphans.
@@ -102,4 +103,22 @@ update citation set last_modified = null WHERE last_modified = '0000-00-00 00:00
 --     * citation.last_modified_user_id
 --     * citation.user_id
 --     * det_log_entries.user_id
---     * det_entries.proofing_user
+--     * det_entries.proofing_user (note: this is using user.email, not user.id)
+SELECT *
+FROM user
+WHERE
+	user.id NOT IN(
+		SELECT
+			user_id FROM (
+				SELECT user_id FROM citation
+				UNION
+				SELECT last_modified_user_id FROM citation
+				UNION
+				SELECT user_id FROM det_log_entries
+				UNION
+				SELECT u.id FROM det_entries AS de, USER AS u
+				  WHERE de.proofing_user = u.email
+      )AS user_id_union
+			WHERE
+				user_id IS NOT NULL
+				AND user_id != 0);

@@ -32,10 +32,12 @@ export async function action({ params, request }: ActionArgs) {
 
   const formData = await request.formData()
 
+  const entryEditorFormAction = formData.get("entryEditorFormAction")
+
   // If we are deleting, we have to log an entry now, before the entry is
   // deleted
-  if (formData.get("entryEditorFormAction") === "DELETE_ENTRY") {
-    await updateLogEntries(params.headword, request)
+  if (entryEditorFormAction === EntryEditorFormActionEnum.DELETE_ENTRY) {
+    await updateLogEntries(params.headword, request, entryEditorFormAction)
   }
 
   const submission = await handleEditFormAction(formData)
@@ -53,11 +55,16 @@ export async function action({ params, request }: ActionArgs) {
     submission.value.entryEditorFormAction ===
     EntryEditorFormActionEnum.UPDATE_ENTRY
   ) {
-    await updateLogEntries(submission.value.headword, request)
+    await updateLogEntries(
+      submission.value.headword,
+      request,
+      submission.value.entryEditorFormAction
+    )
     return redirect(`/entries/${submission.value.headword}/edit`)
   }
 
-  // We may have deleted the entry; redirect to "insert entry" page
+  // We may have deleted the entry; redirect to "insert entry" page (note, we
+  // updated the log entries above, so we don't need to do it again here)
   if (
     submission.value.entryEditorFormAction ===
     EntryEditorFormActionEnum.DELETE_ENTRY
@@ -65,7 +72,11 @@ export async function action({ params, request }: ActionArgs) {
     return redirect(`/insertEntry`)
   }
 
-  await updateLogEntries(headword, request)
+  await updateLogEntries(
+    headword,
+    request,
+    submission.value.entryEditorFormAction
+  )
 
   return json(submission.reply())
 }

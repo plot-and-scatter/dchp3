@@ -1,5 +1,5 @@
 import {
-  getUserId,
+  getUserIdAndEmail,
   redirectIfUserLacksPermission,
 } from "~/services/auth/session.server"
 import { DEFAULT_CITATION_SELECT } from "~/services/bank/defaultCitationSelect"
@@ -16,7 +16,7 @@ const PAGE_SIZE = 10
 export const loader = async ({ request, params }: LoaderArgs) => {
   await redirectIfUserLacksPermission(request, "bank:create")
 
-  const userId = await getUserId(request)
+  const { userId } = await getUserIdAndEmail(request)
   if (!userId) throw json({ message: `No userId on user` }, { status: 500 })
 
   const { pageNumber } = params

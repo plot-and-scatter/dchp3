@@ -216,8 +216,10 @@ model LogEntry {
   user_id  Int
   created  DateTime @db.DateTime(0)
   headword String?  @db.VarChar(255)
-  user     User?    @relation(fields: [user_id], references: [id])
-  entry    Entry?   @relation(fields: [entry_id], references: [id])
+  action   String?   @db.VarChar(255)
+  email    String?  @db.VarChar(200)
+  user     User?    @relation(fields: [user_id], references: [id], onDelete: NoAction)
+  entry    Entry?   @relation(fields: [entry_id], references: [id], onDelete: NoAction)
 
   @@index([entry_id, headword], map: "entry_id_idxfk")
   @@map("det_log_entries")
