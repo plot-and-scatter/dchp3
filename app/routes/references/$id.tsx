@@ -11,7 +11,6 @@ import {
   type LoaderArgs,
 } from "@remix-run/server-runtime"
 import { UpdateReferenceSchema, updateReference } from "./updateReference"
-import { useState } from "react"
 import { z } from "zod"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import DeleteIcon from "~/components/elements/Icons/DeleteIcon"

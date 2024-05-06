@@ -1,10 +1,12 @@
 import { CreateReferenceSchema, createReference } from "./createReference"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
-import { Form, useActionData } from "@remix-run/react"
+import { Form } from "@remix-run/react"
+import { getFormProps, useForm } from "@conform-to/react"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { parseWithZod } from "@conform-to/zod"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
+import { ReferenceActionEnum } from "./ReferenceActionEnum"
 import { type ActionArgs, redirect } from "@remix-run/server-runtime"
 import AddIcon from "~/components/elements/Icons/AddIcon"
 import Button from "~/components/elements/LinksAndButtons/Button"
@@ -14,8 +16,6 @@ import ReturnToRefListLink from "./ReturnToRefListLink"
 import SaveIcon from "~/components/elements/Icons/SaveIcon"
 import TextArea from "~/components/bank/TextArea"
 import TopLabelledField from "~/components/bank/TopLabelledField"
-import { getFormProps, useForm } from "@conform-to/react"
-import { ReferenceActionEnum } from "./ReferenceActionEnum"
 
 export async function action({ request }: ActionArgs) {
   await redirectIfUserLacksPermission(request, "det:editReferences")
@@ -25,8 +25,6 @@ export async function action({ request }: ActionArgs) {
   const submission = parseWithZod(formData, {
     schema: CreateReferenceSchema,
   })
-
-  console.log(submission)
 
   if (submission.status !== "success") {
     throw new Error(`Error with submission: ${JSON.stringify(submission)}`)
