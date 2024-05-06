@@ -63,13 +63,13 @@ import {
   updateImage,
 } from "~/services/controllers/image/updateImage"
 import {
-  AddReferenceSchema,
-  addReference,
-} from "~/services/controllers/entry/addReference"
+  AddReferenceLinkSchema,
+  addReferenceLink,
+} from "~/services/controllers/entry/addReferenceLink"
 import {
-  DeleteReferenceSchema,
-  deleteReference,
-} from "~/services/controllers/entry/deleteReference"
+  DeleteReferenceLinkSchema,
+  deleteReferenceLink,
+} from "~/services/controllers/entry/deleteReferenceLink"
 import {
   DeleteEntrySchema,
   deleteEntry,
@@ -93,8 +93,8 @@ const unionSchema = z.discriminatedUnion("entryEditorFormAction", [
   AddImageSchema,
   DeleteImageSchema,
   UpdateImageSchema,
-  AddReferenceSchema,
-  DeleteReferenceSchema,
+  AddReferenceLinkSchema,
+  DeleteReferenceLinkSchema,
 ])
 
 type ActionMap = {
@@ -122,8 +122,8 @@ const actionMap: ActionMap = {
   [EntryEditorFormActionEnum.DELETE_IMAGE]: deleteImage,
   [EntryEditorFormActionEnum.ADD_IMAGE]: addImage,
   [EntryEditorFormActionEnum.EDIT_IMAGE]: updateImage,
-  [EntryEditorFormActionEnum.ADD_REFERENCE]: addReference,
-  [EntryEditorFormActionEnum.DELETE_REFERENCE]: deleteReference,
+  [EntryEditorFormActionEnum.ADD_REFERENCE_LINK]: addReferenceLink,
+  [EntryEditorFormActionEnum.DELETE_REFERENCE_LINK]: deleteReferenceLink,
 }
 
 type SubmissionValue = z.infer<typeof unionSchema>

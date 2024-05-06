@@ -3,9 +3,11 @@ import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorF
 import { prisma } from "~/db.server"
 import { ZPositiveInt } from "../ZPositiveInt"
 
-export const AddReferenceSchema = z
+export const AddReferenceLinkSchema = z
   .object({
-    entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_REFERENCE),
+    entryEditorFormAction: z.literal(
+      EntryEditorFormActionEnum.ADD_REFERENCE_LINK
+    ),
     entryId: ZPositiveInt,
     [`referenceId[label]`]: z.string(),
     [`referenceId[value]`]: ZPositiveInt,
@@ -14,7 +16,9 @@ export const AddReferenceSchema = z
   })
   .strict()
 
-export async function addReference(data: z.infer<typeof AddReferenceSchema>) {
+export async function addReferenceLink(
+  data: z.infer<typeof AddReferenceLinkSchema>
+) {
   await prisma.referenceLink.create({
     data: {
       entry_id: data.entryId,

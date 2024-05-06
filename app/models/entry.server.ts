@@ -200,24 +200,3 @@ export async function updateLogEntries(headword: string, request: Request) {
     data: { entry_id: entry.id, user_id: userId, created: currentTime },
   })
 }
-
-export async function updateEntryHeadword(entryId: number, newValue: string) {
-  await prisma.entry.update({
-    where: { id: entryId },
-    data: { headword: newValue },
-  })
-}
-
-export async function updateEntryEtymology(entryId: number, newValue: string) {
-  await prisma.entry.update({
-    where: { id: entryId },
-    data: { etymology: newValue },
-  })
-}
-
-export async function updateEntryLabels(entryId: number, newValue: string) {
-  await prisma.entry.update({
-    where: { id: entryId },
-    data: { general_labels: newValue },
-  })
-}

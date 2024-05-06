@@ -12,6 +12,8 @@ import TextArea from "~/components/bank/TextArea"
 import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 
 export async function action({ request }: ActionArgs) {
+  // TODO: Refactor this along the lines of all the other entry action
+  // functions.
   const data = Object.fromEntries(await request.formData())
   insertEntry(data, request)
   return redirect(`/entries/${data.headword}/edit`)

@@ -3,17 +3,17 @@ import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorF
 import { prisma } from "~/db.server"
 import { ZPositiveInt } from "../ZPositiveInt"
 
-export const DeleteReferenceSchema = z
+export const DeleteReferenceLinkSchema = z
   .object({
     entryEditorFormAction: z.literal(
-      EntryEditorFormActionEnum.DELETE_REFERENCE
+      EntryEditorFormActionEnum.DELETE_REFERENCE_LINK
     ),
     referenceId: ZPositiveInt,
   })
   .strict()
 
-export async function deleteReference(
-  data: z.infer<typeof DeleteReferenceSchema>
+export async function deleteReferenceLink(
+  data: z.infer<typeof DeleteReferenceLinkSchema>
 ) {
   await prisma.referenceLink.delete({
     where: {

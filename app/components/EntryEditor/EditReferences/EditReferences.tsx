@@ -40,7 +40,7 @@ export default function EditReferences({ entry }: EditReferencesProps) {
                 <input
                   type="hidden"
                   name="entryEditorFormAction"
-                  value={EntryEditorFormActionEnum.DELETE_REFERENCE}
+                  value={EntryEditorFormActionEnum.DELETE_REFERENCE_LINK}
                 ></input>
                 <Button
                   type="submit"

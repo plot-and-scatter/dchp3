@@ -2,11 +2,11 @@ import { EntryEditorFormActionEnum } from "../EntryEditorForm/EntryEditorFormAct
 import AddIcon from "~/components/elements/Icons/AddIcon"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import EntryEditorForm from "../EntryEditorForm/EntryEditorForm"
+import Input from "~/components/bank/Input"
 import ReferenceCombobox from "./ReferenceCombobox"
 import SaveIcon from "~/components/elements/Icons/SaveIcon"
-import type { LoadedEntryDataType } from "~/routes/entries/$headword"
-import Input from "~/components/bank/Input"
 import TopLabelledField from "~/components/bank/TopLabelledField"
+import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 
 interface AddReferenceProps {
   entry: LoadedEntryDataType
@@ -16,7 +16,7 @@ export default function AddReference({ entry }: AddReferenceProps) {
   return (
     <EntryEditorForm
       entry={entry}
-      formAction={EntryEditorFormActionEnum.ADD_REFERENCE}
+      formAction={EntryEditorFormActionEnum.ADD_REFERENCE_LINK}
       className={
         "mt-4 rounded border border-success-400 bg-success-100 p-4 shadow"
       }
