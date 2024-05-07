@@ -1,7 +1,10 @@
 import type { Entry } from "@prisma/client"
 import invariant from "tiny-invariant"
 import { prisma } from "~/db.server"
-import { getEmailFromSession, getUserId } from "~/services/auth/session.server"
+import {
+  getEmailFromSession,
+  getUserIdAndEmail,
+} from "~/services/auth/session.server"
 import {
   getCheckboxValueAsBoolean,
   getStringFromFormInput,
@@ -136,7 +139,7 @@ export async function insertEntry(
     },
   })
 
-  updateLogEntries(headword, request)
+  await updateLogEntries(headword, request, "Create entry")
 }
 
 export function countEntriesByInitialLetters(
@@ -180,23 +183,30 @@ export function getEntriesByInitialLetters(
     ORDER BY LOWER(headword) ASC LIMIT ${take} OFFSET ${skip}`
 }
 
-export async function updateLogEntries(headword: string, request: Request) {
+export async function updateLogEntries(
+  headword: string,
+  request: Request,
+  action: string | undefined
+) {
   const entry = await prisma.entry.findUnique({
-    where: {
-      headword: headword,
-    },
-    select: {
-      id: true,
-    },
+    where: { headword: headword },
+    select: { id: true },
   })
 
-  const userId = await getUserId(request)
+  const { userId, email } = await getUserIdAndEmail(request)
   const currentTime = new Date()
 
   invariant(entry, `Entry with headword "${headword}" not found`)
   invariant(userId, `User ID not found`)
 
   await prisma.logEntry.create({
-    data: { entry_id: entry.id, user_id: userId, created: currentTime },
+    data: {
+      entry_id: entry.id,
+      user_id: userId,
+      created: currentTime,
+      headword,
+      action,
+      email,
+    },
   })
 }
