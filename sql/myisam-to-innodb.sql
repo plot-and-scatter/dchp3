@@ -1,0 +1,21 @@
+-- SELECT
+-- 	CONCAT('ALTER TABLE ', TABLE_NAME, ' ENGINE=InnoDB;')
+-- FROM
+-- 	INFORMATION_SCHEMA.TABLES
+-- WHERE
+-- 	ENGINE = 'MyISAM'
+-- 	AND table_schema = 'dchp3';
+
+ALTER TABLE author ENGINE=InnoDB;
+ALTER TABLE citation ENGINE=InnoDB;
+ALTER TABLE det_images ENGINE=InnoDB;
+ALTER TABLE det_references ENGINE=InnoDB;
+ALTER TABLE det_user_sessions ENGINE=InnoDB;
+ALTER TABLE headword ENGINE=InnoDB;
+ALTER TABLE place ENGINE=InnoDB;
+ALTER TABLE sdt ENGINE=InnoDB;
+ALTER TABLE sdt_head ENGINE=InnoDB;
+ALTER TABLE sdt_memos ENGINE=InnoDB;
+ALTER TABLE sdt_sources ENGINE=InnoDB;
+ALTER TABLE title ENGINE=InnoDB;
+ALTER TABLE user ENGINE=InnoDB;

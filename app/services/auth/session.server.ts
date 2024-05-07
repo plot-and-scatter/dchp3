@@ -119,12 +119,12 @@ export const redirectIfUserLacksPermission = async (
     throw redirect(`${NOT_ALLOWED_PATH}`)
 }
 
-export const getUserId = async (request: Request) => {
+export const getUserIdAndEmail = async (request: Request) => {
   const email = await getEmailFromSession(request)
   if (!email) throw json({ message: `No email on user` }, { status: 500 })
 
   const userId = await getUserIdByEmailOrThrow({ email })
-  return userId
+  return { userId, email }
 }
 
 export const canUserEditEntry = async (
