@@ -16,6 +16,6 @@ export enum EntryEditorFormActionEnum {
   DELETE_IMAGE = "Delete image",
   ADD_IMAGE = "Add image",
   EDIT_IMAGE = "Edit image",
-  ADD_REFERENCE = "Add reference",
-  DELETE_REFERENCE = "Delete reference",
+  ADD_REFERENCE_LINK = "Add reference link",
+  DELETE_REFERENCE_LINK = "Delete reference link",
 }
