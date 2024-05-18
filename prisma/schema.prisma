@@ -248,7 +248,7 @@ model Meaning {
 }
 
 model Reference {
-  id             Int             @id @default(autoincrement()) @db.UnsignedInt
+  id             Int             @id @default(autoincrement())
   short_display  String          @default("") @db.VarChar(255)
   reference_text String          @db.Text
   referenceLinks ReferenceLink[]

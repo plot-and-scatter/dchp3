@@ -45,7 +45,7 @@ ALTER TABLE det_entries_meanings
 
 -- `det_entries_references` links entries to references: both `entry_id` and `reference_id` must be valid.
 -- Change the reference.id column to be an `int`, not `int unsigned`.
-ALTER TABLE det_references MODIFY COLUMN id INT;
+ALTER TABLE det_references MODIFY COLUMN id INT AUTO_INCREMENT;
 -- Delete any rows that are invalid.
 DELETE FROM det_entries_references WHERE entry_id NOT IN (SELECT id FROM det_entries);
 DELETE FROM det_entries_references WHERE reference_id NOT IN (SELECT id FROM det_references);
