@@ -16,16 +16,18 @@ export const AddSeeAlsoSchema = z
 
 // TODO: Isn't there a way we could do this using the entryId instead...?
 export async function addSeeAlso(data: z.infer<typeof AddSeeAlsoSchema>) {
-  const headword = data[`headword[label]`]
+  // const headword = data[`headword[label]`]
 
-  const entry = await prisma.entry.findUnique({ where: { headword } })
+  // const entry = await prisma.entry.findUnique({
+  //   where: { id: data["headword[value]"] },
+  // })
 
-  if (!entry) throw new Error(`Entry "${headword}" could not be found`)
+  // if (!entry) throw new Error(`Entry "${headword}" could not be found`)
 
   await prisma.seeAlso.create({
     data: {
       meaning_id: data.meaningId,
-      entry_id: entry.id,
+      entry_id: data["headword[value]"],
       linknote: data.linkNote,
     },
   })

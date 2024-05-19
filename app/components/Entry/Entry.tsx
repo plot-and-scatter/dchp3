@@ -10,9 +10,14 @@ import EditIcon from "../elements/Icons/EditIcon"
 type EntryProps = {
   entry: LoadedEntryDataType
   canUserEditEntry: boolean
+  canUserViewDraftEntry: boolean
 }
 
-const Entry = ({ entry, canUserEditEntry }: EntryProps): JSX.Element => {
+const Entry = ({
+  entry,
+  canUserEditEntry,
+  canUserViewDraftEntry,
+}: EntryProps): JSX.Element => {
   //  TODO: Don't rely on `is_legacy`; use `dchp_version` instead.
   const bgColor = entry.is_legacy
     ? "bg-amber-50"
@@ -46,7 +51,10 @@ const Entry = ({ entry, canUserEditEntry }: EntryProps): JSX.Element => {
         className={`md:max-w-2xl lg:max-w-6xl ${bgColor} flex-1 pl-4 pr-5 pt-1`}
       >
         <Headword entry={entry} showEditButton={canUserEditEntry} />
-        <Meanings meanings={entry.meanings} />
+        <Meanings
+          meanings={entry.meanings}
+          canUserViewDraftEntry={canUserViewDraftEntry}
+        />
         {entry.referenceLinks.length > 0 && <EntryReferences data={entry} />}
         {entry.images.length > 0 && <EntryImages data={entry} />}
       </div>

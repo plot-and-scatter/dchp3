@@ -1,4 +1,7 @@
-import { canUserEditEntry as _canUserEditEntry } from "~/services/auth/session.server"
+import {
+  canUserEditEntry as _canUserEditEntry,
+  userHasPermission,
+} from "~/services/auth/session.server"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { getEntryByHeadword } from "~/models/entry.server"
 import { useLoaderData } from "@remix-run/react"
@@ -34,7 +37,24 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const canUserEditEntry = await _canUserEditEntry(request, headword)
 
-  return { entry, canUserEditEntry }
+  const canUserViewDraftEntry = await userHasPermission(
+    request,
+    "det:viewEdits"
+  )
+
+  const canUserViewEntry = entry.is_public || canUserViewDraftEntry
+
+  if (!canUserViewEntry) {
+    throw json(
+      `You do not have permission to view this entry. Please log in or contact an administrator.`,
+      {
+        status: 403,
+        statusText: "forbidden",
+      }
+    )
+  }
+
+  return { entry, canUserEditEntry, canUserViewDraftEntry }
 }
 
 export type LoadedEntryDataType = SerializeFrom<
