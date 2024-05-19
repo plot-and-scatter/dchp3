@@ -16,6 +16,7 @@ export default function SeeAlsoItem({ seeAlso }: SeeAlsoProps) {
         prefetch="intent"
       >
         {seeAlso.entry.headword}
+        {seeAlso.entry.is_public ? "" : " [Draft]"}
       </NavLink>
       {seeAlso.linknote && <span className="ml-1">{seeAlso.linknote}</span>}
     </span>

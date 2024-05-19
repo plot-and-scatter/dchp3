@@ -14,7 +14,8 @@ const DEBOUNCE_DELAY_IN_MS = 200
 // const MAX_HEADWORDS_DISPLAYED = 500
 
 export default function SeeAlsoInput({ name, ...rest }: SeeAlsoInputProps) {
-  const headwords = useFetcher<{ id: number; headword: string }[]>()
+  const headwords =
+    useFetcher<{ id: number; headword: string; is_public: boolean }[]>()
 
   const getHeadwords = useDebouncedCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +38,7 @@ export default function SeeAlsoInput({ name, ...rest }: SeeAlsoInputProps) {
             <Combobox
               options={
                 headwords.data?.map((h) => ({
-                  label: h.headword,
+                  label: `${h.headword} ${h.is_public ? "" : " [Draft]"}`,
                   value: `${h.id}`,
                 })) || []
               }

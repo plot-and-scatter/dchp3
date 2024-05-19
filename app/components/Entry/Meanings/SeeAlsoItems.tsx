@@ -7,17 +7,29 @@ export type SeeAlsoList = MeaningType["seeAlso"]
 
 interface SeeAlsoItemsProps {
   seeAlsoItems: SeeAlsoList
+  canUserViewDraftEntry: boolean
 }
 
-const SeeAlsoItems = ({ seeAlsoItems }: SeeAlsoItemsProps): JSX.Element => {
-  if (!seeAlsoItems || seeAlsoItems.length === 0) {
+const SeeAlsoItems = ({
+  seeAlsoItems,
+  canUserViewDraftEntry,
+}: SeeAlsoItemsProps): JSX.Element => {
+  const visibleSeeAlsoItems = seeAlsoItems.filter(
+    (seeAlso) => seeAlso.entry.is_public || canUserViewDraftEntry
+  )
+
+  if (
+    !seeAlsoItems ||
+    seeAlsoItems.length === 0 ||
+    visibleSeeAlsoItems.length === 0
+  ) {
     return <></>
   }
 
   return (
     <div>
       <em>See:</em>{" "}
-      {seeAlsoItems.map((seeAlso, index) => {
+      {visibleSeeAlsoItems.map((seeAlso, index) => {
         return (
           <React.Fragment
             key={`see-also-${seeAlso.meaning_id}-${seeAlso.entry_id}`}

@@ -11,9 +11,13 @@ export type MeaningType = LoadedEntryDataType["meanings"][0]
 
 interface MeaningProps {
   meaning: MeaningType
+  canUserViewDraftEntry: boolean
 }
 
-const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
+const Meaning = ({
+  meaning,
+  canUserViewDraftEntry,
+}: MeaningProps): JSX.Element => {
   const { order: number, partofspeech: partOfSpeech, usage, dagger } = meaning
 
   return (
@@ -31,7 +35,10 @@ const Meaning = ({ meaning }: MeaningProps): JSX.Element => {
         <div className="flex flex-col gap-2 p-2 md:p-4 md:px-6">
           <Definition meaning={meaning} />
           <Canadianism meaning={meaning} />
-          <SeeAlsoItems seeAlsoItems={meaning.seeAlso} />
+          <SeeAlsoItems
+            seeAlsoItems={meaning.seeAlso}
+            canUserViewDraftEntry={canUserViewDraftEntry}
+          />
           {meaning.usageNotes.length > 0 &&
             meaning.usageNotes.map((usageNote) => (
               <HandNoteBlock key={`usage-note-${usageNote.id}`}>

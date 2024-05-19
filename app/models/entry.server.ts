@@ -46,6 +46,7 @@ export function getEntryByHeadword({ headword }: Pick<Entry, "headword">) {
               entry: {
                 select: {
                   headword: true,
+                  is_public: true,
                 },
               },
             },
