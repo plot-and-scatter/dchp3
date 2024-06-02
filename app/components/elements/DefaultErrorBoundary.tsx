@@ -32,6 +32,8 @@ export function DefaultErrorBoundary() {
   // Any value can be thrown, not just errors!
   let errorMessage = (error as any)?.toString() || "Unknown error"
 
+  console.log(error)
+
   return (
     <div>
       <p>Something went wrong.</p>

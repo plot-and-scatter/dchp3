@@ -85,7 +85,7 @@ model Entry {
   proofing_user        String?         @db.VarChar(200)
   fist_note            String?         @db.Text
   image_file_name      String?         @db.VarChar(200)
-  comment              String?         @db.VarChar(1000)
+  comment              String?         @db.Text
   first_draft          Boolean         @default(false)
   revised_draft        Boolean         @default(false)
   semantically_revised Boolean         @default(false)
