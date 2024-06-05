@@ -30,7 +30,7 @@ export function DefaultErrorBoundary() {
 
   // Don't forget to typecheck with your own logic.
   // Any value can be thrown, not just errors!
-  let errorMessage = (error as any)?.toString() || "Unknown error"
+  let errorMessage = (error as any)?.toString() || error || "Unknown error"
 
   console.log(error)
 

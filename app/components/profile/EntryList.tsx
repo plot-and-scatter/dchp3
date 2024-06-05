@@ -20,7 +20,7 @@ const EntryList = ({ logEntries, displayUsers }: EntryListProps) => {
                 bold
                 to={`/entries/${e.entry?.headword}`}
               >
-                {e.entry?.headword ?? `Deleted entry: ${e.entry_id}`}
+                {e.entry?.headword ?? `[Deleted entry]: ${e.headword}`}
               </Link>
               <p className="col-span-1"></p>
               <p className="col-span-1">Edited:</p>
