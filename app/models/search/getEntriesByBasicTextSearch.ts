@@ -23,8 +23,8 @@ export function getHeadwordCount({
   FROM det_entries
   WHERE
     IF (${caseSensitive},
-      (headword) LIKE (${searchWildcard}),
-      LOWER(headword) LIKE LOWER(${searchWildcard})
+      (headword) LIKE (${searchWildcard} OR spelling_variants LIKE (${searchWildcard})),
+      (LOWER(headword) LIKE LOWER(${searchWildcard}) OR LOWER(spelling_variants) LIKE LOWER(${searchWildcard}))
     )
     AND (det_entries.dchp_version IN (${Prisma.join(database)}))
     AND (det_entries.is_public = 1 OR ${isUserAdmin})
@@ -50,8 +50,8 @@ export function getEntriesByBasicTextSearch({
   FROM det_entries
   WHERE
     IF (${caseSensitive},
-      (headword) LIKE (${searchWildcard}),
-      LOWER(headword) LIKE LOWER(${searchWildcard})
+      (headword) LIKE (${searchWildcard} OR spelling_variants LIKE (${searchWildcard})),
+      (LOWER(headword) LIKE LOWER(${searchWildcard}) OR LOWER(spelling_variants) LIKE LOWER(${searchWildcard}))
     )
     AND (det_entries.dchp_version IN (${Prisma.join(database)}))
     AND (det_entries.is_public = 1 OR ${isUserAdmin})
