@@ -24,7 +24,7 @@ const calculateDictionaryVersion = (
       const bTime = Date.parse(b.created)
       return aTime - bTime
     })
-    .pop()
+    .shift()
 
   if (!logEntry) return { version: `Unknown`, date: `Post-DCHP-1` }
 
