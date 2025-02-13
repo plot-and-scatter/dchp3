@@ -1,12 +1,12 @@
-import DraftLabel from "../elements/Labels/DraftLabel"
-import { Link } from "../elements/LinksAndButtons/Link"
+import SanitizedTextSpan from "../../Entry/Common/SanitizedTextSpan"
+import { Link } from "../../elements/LinksAndButtons/Link"
 
 interface Props {
   text: string
   data: any[]
 }
 
-const SearchResultEntries = ({ text, data }: Props) => {
+const SearchResultCanadianism = ({ text, data }: Props) => {
   if (data === undefined || data.length === 0) {
     return <>No results.</>
   }
@@ -15,7 +15,7 @@ const SearchResultEntries = ({ text, data }: Props) => {
     <>
       {data.map((e) => {
         return (
-          <p key={e.id} className="flex items-center">
+          <div className="mb-2 flex flex-col" key={e.id}>
             <Link
               to={`/entries/${e.headword}`}
               appearance="primary"
@@ -23,12 +23,12 @@ const SearchResultEntries = ({ text, data }: Props) => {
             >
               {e.headword}
             </Link>
-            <DraftLabel isPublic={e.is_public} />
-          </p>
+            <SanitizedTextSpan text={e.canadianism_type_comment} />
+          </div>
         )
       })}
     </>
   )
 }
 
-export default SearchResultEntries
+export default SearchResultCanadianism
