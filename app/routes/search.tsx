@@ -56,7 +56,7 @@ export async function loader({ request }: LoaderArgs) {
       isUserAdmin
     )
 
-    return { searchResults, searchParams: parsedParams.value, url }
+    return { isUserAdmin, searchResults, searchParams: parsedParams.value, url }
   }
 }
 
@@ -89,7 +89,7 @@ export default function SearchPage() {
           <div className="flex w-fit shrink-0 grow-0 flex-row gap-4">
             <DatabaseCheckboxes fields={fields} />
             <CanadianismTypeCheckboxes fields={fields} data={data} />
-            <EditingStatusCheckboxes fields={fields} />
+            {data?.isUserAdmin && <EditingStatusCheckboxes fields={fields} />}
           </div>
           <div className="max-w-fit text-center lg:text-start">
             <ActionButton
