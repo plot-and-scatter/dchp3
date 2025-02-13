@@ -16,6 +16,7 @@ import SearchResult from "~/components/search/Results/SearchResult"
 import SearchTermInput from "~/components/search/SearchTermInput"
 import type { AllSearchResults } from "~/models/search.server"
 import type { LoaderArgs } from "@remix-run/server-runtime"
+import EditingStatusCheckboxes from "~/components/search/EditingStatusCheckboxes"
 
 const searchActionSchema = z.object({
   searchTerm: z
@@ -26,6 +27,7 @@ const searchActionSchema = z.object({
     .min(1),
   database: z.array(z.string()).min(1, "You must select at least one database"),
   canadianismType: z.array(z.string()),
+  editingStatus: z.array(z.string()).optional(),
   nonCanadianism: z.boolean().nullish(),
   caseSensitive: z.boolean().nullish(),
   page: z.number().int().positive().default(1),
@@ -76,7 +78,9 @@ export default function SearchPage() {
 
   return (
     <Main center>
-      <PageHeader>Search entries {searchTerm}</PageHeader>
+      <PageHeader>
+        Search entries{searchTerm && ":"} {searchTerm}
+      </PageHeader>
       <Form {...getFormProps(form)} method="get">
         <div className="flex w-full max-w-4xl flex-col gap-4 md:flex-row lg:gap-6">
           <div className="grow-1 flex w-full flex-col gap-4 md:flex-row">
@@ -85,6 +89,7 @@ export default function SearchPage() {
           <div className="flex w-fit shrink-0 grow-0 flex-row gap-4">
             <DatabaseCheckboxes fields={fields} />
             <CanadianismTypeCheckboxes fields={fields} data={data} />
+            <EditingStatusCheckboxes fields={fields} />
           </div>
           <div className="max-w-fit text-center lg:text-start">
             <ActionButton

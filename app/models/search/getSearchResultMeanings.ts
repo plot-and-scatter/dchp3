@@ -2,6 +2,7 @@ import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
 import { prisma } from "~/db.server"
 import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
+import { EDITING_STATUS_INPUTS } from "~/components/EntryEditor/EntryEditorSidebar/EditingStatus/EditingStatusPanel"
 
 export interface SearchResultMeaning {
   id: number
@@ -13,6 +14,7 @@ function getWhereClause({
   nonCanadianism,
   searchTerm,
   canadianismType,
+  editingStatus,
 }: SearchResultParams) {
   const where: any = {
     entry: {
@@ -26,6 +28,18 @@ function getWhereClause({
 
   if (canadianismType.length !== BASE_CANADANISM_TYPES.length) {
     where.canadianism_type = { in: canadianismType }
+  }
+
+  // If editingStatus is not empty, AND not all statuses are selected, then
+  // filter by the selected statuses
+  if (
+    editingStatus &&
+    editingStatus.length &&
+    editingStatus.length !== EDITING_STATUS_INPUTS.length
+  ) {
+    where.entry.OR = editingStatus.map((status) => ({
+      [status]: true,
+    }))
   }
 
   return where
