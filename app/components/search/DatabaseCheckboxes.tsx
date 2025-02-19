@@ -1,7 +1,10 @@
+import type { FieldMetadata } from "@conform-to/react"
 import RadioOrCheckbox from "../bank/RadioOrCheckbox"
 
 type DatabaseCheckboxesProps = {
-  fields: { database: any }
+  fields: {
+    database: FieldMetadata<string[]>
+  }
 }
 
 export default function DatabaseCheckboxes({

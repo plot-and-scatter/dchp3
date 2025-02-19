@@ -41,16 +41,18 @@ export async function loader({ request }: LoaderArgs) {
     schema: searchActionSchema,
   })
 
+  const isUserAdmin = await userHasPermission(request, "det:viewEdits")
+
   if (parsedParams.status !== "success") {
-    return null
+    return {
+      isUserAdmin,
+    }
   }
 
   const url = new URL(request.url)
-
   const searchTerm = parsedParams.value.searchTerm
 
   if (searchTerm) {
-    const isUserAdmin = await userHasPermission(request, "det:viewEdits")
     const searchResults: AllSearchResults = await getSearchResults(
       parsedParams.value,
       isUserAdmin
@@ -58,9 +60,19 @@ export async function loader({ request }: LoaderArgs) {
 
     return { isUserAdmin, searchResults, searchParams: parsedParams.value, url }
   }
+
+  return { isUserAdmin }
 }
 
 const SEARCH_PATH = "/search"
+
+const isSearchResult = (
+  data: any
+): data is { searchResults: AllSearchResults } => {
+  console.log("data", data)
+
+  return !!data.searchParams
+}
 
 export default function SearchPage() {
   const data = useLoaderData<typeof loader>()
@@ -72,9 +84,13 @@ export default function SearchPage() {
       return parsing
     },
   })
-  const hasResults = data !== null
+  const isResult = isSearchResult(data)
 
-  const searchTerm = data?.searchParams.searchTerm
+  const searchTerm = isResult ? data.searchParams?.searchTerm : undefined
+
+  const attribute = isResult
+    ? data.searchParams.attribute
+    : SearchResultEnum.HEADWORD
 
   return (
     <Main center>
@@ -88,14 +104,17 @@ export default function SearchPage() {
           </div>
           <div className="flex w-fit shrink-0 grow-0 flex-row gap-4">
             <DatabaseCheckboxes fields={fields} />
-            <CanadianismTypeCheckboxes fields={fields} data={data} />
+            <CanadianismTypeCheckboxes
+              fields={fields}
+              searchParams={isResult ? data.searchParams : undefined}
+            />
             {data?.isUserAdmin && <EditingStatusCheckboxes fields={fields} />}
           </div>
           <div className="max-w-fit text-center lg:text-start">
             <ActionButton
               size="large"
               name="attribute"
-              value={data?.searchParams.attribute || SearchResultEnum.HEADWORD}
+              value={attribute}
               className="mx-auto w-fit whitespace-nowrap"
               formActionPath={SEARCH_PATH}
             >
@@ -103,9 +122,7 @@ export default function SearchPage() {
             </ActionButton>
           </div>
         </div>
-        {hasResults && (
-          <SearchResult data={data} searchTerm={searchTerm || ""} />
-        )}
+        {isResult && <SearchResult data={data} searchTerm={searchTerm || ""} />}
       </Form>
     </Main>
   )
