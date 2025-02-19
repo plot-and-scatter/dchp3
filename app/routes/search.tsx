@@ -73,8 +73,6 @@ const isSearchResult = (
   searchParams: any
   url: string
 } => {
-  console.log("data", data)
-
   return !!data.searchParams
 }
 
