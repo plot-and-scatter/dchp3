@@ -1,8 +1,9 @@
-import RadioOrCheckbox from "../bank/RadioOrCheckbox"
 import { EDITING_STATUS_INPUTS } from "../EntryEditor/EntryEditorSidebar/EditingStatus/EditingStatusPanel"
+import RadioOrCheckbox from "../bank/RadioOrCheckbox"
+import type { FieldMetadata } from "@conform-to/react"
 
 type EditingStatusCheckboxesProps = {
-  fields: { editingStatus: any }
+  fields: { editingStatus: FieldMetadata<string[]> }
 }
 
 export default function EditingStatusCheckboxes({

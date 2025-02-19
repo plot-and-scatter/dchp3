@@ -5,7 +5,7 @@ import { SearchResultEnum } from "~/routes/search/searchResultEnum"
 
 type SearchResultProps = {
   data: {
-    searchResults: AllSearchResults
+    searchResults?: AllSearchResults
     searchParams: {
       caseSensitive?: boolean | null
       page: number
@@ -17,6 +17,10 @@ type SearchResultProps = {
 }
 
 export default function SearchResult({ data, searchTerm }: SearchResultProps) {
+  if (!data.searchResults) {
+    return null
+  }
+
   return (
     <div className="mt-5 w-full border-t-2 border-gray-500 pt-5 lg:w-fit">
       <SecondaryHeader>
