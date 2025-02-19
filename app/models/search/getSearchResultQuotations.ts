@@ -1,6 +1,7 @@
 import { prisma } from "~/db.server"
 import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
+import { EDITING_STATUS_INPUTS } from "~/components/EntryEditor/EntryEditorSidebar/EditingStatus/EditingStatusPanel"
 
 export interface Quotation {
   id: number
@@ -20,8 +21,9 @@ export interface Quotation {
 function getMeaningCondition({
   isUserAdmin,
   nonCanadianism,
+  editingStatus,
 }: SearchResultParams) {
-  return {
+  const where: any = {
     meaning: {
       entry: {
         is_public: isUserAdmin ? undefined : true,
@@ -29,6 +31,20 @@ function getMeaningCondition({
       },
     },
   }
+
+  // If editingStatus is not empty, AND not all statuses are selected, then
+  // filter by the selected statuses
+  if (
+    editingStatus &&
+    editingStatus.length &&
+    editingStatus.length !== EDITING_STATUS_INPUTS.length
+  ) {
+    where.meaning.entry.OR = editingStatus.map((status) => ({
+      [status]: true,
+    }))
+  }
+
+  return where
 }
 
 function getWhereClause(params: SearchResultParams) {
