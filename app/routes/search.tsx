@@ -10,13 +10,13 @@ import { z } from "zod"
 import ActionButton from "~/components/elements/LinksAndButtons/ActionButton"
 import CanadianismTypeCheckboxes from "~/components/search/CanadianismTypeCheckboxes"
 import DatabaseCheckboxes from "~/components/search/DatabaseCheckboxes"
+import EditingStatusCheckboxes from "~/components/search/EditingStatusCheckboxes"
 import FAIcon from "~/components/elements/Icons/FAIcon"
 import Main from "~/components/elements/Layouts/Main"
 import SearchResult from "~/components/search/Results/SearchResult"
 import SearchTermInput from "~/components/search/SearchTermInput"
 import type { AllSearchResults } from "~/models/search.server"
 import type { LoaderArgs } from "@remix-run/server-runtime"
-import EditingStatusCheckboxes from "~/components/search/EditingStatusCheckboxes"
 
 const searchActionSchema = z.object({
   searchTerm: z
@@ -68,7 +68,11 @@ const SEARCH_PATH = "/search"
 
 const isSearchResult = (
   data: any
-): data is { searchResults: AllSearchResults } => {
+): data is {
+  searchResults: AllSearchResults
+  searchParams: any
+  url: string
+} => {
   console.log("data", data)
 
   return !!data.searchParams
