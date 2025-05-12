@@ -11,8 +11,7 @@ export default function Foreword() {
 
       <p>
         The basic principles of entry structure remain the same as in DCHP-2
-        (see here) (LINK TO DCHP-2 Intro), though the appearance is quite
-        different.
+        (see here) [TK — link], though the appearance is quite different.
       </p>
 
       <SecondaryHeader>A Typology of Canadianisms</SecondaryHeader>
@@ -26,30 +25,30 @@ export default function Foreword() {
       </p>
       <ul className="my-4 ml-8 flex list-disc flex-col gap-y-2">
         <li>
-          <strong>Type 1 - Origin</strong>: a form and its meaning were created
-          in what is now Canada
+          <strong>Type 1 &mdash; Origin</strong>: a form and its meaning were
+          created in what is now Canada
         </li>
         <li>
-          <strong>Type 2 - Preservation</strong>: a form or meaning that was
-          once widespread in many Englishes, but is now preserved in Canadian
-          English in the North American context or beyond; sometimes called
-          “retention”
+          <strong>Type 2 &mdash; Preservation</strong>: a form or meaning that
+          was once widespread in many Englishes, but is now preserved in
+          Canadian English in the North American context or beyond; sometimes
+          called “retention”
         </li>
         <li>
-          <strong>Type 3 - Semantic Change</strong>: forms that have undergone
-          semantic change in Canadian English
+          <strong>Type 3 &mdash; Semantic Change</strong>: forms that have
+          undergone semantic change in Canadian English
         </li>
         <li>
-          <strong>Type 4 - Culturally Significant</strong>: forms or meanings
-          that have been enshrined in the Canadian psyche and are widely seen as
-          part of Canadian identity
+          <strong>Type 4 &mdash; Culturally Significant</strong>: forms or
+          meanings that have been enshrined in the Canadian psyche and are
+          widely seen as part of Canadian identity
         </li>
         <li>
-          <strong>Type 5 - Frequency</strong>: forms or meanings that are
+          <strong>Type 5 &mdash; Frequency</strong>: forms or meanings that are
           Canadian by virtue of frequency
         </li>
         <li>
-          <strong>Type 6 - Memorial</strong>: forms or meanings now widely
+          <strong>Type 6 &mdash; Memorial</strong>: forms or meanings now widely
           considered to be pejorative
         </li>
         <li>
@@ -60,45 +59,49 @@ export default function Foreword() {
       <p className="text-right">(Dollinger 2019: 122-23) [TK — link?]</p>
 
       <p>
-        Type 1 is a Canadianism by virtue of originating—entering the English
-        language—in what is now Canada. A classic example is{" "}
-        <WordLink>garburator</WordLink>; newer examples from this edition are
+        <strong>Type 1</strong> is a Canadianism by virtue of
+        originating—entering the English language—in what is now Canada. A
+        classic example is <WordLink>garburator</WordLink>; newer examples from
+        this edition are
         <WordLink>hang a larry</WordLink>, <WordLink>hang a roger</WordLink>,{" "}
         <WordLink>levidrome</WordLink>, <WordLink>renovict</WordLink> and{" "}
-        <WordLink>quinzhee</WordLink>. Type 2 is a preservation in Canadian
-        English from another variety of English, often from the UK but also from
-        the US. The standard example is <WordLink>pencil crayon</WordLink>, once
-        used in the US and now exclusively Canadian. Newer examples are{" "}
-        <WordLink>joe job</WordLink>, the newly reclassified{" "}
-        <WordLink>parkade</WordLink> and <WordLink>peace bond</WordLink>.
+        <WordLink>quinzhee</WordLink>. <strong>Type 2</strong> is a preservation
+        in Canadian English from another variety of English, often from the UK
+        but also from the US. The standard example is{" "}
+        <WordLink>pencil crayon</WordLink>, once used in the US and now
+        exclusively Canadian. Newer examples are <WordLink>joe job</WordLink>,
+        the newly reclassified <WordLink>parkade</WordLink> and{" "}
+        <WordLink>peace bond</WordLink>.
       </p>
 
       <p>
-        Type 3 is assigned when semantic change has been witnessed of an older
-        form in Canadian English, where <WordLink>toque</WordLink> ‘a chef’s
-        hat, a woman’s hat’ was adapted to a close-fitting warm winter hat or{" "}
-        <WordLink>Canuck</WordLink>, meaning 2b, which underwent semantic
-        amelioration in Canada, from a term of abuse to a term of endearment for
-        Anglophone Canadians (meaning 2a, ‘French Canadians’ did not bear such
-        positive connotations throughout Canada’s history). New additions to
-        this category include <WordLink>quadrex</WordLink> ‘a four-plex’, which
-        is influenced by Quebec French and used to refer to other entities,{" "}
+        <strong>Type 3</strong> is assigned when semantic change has been
+        witnessed of an older form in Canadian English, where{" "}
+        <WordLink>toque</WordLink> ‘a chef’s hat, a woman’s hat’ was adapted to
+        a close-fitting warm winter hat or <WordLink>Canuck</WordLink>, meaning
+        2b, which underwent semantic amelioration in Canada, from a term of
+        abuse to a term of endearment for Anglophone Canadians (meaning 2a,
+        ‘French Canadians’ did not bear such positive connotations throughout
+        Canada’s history). New additions to this category include{" "}
+        <WordLink>quadrex</WordLink> ‘a four-plex’, which is influenced by
+        Quebec French and used to refer to other entities,{" "}
         <WordLink>soaker</WordLink> ‘a wet foot’ rather than just an alcoholic
         (US English)’ or <WordLink>social</WordLink> ‘wedding party’, which is
         common in Manitoba today.
       </p>
 
       <p>
-        Type 4 is the Culturally significant vocabulary, of which hockey
-        terminology and things to do with revered Canadian institutions are
-        prime contenders. <WordLink>Universal healthcare</WordLink> or hockey
-        terminology, e.g. <WordLink>goalie mask</WordLink>, have that status, as
-        do Indigenous words, e.g. <WordLink>culturally modified tree</WordLink>.
-        This category includes those meanings of <WordLink>eh</WordLink> that
-        are associated with Canadian English. As the country realigns itself out
-        of Anglophone/Francophone hegemony we will see what other forms of
-        activity will become associated with Canada. Newer terms include{" "}
-        <WordLink>elbows up</WordLink>, meaning #2, the battle cry to avoid
+        <strong>Type 4</strong> is the Culturally significant vocabulary, of
+        which hockey terminology and things to do with revered Canadian
+        institutions are prime contenders.{" "}
+        <WordLink>Universal healthcare</WordLink> or hockey terminology, e.g.{" "}
+        <WordLink>goalie mask</WordLink>, have that status, as do Indigenous
+        words, e.g. <WordLink>culturally modified tree</WordLink>. This category
+        includes those meanings of <WordLink>eh</WordLink> that are associated
+        with Canadian English. As the country realigns itself out of
+        Anglophone/Francophone hegemony we will see what other forms of activity
+        will become associated with Canada. Newer terms include{" "}
+        <WordLink>elbows up</WordLink> (meaning #2), the battle cry to avoid
         becoming a “51st state”, while meaning #1 is in the same category as a
         style of playing hockey. Other examples include{" "}
         <WordLink>poudrerie</WordLink>, as part of the Canadian (winter)
@@ -108,29 +111,30 @@ export default function Foreword() {
       </p>
 
       <p>
-        Type 5 is a label that has been used often, as it is methodologically
-        often the simplest way to establish a Canadian dimension in the
-        comparative usage record. The classic examples are{" "}
+        <strong>Type 5</strong> is a label that has been used often, as it is
+        methodologically often the simplest way to establish a Canadian
+        dimension in the comparative usage record. The classic examples are{" "}
         <WordLink>washroom</WordLink> ‘(public) toilet’ nationally and{" "}
-        <WordLink>cube van</WordLink>
-        ‘box-shaped (moving) truck’ in Central Canada. We used that criterion to
-        declare <WordLink>chirp</WordLink>, <WordLink>goal suck</WordLink>,{" "}
-        <WordLink>heat dome</WordLink>, <WordLink>klick</WordLink>,{" "}
-        <WordLink>rig pig</WordLink>, <WordLink>substance use</WordLink> and
-        <WordLink>quilling</WordLink> meaning #2 Canadian, often in contrast to
-        US English, in which case we insisted on a difference of several
-        multiples of frequency in Canada compared to the US. As well, that’s how
-        <WordLink>brown bread</WordLink> and <WordLink>shit disturber</WordLink>{" "}
-        were assigned their Canadian labels.
+        <WordLink>cube van</WordLink> ‘box-shaped (moving) truck’ in Central
+        Canada. We used that criterion to declare <WordLink>chirp</WordLink>,{" "}
+        <WordLink>goal suck</WordLink>, <WordLink>heat dome</WordLink>,{" "}
+        <WordLink>klick</WordLink>, <WordLink>rig pig</WordLink>,{" "}
+        <WordLink>substance use</WordLink> and <WordLink>quilling</WordLink>{" "}
+        (meaning #2) Canadian, often in contrast to US English, in which case we
+        insisted on a difference of several multiples of frequency in Canada
+        compared to the US. As well, that’s how <WordLink>brown bread</WordLink>{" "}
+        and <WordLink>shit disturber</WordLink> were assigned their Canadian
+        labels.
       </p>
 
       <p>
-        Finally, Type 6 is the Memorial type. It’s the flipside of Type 4,
-        Cultural significance, and concerns the darker aspects of Canada’s
-        history. A prime example is <WordLink>residential school</WordLink>, the
-        euphemism that sounds innocent but which exerted such brutal force with
-        ongoing consequences in society today. In this edition we added
-        <WordLink>maplewashing</WordLink> meaning #1a and{" "}
+        Finally, <strong>Type 6</strong> is the Memorial type. It’s the flipside
+        of Type 4, Cultural significance, and concerns the darker aspects of
+        Canada’s history. A prime example is{" "}
+        <WordLink>residential school</WordLink>, the euphemism that sounds
+        innocent but which exerted such brutal force with ongoing consequences
+        in society today. In this edition we added{" "}
+        <WordLink>maplewashing</WordLink> (meaning #1a) and{" "}
         <WordLink>pretendian</WordLink> yet we only, it seems, scratched the
         surface. As in DCHP-2, Type 6 - Memorial is the least developed, which
         would offer an approach for the next edition.
