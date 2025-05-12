@@ -4,8 +4,13 @@ body {
 }
 
 p {
-  margin-bottom: 0.5rem;
-  line-height: 150%;
+  margin-bottom: 1rem;
+  line-height: 140%;
+}
+
+blockquote {
+  margin: 1rem 2rem;
+  line-height: 140%;
 }
 
 /* This is for <blockquotes> inside .HandNoteBlock */

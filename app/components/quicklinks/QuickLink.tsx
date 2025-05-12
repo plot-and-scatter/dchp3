@@ -6,7 +6,7 @@ interface QuickLinkProps {
   scrollToId: string
 }
 
-const scrollTo = (elementId: string): void => {
+export const scrollTo = (elementId: string): void => {
   const element = document.getElementById(elementId)
   if (element) {
     const headerHeight = document.getElementsByTagName("header")[0].offsetHeight

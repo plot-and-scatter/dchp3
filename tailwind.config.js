@@ -13,6 +13,8 @@ module.exports = {
       "primary-light": colors.red[400],
       "primary-dark": colors.red[700],
       red: colors.red,
+      blue: colors.blue,
+      green: colors.emerald,
       gray: colors.slate,
       alert: colors.amber,
       success: colors.emerald,
