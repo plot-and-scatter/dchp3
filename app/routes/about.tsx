@@ -1,22 +1,37 @@
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 import TextPageMain from "~/components/elements/Layouts/TextPageMain"
+import Button from "~/components/elements/LinksAndButtons/Button"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import WordLink from "~/components/elements/LinksAndButtons/WordLink"
+import { scrollTo } from "~/components/quicklinks/QuickLink"
 
 export default function About() {
   return (
     <TextPageMain>
       <PageHeader>About DCHP-3</PageHeader>
 
-      <p>Menu points</p>
-      <p>Introduction to the Third Edition</p>
-      <p>DCHP-1 Legacy Content</p>
-      <p>Project Team</p>
-      <p>Canadian English Dictionary</p>
-      <p>Works Cited</p>
+      <div className="my-8 flex flex-col items-start gap-y-2">
+        <Button asLink onClick={() => scrollTo("introduction")}>
+          Introduction to the Third Edition
+        </Button>
+        <Button asLink onClick={() => scrollTo("dchp-1-legacy-content")}>
+          DCHP-1 Legacy Content
+        </Button>
+        <Button asLink onClick={() => scrollTo("project-team")}>
+          Project Team
+        </Button>
+        <Button asLink onClick={() => scrollTo("canadian-english-dictionary")}>
+          Canadian English Dictionary
+        </Button>
+        <Button asLink onClick={() => scrollTo("works-cited")}>
+          Works Cited
+        </Button>
+      </div>
 
-      <SecondaryHeader>Introduction to the Third Edition</SecondaryHeader>
+      <SecondaryHeader id="introduction">
+        Introduction to the Third Edition
+      </SecondaryHeader>
 
       <p>
         The current Third Edition of{" "}
@@ -226,7 +241,9 @@ export default function About() {
         in She is recovering in hospital.
       </p>
 
-      <SecondaryHeader>DCHP-1 Legacy Content</SecondaryHeader>
+      <SecondaryHeader id="dchp-1-legacy-content">
+        DCHP-1 Legacy Content
+      </SecondaryHeader>
 
       <p>
         As in DCHP-2, DCHP-1 legacy data is shown in DCHP-3 on a yellow
@@ -261,7 +278,7 @@ export default function About() {
         than create a new one for the oil and gas industry.
       </p>
 
-      <SecondaryHeader>Project Team</SecondaryHeader>
+      <SecondaryHeader id="project-team">Project Team</SecondaryHeader>
 
       <p>
         The DCHP-3 team was considerably smaller than the last time around.
@@ -290,7 +307,9 @@ export default function About() {
         Hangler from <Link>Plot + Scatter</Link>.
       </p>
 
-      <SecondaryHeader>Canadian English Dictionary</SecondaryHeader>
+      <SecondaryHeader id="canadian-english-dictionary">
+        Canadian English Dictionary
+      </SecondaryHeader>
 
       <p>
         An exciting development began in 2022, when{" "}
@@ -333,10 +352,10 @@ export default function About() {
       <p>Stefan Dollinger & Margery Fee</p>
       <p>Victoria & Vancouver, May 2025</p>
 
-      <SecondaryHeader>Works Cited</SecondaryHeader>
+      <SecondaryHeader id="works-cited">Works Cited</SecondaryHeader>
 
       <p>
-        Avis, Walter S. Introduction. In DCHP-1, xii-xv. Online:
+        Avis, Walter S. Introduction. In DCHP-1, xii-xv. Online:{" "}
         <Link to="https://www.dchp.ca/dchp1">www.dchp.ca/dchp1</Link> [TK:
         subpage link?].
       </p>
@@ -363,14 +382,14 @@ export default function About() {
       <p>
         DCHP-1 Online = Dollinger, Stefan, Laurel Brinton and Margery Fee (eds.)
         2013. DCHP-1 Online: A Dictionary of Canadianisms on Historical
-        Principles, 1st edition. Based on Walter S. Avis et al. 1967.
+        Principles, 1st edition. Based on Walter S. Avis et al. 1967.{" "}
         <Link to="https://www.dchp.ca/DCHP1">www.dchp.ca/DCHP1</Link>
       </p>
       <p>
         DCHP-2 = Dollinger, Stefan (chief editor) and Margery Fee (associate
         editor). 2017. DCHP-2: The Dictionary of Canadianisms on Historical
         Principles, 2nd edition. With the assistance of Baillie Ford, Alexandra
-        Gaylie, and Gabrielle Lim. Vancouver: University of British Columbia.
+        Gaylie, and Gabrielle Lim. Vancouver: University of British Columbia.{" "}
         <Link to="https://www.dchp.ca/dchp2">www.dchp.ca/dchp2</Link>
       </p>
       <p>
@@ -383,14 +402,14 @@ export default function About() {
       </p>
       <p>
         Dollinger, Stefan. 2016. Googleology as smart lexicography: big, messy
-        data for better regional labels. Dictionaries 37: 60-98.
+        data for better regional labels. Dictionaries 37: 60-98.{" "}
         <Link to="https://www.academia.edu/21904323/">
           https://www.academia.edu/21904323/
         </Link>
       </p>
       <p>
         Dollinger, Stefan and Victoria Neufeldt. 2021. Patrick “Paddy” Drysdale
-        (1929–2020). Canadian Journal of Linguistics 66(2): 275-78.
+        (1929–2020). Canadian Journal of Linguistics 66(2): 275-78.{" "}
         <Link to="https://www.academia.edu/46895718/">
           https://www.academia.edu/46895718/
         </Link>
@@ -400,7 +419,7 @@ export default function About() {
         (ed.). Focus on Canada, 27-44. Amsterdam: Benjamins.
       </p>
       <p>
-        Neufeldt, Victoria. 2019. Review of DCHP-2. Dictionaries 40(2): 242-46.
+        Neufeldt, Victoria. 2019. Review of DCHP-2. Dictionaries 40(2): 242-46.{" "}
         <Link to="https://www.academia.edu/129241047/">
           https://www.academia.edu/129241047/
         </Link>
