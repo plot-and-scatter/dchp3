@@ -50,8 +50,8 @@ export default function About() {
       </p>
 
       <p>
-        In total, this update includes 130 new entries with 187 meanings (180
-        Canadian and 7 non-Canadian) for a total of now 12,039 lexemes (11,974
+        In total, this update includes 136 new entries with 187 meanings (180
+        Canadian and 7 non-Canadian) for a total of now 12,045 lexemes (11,974
         Canadian plus 65 non-Canadian) and 14,586 meanings (14,516 Canadian and
         70 non-Canadian), which are illustrated by way of 34,402 quotations
         (33,994 to illustrate Canadianisms + 408 for Canadian usage of
