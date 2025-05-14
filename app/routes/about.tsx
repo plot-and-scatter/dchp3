@@ -36,14 +36,17 @@ export default function About() {
         is the latest reiteration of a Canadian linguistics project that turned,
         sometime in the early 1960s, into a Canadian Centennial Project. DCHP-3
         is a major technical relaunch of the Second Edition from 2017 (
-        <Link to="">Dollinger & Fee 2017</Link>) and a minor editorial update.
-        Last time Paddy Drysdale, the last surviving member of the DCHP-1
-        editorial board, offered a <Link to="">foreword</Link> for DCHP-2; now
-        we must refer the reader to Paddy’s obituary (
-        <Link to="">Dollinger & Neufeldt 2021</Link>
+        <Link to="https://www.dchp.ca/dchp2">Dollinger & Fee 2017</Link>) and a
+        minor editorial update. Last time Paddy Drysdale, the last surviving
+        member of the DCHP-1 editorial board, offered a{" "}
+        <Link to="https://www.dchp.ca/dchp2/pages/foreword">foreword</Link> for
+        DCHP-2; now we must refer the reader to Paddy’s obituary (
+        <Link to="https://www.academia.edu/46895718/">
+          Dollinger & Neufeldt 2021
+        </Link>
         ). While DCHP-2 added roughly 10% to the scope of DCHP-1 (Avis et al.
-        1967, <Link to="">DCHP-1 Online</Link>), DCHP-3 adds around 10% of the
-        update for DCHP-2.
+        1967, <Link to="https://www.dchp.ca/DCHP1">DCHP-1 Online</Link>), DCHP-3
+        adds around 10% of the update for DCHP-2.
       </p>
 
       <p>
@@ -105,13 +108,13 @@ export default function About() {
         Preservation from US English (rather than the original Type 1 – Origin
         in Canada). We hope for more corrections, big or small, preferably in a
         peer-reviewed context, as were John Considine’s and Victoria Neufeldt’s
-        (<Link>Neufeldt 2019</Link>), though any critique in any form is most
-        welcome. Other corrections and updates of DCHP-2 terms include{" "}
-        <WordLink>bunny hug</WordLink> (which Saskatchewanians will likely be
-        interested to know), <WordLink>bush party</WordLink>,{" "}
-        <WordLink>down-island</WordLink>, <WordLink>Fat City</WordLink>,{" "}
-        <WordLink>Idle No More</WordLink>, <WordLink>joe job</WordLink>, and{" "}
-        <WordLink>qalunaaq</WordLink>.
+        (<Link to="https://www.academia.edu/129241047/">Neufeldt 2019</Link>),
+        though any critique in any form is most welcome. Other corrections and
+        updates of DCHP-2 terms include <WordLink>bunny hug</WordLink> (which
+        Saskatchewanians will likely be interested to know),{" "}
+        <WordLink>bush party</WordLink>, <WordLink>down-island</WordLink>,{" "}
+        <WordLink>Fat City</WordLink>, <WordLink>Idle No More</WordLink>,{" "}
+        <WordLink>joe job</WordLink>, and <WordLink>qalunaaq</WordLink>.
       </p>
 
       <p>
@@ -300,14 +303,17 @@ export default function About() {
         and took on copy editing (as last time), which was topped off by a first
         round of proofreading. The final proofreading of all new content was
         conducted this time by Lynn Slobogian, who was also the experienced
-        proofreader behind Creating Canadian English: The Professor, the
-        Mountaineer, and a National Variety of English (
-        <Link>Dollinger 2019</Link>), which is a ‘biography’ of Canadian
-        English. Chief editor Stefan Dollinger was in charge of all aspects of
-        the project, including drafting, data collection and system design,
-        which was implemented cheerfully and efficiently, as always, by Frank
-        Hangler from <Link to="https://plotandscatter.com">Plot + Scatter</Link>
-        .
+        proofreader behind{" "}
+        <em>
+          Creating Canadian English: The Professor, the Mountaineer, and a
+          National Variety of English
+        </em>{" "}
+        (<Link to="https://www.academia.edu/35184221/">Dollinger 2019</Link>),
+        which is a ‘biography’ of Canadian English. Chief editor Stefan
+        Dollinger was in charge of all aspects of the project, including
+        drafting, data collection and system design, which was implemented
+        cheerfully and efficiently, as always, by Frank Hangler from{" "}
+        <Link to="https://plotandscatter.com">Plot + Scatter</Link>.
       </p>
 
       <SecondaryHeader id="canadian-english-dictionary">
