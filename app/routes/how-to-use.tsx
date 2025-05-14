@@ -126,11 +126,12 @@ export default function Foreword() {
         <strong>Type 4</strong> is the Culturally significant vocabulary, of
         which hockey terminology and things to do with revered Canadian
         institutions are prime contenders.{" "}
-        <WordLink>Universal healthcare</WordLink> or hockey terminology, e.g.{" "}
-        <WordLink>goalie mask</WordLink>, have that status, as do Indigenous
-        words, e.g. <WordLink>culturally modified tree</WordLink>. This category
-        includes those meanings of <WordLink>eh</WordLink> that are associated
-        with Canadian English. As the country realigns itself out of
+        <WordLink to="universal healthcare">Universal healthcare</WordLink> or
+        hockey terminology, e.g. <WordLink>goalie mask</WordLink>, have that
+        status, as do Indigenous words, e.g.{" "}
+        <WordLink>culturally modified tree</WordLink>. This category includes
+        those meanings of <WordLink>eh</WordLink> that are associated with
+        Canadian English. As the country realigns itself out of
         Anglophone/Francophone hegemony we will see what other forms of activity
         will become associated with Canada. Newer terms include{" "}
         <WordLink>elbows up</WordLink> (meaning #2), the battle cry to avoid

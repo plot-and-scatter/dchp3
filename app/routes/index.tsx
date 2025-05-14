@@ -37,8 +37,9 @@ export default function Index() {
         <span className="border border-amber-700 bg-amber-200 px-1">
           yellow
         </span>
-        ; DCHP-2 and DCHP-3 content on white background with edition labels in
-        the top right corner.
+        ; DCHP-2 and DCHP-3 content on{" "}
+        <span className="border border-gray-700 px-1">white background</span>{" "}
+        with edition labels in the top right corner.
       </p>
       <p>This work should be cited as:</p>
       <blockquote>
@@ -51,6 +52,13 @@ export default function Index() {
         <Link to="https://www.dchp.ca/dchp3">www.dchp.ca/dchp3</Link>.
       </blockquote>
       <hr className="my-8" />
+      <p className="text-center text-sm">
+        Supported by the{" "}
+        <Link to="https://www.sshrc-crsh.gc.ca/">
+          Social Science and Humanities Council of Canada
+        </Link>{" "}
+        Grant # 435-2022-0921.
+      </p>
       <p className="text-center text-sm">
         © Stefan Dollinger, Nelson Education Ltd., and The University of British
         Columbia, 2025. All rights reserved.
