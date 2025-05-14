@@ -1,17 +1,16 @@
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
-import { scrollTo } from "~/components/quicklinks/QuickLink"
 import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
-import Button from "~/components/elements/LinksAndButtons/Button"
+import { TertiaryHeader } from "~/components/elements/Headings/TertiaryHeader"
 import FrontmatterImage from "~/components/elements/Images/FrontmatterImage"
 import howToUse1 from "~/components/elements/Images/how-to-use-1.jpg"
 import howToUse2 from "~/components/elements/Images/how-to-use-2.jpg"
 import howToUse3 from "~/components/elements/Images/how-to-use-3.png"
 import howToUse4 from "~/components/elements/Images/how-to-use-4.jpg"
 import NewText from "~/components/elements/Text/NewText"
+import ScrollButton from "~/components/elements/LinksAndButtons/ScrollButton"
 import TextPageMain from "~/components/elements/Layouts/TextPageMain"
 import WordLink from "~/components/elements/LinksAndButtons/WordLink"
-import { TertiaryHeader } from "~/components/elements/Headings/TertiaryHeader"
 
 export default function Foreword() {
   return (
@@ -19,24 +18,18 @@ export default function Foreword() {
       <PageHeader>How to Use DCHP-3</PageHeader>
 
       <div className="my-8 flex flex-col items-start gap-y-2">
-        <Button asLink onClick={() => scrollTo("a-typology-of-canadianisms")}>
+        <ScrollButton scrollToId="a-typology-of-canadianisms">
           A Typology of Canadianisms
-        </Button>
-        <Button asLink onClick={() => scrollTo("entry-structure")}>
+        </ScrollButton>
+        <ScrollButton scrollToId="entry-structure">
           Entry Structure
-        </Button>
-        <Button asLink onClick={() => scrollTo("frequency-charts")}>
+        </ScrollButton>
+        <ScrollButton scrollToId="frequency-charts">
           Frequency Charts
-        </Button>
-        <Button asLink onClick={() => scrollTo("other-charts")}>
-          Other Charts
-        </Button>
-        <Button asLink onClick={() => scrollTo("list-of-labels")}>
-          List of Labels
-        </Button>
-        <Button asLink onClick={() => scrollTo("copyright-note")}>
-          Copyright Note
-        </Button>
+        </ScrollButton>
+        <ScrollButton scrollToId="other-charts">Other Charts</ScrollButton>
+        <ScrollButton scrollToId="list-of-labels">List of Labels</ScrollButton>
+        <ScrollButton scrollToId="copyright-note">Copyright Note</ScrollButton>
       </div>
 
       <p>

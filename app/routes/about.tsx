@@ -1,12 +1,11 @@
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
-import { scrollTo } from "~/components/quicklinks/QuickLink"
 import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
-import Button from "~/components/elements/LinksAndButtons/Button"
 import dchp1Disclaimer from "~/components/elements/Images/dchp-1-disclaimer.png"
 import FrontmatterImage from "~/components/elements/Images/FrontmatterImage"
 import TextPageMain from "~/components/elements/Layouts/TextPageMain"
 import WordLink from "~/components/elements/LinksAndButtons/WordLink"
+import ScrollButton from "~/components/elements/LinksAndButtons/ScrollButton"
 
 export default function About() {
   return (
@@ -14,21 +13,17 @@ export default function About() {
       <PageHeader>About DCHP-3</PageHeader>
 
       <div className="my-8 flex flex-col items-start gap-y-2">
-        <Button asLink onClick={() => scrollTo("introduction")}>
+        <ScrollButton scrollToId="introduction">
           Introduction to the Third Edition
-        </Button>
-        <Button asLink onClick={() => scrollTo("dchp-1-legacy-content")}>
+        </ScrollButton>
+        <ScrollButton scrollToId="dchp-1-legacy-content">
           DCHP-1 Legacy Content
-        </Button>
-        <Button asLink onClick={() => scrollTo("project-team")}>
-          Project Team
-        </Button>
-        <Button asLink onClick={() => scrollTo("canadian-english-dictionary")}>
+        </ScrollButton>
+        <ScrollButton scrollToId="project-team">Project Team</ScrollButton>
+        <ScrollButton scrollToId="canadian-english-dictionary">
           Canadian English Dictionary
-        </Button>
-        <Button asLink onClick={() => scrollTo("works-cited")}>
-          Works Cited
-        </Button>
+        </ScrollButton>
+        <ScrollButton scrollToId="works-cited">Works Cited</ScrollButton>
       </div>
 
       <SecondaryHeader id="introduction">
