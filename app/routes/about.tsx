@@ -1,10 +1,11 @@
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
+import dchp1Disclaimer from "~/components/elements/Images/dchp-1-disclaimer.png"
+import FrontmatterImage from "~/components/elements/Images/FrontmatterImage"
 import TextPageMain from "~/components/elements/Layouts/TextPageMain"
-import Button from "~/components/elements/LinksAndButtons/Button"
-import { Link } from "~/components/elements/LinksAndButtons/Link"
 import WordLink from "~/components/elements/LinksAndButtons/WordLink"
-import { scrollTo } from "~/components/quicklinks/QuickLink"
+import ScrollButton from "~/components/elements/LinksAndButtons/ScrollButton"
 
 export default function About() {
   return (
@@ -12,21 +13,17 @@ export default function About() {
       <PageHeader>About DCHP-3</PageHeader>
 
       <div className="my-8 flex flex-col items-start gap-y-2">
-        <Button asLink onClick={() => scrollTo("introduction")}>
+        <ScrollButton scrollToId="introduction">
           Introduction to the Third Edition
-        </Button>
-        <Button asLink onClick={() => scrollTo("dchp-1-legacy-content")}>
+        </ScrollButton>
+        <ScrollButton scrollToId="dchp-1-legacy-content">
           DCHP-1 Legacy Content
-        </Button>
-        <Button asLink onClick={() => scrollTo("project-team")}>
-          Project Team
-        </Button>
-        <Button asLink onClick={() => scrollTo("canadian-english-dictionary")}>
+        </ScrollButton>
+        <ScrollButton scrollToId="project-team">Project Team</ScrollButton>
+        <ScrollButton scrollToId="canadian-english-dictionary">
           Canadian English Dictionary
-        </Button>
-        <Button asLink onClick={() => scrollTo("works-cited")}>
-          Works Cited
-        </Button>
+        </ScrollButton>
+        <ScrollButton scrollToId="works-cited">Works Cited</ScrollButton>
       </div>
 
       <SecondaryHeader id="introduction">
@@ -39,14 +36,17 @@ export default function About() {
         is the latest reiteration of a Canadian linguistics project that turned,
         sometime in the early 1960s, into a Canadian Centennial Project. DCHP-3
         is a major technical relaunch of the Second Edition from 2017 (
-        <Link to="">Dollinger & Fee 2017</Link>) and a minor editorial update.
-        Last time Paddy Drysdale, the last surviving member of the DCHP-1
-        editorial board, offered a <Link to="">foreword</Link> for DCHP-2; now
-        we must refer the reader to Paddy’s obituary (
-        <Link to="">Dollinger & Neufeldt 2021</Link>
+        <Link to="https://www.dchp.ca/dchp2">Dollinger & Fee 2017</Link>) and a
+        minor editorial update. Last time Paddy Drysdale, the last surviving
+        member of the DCHP-1 editorial board, offered a{" "}
+        <Link to="https://www.dchp.ca/dchp2/pages/foreword">foreword</Link> for
+        DCHP-2; now we must refer the reader to Paddy’s obituary (
+        <Link to="https://www.academia.edu/46895718/">
+          Dollinger & Neufeldt 2021
+        </Link>
         ). While DCHP-2 added roughly 10% to the scope of DCHP-1 (Avis et al.
-        1967, <Link to="">DCHP-1 Online</Link>), DCHP-3 adds around 10% of the
-        update for DCHP-2.
+        1967, <Link to="https://www.dchp.ca/DCHP1">DCHP-1 Online</Link>), DCHP-3
+        adds around 10% of the update for DCHP-2.
       </p>
 
       <p>
@@ -74,11 +74,10 @@ export default function About() {
         </Link>
         , we are now using our own Canadian servers (see our entry{" "}
         <WordLink>elbows up</WordLink>). The longest entry in the last edition
-        was <WordLink>eh</WordLink>
-        with eleven meanings; in the current edition it is the less dignified
-        <WordLink>shit kicking</WordLink>, with a total of eight meanings, but{" "}
-        <WordLink>ding</WordLink> and <WordLink>snowbird</WordLink> are not far
-        behind.
+        was <WordLink>eh</WordLink> with eleven meanings; in the current edition
+        it is the less dignified <WordLink>shit kicking</WordLink>, with a total
+        of eight meanings, but <WordLink>ding</WordLink> and{" "}
+        <WordLink>snowbird</WordLink> are not far behind.
       </p>
 
       <p>
@@ -103,18 +102,19 @@ export default function About() {
         <WordLink>line-up</WordLink>, <WordLink>rink rat</WordLink> and{" "}
         <WordLink>snowbird</WordLink>—while some DCHP-2 terms from 2017 required
         correction and completion. Among the latter,{" "}
-        <WordLink>parkade</WordLink> (<Link>Considine 2017</Link>) is the most
-        prominent case, requiring reclassification as a Type 2 – Preservation
-        from US English (rather than the original Type 1 – Origin in Canada). We
-        hope for more corrections, big or small, preferably in a peer-reviewed
-        context, as were John Considine’s and Victoria Neufeldt’s (
-        <Link>Neufeldt 2019</Link>), though any critique in any form is most
-        welcome. Other corrections and updates of DCHP-2 terms include{" "}
-        <WordLink>bunny hug</WordLink> (which Saskatchewanians will likely be
-        interested to know), <WordLink>bush party</WordLink>,{" "}
-        <WordLink>down-island</WordLink>, <WordLink>Fat City</WordLink>,{" "}
-        <WordLink>Idle No More</WordLink>, <WordLink>joe job</WordLink>, and{" "}
-        <WordLink>qalunaaq</WordLink>.
+        <WordLink>parkade</WordLink> (
+        <Link to="https://www.academia.edu/129241171/">Considine 2017</Link>) is
+        the most prominent case, requiring reclassification as a Type 2 –
+        Preservation from US English (rather than the original Type 1 – Origin
+        in Canada). We hope for more corrections, big or small, preferably in a
+        peer-reviewed context, as were John Considine’s and Victoria Neufeldt’s
+        (<Link to="https://www.academia.edu/129241047/">Neufeldt 2019</Link>),
+        though any critique in any form is most welcome. Other corrections and
+        updates of DCHP-2 terms include <WordLink>bunny hug</WordLink> (which
+        Saskatchewanians will likely be interested to know),{" "}
+        <WordLink>bush party</WordLink>, <WordLink>down-island</WordLink>,{" "}
+        <WordLink>Fat City</WordLink>, <WordLink>Idle No More</WordLink>,{" "}
+        <WordLink>joe job</WordLink>, and <WordLink>qalunaaq</WordLink>.
       </p>
 
       <p>
@@ -142,14 +142,14 @@ export default function About() {
 
       <p>
         In the more formal registers we can also report new findings.{" "}
-        <WordLink>Leadhand</WordLink> ‘foreman, foreworker’ was another exciting
-        discovery of a bona fide Canadianism that no one in the field seems to
-        have had on their radar and that came to us via a graduate student who
-        was working on the side as a landscape gardener. We expect many more
-        words of this type to be awaiting identification and description in
-        Canadian English. Like <WordLink>keener</WordLink>
-        from DCHP-2, some of these newer terms represent an informal layer of
-        the lexicon that, not too long ago, would have been unacceptable for
+        <WordLink to="leadhand">Leadhand</WordLink> ‘foreman, foreworker’ was
+        another exciting discovery of a bona fide Canadianism that no one in the
+        field seems to have had on their radar and that came to us via a
+        graduate student who was working on the side as a landscape gardener. We
+        expect many more words of this type to be awaiting identification and
+        description in Canadian English. Like <WordLink>keener</WordLink> from
+        DCHP-2, some of these newer terms represent an informal layer of the
+        lexicon that, not too long ago, would have been unacceptable for
         inclusion in a dictionary of English. To <WordLink>ding</WordLink> (v.)
         (in the sense of ‘to charge someone money unexpectedly’) is one such
         informal term that was difficult to spot among the many meanings of ding
@@ -167,12 +167,12 @@ export default function About() {
         <WordLink>the 6ix</WordLink>, in addition to the historical{" "}
         <WordLink>Hogtown</WordLink>. We also extended our attention to other
         cities: <WordLink>Raincouver</WordLink>, <WordLink>Brollywood</WordLink>{" "}
-        and <WordLink>Lotusland</WordLink> (Vancouver),{" "}
+        and <WordLink to="lotus land">Lotusland</WordLink> (Vancouver),{" "}
         <WordLink>Toontown</WordLink> (Saskatoon), <WordLink>C-Town</WordLink>{" "}
         (Calgary) and <WordLink>E-Town</WordLink> (Edmonton).{" "}
-        <WordLink>The Peg</WordLink> (Winnipeg) has been updated from a stub
-        entry in DCHP-1. The list of these ‘citynyms’ would be much longer, as
-        there are many more citynyms in this country.
+        <WordLink to="the Peg">The Peg</WordLink> (Winnipeg) has been updated
+        from a stub entry in DCHP-1. The list of these ‘citynyms’ would be much
+        longer, as there are many more citynyms in this country.
       </p>
 
       <p>
@@ -190,22 +190,22 @@ export default function About() {
         they spread out into the world from Vancouver, BC, and Toronto, ON, show
         the real housing crisis—a term we might have included but which will
         have to await another edition or update.{" "}
-        <WordLink>Demoviction</WordLink> and <WordLink>renoviction</WordLink>{" "}
-        are both attested first in Vancouver, which reveals Canada’s leader in
-        this housing crisis.
+        <WordLink to="demoviction">Demoviction</WordLink> and{" "}
+        <WordLink>renoviction</WordLink> are both attested first in Vancouver,
+        which reveals Canada’s leader in this housing crisis.
       </p>
 
       <p>
         Digital life is taking over our lives more and more, so it should be of
         little surprise that Canadian-origin terms, such as{" "}
         <WordLink>enshittification</WordLink>, are going global. Like{" "}
-        <WordLink>parka</WordLink>, <WordLink>kayak</WordLink> and{" "}
-        <WordLink>visible minority</WordLink>, such Canadian terms may enter the
-        general global lexicon, as <WordLink>caremongering</WordLink> did for a
-        brief period during the early phase of the COVID-19 pandemic. The more
-        digital platforms become enshittified, the more likely Cory Doctorow’s
-        claim to fame as a journalist and science fiction writer will be
-        enhanced by the proliferation of this catchy coinage.
+        <WordLink>parka</WordLink>, <WordLink to="kayak (1)">kayak</WordLink>{" "}
+        and <WordLink>visible minority</WordLink>, such Canadian terms may enter
+        the general global lexicon, as <WordLink>caremongering</WordLink> did
+        for a brief period during the early phase of the COVID-19 pandemic. The
+        more digital platforms become enshittified, the more likely Cory
+        Doctorow’s claim to fame as a journalist and science fiction writer will
+        be enhanced by the proliferation of this catchy coinage.
       </p>
 
       <p>
@@ -215,28 +215,30 @@ export default function About() {
         stop and its levidrome pots). Although little Levi is not so little
         anymore, his term still warrants inclusion in a dictionary of
         Canadianisms. Two other newly identified Canadianisms are{" "}
-        <WordLink>trick or treat</WordLink> (Type 1 – Origin) and wait time
-        (Type 5 – Frequency), rather than waiting time.
+        <WordLink>trick or treat</WordLink> (Type 1 – Origin) and{" "}
+        <WordLink>wait time</WordLink> (Type 5 – Frequency), rather than waiting
+        time.
       </p>
 
       <p>
-        <WordLink>Maplewashing</WordLink> is a more obvious Canadianism, now
-        more properly documented in its five meanings, and{" "}
+        <WordLink to="maple washing">Maplewashing</WordLink> is a more obvious
+        Canadianism, now more properly documented in its five meanings, and{" "}
         <WordLink>supply management</WordLink> makes a showing. Both are easy to
         spot but now with a historical record. The words{" "}
-        <WordLink>peace bond</WordLink> and
-        <WordLink>nothing game</WordLink> are in that regard quite different, as
-        their Canadian dimension is not immediately clear.
+        <WordLink>peace bond</WordLink> and <WordLink>nothing game</WordLink>{" "}
+        are in that regard quite different, as their Canadian dimension is not
+        immediately clear.
       </p>
 
       <p>
         <WordLink>Toonie for Terry</WordLink> and{" "}
         <WordLink>the two Michaels</WordLink> have been documented in this
         edition as well, both with profound Canadian angles.{" "}
-        <WordLink>Karen</WordLink>—to be a Karen (or Kevin)—is certainly in use
-        in Canada but not Canadian by our definition. At long last,
-        sentence-initial <WordLink>as well</WordLink> has been added, which is
-        another more elusive Canadian construction. As well,{" "}
+        <WordLink to="Karen (to be a Karen)">Karen</WordLink>—to be a Karen (or
+        Kevin)—is certainly in use in Canada but not Canadian by our definition.
+        At long last, sentence-initial{" "}
+        <WordLink to="as well (sentence-initial)">as well</WordLink> has been
+        added, which is another more elusive Canadian construction. As well,{" "}
         <WordLink>in hospital</WordLink> was added as a prepositional phrase, as
         in She is recovering in hospital.
       </p>
@@ -251,7 +253,10 @@ export default function About() {
         below.
       </p>
 
-      <p>TK — insert</p>
+      <FrontmatterImage
+        src={dchp1Disclaimer}
+        alt="A screenshot of the disclaimer shown on DCHP-1 entries."
+      />
 
       <p>
         Much work remains to be done, however, as our own study on 1,487
@@ -270,7 +275,7 @@ export default function About() {
         <WordLink>settler-colonial violence</WordLink> or{" "}
         <WordLink>starlight tour</WordLink>. ‘Hiphop’ now graces the entries of{" "}
         <WordLink>the 6ix</WordLink> and <WordLink>T-dot</WordLink>,
-        ‘Media’—capturing media language—in <WordLink>hospital</WordLink> and{" "}
+        ‘Media’—capturing media language—<WordLink>in hospital</WordLink> and{" "}
         <WordLink>caremonger</WordLink>, and ‘Colonialism’ terms such as{" "}
         <WordLink>pretendian</WordLink> and{" "}
         <WordLink>settler-colonial violence</WordLink>. For{" "}
@@ -298,13 +303,17 @@ export default function About() {
         and took on copy editing (as last time), which was topped off by a first
         round of proofreading. The final proofreading of all new content was
         conducted this time by Lynn Slobogian, who was also the experienced
-        proofreader behind Creating Canadian English: The Professor, the
-        Mountaineer, and a National Variety of English (
-        <Link>Dollinger 2019</Link>), which is a ‘biography’ of Canadian
-        English. Chief editor Stefan Dollinger was in charge of all aspects of
-        the project, including drafting, data collection and system design,
-        which was implemented cheerfully and efficiently, as always, by Frank
-        Hangler from <Link>Plot + Scatter</Link>.
+        proofreader behind{" "}
+        <em>
+          Creating Canadian English: The Professor, the Mountaineer, and a
+          National Variety of English
+        </em>{" "}
+        (<Link to="https://www.academia.edu/35184221/">Dollinger 2019</Link>),
+        which is a ‘biography’ of Canadian English. Chief editor Stefan
+        Dollinger was in charge of all aspects of the project, including
+        drafting, data collection and system design, which was implemented
+        cheerfully and efficiently, as always, by Frank Hangler from{" "}
+        <Link to="https://plotandscatter.com">Plot + Scatter</Link>.
       </p>
 
       <SecondaryHeader id="canadian-english-dictionary">
@@ -332,14 +341,14 @@ export default function About() {
         new ground. It was a position that we would like to return to, now that
         DCHP and CED have joined forces, which means that for the first time
         since the 1960s, when DCHP-1 and the Gage suite of dictionaries
-        (including the Gage Canadian Dictionary) were developed in tandem (Gregg
-        1993; Dollinger 2019: 34-85), Canadian English is again being explored
-        by two closely integrated lexical research units. One unit, DCHP-3, is
-        carving out the Canadian dimension, meaning by meaning; the other unit,
-        CED and its governing Society for Canadian English, is focussed on
-        producing a dictionary and app that is fully suited to the present needs
-        of professional writers, editors, teachers, educators and students, as
-        well as the general public.
+        (including the <em>Gage Canadian Dictionary</em>) were developed in
+        tandem (Gregg 1993; Dollinger 2019: 34-85), Canadian English is again
+        being explored by two closely integrated lexical research units. One
+        unit, DCHP-3, is carving out the Canadian dimension, meaning by meaning;
+        the other unit, CED and its governing Society for Canadian English, is
+        focussed on producing a dictionary and app that is fully suited to the
+        present needs of professional writers, editors, teachers, educators and
+        students, as well as the general public.
       </p>
 
       <p>
@@ -349,7 +358,7 @@ export default function About() {
         Canadian in the big ocean of English.
       </p>
 
-      <p>Stefan Dollinger & Margery Fee</p>
+      <p className="mb-0">Stefan Dollinger & Margery Fee</p>
       <p>Victoria & Vancouver, May 2025</p>
 
       <SecondaryHeader id="works-cited">Works Cited</SecondaryHeader>
@@ -360,8 +369,8 @@ export default function About() {
         subpage link?].
       </p>
       <p>
-        Considine, John. 2017. Parkade: one Canadianism or two Americanisms?
-        American Speech 92(3): 281-297.{" "}
+        Considine, John. 2017. Parkade: one Canadianism or two Americanisms?{" "}
+        <em>American Speech</em> 92(3): 281-297.{" "}
         <Link to="https://www.academia.edu/129241171/">
           https://www.academia.edu/129241171/
         </Link>
@@ -371,55 +380,68 @@ export default function About() {
         <Link to="https://lexikos.journals.ac.za/pub/article/view/735">
           Dictionaries of Canadian English
         </Link>
-        . Lexikos 13: 250-270.
+        . <em>Lexikos</em> 13: 250-270.
       </p>
       <p>
         DCHP-1 = Avis, Walter S. (ed.-in-chief), Charles Crate, Patrick
         Drysdale, Douglas Leechman, Matthew H. Scargill and Charles J. Lovell
-        (eds). 1967. A Dictionary of Canadianisms on Historical Principles.
-        Toronto: Gage.
+        (eds). 1967.{" "}
+        <em>A Dictionary of Canadianisms on Historical Principles</em>. Toronto:
+        Gage.
       </p>
       <p>
         DCHP-1 Online = Dollinger, Stefan, Laurel Brinton and Margery Fee (eds.)
-        2013. DCHP-1 Online: A Dictionary of Canadianisms on Historical
-        Principles, 1st edition. Based on Walter S. Avis et al. 1967.{" "}
+        2013.{" "}
+        <em>
+          DCHP-1 Online: A Dictionary of Canadianisms on Historical Principles,
+          1st edition
+        </em>
+        . Based on Walter S. Avis et al. 1967.{" "}
         <Link to="https://www.dchp.ca/DCHP1">www.dchp.ca/DCHP1</Link>
       </p>
       <p>
         DCHP-2 = Dollinger, Stefan (chief editor) and Margery Fee (associate
-        editor). 2017. DCHP-2: The Dictionary of Canadianisms on Historical
-        Principles, 2nd edition. With the assistance of Baillie Ford, Alexandra
-        Gaylie, and Gabrielle Lim. Vancouver: University of British Columbia.{" "}
+        editor). 2017.{" "}
+        <em>
+          DCHP-2: The Dictionary of Canadianisms on Historical Principles, 2nd
+          edition
+        </em>
+        . With the assistance of Baillie Ford, Alexandra Gaylie, and Gabrielle
+        Lim. Vancouver: University of British Columbia.{" "}
         <Link to="https://www.dchp.ca/dchp2">www.dchp.ca/dchp2</Link>
       </p>
       <p>
-        Dollinger, Stefan. 2019. Creating Canadian English: The Professor, the
-        Mountaineer, and a National Variety of English. Cambridge: Cambridge
-        University Press.{" "}
+        Dollinger, Stefan. 2019.{" "}
+        <em>
+          Creating Canadian English: The Professor, the Mountaineer, and a
+          National Variety of English
+        </em>
+        . Cambridge: Cambridge University Press.{" "}
         <Link to="https://www.academia.edu/35184221/">
           https://www.academia.edu/35184221/
         </Link>
       </p>
       <p>
         Dollinger, Stefan. 2016. Googleology as smart lexicography: big, messy
-        data for better regional labels. Dictionaries 37: 60-98.{" "}
+        data for better regional labels. <em>Dictionaries</em> 37: 60-98.{" "}
         <Link to="https://www.academia.edu/21904323/">
           https://www.academia.edu/21904323/
         </Link>
       </p>
       <p>
         Dollinger, Stefan and Victoria Neufeldt. 2021. Patrick “Paddy” Drysdale
-        (1929–2020). Canadian Journal of Linguistics 66(2): 275-78.{" "}
+        (1929–2020). <em>Canadian Journal of Linguistics</em> 66(2): 275-78.{" "}
         <Link to="https://www.academia.edu/46895718/">
           https://www.academia.edu/46895718/
         </Link>
       </p>
       <p>
         Gregg, Robert J. 1993. Canadian English lexicography. In Clarke, Sandra
-        (ed.). Focus on Canada, 27-44. Amsterdam: Benjamins.
+        (ed.). <em>Focus on Canada</em>, 27-44. Amsterdam: Benjamins.
       </p>
       <p>
-        Neufeldt, Victoria. 2019. Review of DCHP-2. Dictionaries 40(2): 242-46.{" "}
+        Neufeldt, Victoria. 2019. Review of DCHP-2. <em>Dictionaries</em> 40(2):
+        242-46.{" "}
         <Link to="https://www.academia.edu/129241047/">
           https://www.academia.edu/129241047/
         </Link>

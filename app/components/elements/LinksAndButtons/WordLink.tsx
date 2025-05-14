@@ -9,13 +9,15 @@ export default function WordLink(props: WordLinkProps) {
 
   // If no `to` prop is specified, we will by default just link to the children
   // prop, interpreting it as a string.
-  const linkTo =
-    to ??
-    (typeof props.children === "string" ? "/entries/" + props.children : "")
+  const linkTo = to
+    ? `/entries/${to}`
+    : typeof props.children === "string"
+    ? "/entries/" + props.children
+    : ""
 
   return (
     <Link {...rest} to={linkTo}>
-      <em>{props.children}</em>
+      <em className="whitespace-nowrap">{props.children}</em>
     </Link>
   )
 }

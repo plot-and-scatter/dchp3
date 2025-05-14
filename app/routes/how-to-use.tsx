@@ -1,17 +1,16 @@
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
-import { scrollTo } from "~/components/quicklinks/QuickLink"
 import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
-import Button from "~/components/elements/LinksAndButtons/Button"
+import { TertiaryHeader } from "~/components/elements/Headings/TertiaryHeader"
 import FrontmatterImage from "~/components/elements/Images/FrontmatterImage"
 import howToUse1 from "~/components/elements/Images/how-to-use-1.jpg"
 import howToUse2 from "~/components/elements/Images/how-to-use-2.jpg"
 import howToUse3 from "~/components/elements/Images/how-to-use-3.png"
 import howToUse4 from "~/components/elements/Images/how-to-use-4.jpg"
 import NewText from "~/components/elements/Text/NewText"
+import ScrollButton from "~/components/elements/LinksAndButtons/ScrollButton"
 import TextPageMain from "~/components/elements/Layouts/TextPageMain"
 import WordLink from "~/components/elements/LinksAndButtons/WordLink"
-import { TertiaryHeader } from "~/components/elements/Headings/TertiaryHeader"
 
 export default function Foreword() {
   return (
@@ -19,24 +18,18 @@ export default function Foreword() {
       <PageHeader>How to Use DCHP-3</PageHeader>
 
       <div className="my-8 flex flex-col items-start gap-y-2">
-        <Button asLink onClick={() => scrollTo("a-typology-of-canadianisms")}>
+        <ScrollButton scrollToId="a-typology-of-canadianisms">
           A Typology of Canadianisms
-        </Button>
-        <Button asLink onClick={() => scrollTo("entry-structure")}>
+        </ScrollButton>
+        <ScrollButton scrollToId="entry-structure">
           Entry Structure
-        </Button>
-        <Button asLink onClick={() => scrollTo("frequency-charts")}>
+        </ScrollButton>
+        <ScrollButton scrollToId="frequency-charts">
           Frequency Charts
-        </Button>
-        <Button asLink onClick={() => scrollTo("other-charts")}>
-          Other Charts
-        </Button>
-        <Button asLink onClick={() => scrollTo("list-of-labels")}>
-          List of Labels
-        </Button>
-        <Button asLink onClick={() => scrollTo("copyright-note")}>
-          Copyright Note
-        </Button>
+        </ScrollButton>
+        <ScrollButton scrollToId="other-charts">Other Charts</ScrollButton>
+        <ScrollButton scrollToId="list-of-labels">List of Labels</ScrollButton>
+        <ScrollButton scrollToId="copyright-note">Copyright Note</ScrollButton>
       </div>
 
       <p>
@@ -126,11 +119,12 @@ export default function Foreword() {
         <strong>Type 4</strong> is the Culturally significant vocabulary, of
         which hockey terminology and things to do with revered Canadian
         institutions are prime contenders.{" "}
-        <WordLink>Universal healthcare</WordLink> or hockey terminology, e.g.{" "}
-        <WordLink>goalie mask</WordLink>, have that status, as do Indigenous
-        words, e.g. <WordLink>culturally modified tree</WordLink>. This category
-        includes those meanings of <WordLink>eh</WordLink> that are associated
-        with Canadian English. As the country realigns itself out of
+        <WordLink to="universal healthcare">Universal healthcare</WordLink> or
+        hockey terminology, e.g. <WordLink>goalie mask</WordLink>, have that
+        status, as do Indigenous words, e.g.{" "}
+        <WordLink>culturally modified tree</WordLink>. This category includes
+        those meanings of <WordLink>eh</WordLink> that are associated with
+        Canadian English. As the country realigns itself out of
         Anglophone/Francophone hegemony we will see what other forms of activity
         will become associated with Canada. Newer terms include{" "}
         <WordLink>elbows up</WordLink> (meaning #2), the battle cry to avoid
@@ -281,7 +275,10 @@ export default function Foreword() {
       <p>
         We aimed to make the data as comparable as possible. All search dates
         are offered in the captions. The Frequency Index, discussed in detail in{" "}
-        <Link>Dollinger (2016: 79-87)</Link>, is the quotient of
+        <Link to="https://www.academia.edu/21904323/">
+          Dollinger (2016: 79-87)
+        </Link>
+        , is the quotient of
       </p>
 
       <p className="border border-gray-500 bg-gray-50 p-2 px-4">
@@ -315,7 +312,7 @@ export default function Foreword() {
         domain labels.
       </p>
 
-      <TertiaryHeader id="domain-labels">Domain labels</TertiaryHeader>
+      <TertiaryHeader>Domain labels</TertiaryHeader>
 
       <p>
         The domain labels were increased from 38 in DCHP-2 to 55. Note that
@@ -693,17 +690,22 @@ export default function Foreword() {
       <SecondaryHeader id="copyright-note">Copyright Note</SecondaryHeader>
       <p>
         DCHP-3 is an updated edition of DCHP-2 (
-        <Link>Dollinger and Fee 2017</Link>). It includes content from DCHP-1,{" "}
+        <Link to="https://www.dchp.ca/dchp2">Dollinger and Fee 2017</Link>). It
+        includes content from DCHP-1,{" "}
         <em>A Dictionary of Canadianisms on Historical Principles</em> (1967 and
         1991 editions, ISBN 0-7715-1976-1), edited by Avis, Walter S.
         (ed.-in-chief), C. Crate, P. Drysdale, D. Leechman, M.H. Scargill and
         C.J. Lovell, published by Gage Educational Publishing Company, a
-        division of Canada Publishing Corporation (<Link>DCHP-1</Link>). The
-        copyright notice of DCHP-1 can be found <Link>here</Link>. DCHP-1 was
-        licensed to The University of British Columbia (UBC) by Nelson Education
-        Ltd. (Nelson), the copyright owner of DCHP-1. Please see{" "}
-        <Link to="https://www.nelson.com/">https://www.nelson.com/</Link> for
-        more information about Nelson. The license from Nelson allows UBC to
+        division of Canada Publishing Corporation (
+        <Link to="https://www.dchp.ca/DCHP1">DCHP-1</Link>). The copyright
+        notice of DCHP-1 can be found{" "}
+        <Link to="http://apps.plotandscatter.com:8080/DCHP-1/pages/copyrightnotice">
+          here
+        </Link>
+        . DCHP-1 was licensed to The University of British Columbia (UBC) by
+        Nelson Education Ltd. (Nelson), the copyright owner of DCHP-1. Please
+        see <Link to="https://www.nelson.com/">https://www.nelson.com/</Link>{" "}
+        for more information about Nelson. The license from Nelson allows UBC to
         make DCHP-3 available free of charge, as a public digital resource on
         the internet. However, such license does not include the reproduction,
         modification, editing, translation, adaptation or distribution of, or
