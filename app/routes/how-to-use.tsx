@@ -229,12 +229,12 @@ export default function Foreword() {
       />
 
       <p>
-        Returning to stagette, once the quotation paragraph is finished for
-        meaning #2, the References and Images sections follow, as seen below.
-        Any source mentioned is offered here and, where available, linked.
-        Finally, all visuals referred to in the Word Story and other editorial
-        texts (e.g. fist notes) are listed. First any frequency charts are
-        listed (if available), followed by any pictures (if available).
+        Returning to <em>stagette</em>, once the quotation paragraph is finished
+        for meaning #2, the References and Images sections follow, as seen
+        below. Any source mentioned is offered here and, where available,
+        linked. Finally, all visuals referred to in the Word Story and other
+        editorial texts (e.g. fist notes) are listed. First any frequency charts
+        are listed (if available), followed by any pictures (if available).
       </p>
 
       <FrontmatterImage
@@ -249,8 +249,9 @@ export default function Foreword() {
       </p>
 
       <p>
-        The frequency charts follow the established model (Dollinger 2016), only
-        this time normalized “the” was used, which has proven to be more
+        The frequency charts follow the established model (
+        <Link to="https://www.academia.edu/21904323/">Dollinger 2016</Link>),
+        only this time normalized “the” was used, which has proven to be more
         reliable than the modal verb “could”. The precise search terms are
         always shown in the chart headings. Multi-part words were always
         searched for with quotation marks, so the chart for entry “
@@ -715,10 +716,8 @@ export default function Foreword() {
         division of Canada Publishing Corporation (
         <Link to="https://www.dchp.ca/DCHP1">DCHP-1</Link>). The copyright
         notice of DCHP-1 can be found{" "}
-        <Link to="http://apps.plotandscatter.com:8080/DCHP-1/pages/copyrightnotice">
-          here
-        </Link>
-        . DCHP-1 was licensed to The University of British Columbia (UBC) by
+        <Link to="https://www.dchp.ca/DCHP1/pages/copyrightnotice">here</Link>.
+        DCHP-1 was licensed to The University of British Columbia (UBC) by
         Nelson Education Ltd. (Nelson), the copyright owner of DCHP-1. Please
         see <Link to="https://www.nelson.com/">https://www.nelson.com/</Link>{" "}
         for more information about Nelson. The license from Nelson allows UBC to

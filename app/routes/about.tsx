@@ -335,19 +335,24 @@ export default function About() {
 
       <p>
         While Canadian English lexicography was lagging behind at the beginning
-        of both the 19th and the 20th centuries (Considine 2003: 265), the field
-        was in the late 1960s for a generation at the cutting edge and breaking
-        new ground. It was a position that we would like to return to, now that
-        DCHP and CED have joined forces, which means that for the first time
-        since the 1960s, when DCHP-1 and the Gage suite of dictionaries
-        (including the <em>Gage Canadian Dictionary</em>) were developed in
-        tandem (Gregg 1993; Dollinger 2019: 34-85), Canadian English is again
-        being explored by two closely integrated lexical research units. One
-        unit, DCHP-3, is carving out the Canadian dimension, meaning by meaning;
-        the other unit, CED and its governing Society for Canadian English, is
-        focussed on producing a dictionary and app that is fully suited to the
-        present needs of professional writers, editors, teachers, educators and
-        students, as well as the general public.
+        of both the 19th and the 20th centuries (
+        <Link to="https://lexikos.journals.ac.za/pub/article/view/735">
+          Considine 2003
+        </Link>
+        : 265), the field was in the late 1960s for a generation at the cutting
+        edge and breaking new ground. It was a position that we would like to
+        return to, now that DCHP and CED have joined forces, which means that
+        for the first time since the 1960s, when DCHP-1 and the Gage suite of
+        dictionaries (including the <em>Gage Canadian Dictionary</em>) were
+        developed in tandem (Gregg 1993;{" "}
+        <Link to="https://www.academia.edu/35184221/">Dollinger 2019</Link>:
+        34-85), Canadian English is again being explored by two closely
+        integrated lexical research units. One unit, DCHP-3, is carving out the
+        Canadian dimension, meaning by meaning; the other unit, CED and its
+        governing Society for Canadian English, is focussed on producing a
+        dictionary and app that is fully suited to the present needs of
+        professional writers, editors, teachers, educators and students, as well
+        as the general public.
       </p>
 
       <p>
