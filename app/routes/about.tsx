@@ -87,12 +87,11 @@ export default function About() {
         of <WordLink>Africadian</WordLink>, <WordLink>Epekwitk</WordLink>,{" "}
         <WordLink>kokum</WordLink>, <WordLink>skoden</WordLink> and{" "}
         <WordLink>quinzhee</WordLink>. For the latter four the label
-        ‘Indigenous’ now replaces the older label ‘Aboriginal’, while in
-        addition to ‘First Nations’ and ‘Inuit’ continue to be used. Since
-        Canada ratified the United Nations Declaration on the Rights of
-        Indigenous Peoples in 2010, ‘Indigenous’ has been the favoured term,
-        particularly since this declaration involved the participation of
-        Indigenous people from Canada.
+        ‘Indigenous’ now replaces the older label ‘Aboriginal’, while ‘First
+        Nations’ and ‘Inuit’ continue to be used. Since Canada ratified the
+        United Nations Declaration on the Rights of Indigenous Peoples in 2010,
+        ‘Indigenous’ has been the favoured term, particularly since this
+        declaration involved the participation of Indigenous people from Canada.
       </p>
 
       <p>
@@ -336,19 +335,24 @@ export default function About() {
 
       <p>
         While Canadian English lexicography was lagging behind at the beginning
-        of both the 19th and the 20th centuries (Considine 2003: 265), the field
-        was in the late 1960s for a generation at the cutting edge and breaking
-        new ground. It was a position that we would like to return to, now that
-        DCHP and CED have joined forces, which means that for the first time
-        since the 1960s, when DCHP-1 and the Gage suite of dictionaries
-        (including the <em>Gage Canadian Dictionary</em>) were developed in
-        tandem (Gregg 1993; Dollinger 2019: 34-85), Canadian English is again
-        being explored by two closely integrated lexical research units. One
-        unit, DCHP-3, is carving out the Canadian dimension, meaning by meaning;
-        the other unit, CED and its governing Society for Canadian English, is
-        focussed on producing a dictionary and app that is fully suited to the
-        present needs of professional writers, editors, teachers, educators and
-        students, as well as the general public.
+        of both the 19th and the 20th centuries (
+        <Link to="https://lexikos.journals.ac.za/pub/article/view/735">
+          Considine 2003
+        </Link>
+        : 265), the field was in the late 1960s for a generation at the cutting
+        edge and breaking new ground. It was a position that we would like to
+        return to, now that DCHP and CED have joined forces, which means that
+        for the first time since the 1960s, when DCHP-1 and the Gage suite of
+        dictionaries (including the <em>Gage Canadian Dictionary</em>) were
+        developed in tandem (Gregg 1993;{" "}
+        <Link to="https://www.academia.edu/35184221/">Dollinger 2019</Link>:
+        34-85), Canadian English is again being explored by two closely
+        integrated lexical research units. One unit, DCHP-3, is carving out the
+        Canadian dimension, meaning by meaning; the other unit, CED and its
+        governing Society for Canadian English, is focussed on producing a
+        dictionary and app that is fully suited to the present needs of
+        professional writers, editors, teachers, educators and students, as well
+        as the general public.
       </p>
 
       <p>
@@ -364,9 +368,11 @@ export default function About() {
       <SecondaryHeader id="works-cited">Works Cited</SecondaryHeader>
 
       <p>
-        Avis, Walter S. Introduction. In DCHP-1, xii-xv. Online:{" "}
-        <Link to="https://www.dchp.ca/dchp1">www.dchp.ca/dchp1</Link> [TK:
-        subpage link?].
+        Avis, Walter S. 1967. Introduction. In DCHP-1, xii-xv. Online:{" "}
+        <Link to="https://dchp.ca/dchp1/pages/frontmatter#introduction">
+          www.dchp.ca/dchp1
+        </Link>
+        .
       </p>
       <p>
         Considine, John. 2017. Parkade: one Canadianism or two Americanisms?{" "}

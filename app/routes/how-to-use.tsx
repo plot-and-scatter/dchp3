@@ -6,7 +6,8 @@ import FrontmatterImage from "~/components/elements/Images/FrontmatterImage"
 import howToUse1 from "~/components/elements/Images/how-to-use-1.jpg"
 import howToUse2 from "~/components/elements/Images/how-to-use-2.jpg"
 import howToUse3 from "~/components/elements/Images/how-to-use-3.png"
-import howToUse4 from "~/components/elements/Images/how-to-use-4.jpg"
+import howToUse4 from "~/components/elements/Images/how-to-use-4.png"
+import howToUse5 from "~/components/elements/Images/how-to-use-5.jpg"
 import NewText from "~/components/elements/Text/NewText"
 import ScrollButton from "~/components/elements/LinksAndButtons/ScrollButton"
 import TextPageMain from "~/components/elements/Layouts/TextPageMain"
@@ -33,8 +34,9 @@ export default function Foreword() {
       </div>
 
       <p>
-        The basic principles of entry structure remain the same as in DCHP-2
-        (see here) [TK — link], though the appearance is quite different.
+        The basic principles of entry structure remain the same as in DCHP-2 (
+        <Link to="https://dchp.ca/dchp2/pages/how-to-use">see here</Link>),
+        though the appearance is quite different.
       </p>
 
       <SecondaryHeader id="a-typology-of-canadianisms">
@@ -81,7 +83,10 @@ export default function Foreword() {
           Canadian for which evidence is lacking
         </li>
       </ul>
-      <p className="text-right">(Dollinger 2019: 122-23) [TK — link?]</p>
+      <p className="text-right">
+        (<Link to="https://www.academia.edu/35184221/">Dollinger 2019</Link>:
+        122-23)
+      </p>
 
       <p>
         <strong>Type 1</strong> is a Canadianism by virtue of
@@ -202,9 +207,9 @@ export default function Foreword() {
       </p>
 
       <p>
-        In rare cases we include non-Canadian quotations, which are enclosed by
-        square brackets, such as this 2005 quotation from{" "}
-        <WordLink>atmospheric river</WordLink>, which is from a US source:
+        Quotations in square brackets are used for two purposes. In some cases
+        we include non-Canadian quotations, such as the following one from 2005
+        from <WordLink>atmospheric river</WordLink>, which is from a US source:
       </p>
 
       <FrontmatterImage
@@ -213,16 +218,27 @@ export default function Foreword() {
       />
 
       <p>
-        Returning to stagette, once the quotation paragraph is finished for
-        meaning #2, the References and Images sections follow, as seen below.
-        Any source mentioned is offered here and, where available, linked.
-        Finally, all visuals referred to in the Word Story and other editorial
-        texts (e.g. fist notes) are listed. First any frequency charts are
-        listed (if available), followed by any pictures (if available).
+        In other, rather rare, cases, we provide foreign language quotations for
+        contextualization, such as the following 2023 quotation from{" "}
+        <WordLink>quadrex</WordLink>:
       </p>
 
       <FrontmatterImage
         src={howToUse4}
+        alt="A screenshot of the DCHP-3 entry for 'quadrex', with a French-language quotation shown in square brackets"
+      />
+
+      <p>
+        Returning to <em>stagette</em>, once the quotation paragraph is finished
+        for meaning #2, the References and Images sections follow, as seen
+        below. Any source mentioned is offered here and, where available,
+        linked. Finally, all visuals referred to in the Word Story and other
+        editorial texts (e.g. fist notes) are listed. First any frequency charts
+        are listed (if available), followed by any pictures (if available).
+      </p>
+
+      <FrontmatterImage
+        src={howToUse5}
         alt="A screenshot of the DCHP-3 entry for 'stagette', focusing on the References section"
       />
 
@@ -233,8 +249,9 @@ export default function Foreword() {
       </p>
 
       <p>
-        The frequency charts follow the established model (Dollinger 2016), only
-        this time normalized “the” was used, which has proven to be more
+        The frequency charts follow the established model (
+        <Link to="https://www.academia.edu/21904323/">Dollinger 2016</Link>),
+        only this time normalized “the” was used, which has proven to be more
         reliable than the modal verb “could”. The precise search terms are
         always shown in the chart headings. Multi-part words were always
         searched for with quotation marks, so the chart for entry “
@@ -699,10 +716,8 @@ export default function Foreword() {
         division of Canada Publishing Corporation (
         <Link to="https://www.dchp.ca/DCHP1">DCHP-1</Link>). The copyright
         notice of DCHP-1 can be found{" "}
-        <Link to="http://apps.plotandscatter.com:8080/DCHP-1/pages/copyrightnotice">
-          here
-        </Link>
-        . DCHP-1 was licensed to The University of British Columbia (UBC) by
+        <Link to="https://www.dchp.ca/DCHP1/pages/copyrightnotice">here</Link>.
+        DCHP-1 was licensed to The University of British Columbia (UBC) by
         Nelson Education Ltd. (Nelson), the copyright owner of DCHP-1. Please
         see <Link to="https://www.nelson.com/">https://www.nelson.com/</Link>{" "}
         for more information about Nelson. The license from Nelson allows UBC to

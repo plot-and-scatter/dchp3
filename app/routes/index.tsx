@@ -5,7 +5,7 @@ import { Link } from "~/components/elements/LinksAndButtons/Link"
 export default function Index() {
   return (
     <TextPageMain>
-      <PageHeader>Welcome to the DCHP-3.</PageHeader>
+      <PageHeader>Welcome to DCHP-3</PageHeader>
       <p>
         This is the third edition of the 1967{" "}
         <em>A Dictionary of Canadianisms on Historical Principles</em> (DCHP-1).
@@ -21,15 +21,20 @@ export default function Index() {
       <blockquote>
         a word, expression, or meaning which is native to Canada or which is
         distinctively characteristic of Canadian usage though not necessarily
-        exclusive to Canada. (Walter S. Avis in DCHP-1, page xiii)
+        exclusive to Canada. (Walter S. Avis in DCHP-1, page xiii;{" "}
+        <Link to="https://dchp.ca/dchp1/pages/frontmatter#introduction">
+          see DCHP-1 Online
+        </Link>
+        )
       </blockquote>
       <p>
-        We recognize six types of Canadianisms (see the How-to section,
-        Typology). Some meanings that are not Canadian are included for context
-        and are marked with a dagger (†). A few entries are included that we or
-        others originally thought were Canadianisms, but our research proved
-        otherwise. We include these entries to save others the trouble of
-        checking again; they are marked by a{" "}
+        We recognize six types of Canadianisms (see the{" "}
+        <Link to="/how-to-use">How-to section, A Typology of Canadianisms</Link>
+        ). Some meanings that are not Canadian are included for context and are
+        marked with a dagger (†). A few entries are included that we or others
+        originally thought were Canadianisms, but our research proved otherwise.
+        We include these entries to save others the trouble of checking again;
+        they are marked by a{" "}
         <span className="border border-red-700 bg-red-300 px-1">
           red background
         </span>
