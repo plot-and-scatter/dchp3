@@ -340,14 +340,14 @@ export default function About() {
         new ground. It was a position that we would like to return to, now that
         DCHP and CED have joined forces, which means that for the first time
         since the 1960s, when DCHP-1 and the Gage suite of dictionaries
-        (including the Gage Canadian Dictionary) were developed in tandem (Gregg
-        1993; Dollinger 2019: 34-85), Canadian English is again being explored
-        by two closely integrated lexical research units. One unit, DCHP-3, is
-        carving out the Canadian dimension, meaning by meaning; the other unit,
-        CED and its governing Society for Canadian English, is focussed on
-        producing a dictionary and app that is fully suited to the present needs
-        of professional writers, editors, teachers, educators and students, as
-        well as the general public.
+        (including the <em>Gage Canadian Dictionary</em>) were developed in
+        tandem (Gregg 1993; Dollinger 2019: 34-85), Canadian English is again
+        being explored by two closely integrated lexical research units. One
+        unit, DCHP-3, is carving out the Canadian dimension, meaning by meaning;
+        the other unit, CED and its governing Society for Canadian English, is
+        focussed on producing a dictionary and app that is fully suited to the
+        present needs of professional writers, editors, teachers, educators and
+        students, as well as the general public.
       </p>
 
       <p>
