@@ -87,12 +87,11 @@ export default function About() {
         of <WordLink>Africadian</WordLink>, <WordLink>Epekwitk</WordLink>,{" "}
         <WordLink>kokum</WordLink>, <WordLink>skoden</WordLink> and{" "}
         <WordLink>quinzhee</WordLink>. For the latter four the label
-        ‘Indigenous’ now replaces the older label ‘Aboriginal’, while in
-        addition to ‘First Nations’ and ‘Inuit’ continue to be used. Since
-        Canada ratified the United Nations Declaration on the Rights of
-        Indigenous Peoples in 2010, ‘Indigenous’ has been the favoured term,
-        particularly since this declaration involved the participation of
-        Indigenous people from Canada.
+        ‘Indigenous’ now replaces the older label ‘Aboriginal’, while ‘First
+        Nations’ and ‘Inuit’ continue to be used. Since Canada ratified the
+        United Nations Declaration on the Rights of Indigenous Peoples in 2010,
+        ‘Indigenous’ has been the favoured term, particularly since this
+        declaration involved the participation of Indigenous people from Canada.
       </p>
 
       <p>
@@ -364,9 +363,11 @@ export default function About() {
       <SecondaryHeader id="works-cited">Works Cited</SecondaryHeader>
 
       <p>
-        Avis, Walter S. Introduction. In DCHP-1, xii-xv. Online:{" "}
-        <Link to="https://www.dchp.ca/dchp1">www.dchp.ca/dchp1</Link> [TK:
-        subpage link?].
+        Avis, Walter S. 1967. Introduction. In DCHP-1, xii-xv. Online:{" "}
+        <Link to="https://dchp.ca/dchp1/pages/frontmatter#introduction">
+          www.dchp.ca/dchp1
+        </Link>
+        .
       </p>
       <p>
         Considine, John. 2017. Parkade: one Canadianism or two Americanisms?{" "}

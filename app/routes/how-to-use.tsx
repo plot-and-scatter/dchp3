@@ -6,7 +6,8 @@ import FrontmatterImage from "~/components/elements/Images/FrontmatterImage"
 import howToUse1 from "~/components/elements/Images/how-to-use-1.jpg"
 import howToUse2 from "~/components/elements/Images/how-to-use-2.jpg"
 import howToUse3 from "~/components/elements/Images/how-to-use-3.png"
-import howToUse4 from "~/components/elements/Images/how-to-use-4.jpg"
+import howToUse4 from "~/components/elements/Images/how-to-use-4.png"
+import howToUse5 from "~/components/elements/Images/how-to-use-5.jpg"
 import NewText from "~/components/elements/Text/NewText"
 import ScrollButton from "~/components/elements/LinksAndButtons/ScrollButton"
 import TextPageMain from "~/components/elements/Layouts/TextPageMain"
@@ -33,8 +34,9 @@ export default function Foreword() {
       </div>
 
       <p>
-        The basic principles of entry structure remain the same as in DCHP-2
-        (see here) [TK — link], though the appearance is quite different.
+        The basic principles of entry structure remain the same as in DCHP-2 (
+        <Link to="https://dchp.ca/dchp2/pages/how-to-use">see here</Link>),
+        though the appearance is quite different.
       </p>
 
       <SecondaryHeader id="a-typology-of-canadianisms">
@@ -81,7 +83,10 @@ export default function Foreword() {
           Canadian for which evidence is lacking
         </li>
       </ul>
-      <p className="text-right">(Dollinger 2019: 122-23) [TK — link?]</p>
+      <p className="text-right">
+        (<Link to="https://www.academia.edu/35184221/">Dollinger 2019</Link>:
+        122-23)
+      </p>
 
       <p>
         <strong>Type 1</strong> is a Canadianism by virtue of
@@ -202,14 +207,25 @@ export default function Foreword() {
       </p>
 
       <p>
-        In rare cases we include non-Canadian quotations, which are enclosed by
-        square brackets, such as this 2005 quotation from{" "}
-        <WordLink>atmospheric river</WordLink>, which is from a US source:
+        Quotations in square brackets are used for two purposes. In some cases
+        we include non-Canadian quotations, such as the following one from 2005
+        from <WordLink>atmospheric river</WordLink>, which is from a US source:
       </p>
 
       <FrontmatterImage
         src={howToUse3}
         alt="A screenshot of the DCHP-3 entry for 'atmospheric river', with a non-Canadian quotation shown in square brackets"
+      />
+
+      <p>
+        In other, rather rare, cases, we provide foreign language quotations for
+        contextualization, such as the following 2023 quotation from{" "}
+        <WordLink>quadrex</WordLink>:
+      </p>
+
+      <FrontmatterImage
+        src={howToUse4}
+        alt="A screenshot of the DCHP-3 entry for 'quadrex', with a French-language quotation shown in square brackets"
       />
 
       <p>
@@ -222,7 +238,7 @@ export default function Foreword() {
       </p>
 
       <FrontmatterImage
-        src={howToUse4}
+        src={howToUse5}
         alt="A screenshot of the DCHP-3 entry for 'stagette', focusing on the References section"
       />
 
