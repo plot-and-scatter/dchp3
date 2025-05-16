@@ -310,9 +310,11 @@ export default function About() {
         (<Link to="https://www.academia.edu/35184221/">Dollinger 2019</Link>),
         which is a ‘biography’ of Canadian English. Chief editor Stefan
         Dollinger was in charge of all aspects of the project, including
-        drafting, data collection and system design, which was implemented
-        cheerfully and efficiently, as always, by Frank Hangler from{" "}
-        <Link to="https://plotandscatter.com">Plot + Scatter</Link>.
+        drafting, data collection and system testing. The new mobile-friendy
+        presentation and front-end experience was implemented cheerfully and
+        efficiently, as always, by Frank Hangler from{" "}
+        <Link to="https://plotandscatter.com">Plot + Scatter</Link>, with
+        assistance from Kevin Shaw.
       </p>
 
       <SecondaryHeader id="canadian-english-dictionary">
@@ -339,10 +341,11 @@ export default function About() {
         <Link to="https://lexikos.journals.ac.za/pub/article/view/735">
           Considine 2003
         </Link>
-        : 265), the field was in the late 1960s for a generation at the cutting
-        edge and breaking new ground. It was a position that we would like to
-        return to, now that DCHP and CED have joined forces, which means that
-        for the first time since the 1960s, when DCHP-1 and the Gage suite of
+        : 265), the field was in the late 1950s and throughout the 1960s for a
+        generation at the cutting edge and breaking new ground (e.g. Avis 1954,
+        1955; Lovell 1955, 1958). It was a position that we would like to return
+        to, now that DCHP and CED have joined forces, which means that for the
+        first time since the 1960s, when DCHP-1 and the Gage suite of
         dictionaries (including the <em>Gage Canadian Dictionary</em>) were
         developed in tandem (Gregg 1993;{" "}
         <Link to="https://www.academia.edu/35184221/">Dollinger 2019</Link>:
@@ -373,6 +376,18 @@ export default function About() {
           www.dchp.ca/dchp1
         </Link>
         .
+      </p>
+      <p>
+        Avis, Walter S. 1955. Speech differences along the Ontario-United States
+        border. II: Grammar and syntax.{" "}
+        <em>Journal of the Canadian Linguistic Association</em> 1(1, Mar.):
+        14-19.
+      </p>
+      <p>
+        Avis, Walter S. 1954. Speech differences along the Ontario-United States
+        border. I: Vocabulary.{" "}
+        <em>Journal of the Canadian Linguistic Association</em> 1(1, Oct.):
+        13-18.
       </p>
       <p>
         Considine, John. 2017. Parkade: one Canadianism or two Americanisms?{" "}
@@ -444,6 +459,17 @@ export default function About() {
       <p>
         Gregg, Robert J. 1993. Canadian English lexicography. In Clarke, Sandra
         (ed.). <em>Focus on Canada</em>, 27-44. Amsterdam: Benjamins.
+      </p>
+      <p>
+        Lovell, Charles J. 1955. Lexicographic challenges of Canadian English.{" "}
+        <em>Journal of the Canadian Linguistic Association</em> 1(1, March):
+        2-5.
+      </p>
+      <p>
+        Lovell, Charles J. 1958. A sampling of materials for a dictionary of
+        Canadian English based on historical principles.{" "}
+        <em>Journal of the Canadian Linguistic Association</em> (now{" "}
+        <em>Canadian Journal of Linguistics</em>) 4/1. 23-32.
       </p>
       <p>
         Neufeldt, Victoria. 2019. Review of DCHP-2. <em>Dictionaries</em> 40(2):
