@@ -311,8 +311,8 @@ export default function About() {
         which is a ‘biography’ of Canadian English. Chief editor Stefan
         Dollinger was in charge of all aspects of the project, including
         drafting, data collection and system testing. The new mobile-friendy
-        presentation and front-end experience was implemented cheerfully and
-        efficiently, as always, by Frank Hangler from{" "}
+        presentation and front-end experience was designed and implemented
+        cheerfully and efficiently, as always, by Frank Hangler from{" "}
         <Link to="https://plotandscatter.com">Plot + Scatter</Link>, with
         assistance from Kevin Shaw.
       </p>
