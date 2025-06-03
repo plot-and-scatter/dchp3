@@ -1,3 +1,4 @@
+import DictionaryVersionLabel from "~/components/elements/Labels/DictionaryVersionLabel"
 import DraftLabel from "../../elements/Labels/DraftLabel"
 import { Link } from "../../elements/LinksAndButtons/Link"
 
@@ -16,6 +17,7 @@ const SearchResultEntries = ({ text, data }: Props) => {
       {data.map((e) => {
         return (
           <p key={e.id} className="flex items-center">
+            <DictionaryVersionLabel dchpVersion={e.dchp_version} />
             <Link
               to={`/entries/${e.headword}`}
               appearance="primary"

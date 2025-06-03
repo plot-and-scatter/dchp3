@@ -13,6 +13,7 @@ import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { userHasPermission } from "~/services/auth/session.server"
 import DraftLabel from "~/components/elements/Labels/DraftLabel"
 import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
+import DictionaryVersionLabel from "~/components/elements/Labels/DictionaryVersionLabel"
 
 export async function loader({ request, params }: LoaderArgs) {
   const { initialLetters, pageNumber } = params
@@ -67,6 +68,7 @@ export default function EntryDetailsPage() {
       <div className="my-4 flex flex-col gap-y-1">
         {entries.map((e) => (
           <p key={e.id} className="flex items-center">
+            <DictionaryVersionLabel dchpVersion={e.dchp_version} />
             <Link to={`/entries/${e.headword}`} bold key={e.id}>
               {e.headword}
             </Link>
