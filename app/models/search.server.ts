@@ -37,7 +37,7 @@ export type AllSearchResults = {
   data:
     | {
         type: SearchResultEnum.HEADWORD
-        entries: Pick<Entry, "id" | "headword">[]
+        entries: Pick<Entry, "id" | "headword" | "dchp_version">[]
       }
     | { type: SearchResultEnum.MEANING; entries: SearchResultMeaning[] }
     | { type: SearchResultEnum.CANADIANISM; entries: Canadianism[] }

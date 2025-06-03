@@ -35,7 +35,7 @@ export default function EntryDetailsPage() {
       <div className="my-4 flex flex-col justify-center">
         {headwords.map((h) => {
           return (
-            <p key={h.headword}>
+            <p className="!mb-0" key={h.headword}>
               <strong>{h.headword}</strong> (<strong>{h.count}</strong>{" "}
               citations){" "}
               <Link

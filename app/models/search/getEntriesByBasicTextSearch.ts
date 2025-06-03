@@ -76,9 +76,11 @@ export function getEntriesByBasicTextSearch({
 
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
-  return prisma.$queryRaw<Pick<Entry, "id" | "headword" | "is_public">[]>`
+  return prisma.$queryRaw<
+    Pick<Entry, "id" | "headword" | "dchp_version" | "is_public">[]
+  >`
   SELECT
-    id, headword, is_public
+    id, headword, is_public, dchp_version
   FROM det_entries de
   WHERE
     IF (${caseSensitive},

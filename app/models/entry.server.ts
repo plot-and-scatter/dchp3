@@ -175,8 +175,10 @@ export function getEntriesByInitialLetters(
     )
   }
   const initialLettersWildcard = `${initialLetters}%`
-  return prisma.$queryRaw<Pick<Entry, "id" | "is_public" | "headword">[]>`
-    SELECT id, headword, is_public
+  return prisma.$queryRaw<
+    Pick<Entry, "id" | "is_public" | "headword" | "dchp_version">[]
+  >`
+    SELECT id, headword, is_public, dchp_version
     FROM det_entries
     WHERE
       LOWER(headword) LIKE LOWER(${initialLettersWildcard})
