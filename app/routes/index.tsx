@@ -54,7 +54,11 @@ export default function Index() {
           Edition.
         </em>{" "}
         Vancouver, BC: University of British Columbia,{" "}
-        <Link to="https://www.dchp.ca/dchp3">www.dchp.ca/dchp3</Link>.
+        <Link to="https://www.dchp.ca/dchp3">www.dchp.ca/dchp3</Link>. DOI:{" "}
+        <Link to="https://doi.org/10.17613/hr345-77f43">
+          https://doi.org/10.17613/hr345-77f43
+        </Link>{" "}
+        (Published 15 May 2025).
       </blockquote>
       <hr className="my-8" />
       <p className="text-center text-sm">

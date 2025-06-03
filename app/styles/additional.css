@@ -3,7 +3,7 @@ body {
   font-family: "Charter", "Georgia", serif;
 }
 
-p {
+.TextPageMain p {
   margin-bottom: 1rem;
   line-height: 140%;
 }
@@ -17,12 +17,4 @@ blockquote {
 .HandNoteBlock blockquote {
   margin-left: 2rem;
   margin-bottom: 1rem;
-}
-
-/* Better spacing for <br /> inside .CanadianismTypeComment */
-.CanadianismTypeComment br {
-  display: block;
-  margin-top: 0.5rem;
-  line-height: 1rem;
-  content: " ";
 }

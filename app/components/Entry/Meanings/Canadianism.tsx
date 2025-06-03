@@ -20,7 +20,10 @@ const Canadianism = ({ meaning }: CanadianismProps): JSX.Element => {
                 &mdash;{" "}
               </>
             )}
-            <SanitizedTextSpan text={meaning.canadianism_type_comment} />
+            <SanitizedTextSpan
+              toDoubleBreaks
+              text={meaning.canadianism_type_comment}
+            />
           </div>
         </div>
       )}
