@@ -58,3 +58,33 @@ try using MySQL Installer to uninstall MySQL Server and Reinstall it (the same v
 After successfully importing and running the database, this error may pop up when trying to click on an entry.
 
 Workaround: Go through the database dump and delete all the `definer` statements and save this as an alternate script. Use this script to import the database dump.
+
+---
+
+NEW CONTENT:
+
+Run the first sed command in bash, then run the second sed command.
+
+Remove definer statements:
+
+sed -i 's/DEFINER=[^*]\*\*/\*/g' all-databases-2024-10-31_09-31-25.sql
+
+Extract dump headers, and then extract database dchpca_dchp_3
+
+{
+sed -n '/^-- MySQL dump/,/^-- Current Database: /p' all-databases-2024-10-31_09-31-25.sql
+sed -n '/^-- Current Database: `dchpca_dchp_3`/,/^-- Current Database: `mysql`/p' all-databases-2024-10-31_09-31-25.sql
+} > dchp3-isolated-database-dump.sql
+
+Notes on both:
+
+1. you need to remove the definer statements otherwise weird errors will pop up
+2. the second script does two things: first, it preserves a bunch of necessary header information. Content that looks like the attached photo is necessary to ensure the dump is imported smoothly. Second, it extracts only the database you want (dchpca_dchp_3).
+3. after running these commands you should be good to go!
+
+![header info for database](image.png)
+
+{
+sed -n '/^-- MySQL dump/,/^-- Current Database: /p' all-databases-2024-10-31_09-31-25-copy.sql
+sed -n '/^-- Current Database: `dchpca_dchp_3`/,/^-- Current Database: `mysql`/p' all-databases-2024-10-31_09-31-25-copy.sql
+} > dchp3-isolated-database-dump.sql
