@@ -10,9 +10,9 @@ export default function Index() {
         This is the third edition of the 1967{" "}
         <em>A Dictionary of Canadianisms on Historical Principles</em> (DCHP-1).
         DCHP-3 integrates the legacy data of DCHP-1 (1967) and the updated data
-        of DCHP-2 (2017) with new content to form DCHP-3. There are 136 new and
-        updated entries in this edition for a new total of 12,045 headwords with
-        14,586 meanings.
+        of DCHP-2 (2017) with new content to form DCHP-3. There are 137 new and
+        updated entries in this edition for a new total of 12,040 headwords with
+        14,587 meanings.
       </p>
       <p>
         DCHP-3 lists, as did its predecessors, Canadianisms. A Canadianism is

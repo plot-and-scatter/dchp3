@@ -50,11 +50,11 @@ export default function About() {
       </p>
 
       <p>
-        In total, this update includes 136 new entries with 187 meanings (180
-        Canadian and 7 non-Canadian) for a total of now 12,045 lexemes (11,974
-        Canadian plus 65 non-Canadian) and 14,586 meanings (14,516 Canadian and
-        70 non-Canadian), which are illustrated by way of 34,402 quotations
-        (33,994 to illustrate Canadianisms + 408 for Canadian usage of
+        In total, this update includes 137 new entries with 187 meanings (181
+        Canadian and 6 non-Canadian) for a total of now 12,040 lexemes (11,975
+        Canadian plus 65 non-Canadian) and 14,587 meanings (14,517 Canadian and
+        70 non-Canadian), which are illustrated by way of 34,410 quotations
+        (34,002 to illustrate Canadianisms + 408 for Canadian usage of
         Non-Canadianisms). Work commenced, with the support of Social Sciences
         and Humanities Research Council of Canada Grant # 435-2022-0921, in the
         summer of 2022 and was completed in May 2025. We are grateful that SSHRC
@@ -111,9 +111,10 @@ export default function About() {
         though any critique in any form is most welcome. Other corrections and
         updates of DCHP-2 terms include <WordLink>bunny hug</WordLink> (which
         Saskatchewanians will likely be interested to know),{" "}
-        <WordLink>bush party</WordLink>, <WordLink>down-island</WordLink>,{" "}
-        <WordLink>Fat City</WordLink>, <WordLink>Idle No More</WordLink>,{" "}
-        <WordLink>joe job</WordLink>, and <WordLink>qalunaaq</WordLink>.
+        <WordLink>bush party</WordLink>, <WordLink>Canadian tuxedo</WordLink>,{" "}
+        <WordLink>down-island</WordLink>, <WordLink>Fat City</WordLink>,{" "}
+        <WordLink>Idle No More</WordLink>, <WordLink>joe job</WordLink>, and{" "}
+        <WordLink>qalunaaq</WordLink>.
       </p>
 
       <p>
