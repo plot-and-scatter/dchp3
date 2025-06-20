@@ -4,7 +4,7 @@
 
 1. First, take the file you want to import and make a copy. This is for backup, but also for diff usage
 
-2. Remove the DEFINER statements contained in the file. You can do this with the following sed command:
+2. Remove the DEFINER statements contained in the file. You can do this with the following sed command: (note: make sure to adjust the filenames of the .sql files for all the following commands)
 
 <pre> sed -i 's/DEFINER=[^*]*\*/\*/g' dump-copy.sql </pre>
 
@@ -12,12 +12,13 @@
 
 <pre> diff original-dump.sql dump-copy.sql > diff.sql </pre>
 
-4. Now run these two commands to extract the dchpca_dchp_3 database from the database dump containing multiple databases
+4. Now run these this command to extract the **dump header**, the **dchpca_dchp_3 database**, and the **dump footer** from the database dump
 
 <pre>
 {
 sed -n '/^-- MySQL dump/,/^-- Current Database: /p' dump-copy.sql
 sed -n '/^-- Current Database: `dchpca_dchp_3`/,/^-- Current Database: `mysql`/p' dump-copy.sql
+sed -n '/\/\*!40103 SET TIME_ZONE=@OLD_TIME_ZONE \*\/;/,$p' dump-copy.sql
 } > dump-final.sql
 </pre>
 
@@ -25,23 +26,25 @@ sed -n '/^-- Current Database: `dchpca_dchp_3`/,/^-- Current Database: `mysql`/p
 
 ## Importing the file
 
-1. Save a backup of your current copy of the database just in case (go to server -> export and save it as a database dump)
+1. Open MySQL Workbench
 
-2. Drop the dchp database schema
+2. Save a backup of your current copy of the database just in case (go to server -> export and save it as a database dump)
 
-3. Go to server -> import
+3. Drop the current dchp database schema in your MySQL Workbench
 
-4. Import from Self-Contained File
+4. Go to server -> import
 
-5. Press the `new` button when asked for default target schema, and fill it in with database name-- this likely won't be used
+5. Import from Self-Contained File
 
-6. import
+6. Press the `new` button when asked for default target schema, and fill it in with database name (this likely won't be used)
 
-7. refresh schema display (should be in the top right of the sidebar. Alternatively, restart MySQL Workbench). dchp database should show up
+7. Press import
 
-8. start the server if necessary
+8. refresh schema display (should be in the top right of the sidebar. Alternatively, restart MySQL Workbench). The DCHP3 Database should now be visible
 
-9. Database successfully imported
+9. Start the server if necessary
+
+10. Database successfully imported
 
 ## Troubleshooting
 
