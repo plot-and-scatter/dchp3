@@ -136,7 +136,7 @@ export async function insertEntry(
       no_cdn_susp: false,
       no_cdn_conf: isNonCanadian, // TODO: should this be susp or conf?
       edit_status_comment: null,
-      dchp_version: "dchp3",
+      dchp_version: "dchp3.1",
     },
   })
 
