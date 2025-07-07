@@ -22,9 +22,10 @@ export default function DatabaseCheckboxes({
         direction="vertical"
         conformField={fields.database}
         options={[
-          { label: "DCHP-1", value: "dchp1", defaultChecked: true },
-          { label: "DCHP-2", value: "dchp2", defaultChecked: true },
-          { label: "DCHP-3", value: "dchp3", defaultChecked: true },
+          { label: "DCHP-1", value: "dchp1" },
+          { label: "DCHP-2", value: "dchp2" },
+          { label: "DCHP-3", value: "dchp3" },
+          { label: "DCHP-3.1", value: "dchp3.1", defaultChecked: true },
         ]}
       />
     </div>

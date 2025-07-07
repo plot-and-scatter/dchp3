@@ -32,7 +32,8 @@ const calculateDictionaryVersion = (
   const year = date.getFullYear()
   const localeMonth = date.toLocaleString(`en-ca`, { month: "short" })
 
-  const version = `DCHP-${year >= 2018 ? 3 : 2}`
+  const version =
+    dchpVersion === `dchp3.1` ? `dchp3.1` : `DCHP-${year >= 2018 ? 3 : 2}`
 
   return { version, date: `${localeMonth} ${year}` }
 }
@@ -72,6 +73,7 @@ const DictionaryVersion = ({
             { value: "dchp1", label: "DCHP-1" },
             { value: "dchp2", label: "DCHP-2" },
             { value: "dchp3", label: "DCHP-3" },
+            { value: "dchp3.1", label: "DCHP-3.1" },
           ]}
         />
       }

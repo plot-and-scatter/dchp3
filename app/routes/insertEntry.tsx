@@ -100,7 +100,8 @@ export default function Index() {
                 options={[
                   { label: "DCHP-1", value: "isLegacy" },
                   { label: "DCHP-2", value: "dchp2" },
-                  { label: "DCHP-3", value: "dchp3", defaultChecked: true },
+                  { label: "DCHP-3", value: "dchp3" },
+                  { label: "DCHP-3.1", value: "dchp3.1", defaultChecked: true },
                 ]}
               />
             }

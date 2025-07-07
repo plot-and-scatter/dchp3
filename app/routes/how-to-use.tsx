@@ -92,16 +92,15 @@ export default function Foreword() {
         <strong>Type 1</strong> is a Canadianism by virtue of
         originating—entering the English language—in what is now Canada. A
         classic example is <WordLink>garburator</WordLink>; newer examples from
-        this edition are
-        <WordLink>hang a larry</WordLink>, <WordLink>hang a roger</WordLink>,{" "}
-        <WordLink>levidrome</WordLink>, <WordLink>renovict</WordLink> and{" "}
-        <WordLink>quinzhee</WordLink>. <strong>Type 2</strong> is a preservation
-        in Canadian English from another variety of English, often from the UK
-        but also from the US. The standard example is{" "}
-        <WordLink>pencil crayon</WordLink>, once used in the US and now
-        exclusively Canadian. Newer examples are <WordLink>joe job</WordLink>,
-        the newly reclassified <WordLink>parkade</WordLink> and{" "}
-        <WordLink>peace bond</WordLink>.
+        this edition are <WordLink>hang a larry</WordLink>,{" "}
+        <WordLink>hang a roger</WordLink>, <WordLink>levidrome</WordLink>,{" "}
+        <WordLink>renovict</WordLink> and <WordLink>quinzhee</WordLink>.{" "}
+        <strong>Type 2</strong> is a preservation in Canadian English from
+        another variety of English, often from the UK but also from the US. The
+        standard example is <WordLink>pencil crayon</WordLink>, once used in the
+        US and now exclusively Canadian. Newer examples are{" "}
+        <WordLink>joe job</WordLink>, the newly reclassified{" "}
+        <WordLink>parkade</WordLink> and <WordLink>peace bond</WordLink>.
       </p>
 
       <p>
