@@ -4,6 +4,7 @@ import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
 import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
 import { editingStatusHelper } from "./getEntriesByBasicTextSearch"
+import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
 
 export interface UsageNote {
   headword: string
@@ -21,9 +22,15 @@ export function getUsageNotesCount({
   isUserAdmin = false,
   nonCanadianism = false,
   editingStatus,
+  canadianismType, // add default
 }: SearchResultParams) {
   const searchWildcard =
     searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
+
+  // If canadianismType is not provided, use the default BASE_CANADANISM_TYPES
+  if (!canadianismType || canadianismType.length === 0) {
+    canadianismType = [...BASE_CANADANISM_TYPES]
+  }
 
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
@@ -37,6 +44,7 @@ export function getUsageNotesCount({
       (det_meanings.usage) LIKE (${searchWildcard}),
       LOWER(det_meanings.usage) LIKE LOWER(${searchWildcard})
     )
+    AND (det_meanings.canadianism_type IN (${Prisma.join(canadianismType)}))
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
     AND (de.no_cdn_conf = 1 OR NOT ${nonCanadianism === true})
@@ -65,6 +73,7 @@ export function getSearchResultUsageNotes({
   isUserAdmin = false,
   nonCanadianism = false,
   editingStatus,
+  canadianismType = [...BASE_CANADANISM_TYPES], // add default
 }: SearchResultParams) {
   const searchWildcard =
     searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
@@ -84,6 +93,7 @@ export function getSearchResultUsageNotes({
       (det_meanings.usage) LIKE (${searchWildcard}),
       LOWER(det_meanings.usage) LIKE LOWER(${searchWildcard})
     )
+    AND (det_meanings.canadianism_type IN (${Prisma.join(canadianismType)}))
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
     AND (de.no_cdn_conf = 1 OR NOT ${nonCanadianism === true})
