@@ -2,6 +2,7 @@ import { prisma } from "~/db.server"
 import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
 import { EDITING_STATUS_INPUTS } from "~/components/EntryEditor/EntryEditorSidebar/EditingStatus/EditingStatusPanel"
+import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
 
 export interface Quotation {
   id: number
@@ -22,6 +23,7 @@ function getMeaningCondition({
   isUserAdmin,
   nonCanadianism,
   editingStatus,
+  canadianismType,
 }: SearchResultParams) {
   const where: any = {
     meaning: {
@@ -42,6 +44,19 @@ function getMeaningCondition({
     where.meaning.entry.OR = editingStatus.map((status) => ({
       [status]: true,
     }))
+  }
+
+  // If canadianismType is not empty, AND not all types are selected, then
+  // filter by the selected types
+  if (
+    canadianismType &&
+    canadianismType.length &&
+    canadianismType.length !== 0 &&
+    canadianismType.length !== BASE_CANADANISM_TYPES.length
+  ) {
+    where.meaning.canadianism_type = {
+      in: canadianismType,
+    }
   }
 
   return where
