@@ -25,6 +25,7 @@ export default function DatabaseCheckboxes({
           { label: "DCHP-1", value: "dchp1", defaultChecked: true },
           { label: "DCHP-2", value: "dchp2", defaultChecked: true },
           { label: "DCHP-3", value: "dchp3", defaultChecked: true },
+          { label: "DCHP-3.1", value: "dchp3.1", defaultChecked: true },
         ]}
       />
     </div>

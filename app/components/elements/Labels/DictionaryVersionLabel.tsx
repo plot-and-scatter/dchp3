@@ -14,7 +14,7 @@ export default function DictionaryVersionLabel({
 
   return (
     <div
-      className={`inline-block w-12 border text-center ${color} mr-2 px-1 py-0 text-xs uppercase text-gray-700 shadow-sm`}
+      className={`inline-block w-16 border text-center ${color} mr-2 px-1 py-0 text-xs uppercase text-gray-700 shadow-sm`}
     >
       {dchpVersion}
     </div>
