@@ -23,6 +23,8 @@ export type SearchResultParams = SearchActionSchema & {
   isUserAdmin: boolean
   take: number
   skip: number
+  canadianismTypes: string[]
+  versions: string[]
 }
 
 export type AllSearchResults = {
