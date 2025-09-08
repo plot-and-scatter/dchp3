@@ -13,21 +13,28 @@ export interface SearchResultMeaning {
 function getWhereClause({
   nonCanadianism,
   searchTerm,
-  canadianismType,
+  canadianismTypes,
   editingStatus,
+  versions,
+  isUserAdmin,
 }: SearchResultParams) {
   const where: any = {
     entry: {
-      is_public: true,
       no_cdn_conf: nonCanadianism,
+      dchp_version: { in: versions },
     },
     definition: {
       contains: searchTerm === SEARCH_WILDCARD ? "" : searchTerm,
     },
   }
+  
+  // Handle is_public OR isUserAdmin logic
+  if (!isUserAdmin) {
+    where.entry.is_public = true
+  }
 
-  if (canadianismType.length !== BASE_CANADANISM_TYPES.length) {
-    where.canadianism_type = { in: canadianismType }
+  if (canadianismTypes.length !== BASE_CANADANISM_TYPES.length) {
+    where.canadianism_type = { in: canadianismTypes }
   }
 
   // If editingStatus is not empty, AND not all statuses are selected, then
