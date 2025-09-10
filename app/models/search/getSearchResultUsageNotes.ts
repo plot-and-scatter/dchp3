@@ -22,14 +22,14 @@ export function getUsageNotesCount({
   isUserAdmin = false,
   nonCanadianism = false,
   editingStatus,
-  canadianismType, // add default
+  canadianismTypes,
 }: SearchResultParams) {
   const searchWildcard =
     searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
 
-  // If canadianismType is not provided, use the default BASE_CANADANISM_TYPES
-  if (!canadianismType || canadianismType.length === 0) {
-    canadianismType = [...BASE_CANADANISM_TYPES]
+  // If canadianismTypes is not provided or empty, use the default BASE_CANADANISM_TYPES
+  if (!canadianismTypes || canadianismTypes.length === 0) {
+    canadianismTypes = [...BASE_CANADANISM_TYPES]
   }
 
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
@@ -44,7 +44,7 @@ export function getUsageNotesCount({
       (det_meanings.usage) LIKE (${searchWildcard}),
       LOWER(det_meanings.usage) LIKE LOWER(${searchWildcard})
     )
-    AND (det_meanings.canadianism_type IN (${Prisma.join(canadianismType)}))
+    AND (det_meanings.canadianism_type IN (${Prisma.join(canadianismTypes)}))
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
     AND (de.no_cdn_conf = 1 OR NOT ${nonCanadianism === true})
@@ -73,10 +73,15 @@ export function getSearchResultUsageNotes({
   isUserAdmin = false,
   nonCanadianism = false,
   editingStatus,
-  canadianismType = [...BASE_CANADANISM_TYPES], // add default
+  canadianismTypes,
 }: SearchResultParams) {
   const searchWildcard =
     searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
+
+  // If canadianismTypes is not provided or empty, use the default BASE_CANADANISM_TYPES
+  if (!canadianismTypes || canadianismTypes.length === 0) {
+    canadianismTypes = [...BASE_CANADANISM_TYPES]
+  }
 
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
@@ -93,7 +98,7 @@ export function getSearchResultUsageNotes({
       (det_meanings.usage) LIKE (${searchWildcard}),
       LOWER(det_meanings.usage) LIKE LOWER(${searchWildcard})
     )
-    AND (det_meanings.canadianism_type IN (${Prisma.join(canadianismType)}))
+    AND (det_meanings.canadianism_type IN (${Prisma.join(canadianismTypes)}))
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
     AND (de.no_cdn_conf = 1 OR NOT ${nonCanadianism === true})
