@@ -24,12 +24,14 @@ function getMeaningCondition({
   nonCanadianism,
   editingStatus,
   canadianismTypes,
+  versions,
 }: SearchResultParams) {
   const where: any = {
     meaning: {
       entry: {
         is_public: isUserAdmin ? undefined : true,
         no_cdn_conf: nonCanadianism === true ? true : undefined,
+        dchp_version: { in: versions },
       },
     },
   }
