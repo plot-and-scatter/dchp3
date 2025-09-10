@@ -23,7 +23,7 @@ function getMeaningCondition({
   isUserAdmin,
   nonCanadianism,
   editingStatus,
-  canadianismType,
+  canadianismTypes,
 }: SearchResultParams) {
   const where: any = {
     meaning: {
@@ -46,16 +46,16 @@ function getMeaningCondition({
     }))
   }
 
-  // If canadianismType is not empty, AND not all types are selected, then
+  // If canadianismTypes is not empty, AND not all types are selected, then
   // filter by the selected types
   if (
-    canadianismType &&
-    canadianismType.length &&
-    canadianismType.length !== 0 &&
-    canadianismType.length !== BASE_CANADANISM_TYPES.length
+    canadianismTypes &&
+    canadianismTypes.length &&
+    canadianismTypes.length !== 0 &&
+    canadianismTypes.length !== BASE_CANADANISM_TYPES.length
   ) {
     where.meaning.canadianism_type = {
-      in: canadianismType,
+      in: canadianismTypes,
     }
   }
 
