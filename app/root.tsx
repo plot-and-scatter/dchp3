@@ -1,4 +1,5 @@
-import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node"
+import type { LinksFunction, LoaderArgs } from "@remix-run/node"
+import type { V2_MetaFunction } from "@remix-run/react"
 import {
   Links,
   LiveReload,
@@ -35,9 +36,7 @@ export const links: LinksFunction = () => {
   ]
 }
 
-export const meta: MetaFunction = () => ({
-  title: BASE_APP_TITLE,
-})
+export const meta: V2_MetaFunction = () => [{ title: BASE_APP_TITLE }]
 
 export async function loader({ request }: LoaderArgs) {
   const user = await getUserFromSession(request)
