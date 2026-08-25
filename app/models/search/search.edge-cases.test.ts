@@ -5,6 +5,12 @@ import type { SearchActionSchema } from '~/routes/search'
 import { getEntriesByBasicTextSearch } from './getEntriesByBasicTextSearch'
 import { getCounts } from './getCounts.server'
 
+// search.server imports calculatePageSkip from entry.server, which constructs a
+// PrismaClient at import time. Mock the client so the suite needs no DATABASE_URL.
+vi.mock('~/db.server', () => ({
+  prisma: {}
+}))
+
 // Mock all search functions
 vi.mock('./getEntriesByBasicTextSearch', () => ({
   getEntriesByBasicTextSearch: vi.fn(),
