@@ -28,11 +28,18 @@ export default function Combobox({
 
   return (
     <div>
+      {/* The selected option is submitted through the two hidden inputs
+          below rather than through Headless UI's own `name` serialisation.
+          Given name="headword", Headless UI would post "headword[label]" and
+          "headword[value]"; conform reads square brackets as array indices,
+          finds a word instead of a number, and drops the fields. Dot-separated
+          names are conform's own convention for nested values, so it parses
+          these into a { label, value } object -- which is what the schemas
+          that read this component expect. */}
       <HeadlessCombobox
         value={selectedOption}
         onChange={(e) => setSelectedOption(e)}
         by={(a, b) => a?.value === b?.value}
-        name={name}
       >
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded text-left">
@@ -103,6 +110,16 @@ export default function Combobox({
           </Transition>
         </div>
       </HeadlessCombobox>
+      <input
+        type="hidden"
+        name={`${name}.label`}
+        value={selectedOption?.label ?? ""}
+      />
+      <input
+        type="hidden"
+        name={`${name}.value`}
+        value={selectedOption?.value ?? ""}
+      />
     </div>
   )
 }
