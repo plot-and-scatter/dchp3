@@ -71,6 +71,12 @@ jobs:
       - name: ⚡ Run vitest
         run: npm run test -- --coverage
 
+      # `npm run dev` boots through `binode --require ./mocks`, which no other
+      # job loads — so a dependency change can break the dev server while
+      # tests, typecheck, lint and build all stay green. That happened in #419.
+      - name: 🔶 Mock server loads
+        run: node --require ./mocks -e "0"
+
   # cypress:
   #   name: ⚫️ Cypress
   #   runs-on: ubuntu-latest
