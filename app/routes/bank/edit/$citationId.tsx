@@ -1,3 +1,4 @@
+import type { MetaFunction } from "@remix-run/react"
 import { Form, useActionData, useLoaderData } from "@remix-run/react"
 import {
   getCitationsByHeadwordAndUserId,
@@ -10,11 +11,7 @@ import {
 import { getEmailFromSession } from "~/services/auth/session.server"
 import { getUserIdByEmailOrThrow } from "~/models/user.server"
 import { json, redirect } from "@remix-run/server-runtime"
-import type {
-  MetaFunction,
-  ActionArgs,
-  LoaderArgs,
-} from "@remix-run/server-runtime"
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/server-runtime"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { prisma } from "~/db.server"
 import BankEditCitationFields from "~/components/bank/BankEditCitationFields"
@@ -27,18 +24,16 @@ import { bankCitationFormDataSchema } from "../create"
 import { getFormProps, useForm } from "@conform-to/react"
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  const { citation } = data
+  const citation = data?.citation
 
   if (!citation || !citation.headword) {
-    return { title: `Citation not found` }
+    return [{ title: `Citation not found` }]
   }
 
-  return {
-    title: `BCE | ${citation.headword.headword} (#${citation.id})`,
-  }
+  return [{ title: `BCE | ${citation.headword.headword} (#${citation.id})` }]
 }
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await request.formData()
   const submission = parseWithZod(formData, {
     schema: bankCitationFormDataSchema,
@@ -100,7 +95,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   return redirect(`/bank/edit/${citationId}`)
 }
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const citationId = params.citationId
   invariant(citationId, `citationId not found`)
 

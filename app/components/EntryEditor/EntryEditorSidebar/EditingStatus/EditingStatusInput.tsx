@@ -18,14 +18,8 @@ export default function EditingStatusInput({
         type="checkbox"
         name={type}
         optionSetClassName="flex gap-x-2"
-        inputClassName=" border border-gray-300"
-        options={[
-          {
-            label,
-            value: "true",
-            defaultChecked,
-          },
-        ]}
+        inputClassName="border border-gray-300"
+        options={[{ label, value: "true", defaultChecked }]}
       />
     </div>
   )

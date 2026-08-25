@@ -1,6 +1,8 @@
 import { prisma } from "~/db.server"
 import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
+import { EDITING_STATUS_INPUTS } from "~/components/EntryEditor/EntryEditorSidebar/EditingStatus/EditingStatusPanel"
+import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
 
 export interface Quotation {
   id: number
@@ -20,15 +22,46 @@ export interface Quotation {
 function getMeaningCondition({
   isUserAdmin,
   nonCanadianism,
+  editingStatus,
+  canadianismTypes,
+  versions,
 }: SearchResultParams) {
-  return {
+  const where: any = {
     meaning: {
       entry: {
         is_public: isUserAdmin ? undefined : true,
         no_cdn_conf: nonCanadianism === true ? true : undefined,
+        dchp_version: { in: versions },
       },
     },
   }
+
+  // If editingStatus is not empty, AND not all statuses are selected, then
+  // filter by the selected statuses
+  if (
+    editingStatus &&
+    editingStatus.length &&
+    editingStatus.length !== EDITING_STATUS_INPUTS.length
+  ) {
+    where.meaning.entry.OR = editingStatus.map((status) => ({
+      [status]: true,
+    }))
+  }
+
+  // If canadianismTypes is not empty, AND not all types are selected, then
+  // filter by the selected types
+  if (
+    canadianismTypes &&
+    canadianismTypes.length &&
+    canadianismTypes.length !== 0 &&
+    canadianismTypes.length !== BASE_CANADANISM_TYPES.length
+  ) {
+    where.meaning.canadianism_type = {
+      in: canadianismTypes,
+    }
+  }
+
+  return where
 }
 
 function getWhereClause(params: SearchResultParams) {

@@ -9,7 +9,8 @@ import { Form, useActionData } from "@remix-run/react"
 import { getEmailFromSession } from "~/services/auth/session.server"
 import { getUserIdByEmailOrThrow } from "~/models/user.server"
 import { json, redirect } from "@remix-run/server-runtime"
-import type { MetaFunction, ActionArgs } from "@remix-run/server-runtime"
+import type { ActionFunctionArgs } from "@remix-run/server-runtime"
+import type { MetaFunction } from "@remix-run/react"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { parseWithZod } from "@conform-to/zod"
 import { prisma } from "~/db.server"
@@ -19,11 +20,9 @@ import BankEditCitationFields from "~/components/bank/BankEditCitationFields"
 import BankSourcePanel from "~/components/bank/BankSourcePanels/BankSourcePanel"
 import Button from "~/components/elements/LinksAndButtons/Button"
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return {
-    title: `BCE | Create citation`,
-  }
-}
+export const meta: MetaFunction<typeof loader> = () => [
+  { title: `BCE | Create citation` },
+]
 
 export const emptyStringToNull = z
   .string()
@@ -75,7 +74,7 @@ export const bankCitationFormDataSchema = z.object({
   [`title`]: emptyStringToNull,
 })
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
   const submission = parseWithZod(formData, {
     schema: bankCitationFormDataSchema,

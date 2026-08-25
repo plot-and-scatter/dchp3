@@ -1,5 +1,5 @@
-import SanitizedTextSpan from "../Entry/Common/SanitizedTextSpan"
-import { Link } from "../elements/LinksAndButtons/Link"
+import SanitizedTextSpan from "../../Entry/Common/SanitizedTextSpan"
+import { Link } from "../../elements/LinksAndButtons/Link"
 
 interface SearchResultProps {
   text: string

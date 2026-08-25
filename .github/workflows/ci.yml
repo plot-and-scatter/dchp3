@@ -1,0 +1,145 @@
+name: 🧪 CI
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: ⬣ ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v5
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 📥 Download deps
+        run: npm ci
+
+      - name: 🔬 Lint
+        run: npm run lint
+
+  typecheck:
+    name: ʦ TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v5
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 📥 Download deps
+        run: npm ci
+
+      - name: 🔎 Type check
+        run: npm run typecheck --if-present
+
+  build:
+    name: 🏗 Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v5
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 📥 Download deps
+        run: npm ci
+
+      - name: 🏗 Build
+        run: npm run build
+
+      # `remix build` succeeding does not mean the server can be loaded: with
+      # an ESM server build, an unresolvable import only fails at load time.
+      # DATABASE_URL is a dummy — Prisma validates the URL at construction but
+      # does not connect, and nothing here issues a query.
+      - name: 🚀 Server build loads
+        run: node -e "import('./build/index.js').then(() => console.log('server build loaded'))"
+        env:
+          DATABASE_URL: mysql://user:password@localhost:3306/placeholder
+
+  vitest:
+    name: ⚡ Vitest
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v5
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 📥 Download deps
+        run: npm ci
+
+      - name: ⚡ Run vitest
+        run: npm run test -- --coverage
+
+      # `npm run dev` boots through `binode --require ./mocks`, which no other
+      # job loads — so a dependency change can break the dev server while
+      # tests, typecheck, lint and build all stay green. That happened in #419.
+      - name: 🔶 Mock server loads
+        run: node --require ./mocks -e "0"
+
+  # cypress:
+  #   name: ⚫️ Cypress
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: ⬇️ Checkout repo
+  #       uses: actions/checkout@v5
+
+  #     - name: 🔑 Make envfile
+  #       uses: SpicyPizza/create-envfile@v1.3
+  #       with:
+  #         # envkey_SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+  #         # Yes, there is a warning on the next line. See issue at
+  #         # https://github.com/SpicyPizza/create-envfile/issues/10
+  #         envkey_DATABASE_URL: ${{ secrets.PLANETSCALE_MYSQL_DB_URL_FOR_CYPRESS }}
+  #         file_name: .env
+
+  #     - name: ⎔ Setup node
+  #       uses: actions/setup-node@v5
+  #       with:
+  #         node-version-file: .nvmrc
+  #         cache: npm
+
+  #     - name: 📥 Download deps
+  #       run: npm ci
+
+  #     # - name: 🛠 Setup Database
+  #     #   run: npx prisma migrate reset --force
+
+  #     - name: ⚙️ Build
+  #       run: npm run build
+
+  #     - name: 🌳 Cypress run
+  #       uses: cypress-io/github-action@v4
+  #       with:
+  #         start: npm run start:mocks
+  #         wait-on: "http://localhost:8811"
+  #       env:
+  #         PORT: "8811"

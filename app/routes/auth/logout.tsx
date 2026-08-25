@@ -1,5 +1,5 @@
 import { useSubmit } from "@remix-run/react"
-import type { ActionArgs } from "@remix-run/server-runtime"
+import type { ActionFunctionArgs } from "@remix-run/server-runtime"
 import { redirect } from "@remix-run/server-runtime"
 import { useEffect } from "react"
 import { getBaseDeploymentUrl } from "utils/api.server"
@@ -8,7 +8,7 @@ import {
   getCookieSession,
 } from "~/services/auth/session.server"
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const session = await getCookieSession(request)
 
   const logoutURL = new URL(

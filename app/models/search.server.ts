@@ -23,6 +23,8 @@ export type SearchResultParams = SearchActionSchema & {
   isUserAdmin: boolean
   take: number
   skip: number
+  canadianismTypes: string[]
+  versions: string[]
 }
 
 export type AllSearchResults = {
@@ -37,7 +39,7 @@ export type AllSearchResults = {
   data:
     | {
         type: SearchResultEnum.HEADWORD
-        entries: Pick<Entry, "id" | "headword">[]
+        entries: Pick<Entry, "id" | "headword" | "dchp_version">[]
       }
     | { type: SearchResultEnum.MEANING; entries: SearchResultMeaning[] }
     | { type: SearchResultEnum.CANADIANISM; entries: Canadianism[] }
@@ -51,7 +53,7 @@ export async function getSearchResults(
   isUserAdmin: boolean
 ): Promise<AllSearchResults> {
   const versions = searchParams.database || ["dchp1", "dchp2", "dchp3"]
-  const canadianismTypes = searchParams.canadianismType || [
+  const canadianismTypes = searchParams.canadianismType?.length > 0 ? searchParams.canadianismType : [
     ...BASE_CANADANISM_TYPES,
   ]
 

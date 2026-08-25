@@ -1,10 +1,10 @@
 import type { Reference } from "@prisma/client"
-import { json, type LoaderArgs } from "@remix-run/server-runtime"
+import { json, type LoaderFunctionArgs } from "@remix-run/server-runtime"
 import { prisma } from "~/db.server"
 
 // const DEFAULT_TAKE_SIZE = 500
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url)
   const containsText = url.searchParams.get("containsText")
 

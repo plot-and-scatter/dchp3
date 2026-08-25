@@ -1,3 +1,4 @@
+import type { MetaFunction } from "@remix-run/react"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { getEntryByHeadword, updateLogEntries } from "~/models/entry.server"
 import { handleEditFormAction } from "./handleEditFormAction"
@@ -6,28 +7,23 @@ import { useLoaderData } from "@remix-run/react"
 import EntryEditor from "~/components/EntryEditor/EntryEditor"
 import invariant from "tiny-invariant"
 import { redirect, json } from "@remix-run/node"
-import type {
-  MetaFunction,
-  SerializeFrom,
-  ActionArgs,
-  LoaderArgs,
-} from "@remix-run/node"
+import type { SerializeFrom, ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { BASE_APP_TITLE } from "~/root"
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return {
+export const meta: MetaFunction<typeof loader> = ({ data }) => [
+  {
     title: `${BASE_APP_TITLE} | Editing ${
       data?.entry?.headword || "Entry not found"
     }`,
-  }
-}
+  },
+]
 
 export type EntryEditLoaderData = SerializeFrom<
   Awaited<Promise<ReturnType<typeof loader>>>
 >
 
-export async function action({ params, request }: ActionArgs) {
+export async function action({ params, request }: ActionFunctionArgs) {
   invariant(params.headword, "No headword specified")
 
   const formData = await request.formData()
@@ -81,7 +77,7 @@ export async function action({ params, request }: ActionArgs) {
   return json(submission.reply())
 }
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const { headword } = params
 
   invariant(headword, `No headword param provided`)
@@ -101,7 +97,7 @@ export async function loader({ request, params }: LoaderArgs) {
 }
 
 export default function EntryDetailsPage() {
-  const { entry } = useLoaderData()
+  const { entry } = useLoaderData<typeof loader>()
 
   return <EntryEditor entry={entry} />
 }

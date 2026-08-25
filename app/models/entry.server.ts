@@ -136,7 +136,7 @@ export async function insertEntry(
       no_cdn_susp: false,
       no_cdn_conf: isNonCanadian, // TODO: should this be susp or conf?
       edit_status_comment: null,
-      dchp_version: "dchp3",
+      dchp_version: "dchp3.1",
     },
   })
 
@@ -175,8 +175,10 @@ export function getEntriesByInitialLetters(
     )
   }
   const initialLettersWildcard = `${initialLetters}%`
-  return prisma.$queryRaw<Pick<Entry, "id" | "is_public" | "headword">[]>`
-    SELECT id, headword, is_public
+  return prisma.$queryRaw<
+    Pick<Entry, "id" | "is_public" | "headword" | "dchp_version">[]
+  >`
+    SELECT id, headword, is_public, dchp_version
     FROM det_entries
     WHERE
       LOWER(headword) LIKE LOWER(${initialLettersWildcard})

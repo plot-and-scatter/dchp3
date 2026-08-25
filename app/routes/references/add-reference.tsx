@@ -7,7 +7,7 @@ import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { parseWithZod } from "@conform-to/zod"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 import { ReferenceActionEnum } from "./ReferenceActionEnum"
-import { type ActionArgs, redirect } from "@remix-run/server-runtime"
+import { type ActionFunctionArgs, redirect } from "@remix-run/server-runtime"
 import AddIcon from "~/components/elements/Icons/AddIcon"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
@@ -17,7 +17,7 @@ import SaveIcon from "~/components/elements/Icons/SaveIcon"
 import TextArea from "~/components/bank/TextArea"
 import TopLabelledField from "~/components/bank/TopLabelledField"
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   await redirectIfUserLacksPermission(request, "det:editReferences")
 
   const formData = await request.formData()

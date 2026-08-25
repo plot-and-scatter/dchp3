@@ -12,3 +12,12 @@ node_modules
 /prisma/data.db-journal
 
 /app/styles/tailwind.css
+
+# test coverage output
+/coverage
+
+# Claude Code working notes (local only, not for commit)
+/WORKING-NOTES.md
+
+# TypeScript incremental build state
+*.tsbuildinfo

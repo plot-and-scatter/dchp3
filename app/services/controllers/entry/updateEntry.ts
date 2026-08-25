@@ -17,7 +17,7 @@ export const UpdateEntrySchema = z
     dagger: ZCheckboxValueToBoolean,
     isLegacy: ZCheckboxValueToBoolean,
     isNonCanadian: ZCheckboxValueToBoolean,
-    dchpVersion: z.enum(["dchp1", "dchp2", "dchp3"]),
+    dchpVersion: z.enum(["dchp1", "dchp2", "dchp3", "dchp3.1"]),
   })
   .strict()
 

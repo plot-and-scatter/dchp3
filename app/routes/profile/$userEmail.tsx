@@ -1,6 +1,6 @@
 import { type Prisma } from "@prisma/client"
 import { useLoaderData } from "@remix-run/react"
-import { redirect, type LoaderArgs } from "@remix-run/server-runtime"
+import { redirect, type LoaderFunctionArgs } from "@remix-run/server-runtime"
 import Main from "~/components/elements/Layouts/Main"
 import EntryList from "~/components/profile/EntryList"
 import ProfileHeader from "~/components/profile/ProfileHeader"
@@ -23,7 +23,7 @@ async function redirectIfUserLacksEmailAccess(request: Request, email: string) {
   if (userEmail !== email) throw redirect("/not-allowed")
 }
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const email = params.userEmail ?? ""
   await redirectIfUserLacksEmailAccess(request, email)
   const user = await getUserByEmailSafe({ email })

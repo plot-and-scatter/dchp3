@@ -7,45 +7,47 @@ import SaveIcon from "~/components/elements/Icons/SaveIcon"
 import { QuaternaryHeader } from "~/components/elements/Headings/QuaternaryHeader"
 import EntryEditorForm from "../../EntryEditorForm/EntryEditorForm"
 
-const EDITING_STATUS_INPUTS: { type: EditingStatusTypeEnum; label: string }[] =
-  [
-    {
-      type: EditingStatusTypeEnum.FIRST_DRAFT,
-      label: "First draft",
-    },
-    {
-      type: EditingStatusTypeEnum.REVISED_DRAFT,
-      label: "Revised draft",
-    },
-    {
-      type: EditingStatusTypeEnum.SEMANT_REVISED,
-      label: "Semantically revised",
-    },
-    {
-      type: EditingStatusTypeEnum.EDITED_FOR_STYLE,
-      label: "Edited for style",
-    },
-    {
-      type: EditingStatusTypeEnum.CHIEF_EDITOR_OK,
-      label: "Chief editor OK",
-    },
-    {
-      type: EditingStatusTypeEnum.NO_CDN_SUSP,
-      label: "Not Cdn. suspected",
-    },
-    {
-      type: EditingStatusTypeEnum.NO_CDN_CONF,
-      label: "Not Cdn. confirmed",
-    },
-    {
-      type: EditingStatusTypeEnum.COPY_EDITED,
-      label: "Copy-edited",
-    },
-    {
-      type: EditingStatusTypeEnum.PROOF_READING,
-      label: "Proofread",
-    },
-  ]
+export const EDITING_STATUS_INPUTS: {
+  type: EditingStatusTypeEnum
+  label: string
+}[] = [
+  {
+    type: EditingStatusTypeEnum.FIRST_DRAFT,
+    label: "First draft",
+  },
+  {
+    type: EditingStatusTypeEnum.REVISED_DRAFT,
+    label: "Revised draft",
+  },
+  {
+    type: EditingStatusTypeEnum.SEMANT_REVISED,
+    label: "Semantically revised",
+  },
+  {
+    type: EditingStatusTypeEnum.EDITED_FOR_STYLE,
+    label: "Edited for style",
+  },
+  {
+    type: EditingStatusTypeEnum.CHIEF_EDITOR_OK,
+    label: "Chief editor OK",
+  },
+  {
+    type: EditingStatusTypeEnum.NO_CDN_SUSP,
+    label: "Not Cdn. suspected",
+  },
+  {
+    type: EditingStatusTypeEnum.NO_CDN_CONF,
+    label: "Not Cdn. confirmed",
+  },
+  {
+    type: EditingStatusTypeEnum.COPY_EDITED,
+    label: "Copy-edited",
+  },
+  {
+    type: EditingStatusTypeEnum.PROOF_READING,
+    label: "Proofread",
+  },
+]
 
 interface EditingStatusProps {
   entry: LoadedEntryDataType

@@ -6,9 +6,9 @@ import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { parseWithZod } from "@conform-to/zod"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 import {
-  type ActionArgs,
+  type ActionFunctionArgs,
   redirect,
-  type LoaderArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/server-runtime"
 import { UpdateReferenceSchema, updateReference } from "./updateReference"
 import { z } from "zod"
@@ -24,7 +24,7 @@ import TopLabelledField from "~/components/bank/TopLabelledField"
 import { ReferenceActionEnum } from "./ReferenceActionEnum"
 import { getFormProps, useForm } from "@conform-to/react"
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   await redirectIfUserLacksPermission(request, "det:editReferences")
 
   const formData = await request.formData()
@@ -56,7 +56,7 @@ export async function action({ request }: ActionArgs) {
   return redirect(`/references`)
 }
 
-export async function loader({ params, request }: LoaderArgs) {
+export async function loader({ params, request }: LoaderFunctionArgs) {
   redirectIfUserLacksPermission(request, "det:editReferences")
 
   invariant(params.id)

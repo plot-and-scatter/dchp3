@@ -7,7 +7,10 @@ import { getQuotationsCount } from "./getSearchResultQuotations"
 import { getCanadianismsCount } from "./getSearchResultCanadianisms"
 import { getHeadwordCount } from "./getEntriesByBasicTextSearch"
 import { getOrPopulateCache } from "~/services/cache/cache"
-import md5 from "crypto-js/md5"
+// Imported from the package root rather than "crypto-js/md5": crypto-js
+// ships no exports map, so under an ESM server build Node cannot resolve the
+// extensionless deep path and the server fails to load.
+import CryptoJS from "crypto-js"
 
 // Cache the counts for 30 seconds
 const COUNT_CACHE_EXPIRY_IN_SECS = 30
@@ -18,7 +21,7 @@ export async function getCounts(params: SearchResultParams) {
 
   const stringifiedParams = JSON.stringify(rest)
 
-  const cacheKey = md5(stringifiedParams).toString()
+  const cacheKey = CryptoJS.MD5(stringifiedParams).toString()
 
   const counts = getOrPopulateCache(
     cacheKey,

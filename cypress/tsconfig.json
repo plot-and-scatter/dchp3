@@ -20,7 +20,10 @@
     "strict": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "typeRoots": ["../types", "../node_modules/@types"],
+    // TypeScript 5 resolves the "types" entries above only from typeRoots, and
+    // cypress / @testing-library/cypress ship their own types rather than
+    // living under @types — so node_modules itself has to be a root too.
+    "typeRoots": ["../types", "../node_modules/@types", "../node_modules"],
 
     "paths": {
       "~/*": ["../app/*"]

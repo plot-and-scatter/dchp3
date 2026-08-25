@@ -1,5 +1,5 @@
 import { useLoaderData } from "@remix-run/react"
-import { type LoaderArgs } from "@remix-run/server-runtime"
+import { type LoaderFunctionArgs } from "@remix-run/server-runtime"
 import { useState } from "react"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import Main from "~/components/elements/Layouts/Main"
@@ -7,7 +7,7 @@ import UserListSection from "~/components/profile/UserListSection"
 import { type User, getAllUsers } from "~/models/user.server"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   redirectIfUserLacksPermission(request, "det:viewUsers")
   const users = await getAllUsers()
 

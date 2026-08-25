@@ -9,8 +9,11 @@ export const AddReferenceLinkSchema = z
       EntryEditorFormActionEnum.ADD_REFERENCE_LINK
     ),
     entryId: ZPositiveInt,
-    [`referenceId[label]`]: z.string(),
-    [`referenceId[value]`]: ZPositiveInt,
+    // Posted by the reference Combobox as referenceId.label / referenceId.value.
+    referenceId: z.object({
+      label: z.string(),
+      value: ZPositiveInt,
+    }),
     linkText: z.string().optional(),
     linkTarget: z.string().optional(),
   })
@@ -22,7 +25,7 @@ export async function addReferenceLink(
   await prisma.referenceLink.create({
     data: {
       entry_id: data.entryId,
-      reference_id: data[`referenceId[value]`],
+      reference_id: data.referenceId.value,
       link_text: data.linkText,
       link_target: data.linkTarget,
     },

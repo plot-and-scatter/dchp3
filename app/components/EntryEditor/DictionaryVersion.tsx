@@ -17,14 +17,26 @@ const calculateDictionaryVersion = (
 
   if (!logEntries) return { version: `Unknown`, date: `Post-DCHP-1` }
 
+  // Filter log entries based on DCHP version cutoff dates
+  let filteredLogEntries = logEntries
+  if (dchpVersion === "dchp3") {
+    // Filter to log entries after April 2025
+    const april2025 = new Date("2025-04-01").getTime()
+    filteredLogEntries = logEntries.filter(entry => Date.parse(entry.created) >= april2025)
+  } else if (dchpVersion === "dchp3.1") {
+    // Filter to log entries after June 2025
+    const june2025 = new Date("2025-06-01").getTime()
+    filteredLogEntries = logEntries.filter(entry => Date.parse(entry.created) >= june2025)
+  }
+
   // Find the *earliest* log entry (when this was created)
-  const logEntry = [...logEntries]
+  const logEntry = [...filteredLogEntries]
     .sort((a, b) => {
       const aTime = Date.parse(a.created)
       const bTime = Date.parse(b.created)
       return aTime - bTime
     })
-    .pop()
+    .shift()
 
   if (!logEntry) return { version: `Unknown`, date: `Post-DCHP-1` }
 
@@ -32,7 +44,8 @@ const calculateDictionaryVersion = (
   const year = date.getFullYear()
   const localeMonth = date.toLocaleString(`en-ca`, { month: "short" })
 
-  const version = `DCHP-${year >= 2018 ? 3 : 2}`
+  const version =
+    dchpVersion === `dchp3.1` ? `DCHP-3.1` : `DCHP-${year >= 2018 ? 3 : 2}`
 
   return { version, date: `${localeMonth} ${year}` }
 }
@@ -72,6 +85,7 @@ const DictionaryVersion = ({
             { value: "dchp1", label: "DCHP-1" },
             { value: "dchp2", label: "DCHP-2" },
             { value: "dchp3", label: "DCHP-3" },
+            { value: "dchp3.1", label: "DCHP-3.1" },
           ]}
         />
       }

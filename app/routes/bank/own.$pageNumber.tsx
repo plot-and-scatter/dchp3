@@ -3,7 +3,7 @@ import {
   redirectIfUserLacksPermission,
 } from "~/services/auth/session.server"
 import { DEFAULT_CITATION_SELECT } from "~/services/bank/defaultCitationSelect"
-import { json, type LoaderArgs } from "@remix-run/server-runtime"
+import { json, type LoaderFunctionArgs } from "@remix-run/server-runtime"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { prisma } from "~/db.server"
 import { useLoaderData } from "@remix-run/react"
@@ -13,7 +13,7 @@ import PaginationControl from "~/components/bank/PaginationControl"
 
 const PAGE_SIZE = 10
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   await redirectIfUserLacksPermission(request, "bank:create")
 
   const { userId } = await getUserIdAndEmail(request)
