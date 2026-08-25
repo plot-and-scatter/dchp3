@@ -4,9 +4,9 @@ import { prisma } from "~/db.server"
 import { useLoaderData, useParams } from "@remix-run/react"
 import BankOwnCitationResult from "~/components/bank/BankOwnCitationResult"
 import invariant from "tiny-invariant"
-import type { LoaderArgs } from "@remix-run/node"
+import type { LoaderFunctionArgs } from "@remix-run/node"
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   invariant(params.headword, "headword not found")
 
   const citations = await prisma.bankCitation.findMany({

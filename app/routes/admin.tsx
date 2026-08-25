@@ -5,13 +5,13 @@ import {
   getUserPermissions,
   redirectIfUserNotLoggedIn,
 } from "~/services/auth/session.server"
-import { type LoaderArgs } from "@remix-run/server-runtime"
+import { type LoaderFunctionArgs } from "@remix-run/server-runtime"
 import LogoutButton from "~/components/auth/LogoutButton"
 import Main from "~/components/elements/Layouts/Main"
 import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 import type { AuthRole } from "~/services/auth/AuthRole"
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   await redirectIfUserNotLoggedIn(request)
 
   const email = await getEmailFromSession(request)

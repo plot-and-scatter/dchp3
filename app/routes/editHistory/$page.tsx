@@ -2,8 +2,8 @@ import { type Prisma } from "@prisma/client"
 import { Form, useLoaderData, useParams } from "@remix-run/react"
 import {
   redirect,
-  type ActionArgs,
-  type LoaderArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/server-runtime"
 import React from "react"
 import invariant from "tiny-invariant"
@@ -18,7 +18,7 @@ import {
   parsePageNumberOrError,
 } from "~/utils/generalUtils"
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   const data = Object.fromEntries(await request.formData())
   invariant(data.orderBy)
 
@@ -30,7 +30,7 @@ export async function action({ request }: ActionArgs) {
   return redirect(`${url}?${searchParams.toString()}`)
 }
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   redirectIfUserLacksPermission(request, "det:viewEdits")
   const pageNumber = parsePageNumberOrError(params.page)
 

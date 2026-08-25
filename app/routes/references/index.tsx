@@ -4,12 +4,12 @@ import { stripHtml } from "~/utils/generalUtils"
 import { useLoaderData } from "@remix-run/react"
 import SanitizedTextSpan from "~/components/Entry/Common/SanitizedTextSpan"
 import { userHasPermission } from "~/services/auth/session.server"
-import type { LoaderArgs } from "@remix-run/server-runtime"
+import type { LoaderFunctionArgs } from "@remix-run/server-runtime"
 import AddIcon from "~/components/elements/Icons/AddIcon"
 import EditIcon from "~/components/elements/Icons/EditIcon"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const references = await getReferences()
   const canUserAddReference = await userHasPermission(
     request,

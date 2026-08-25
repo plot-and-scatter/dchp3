@@ -1,4 +1,4 @@
-import type { V2_MetaFunction } from "@remix-run/react"
+import type { MetaFunction } from "@remix-run/react"
 import {
   canUserEditEntry as _canUserEditEntry,
   userHasPermission,
@@ -8,16 +8,16 @@ import { getEntryByHeadword } from "~/models/entry.server"
 import { useLoaderData } from "@remix-run/react"
 import Entry from "~/components/Entry/Entry"
 import invariant from "tiny-invariant"
-import { json, type LoaderArgs, type SerializeFrom } from "@remix-run/node"
+import { json, type LoaderFunctionArgs, type SerializeFrom } from "@remix-run/node"
 import { BASE_APP_TITLE } from "~/root"
 
-export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
+export const meta: MetaFunction<typeof loader> = ({ data }) => [
   {
     title: `${BASE_APP_TITLE} | ${data?.entry?.headword || "Entry not found"}`,
   },
 ]
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const headword = params.headword
 
   invariant(headword, "Headword not found")

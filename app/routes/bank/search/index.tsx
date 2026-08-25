@@ -12,7 +12,7 @@ import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 import Select from "~/components/bank/Select"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import LabelledField from "~/components/bank/LabelledField"
-import type { ActionArgs } from "@remix-run/server-runtime"
+import type { ActionFunctionArgs } from "@remix-run/server-runtime"
 
 export const SEARCH_PARAMS = [
   "exactPhrase",
@@ -33,7 +33,7 @@ const BankCitationSearchFormDataSchema = z.object({
   [`searchTerm`]: z.string().nullable(),
 })
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const data = Object.fromEntries(await request.formData())
   const parsedData = BankCitationSearchFormDataSchema.parse(data)
 

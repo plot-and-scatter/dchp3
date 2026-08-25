@@ -1,8 +1,8 @@
 import { PassThrough } from "stream"
 import { renderToPipeableStream } from "react-dom/server"
 import { RemixServer } from "@remix-run/react"
-import { Response } from "@remix-run/node"
-import type { EntryContext, Headers } from "@remix-run/node"
+import { createReadableStreamFromReadable } from "@remix-run/node"
+import type { EntryContext } from "@remix-run/node"
 import isbot from "isbot"
 
 const ABORT_DELAY = 5000
@@ -29,7 +29,10 @@ export default function handleRequest(
           responseHeaders.set("Content-Type", "text/html")
 
           resolve(
-            new Response(body, {
+            // v2's Response is the global (undici) one, which takes a web
+            // stream rather than a Node stream, so the PassThrough has to be
+            // adapted rather than passed straight in.
+            new Response(createReadableStreamFromReadable(body), {
               status: didError ? 500 : responseStatusCode,
               headers: responseHeaders,
             })

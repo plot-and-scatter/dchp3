@@ -41,7 +41,9 @@ export function useMatchesData(
     () => matchingRoutes.find((route) => route.id === id),
     [matchingRoutes, id]
   )
-  return route?.data
+  // v2 types a match's data as `unknown`; every caller of this hook already
+  // narrows what it gets back.
+  return route?.data as Record<string, unknown> | undefined
 }
 
 export function validateEmail(email: unknown): email is string {

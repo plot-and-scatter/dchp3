@@ -3,9 +3,9 @@ import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary
 import { prisma } from "~/db.server"
 import { useLoaderData, useParams } from "@remix-run/react"
 import invariant from "tiny-invariant"
-import type { LoaderArgs } from "@remix-run/node"
+import type { LoaderFunctionArgs } from "@remix-run/node"
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   invariant(params.initialLetter, "initialLetter not found")
 
   const query = `${params.initialLetter}%`

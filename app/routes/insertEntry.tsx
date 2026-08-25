@@ -1,5 +1,5 @@
 import { redirect } from "@remix-run/node"
-import type { LoaderArgs, ActionArgs } from "@remix-run/node"
+import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node"
 import { Form } from "@remix-run/react"
 import Main from "~/components/elements/Layouts/Main"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
@@ -11,7 +11,7 @@ import Input from "~/components/bank/Input"
 import TextArea from "~/components/bank/TextArea"
 import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   // TODO: Refactor this along the lines of all the other entry action
   // functions.
   const data = Object.fromEntries(await request.formData())
@@ -19,7 +19,7 @@ export async function action({ request }: ActionArgs) {
   return redirect(`/entries/${data.headword}/edit`)
 }
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   await redirectIfUserLacksPermission(request, "det:createDraft")
 
   return {}

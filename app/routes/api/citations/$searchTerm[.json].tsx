@@ -1,10 +1,10 @@
 import { SEARCH_PARAMS } from "../../bank/search"
 import invariant from "tiny-invariant"
 import searchCitations, { PAGE_SIZE } from "~/services/bank/searchCitations"
-import type { LoaderArgs } from "@remix-run/server-runtime"
+import type { LoaderFunctionArgs } from "@remix-run/server-runtime"
 import type { SearchOptions } from "~/services/bank/searchCitations"
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { searchTerm } = params
   invariant(searchTerm, `No search term provided`)
 
