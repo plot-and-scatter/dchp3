@@ -8,18 +8,21 @@ export const AddSeeAlsoSchema = z
   .object({
     entryEditorFormAction: z.literal(EntryEditorFormActionEnum.ADD_SEE_ALSO),
     meaningId: ZPositiveInt,
-    [`headword[label]`]: z.string(),
-    [`headword[value]`]: ZPositiveInt,
+    // Posted by the headword Combobox as headword.label / headword.value.
+    headword: z.object({
+      label: z.string(),
+      value: ZPositiveInt,
+    }),
     linkNote: ZOptionalStringToEmptyString,
   })
   .strict()
 
 // TODO: Isn't there a way we could do this using the entryId instead...?
 export async function addSeeAlso(data: z.infer<typeof AddSeeAlsoSchema>) {
-  // const headword = data[`headword[label]`]
+  // const headword = data.headword.label
 
   // const entry = await prisma.entry.findUnique({
-  //   where: { id: data["headword[value]"] },
+  //   where: { id: data.headword.value },
   // })
 
   // if (!entry) throw new Error(`Entry "${headword}" could not be found`)
@@ -27,7 +30,7 @@ export async function addSeeAlso(data: z.infer<typeof AddSeeAlsoSchema>) {
   await prisma.seeAlso.create({
     data: {
       meaning_id: data.meaningId,
-      entry_id: data["headword[value]"],
+      entry_id: data.headword.value,
       linknote: data.linkNote,
     },
   })
