@@ -1,7 +1,9 @@
 {
   "name": "dchp2-design-1e95",
   "private": true,
-  "sideEffects": false,
+  "sideEffects": [
+    "cypress/support/*.ts"
+  ],
   "scripts": {
     "build": "run-s build:*",
     "build:css": "npm run generate:css -- --minify",
