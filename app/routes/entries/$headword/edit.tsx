@@ -1,3 +1,4 @@
+import type { V2_MetaFunction } from "@remix-run/react"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { getEntryByHeadword, updateLogEntries } from "~/models/entry.server"
 import { handleEditFormAction } from "./handleEditFormAction"
@@ -6,22 +7,17 @@ import { useLoaderData } from "@remix-run/react"
 import EntryEditor from "~/components/EntryEditor/EntryEditor"
 import invariant from "tiny-invariant"
 import { redirect, json } from "@remix-run/node"
-import type {
-  MetaFunction,
-  SerializeFrom,
-  ActionArgs,
-  LoaderArgs,
-} from "@remix-run/node"
+import type { SerializeFrom, ActionArgs, LoaderArgs } from "@remix-run/node"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { BASE_APP_TITLE } from "~/root"
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return {
+export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
+  {
     title: `${BASE_APP_TITLE} | Editing ${
       data?.entry?.headword || "Entry not found"
     }`,
-  }
-}
+  },
+]
 
 export type EntryEditLoaderData = SerializeFrom<
   Awaited<Promise<ReturnType<typeof loader>>>
