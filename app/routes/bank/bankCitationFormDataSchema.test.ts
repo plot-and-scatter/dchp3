@@ -7,6 +7,11 @@ import { bankCitationFormDataSchema } from "./create"
 // alone -- is what turns form strings into numbers and nulls. These tests pin
 // that behaviour so a conform upgrade can't silently change it.
 
+// Importing the route pulls in ~/db.server, which builds a real PrismaClient
+// at import time and needs DATABASE_URL. CI has no .env, so leaving this
+// unmocked crashes the run even though every assertion here is offline.
+vi.mock("~/db.server", () => ({ prisma: {} }))
+
 const formData = (entries: Record<string, string>) => {
   const data = new FormData()
   Object.entries(entries).forEach(([key, value]) => data.append(key, value))

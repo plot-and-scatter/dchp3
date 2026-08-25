@@ -11,6 +11,10 @@ import { UpdateReferenceSchema } from "./updateReference"
 // form and Prisma. These tests pin the discriminator, the strict-mode rejection
 // of unknown fields, and ZPositiveInt coercion.
 
+// The schema modules import ~/db.server, which builds a real PrismaClient at
+// import time and needs DATABASE_URL. CI has no .env.
+vi.mock("~/db.server", () => ({ prisma: {} }))
+
 const formData = (entries: Record<string, string>) => {
   const data = new FormData()
   Object.entries(entries).forEach(([key, value]) => data.append(key, value))
