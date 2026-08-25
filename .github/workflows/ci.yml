@@ -7,29 +7,28 @@ on:
   pull_request: {}
 
 permissions:
-  actions: write
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint:
     name: ⬣ ESLint
     runs-on: ubuntu-latest
     steps:
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: ⎔ Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
-          node-version: 16
+          node-version-file: .nvmrc
+          cache: npm
 
       - name: 📥 Download deps
-        uses: bahmutov/npm-install@v1
-        with:
-          useLockFile: false
+        run: npm ci
 
       - name: 🔬 Lint
         run: npm run lint
@@ -38,21 +37,17 @@ jobs:
     name: ʦ TypeScript
     runs-on: ubuntu-latest
     steps:
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: ⎔ Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
-          node-version: 16
+          node-version-file: .nvmrc
+          cache: npm
 
       - name: 📥 Download deps
-        uses: bahmutov/npm-install@v1
-        with:
-          useLockFile: false
+        run: npm ci
 
       - name: 🔎 Type check
         run: npm run typecheck --if-present
@@ -61,21 +56,17 @@ jobs:
     name: ⚡ Vitest
     runs-on: ubuntu-latest
     steps:
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: ⎔ Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
-          node-version: 16
+          node-version-file: .nvmrc
+          cache: npm
 
       - name: 📥 Download deps
-        uses: bahmutov/npm-install@v1
-        with:
-          useLockFile: false
+        run: npm ci
 
       - name: ⚡ Run vitest
         run: npm run test -- --coverage
@@ -84,11 +75,8 @@ jobs:
   #   name: ⚫️ Cypress
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - name: 🛑 Cancel Previous Runs
-  #       uses: styfle/cancel-workflow-action@0.9.1
-
   #     - name: ⬇️ Checkout repo
-  #       uses: actions/checkout@v3
+  #       uses: actions/checkout@v5
 
   #     - name: 🔑 Make envfile
   #       uses: SpicyPizza/create-envfile@v1.3
@@ -100,14 +88,13 @@ jobs:
   #         file_name: .env
 
   #     - name: ⎔ Setup node
-  #       uses: actions/setup-node@v3
+  #       uses: actions/setup-node@v5
   #       with:
-  #         node-version: 16
+  #         node-version-file: .nvmrc
+  #         cache: npm
 
   #     - name: 📥 Download deps
-  #       uses: bahmutov/npm-install@v1
-  #       with:
-  #         useLockFile: false
+  #       run: npm ci
 
   #     # - name: 🛠 Setup Database
   #     #   run: npx prisma migrate reset --force
@@ -122,4 +109,3 @@ jobs:
   #         wait-on: "http://localhost:8811"
   #       env:
   #         PORT: "8811"
-
