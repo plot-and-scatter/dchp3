@@ -18,3 +18,6 @@ node_modules
 
 # Claude Code working notes (local only, not for commit)
 /WORKING-NOTES.md
+
+# TypeScript incremental build state
+*.tsbuildinfo

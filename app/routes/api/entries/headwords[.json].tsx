@@ -1,11 +1,11 @@
-import { json, type LoaderArgs } from "@remix-run/server-runtime"
+import { json, type LoaderFunctionArgs } from "@remix-run/server-runtime"
 import { isPositiveInteger, toNumber } from "utils/numbers"
 import { getEntriesByInitialLetters } from "~/models/entry.server"
 import { userHasPermission } from "~/services/auth/session.server"
 
 const DEFAULT_TAKE_SIZE = 100
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url)
   const startsWith = url.searchParams.get("startsWith")
   const takeParam = url.searchParams.get("take")

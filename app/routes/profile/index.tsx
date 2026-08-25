@@ -1,8 +1,8 @@
-import { redirect, type LoaderArgs } from "@remix-run/server-runtime"
+import { redirect, type LoaderFunctionArgs } from "@remix-run/server-runtime"
 import { type LoggedInUser } from "~/services/auth/auth.server"
 import { getUserFromSession } from "~/services/auth/session.server"
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const loggedInUser: LoggedInUser | undefined = await getUserFromSession(
     request
   )

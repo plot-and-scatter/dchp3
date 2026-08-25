@@ -1,4 +1,4 @@
-import { json, type LoaderArgs } from "@remix-run/server-runtime"
+import { json, type LoaderFunctionArgs } from "@remix-run/server-runtime"
 import { getUserRoles, isUserLoggedIn } from "~/services/auth/session.server"
 import LoginButton from "~/components/auth/LoginButton"
 import { useLoaderData } from "@remix-run/react"
@@ -8,7 +8,7 @@ import { getPermissionsMap } from "~/services/auth/AuthRole"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import TextPageMain from "~/components/elements/Layouts/TextPageMain"
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const loggedIn = await isUserLoggedIn(request)
   const roles = await getUserRoles(request)
   const permissionMap = await getPermissionsMap(roles)

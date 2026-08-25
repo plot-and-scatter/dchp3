@@ -16,7 +16,7 @@ import Main from "~/components/elements/Layouts/Main"
 import SearchResult from "~/components/search/Results/SearchResult"
 import SearchTermInput from "~/components/search/SearchTermInput"
 import type { AllSearchResults } from "~/models/search.server"
-import type { LoaderArgs } from "@remix-run/server-runtime"
+import type { LoaderFunctionArgs } from "@remix-run/server-runtime"
 
 const searchActionSchema = z.object({
   searchTerm: z
@@ -36,7 +36,7 @@ const searchActionSchema = z.object({
 
 export type SearchActionSchema = z.infer<typeof searchActionSchema>
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const parsedParams = parseWithZod(new URL(request.url).searchParams, {
     schema: searchActionSchema,
   })
