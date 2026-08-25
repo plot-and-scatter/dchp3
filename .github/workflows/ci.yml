@@ -80,6 +80,30 @@ jobs:
         env:
           DATABASE_URL: mysql://user:password@localhost:3306/placeholder
 
+  docker:
+    name: 🐳 Docker build
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v5
+
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Builds the production image and throws it away: no registry login, no
+      # push, no deploy. This exists so the Dockerfile cannot rot unnoticed —
+      # it was still on node:16 long after the app required Node 22, and could
+      # not have built at all. Deployment remains manual; see issue #411.
+      - name: 🐳 Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          build-args: |
+            COMMIT_SHA=${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   vitest:
     name: ⚡ Vitest
     runs-on: ubuntu-latest
