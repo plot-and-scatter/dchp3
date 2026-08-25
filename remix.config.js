@@ -8,6 +8,7 @@ module.exports = {
     v2_meta: true,
     v2_normalizeFormMethod: true,
   },
+  serverModuleFormat: "esm",
   cacheDirectory: "./node_modules/.cache/remix",
   ignoredRouteFiles: ["**/.*", "**/*.css", "**/*.test.{js,jsx,ts,tsx}"],
 }

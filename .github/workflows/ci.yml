@@ -52,6 +52,34 @@ jobs:
       - name: 🔎 Type check
         run: npm run typecheck --if-present
 
+  build:
+    name: 🏗 Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v5
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 📥 Download deps
+        run: npm ci
+
+      - name: 🏗 Build
+        run: npm run build
+
+      # `remix build` succeeding does not mean the server can be loaded: with
+      # an ESM server build, an unresolvable import only fails at load time.
+      # DATABASE_URL is a dummy — Prisma validates the URL at construction but
+      # does not connect, and nothing here issues a query.
+      - name: 🚀 Server build loads
+        run: node -e "import('./build/index.js').then(() => console.log('server build loaded'))"
+        env:
+          DATABASE_URL: mysql://user:password@localhost:3306/placeholder
+
   vitest:
     name: ⚡ Vitest
     runs-on: ubuntu-latest
