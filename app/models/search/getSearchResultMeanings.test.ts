@@ -59,6 +59,7 @@ describe('getSearchResultMeanings', () => {
         entry: {
           is_public: true,
           no_cdn_conf: false,
+          dchp_version: { in: ['dchp3'] },
         },
         definition: {
           contains: 'test definition'
@@ -208,6 +209,7 @@ describe('getMeaningsCount', () => {
         entry: {
           is_public: true,
           no_cdn_conf: false,
+          dchp_version: { in: ['dchp3'] },
         },
         definition: {
           contains: 'test definition'

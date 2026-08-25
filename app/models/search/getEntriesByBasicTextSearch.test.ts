@@ -173,9 +173,13 @@ describe('getEntriesByBasicTextSearch', () => {
 
     expect(result).toEqual(mockEntries)
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
-    const query = vi.mocked(prisma.$queryRaw).mock.calls[0][0] as any
-    expect(query.strings[0]).toContain('FROM det_entries de')
-    expect(query.strings[0]).not.toContain('INNER JOIN det_meanings')
+    // $queryRaw is a tagged template, so the mock receives the template strings
+    // array as its first argument and the interpolated values after it.
+    const [strings] = vi.mocked(prisma.$queryRaw).mock
+      .calls[0] as unknown as [TemplateStringsArray]
+    const sql = strings.join(' ')
+    expect(sql).toContain('FROM det_entries de')
+    expect(sql).not.toContain('INNER JOIN det_meanings')
   })
 
   it('should execute query with canadianism filter when specific types are selected', async () => {

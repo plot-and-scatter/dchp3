@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { getSearchResults } from '../search.server'
 import { SearchResultEnum } from '~/routes/search/searchResultEnum'
 import type { SearchActionSchema } from '~/routes/search'
+import { getEntriesByBasicTextSearch } from './getEntriesByBasicTextSearch'
+import { getCounts } from './getCounts.server'
 
 // Mock all search functions
 vi.mock('./getEntriesByBasicTextSearch', () => ({
@@ -37,10 +39,6 @@ vi.mock('./getSearchResultQuotations', () => ({
 vi.mock('./getCounts.server', () => ({
   getCounts: vi.fn()
 }))
-
-import { getEntriesByBasicTextSearch } from './getEntriesByBasicTextSearch'
-import { getSearchResultMeanings } from './getSearchResultMeanings'
-import { getCounts } from './getCounts.server'
 
 describe('Search Edge Cases and Error Handling', () => {
   const baseParams: SearchActionSchema = {
@@ -304,7 +302,9 @@ describe('Search Edge Cases and Error Handling', () => {
       const result = await getSearchResults(baseParams, false)
 
       expect(result.data.entries).toHaveLength(1)
-      expect(result.data.entries[0].headword).toHaveLength(100000)
+      expect(
+        (result.data.entries[0] as { headword: string }).headword
+      ).toHaveLength(100000)
     })
 
     it('should handle deeply nested result objects', async () => {

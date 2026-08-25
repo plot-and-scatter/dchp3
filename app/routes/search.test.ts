@@ -18,6 +18,48 @@ describe('search route loader', () => {
     url: `http://localhost:3000/search?${searchParams.toString()}`
   }) as Request
 
+  // The loader's schema requires searchTerm, a non-empty database list and an
+  // attribute. A request missing any of them fails validation and returns
+  // before getSearchResults is reached.
+  const buildSearchParams = ({
+    searchTerm = 'test',
+    database = ['dchp3'],
+    canadianismType = [],
+    editingStatus = [],
+    attribute = SearchResultEnum.HEADWORD,
+    page,
+    caseSensitive,
+    nonCanadianism
+  }: {
+    searchTerm?: string
+    database?: string[]
+    canadianismType?: string[]
+    editingStatus?: string[]
+    attribute?: string
+    page?: string
+    caseSensitive?: string
+    nonCanadianism?: string
+  } = {}) => {
+    const searchParams = new URLSearchParams()
+    searchParams.set('searchTerm', searchTerm)
+    searchParams.set('attribute', attribute)
+    database.forEach((value) => searchParams.append('database', value))
+    canadianismType.forEach((value) =>
+      searchParams.append('canadianismType', value)
+    )
+    editingStatus.forEach((value) =>
+      searchParams.append('editingStatus', value)
+    )
+    if (page !== undefined) searchParams.set('page', page)
+    if (caseSensitive !== undefined) {
+      searchParams.set('caseSensitive', caseSensitive)
+    }
+    if (nonCanadianism !== undefined) {
+      searchParams.set('nonCanadianism', nonCanadianism)
+    }
+    return searchParams
+  }
+
   const mockSearchResults = {
     counts: {
       [SearchResultEnum.HEADWORD]: 10,
@@ -90,81 +132,92 @@ describe('search route loader', () => {
   })
 
   it('should handle multiple database selections', async () => {
-    const searchParams = new URLSearchParams({
-      searchTerm: 'test',
-      'database[]': 'dchp3' // Simplified to one database for now
+    const searchParams = buildSearchParams({
+      database: ['dchp1', 'dchp2', 'dchp3']
     })
 
     const result = await loader({ request: mockRequest(searchParams) } as any)
 
-    expect(getSearchResults).toHaveBeenCalled()
+    expect(getSearchResults).toHaveBeenCalledWith(
+      expect.objectContaining({ database: ['dchp1', 'dchp2', 'dchp3'] }),
+      false
+    )
     expect(result.searchResults).toBeDefined()
   })
 
   it('should handle multiple canadianism type selections', async () => {
-    const searchParams = new URLSearchParams()
-    searchParams.set('searchTerm', 'test')
-    searchParams.append('canadianismType', '1. Origin')
-    searchParams.append('canadianismType', '2. Preservation')
-    searchParams.append('canadianismType', '6. Memorial')
+    const searchParams = buildSearchParams({
+      canadianismType: ['1. Origin', '2. Preservation', '6. Memorial']
+    })
 
     await loader({ request: mockRequest(searchParams) } as any)
 
-    expect(getSearchResults).toHaveBeenCalled()
+    expect(getSearchResults).toHaveBeenCalledWith(
+      expect.objectContaining({
+        canadianismType: ['1. Origin', '2. Preservation', '6. Memorial']
+      }),
+      false
+    )
   })
 
   it('should handle case sensitive search', async () => {
-    const searchParams = new URLSearchParams({
+    const searchParams = buildSearchParams({
       searchTerm: 'Test',
       caseSensitive: 'on'
     })
 
     await loader({ request: mockRequest(searchParams) } as any)
 
-    expect(getSearchResults).toHaveBeenCalled()
+    expect(getSearchResults).toHaveBeenCalledWith(
+      expect.objectContaining({ searchTerm: 'Test', caseSensitive: true }),
+      false
+    )
   })
 
   it('should handle non-canadianism filter', async () => {
-    const searchParams = new URLSearchParams({
-      searchTerm: 'test',
-      nonCanadianism: 'on'
-    })
+    const searchParams = buildSearchParams({ nonCanadianism: 'on' })
 
     await loader({ request: mockRequest(searchParams) } as any)
 
-    expect(getSearchResults).toHaveBeenCalled()
+    expect(getSearchResults).toHaveBeenCalledWith(
+      expect.objectContaining({ nonCanadianism: true }),
+      false
+    )
   })
 
   it('should handle pagination', async () => {
-    const searchParams = new URLSearchParams({
-      searchTerm: 'test',
-      page: '3'
-    })
+    const searchParams = buildSearchParams({ page: '3' })
 
     await loader({ request: mockRequest(searchParams) } as any)
 
-    expect(getSearchResults).toHaveBeenCalled()
+    expect(getSearchResults).toHaveBeenCalledWith(
+      expect.objectContaining({ page: 3 }),
+      false
+    )
   })
 
   it('should handle different search attributes', async () => {
-    const searchParams = new URLSearchParams({
-      searchTerm: 'test',
+    const searchParams = buildSearchParams({
       attribute: SearchResultEnum.MEANING
     })
 
     await loader({ request: mockRequest(searchParams) } as any)
 
-    expect(getSearchResults).toHaveBeenCalled()
+    expect(getSearchResults).toHaveBeenCalledWith(
+      expect.objectContaining({ attribute: SearchResultEnum.MEANING }),
+      false
+    )
   })
 
   it('should handle wildcard search', async () => {
-    const searchParams = new URLSearchParams({
-      searchTerm: '*'
-    })
+    const searchParams = buildSearchParams({ searchTerm: '*' })
 
     await loader({ request: mockRequest(searchParams) } as any)
 
-    expect(getSearchResults).toHaveBeenCalled()
+    expect(getSearchResults).toHaveBeenCalledWith(
+      expect.objectContaining({ searchTerm: '*' }),
+      false
+    )
   })
 
   it('should return only isUserAdmin when no search term provided', async () => {
@@ -193,13 +246,17 @@ describe('search route loader', () => {
 
   it('should handle editing status filters when user is admin', async () => {
     vi.mocked(userHasPermission).mockResolvedValue(true)
-    const searchParams = new URLSearchParams()
-    searchParams.set('searchTerm', 'test')
-    searchParams.append('editingStatus', 'first_draft')
-    searchParams.append('editingStatus', 'revised_draft')
+    const searchParams = buildSearchParams({
+      editingStatus: ['first_draft', 'revised_draft']
+    })
 
     await loader({ request: mockRequest(searchParams) } as any)
 
-    expect(getSearchResults).toHaveBeenCalled()
+    expect(getSearchResults).toHaveBeenCalledWith(
+      expect.objectContaining({
+        editingStatus: ['first_draft', 'revised_draft']
+      }),
+      true
+    )
   })
 })

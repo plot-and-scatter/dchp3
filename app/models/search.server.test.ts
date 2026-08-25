@@ -2,6 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { getSearchResults, SEARCH_WILDCARD } from './search.server'
 import { SearchResultEnum } from '~/routes/search/searchResultEnum'
 import type { SearchActionSchema } from '~/routes/search'
+import { getEntriesByBasicTextSearch } from './search/getEntriesByBasicTextSearch'
+import { getSearchResultMeanings } from './search/getSearchResultMeanings'
+import { getSearchResultCanadianisms } from './search/getSearchResultCanadianisms'
+import { getSearchResultUsageNotes } from './search/getSearchResultUsageNotes'
+import { getSearchResultFistNotes } from './search/getSearchResultFistNotes'
+import { getSearchResultQuotations } from './search/getSearchResultQuotations'
+import { getCounts } from './search/getCounts.server'
 
 // Mock all the search functions
 vi.mock('./search/getEntriesByBasicTextSearch', () => ({
@@ -31,14 +38,6 @@ vi.mock('./search/getSearchResultQuotations', () => ({
 vi.mock('./search/getCounts.server', () => ({
   getCounts: vi.fn()
 }))
-
-import { getEntriesByBasicTextSearch } from './search/getEntriesByBasicTextSearch'
-import { getSearchResultMeanings } from './search/getSearchResultMeanings'
-import { getSearchResultCanadianisms } from './search/getSearchResultCanadianisms'
-import { getSearchResultUsageNotes } from './search/getSearchResultUsageNotes'
-import { getSearchResultFistNotes } from './search/getSearchResultFistNotes'
-import { getSearchResultQuotations } from './search/getSearchResultQuotations'
-import { getCounts } from './search/getCounts.server'
 
 describe('getSearchResults', () => {
   const mockSearchParams: SearchActionSchema = {

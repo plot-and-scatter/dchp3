@@ -2,8 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { getEntriesByBasicTextSearch, getHeadwordCount } from './getEntriesByBasicTextSearch'
 import { getSearchResults } from '../search.server'
 import { SearchResultEnum } from '~/routes/search/searchResultEnum'
-import type { SearchResultParams, SearchActionSchema } from '../search.server'
+import type { SearchResultParams } from '../search.server'
+import type { SearchActionSchema } from '~/routes/search'
 import { BASE_CANADANISM_TYPES } from '~/types/CanadianismTypeEnum'
+import { prisma } from '~/db.server'
+import { getCounts } from './getCounts.server'
 
 // Mock prisma
 vi.mock('~/db.server', () => ({
@@ -16,9 +19,6 @@ vi.mock('~/db.server', () => ({
 vi.mock('./getCounts.server', () => ({
   getCounts: vi.fn()
 }))
-
-import { prisma } from '~/db.server'
-import { getCounts } from './getCounts.server'
 
 describe('Canadianism Type Filtering', () => {
   const mockCounts = {
@@ -34,6 +34,15 @@ describe('Canadianism Type Filtering', () => {
     vi.clearAllMocks()
     vi.mocked(getCounts).mockResolvedValue(mockCounts)
   })
+
+  // $queryRaw is a tagged template, so the mock receives the template strings
+  // array as its first argument and the interpolated values after it.
+  const queryRawSql = (callIndex = 0) => {
+    const [strings] = vi.mocked(prisma.$queryRaw).mock.calls[
+      callIndex
+    ] as unknown as [TemplateStringsArray]
+    return strings.join(' ')
+  }
 
   describe('getHeadwordCount with Canadianism Filtering', () => {
     const baseParams: SearchResultParams = {
@@ -89,10 +98,10 @@ describe('Canadianism Type Filtering', () => {
       await getHeadwordCount(params)
 
       expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
-      const query = vi.mocked(prisma.$queryRaw).mock.calls[0][0] as any
-      
-      expect(query.strings[0]).toContain('INNER JOIN det_meanings dm')
-      expect(query.strings[0]).toContain('count(DISTINCT de.id)')
+      const sql = queryRawSql()
+
+      expect(sql).toContain('INNER JOIN det_meanings dm')
+      expect(sql).toContain('count(DISTINCT de.id)')
     })
 
     it('should handle single canadianism type', async () => {
@@ -106,9 +115,8 @@ describe('Canadianism Type Filtering', () => {
       await getHeadwordCount(params)
 
       expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
-      const query = vi.mocked(prisma.$queryRaw).mock.calls[0][0] as any
-      
-      expect(query.strings[0]).toContain('INNER JOIN det_meanings dm')
+
+      expect(queryRawSql()).toContain('INNER JOIN det_meanings dm')
     })
   })
 
@@ -145,8 +153,8 @@ describe('Canadianism Type Filtering', () => {
       await getEntriesByBasicTextSearch(params)
 
       expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
-      const query = vi.mocked(prisma.$queryRaw).mock.calls[0][0] as any
-      
+
+      expect(queryRawSql()).not.toContain('INNER JOIN det_meanings dm')
     })
 
     it('should use canadianism filter when specific types are selected', async () => {
@@ -164,8 +172,8 @@ describe('Canadianism Type Filtering', () => {
       await getEntriesByBasicTextSearch(params)
 
       expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
-      const query = vi.mocked(prisma.$queryRaw).mock.calls[0][0] as any
-      
+
+      expect(queryRawSql()).toContain('INNER JOIN det_meanings dm')
     })
 
     it('should maintain other filters when canadianism filtering is active', async () => {
@@ -183,8 +191,11 @@ describe('Canadianism Type Filtering', () => {
       await getEntriesByBasicTextSearch(params)
 
       expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
-      const query = vi.mocked(prisma.$queryRaw).mock.calls[0][0] as any
-      
+      const sql = queryRawSql()
+
+      expect(sql).toContain('INNER JOIN det_meanings dm')
+      expect(sql).toContain('de.dchp_version IN')
+      expect(sql).toContain('de.is_public = 1 OR')
     })
   })
 

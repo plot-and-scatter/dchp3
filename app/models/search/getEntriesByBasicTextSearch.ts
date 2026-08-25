@@ -35,8 +35,12 @@ export function getHeadwordCount({
 
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
-  // Check if we need to filter by canadianism types
-  const needsCanadianismFilter = canadianismTypes && canadianismTypes.length !== BASE_CANADANISM_TYPES.length
+  // Check if we need to filter by canadianism types. An empty list means no
+  // restriction, and Prisma.join would throw on it.
+  const needsCanadianismFilter =
+    canadianismTypes &&
+    canadianismTypes.length > 0 &&
+    canadianismTypes.length !== BASE_CANADANISM_TYPES.length
 
   if (needsCanadianismFilter) {
     return prisma.$queryRaw<{ count: number }[]>`
@@ -113,8 +117,12 @@ export function getEntriesByBasicTextSearch({
 
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
-  // Check if we need to filter by canadianism types
-  const needsCanadianismFilter = canadianismTypes && canadianismTypes.length !== BASE_CANADANISM_TYPES.length
+  // Check if we need to filter by canadianism types. An empty list means no
+  // restriction, and Prisma.join would throw on it.
+  const needsCanadianismFilter =
+    canadianismTypes &&
+    canadianismTypes.length > 0 &&
+    canadianismTypes.length !== BASE_CANADANISM_TYPES.length
 
   if (needsCanadianismFilter) {
     return prisma.$queryRaw<
