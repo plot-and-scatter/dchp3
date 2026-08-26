@@ -1,9 +1,11 @@
 import { updateEntry } from "./updateEntry"
+import { isHeadwordConflictError } from "~/services/errors/headwordConflict"
 import { prisma } from "~/db.server"
 
 // Renaming an entry to a headword that already exists used to throw a bare
-// Error, which the boundary rendered as a 500 with a stack trace. It is now a
-// 409 carrying a sentence the editor can act on.
+// Error, which the boundary rendered as a 500 with a stack trace. It now throws
+// a tagged conflict error, which the edit action turns into a message returned
+// to the page so the editor is not torn down.
 
 vi.mock("~/db.server", () => ({
   prisma: {
@@ -37,7 +39,7 @@ beforeEach(() => {
 })
 
 describe("updateEntry duplicate headword handling", () => {
-  it("refuses a rename onto an existing headword with a 409", async () => {
+  it("refuses a rename onto an existing headword", async () => {
     vi.mocked(prisma.entry.findUniqueOrThrow).mockResolvedValue({
       headword: "franktest10751",
     } as never)
@@ -48,10 +50,9 @@ describe("updateEntry duplicate headword handling", () => {
 
     const thrown = await updateEntry(submission("franktest")).catch((e) => e)
 
-    expect(thrown.type).toBe("DataWithResponseInit")
-    expect(thrown.init?.status).toBe(409)
-    expect(thrown.data.message).toContain("franktest10751")
-    expect(thrown.data.message).toContain("already exists")
+    expect(isHeadwordConflictError(thrown)).toBe(true)
+    expect(thrown.message).toContain("franktest10751")
+    expect(thrown.message).toContain("already exists")
     expect(prisma.entry.update).not.toHaveBeenCalled()
   })
 

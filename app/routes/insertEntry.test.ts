@@ -55,29 +55,32 @@ describe("insertEntry action", () => {
     )
   })
 
-  it("turns a duplicate headword into a 409 the error boundary can render", async () => {
+  it("returns a duplicate headword as a 409 message instead of throwing", async () => {
     vi.mocked(insertEntry).mockRejectedValue(duplicateKeyError)
 
-    const thrown = await postHeadword("franktest").catch((error) => error)
+    // Returned rather than thrown, so the form stays mounted with what the
+    // user typed. FormConflictBanner renders conflictMessage.
+    const result = (await postHeadword("franktest")) as {
+      type: string
+      data: { conflictMessage: string }
+      init?: { status?: number }
+    }
 
-    // data() returns a DataWithResponseInit, not a Response. React Router
-    // converts a thrown one into an ErrorResponse before the boundary sees it
-    // (dataWithResponseInitToErrorResponse), so what the action controls is
-    // this shape: the status and the message DefaultErrorBoundary renders as
-    // error.data.message.
-    expect(thrown.type).toBe("DataWithResponseInit")
-    expect(thrown.init?.status).toBe(409)
-    expect(thrown.data.message).toContain("franktest")
-    expect(thrown.data.message).toContain("already exists")
+    expect(result.type).toBe("DataWithResponseInit")
+    expect(result.init?.status).toBe(409)
+    expect(result.data.conflictMessage).toContain("franktest")
+    expect(result.data.conflictMessage).toContain("already exists")
   })
 
   it("does not redirect when the insert fails", async () => {
     vi.mocked(insertEntry).mockRejectedValue(duplicateKeyError)
 
-    const thrown = await postHeadword("franktest").catch((error) => error)
+    const result = (await postHeadword("franktest")) as {
+      init?: { status?: number }
+    }
 
-    expect(thrown).not.toBeInstanceOf(Response)
-    expect(thrown.init?.status).not.toBe(302)
+    expect(result).not.toBeInstanceOf(Response)
+    expect(result.init?.status).not.toBe(302)
   })
 
   it("rethrows errors that are not duplicate-key violations", async () => {

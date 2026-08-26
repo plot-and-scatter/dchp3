@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import type {
   MetaFunction,
   ActionFunctionArgs,
@@ -7,11 +8,13 @@ import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary
 import { getEntryByHeadword, updateLogEntries } from "~/models/entry.server"
 import { handleEditFormAction } from "./handleEditFormAction"
 import { redirectIfUserLacksEntryEditPermission } from "~/services/auth/session.server"
-import { useLoaderData, redirect, data } from "react-router"
+import { useLoaderData, useActionData, redirect, data } from "react-router"
 import EntryEditor from "~/components/EntryEditor/EntryEditor"
 import invariant from "tiny-invariant"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { BASE_APP_TITLE } from "~/root"
+import FormConflictBanner from "~/components/elements/Form/FormConflictBanner"
+import { isHeadwordConflictError } from "~/services/errors/headwordConflict"
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
   {
@@ -36,7 +39,17 @@ export async function action({ params, request }: ActionFunctionArgs) {
     await updateLogEntries(params.headword, request, entryEditorFormAction)
   }
 
-  const submission = await handleEditFormAction(formData)
+  let submission
+  try {
+    submission = await handleEditFormAction(formData)
+  } catch (error) {
+    // Returned, not rethrown: the error boundary would replace the editor and
+    // discard every other unsaved change on the page.
+    if (isHeadwordConflictError(error)) {
+      return data({ conflictMessage: error.message }, { status: 409 })
+    }
+    throw error
+  }
 
   if (submission.status !== "success") {
     return data(submission.reply(), {
@@ -98,8 +111,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
 export default function EntryDetailsPage() {
   const { entry } = useLoaderData<typeof loader>()
+  const actionData = useActionData<typeof action>()
 
-  return <EntryEditor entry={entry} />
+  return (
+    <Fragment>
+      <FormConflictBanner actionData={actionData} />
+      <EntryEditor entry={entry} />
+    </Fragment>
+  )
 }
 
 export const ErrorBoundary = DefaultErrorBoundary

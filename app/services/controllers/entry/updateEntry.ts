@@ -1,6 +1,5 @@
 import { z } from "zod"
-// Aliased: updateEntry below takes a parameter named `data`.
-import { data as errorResponse } from "react-router"
+import { headwordConflictError } from "~/services/errors/headwordConflict"
 import { prisma } from "~/db.server"
 import { ZPositiveInt } from "../ZPositiveInt"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
@@ -63,14 +62,11 @@ async function assertNonDuplicateHeadword(
     incomingHeadwordEntry !== undefined && incomingHeadwordEntry !== null
 
   if (headwordsAreDifferent && newHeadwordWouldBeDuplicate) {
-    // Thrown as a 409 rather than a bare Error so the error boundary shows the
-    // editor a sentence it can act on. A bare Error renders as a 500 with a
-    // stack trace, which is what this used to do.
-    throw errorResponse(
-      {
-        message: `"${currentHeadword}" can't be renamed to "${incomingHeadword}", because an entry for "${incomingHeadword}" already exists. Headwords must be unique.`,
-      },
-      { status: 409 }
+    // Tagged rather than a bare Error so the edit action can return this as a
+    // message on the page. A bare Error reaches the error boundary, which
+    // replaces the editor and loses everything else the user had typed.
+    throw headwordConflictError(
+      `"${currentHeadword}" can't be renamed to "${incomingHeadword}", because an entry for "${incomingHeadword}" already exists. Headwords must be unique.`
     )
   }
 }

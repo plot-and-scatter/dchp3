@@ -35,7 +35,11 @@ export default function MeaningEditorForm({
       if (
         resetOnSuccess &&
         navigation.state === "idle" &&
-        actionData?.status === "success"
+        // The edit action can also return a headword conflict, which has no
+        // `status`. Only a conform submission result should reset the form.
+        actionData !== undefined &&
+        "status" in actionData &&
+        actionData.status === "success"
       ) {
         formRef.current?.reset()
       }

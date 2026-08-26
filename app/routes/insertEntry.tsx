@@ -1,4 +1,4 @@
-import { redirect, Form, data } from "react-router"
+import { redirect, Form, data, useActionData } from "react-router"
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router"
 import Main from "~/components/elements/Layouts/Main"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
@@ -9,6 +9,7 @@ import LabelledField from "~/components/bank/LabelledField"
 import Input from "~/components/bank/Input"
 import TextArea from "~/components/bank/TextArea"
 import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
+import FormConflictBanner from "~/components/elements/Form/FormConflictBanner"
 
 // Prisma's unique-constraint code. Checked structurally rather than with
 // `instanceof PrismaClientKnownRequestError`, because that would need a
@@ -31,9 +32,11 @@ export async function action({ request }: ActionFunctionArgs) {
     await insertEntry(formValues, request)
   } catch (error) {
     if (isDuplicateKeyError(error)) {
-      throw data(
+      // Returned, not thrown, so the form stays on screen with what was typed
+      // instead of being replaced by the error boundary.
+      return data(
         {
-          message: `An entry for the headword "${formValues.headword}" already exists. Headwords must be unique, so edit the existing entry instead of creating a second one.`,
+          conflictMessage: `An entry for the headword "${formValues.headword}" already exists. Headwords must be unique, so edit the existing entry instead of creating a second one.`,
         },
         { status: 409 }
       )
@@ -51,10 +54,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Index() {
+  const actionData = useActionData<typeof action>()
+
   return (
     <Main center={true}>
       <PageHeader>Insert entry</PageHeader>
       <p>Enter the following inputs to create a new headword in the DCHP.</p>
+      <FormConflictBanner actionData={actionData} />
       <Form
         id="entryInsertionForm"
         className="flex w-full max-w-3xl flex-col justify-center pt-6 align-middle"
