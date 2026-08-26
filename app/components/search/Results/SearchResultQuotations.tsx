@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import type { Quotation } from "~/models/search/getSearchResultQuotations"
 import SanitizedTextSpan from "../../Entry/Common/SanitizedTextSpan"
 import { Link } from "../../elements/LinksAndButtons/Link"
@@ -9,11 +10,11 @@ interface SearchResultProps {
 
 const SearchResultQuotations = ({ text, data }: SearchResultProps) => {
   if (data === undefined || data.length === 0) {
-    return <>No results.</>
+    return <Fragment>No results.</Fragment>
   }
 
   return (
-    <>
+    <Fragment>
       {data.map((citation) => {
         const headword = citation.meanings.find(
           (m) => m.meaning?.entry?.headword !== null
@@ -27,7 +28,7 @@ const SearchResultQuotations = ({ text, data }: SearchResultProps) => {
           </div>
         )
       })}
-    </>
+    </Fragment>
   )
 }
 

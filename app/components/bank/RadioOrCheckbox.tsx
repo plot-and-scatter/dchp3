@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import type { InputProps } from "./Input"
 import type { InputOption } from "./InputOption"
 import ValidationErrorText from "../elements/Form/ValidationErrorText"
@@ -43,7 +44,7 @@ export default function RadioOrCheckbox(props: RadioOrCheckboxProps) {
                 {...rest}
                 className={inputClassName} // This line MUST be here.
               />
-              {label && <label htmlFor={idKey}>{label || <>&nbsp;</>}</label>}
+              {label && <label htmlFor={idKey}>{label || <Fragment>&nbsp;</Fragment>}</label>}
             </span>
           )
         })}

@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import RadioOrCheckbox from "../../bank/RadioOrCheckbox"
 import TopLabelledField from "../../bank/TopLabelledField"
 
@@ -8,7 +9,7 @@ type DaggerProps = {
 
 export default function Dagger({ dagger, isEditingMode }: DaggerProps) {
   if (!isEditingMode) {
-    return dagger ? <span className="align-super">&dagger;</span> : <></>
+    return dagger ? <span className="align-super">&dagger;</span> : <Fragment></Fragment>
   }
 
   return (

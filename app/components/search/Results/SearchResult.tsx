@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import SearchResults from "~/components/EntryEditor/SearchResults"
 import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 import type { AllSearchResults } from "~/models/search.server"
@@ -27,7 +28,7 @@ export default function SearchResult({ data, searchTerm }: SearchResultProps) {
         Search results for &ldquo;{searchTerm}
         &rdquo;
         {data.searchParams.caseSensitive !== undefined && (
-          <> (case sensitive)</>
+          <Fragment> (case sensitive)</Fragment>
         )}
       </SecondaryHeader>
       <div>

@@ -11,7 +11,7 @@ export default function Popover({ title, children, show }: PopoverProps) {
   return (
     <HeadlessPopover className="relative">
       {({ open: show }) => (
-        <>
+        <Fragment>
           <HeadlessPopover.Button
             className={
               "flex items-center px-1 transition-colors hover:text-primary focus:outline-none md:px-2"
@@ -35,7 +35,7 @@ export default function Popover({ title, children, show }: PopoverProps) {
               </div>
             </HeadlessPopover.Panel>
           </Transition>
-        </>
+        </Fragment>
       )}
     </HeadlessPopover>
   )

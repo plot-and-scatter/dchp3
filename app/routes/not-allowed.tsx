@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { data, type LoaderFunctionArgs } from "react-router"
 import { getUserRoles, isUserLoggedIn } from "~/services/auth/session.server"
 import LoginButton from "~/components/auth/LoginButton"
@@ -40,10 +41,10 @@ export default function Admin() {
                   <td className="p-4 align-top font-bold">{r}</td>
                   <td className="p-4 align-top">
                     {(permissionMap[r] as string[]).map((p) => (
-                      <>
+                      <Fragment key={p}>
                         <span>{p}</span>
                         <br />
-                      </>
+                      </Fragment>
                     ))}
                   </td>
                 </tr>
@@ -52,19 +53,19 @@ export default function Admin() {
           </table>
         )}
         {!loggedIn ? (
-          <>
+          <Fragment>
             <p>Do you need to log in?</p>
             <div>
               <LoginButton />
             </div>
-          </>
+          </Fragment>
         ) : (
-          <>
+          <Fragment>
             <p>You can log out and try another account.</p>
             <div>
               <LogoutButton />
             </div>
-          </>
+          </Fragment>
         )}
       </div>
     </TextPageMain>

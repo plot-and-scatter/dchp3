@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { Form } from "react-router"
 import { type MeaningType } from "~/components/Entry/Meanings/Meaning"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
@@ -53,7 +54,7 @@ interface CitationItemProps {
 }
 
 function CitationItem({ citation, meaningId }: CitationItemProps) {
-  if (!citation) return <></>
+  if (!citation) return <Fragment></Fragment>
 
   return (
     <Form method="post">

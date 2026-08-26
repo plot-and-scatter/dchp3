@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { BankLegacyTypeEnum, BankPosEnum } from "~/models/bank.types"
 import { enumToOptions } from "~/utils/inputUtils"
 import Input from "./Input"
@@ -19,7 +20,7 @@ export default function BankEditCitationFields({
   citation,
 }: BankEditCitationFieldsProps) {
   return (
-    <>
+    <Fragment>
       {citation?.id && <LabelledField label={`ID`} field={citation.id} />}
       <LabelledField
         label={`Headword`}
@@ -68,25 +69,25 @@ export default function BankEditCitationFields({
         citationFields={citationFields}
       />
       {citation && (
-        <>
+        <Fragment>
           <LabelledField
             label={`Time Added`}
             field={
-              <>
+              <Fragment>
                 {/* Single fetch hands these to the browser as real Dates.
                     The classic compiler's JSON serialization stringified them
                     on the way, and rendering a Date directly throws
                     "Objects are not valid as a React child". toISOString
                     reproduces exactly what was shown before. */}
                 {citation.created?.toISOString()} by {citation.creator?.email}
-              </>
+              </Fragment>
             }
           />
           <LabelledField
             label={`Last Modified`}
-            field={<>{citation.last_modified?.toISOString()}</>}
+            field={<Fragment>{citation.last_modified?.toISOString()}</Fragment>}
           />
-        </>
+        </Fragment>
       )}
       <LabelledField
         label={`Memo`}
@@ -127,6 +128,6 @@ export default function BankEditCitationFields({
           />
         }
       />
-    </>
+    </Fragment>
   )
 }

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import { BankSourceTypeEnum } from "~/models/bank.types"
 import BookPanel from "./BookPanel"
 import PeriodicalPanel from "./PeriodicalPanel"
@@ -14,7 +14,7 @@ export default function BankSourcePanel(props: BankEditCitationFieldsProps) {
   )
 
   return (
-    <>
+    <Fragment>
       <ActiveSourcePicker
         activeSourceType={activeSourceType}
         setActiveSourceType={setActiveSourceType}
@@ -36,6 +36,6 @@ export default function BankSourcePanel(props: BankEditCitationFieldsProps) {
       {activeSourceType === BankSourceTypeEnum["Spoken Language"] && (
         <SpokenLanguagePanel {...props} />
       )}
-    </>
+    </Fragment>
   )
 }

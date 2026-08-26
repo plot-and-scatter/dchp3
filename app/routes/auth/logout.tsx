@@ -1,6 +1,6 @@
 import { useSubmit, redirect } from "react-router"
 import type { ActionFunctionArgs } from "react-router"
-import { useEffect } from "react"
+import { Fragment, useEffect } from "react"
 import { getBaseDeploymentUrl } from "utils/api.server"
 import {
   destroySession,
@@ -36,5 +36,5 @@ export default function Logout() {
     return () => clearTimeout(timer)
   }, [submit])
 
-  return <>Logging out...</>
+  return <Fragment>Logging out...</Fragment>
 }

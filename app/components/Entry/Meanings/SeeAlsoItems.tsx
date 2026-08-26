@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Fragment } from "react"
 
 import type { MeaningType } from "./Meaning"
 import SeeAlsoItem from "./SeeAlsoItem"
@@ -23,7 +23,7 @@ const SeeAlsoItems = ({
     seeAlsoItems.length === 0 ||
     visibleSeeAlsoItems.length === 0
   ) {
-    return <></>
+    return <Fragment></Fragment>
   }
 
   return (

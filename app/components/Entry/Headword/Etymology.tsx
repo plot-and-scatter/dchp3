@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import SanitizedTextSpan from "../Common/SanitizedTextSpan"
 import TopLabelledField from "../../bank/TopLabelledField"
@@ -10,7 +11,7 @@ interface etymologyProps {
 }
 
 const Etymology = ({ entry, isEditingMode }: etymologyProps) => {
-  if (!isEditingMode && !entry?.etymology) return <></>
+  if (!isEditingMode && !entry?.etymology) return <Fragment></Fragment>
 
   return (
     <div className={clsx(`mb-0`, isEditingMode && "w-full")}>
@@ -18,7 +19,7 @@ const Etymology = ({ entry, isEditingMode }: etymologyProps) => {
         <TopLabelledField
           label={<div className="text-base">Etymology</div>}
           field={
-            <>
+            <Fragment>
               <Input
                 name="etymology"
                 className="italic"
@@ -30,7 +31,7 @@ const Etymology = ({ entry, isEditingMode }: etymologyProps) => {
               {/* <span className="text-xs text-gray-400">
                 You can use HTML tags in this field
               </span> */}
-            </>
+            </Fragment>
           }
         />
       ) : (

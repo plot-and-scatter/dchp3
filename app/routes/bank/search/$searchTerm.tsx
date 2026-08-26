@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { useLoaderData } from "react-router"
 import BankSearchResult from "~/components/bank/BankSearchResult"
@@ -19,7 +20,7 @@ export default function SearchIndex() {
   } = useLoaderData<typeof loader>()
 
   return (
-    <>
+    <Fragment>
       <PageHeader>Search results for {searchTerm}</PageHeader>
       <p className="text-center">
         Page {pageNumber} of {pageCount}, {citationCount} citations total
@@ -49,6 +50,6 @@ export default function SearchIndex() {
         pageCount={pageCount}
         url={url}
       />
-    </>
+    </Fragment>
   )
 }

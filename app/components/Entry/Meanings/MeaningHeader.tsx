@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import SanitizedTextSpan from "../Common/SanitizedTextSpan"
 
 interface MeaningHeaderProps {
@@ -14,7 +15,7 @@ const MeaningHeader = ({
   usage,
 }: MeaningHeaderProps) => {
   return (
-    <>
+    <Fragment>
       {((number && number !== "0") || dagger || partOfSpeech || usage) && (
         <div className="mb-2 bg-gray-100 p-2 leading-none shadow-sm shadow-gray-300 md:p-4 md:px-6">
           {number && number !== "0" && (
@@ -34,7 +35,7 @@ const MeaningHeader = ({
           )}
         </div>
       )}
-    </>
+    </Fragment>
   )
 }
 

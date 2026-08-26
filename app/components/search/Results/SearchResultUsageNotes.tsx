@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { Link } from "../../elements/LinksAndButtons/Link"
 import SanitizedTextSpan from "../../Entry/Common/SanitizedTextSpan"
 
@@ -8,11 +9,11 @@ interface SearchResultProps {
 
 const SearchResultUsageNotes = ({ text, data }: SearchResultProps) => {
   if (data === undefined || data.length === 0) {
-    return <>No results.</>
+    return <Fragment>No results.</Fragment>
   }
 
   return (
-    <>
+    <Fragment>
       {data.map((e) => {
         return (
           <div className="mb-2 flex flex-col" key={e.id}>
@@ -23,7 +24,7 @@ const SearchResultUsageNotes = ({ text, data }: SearchResultProps) => {
           </div>
         )
       })}
-    </>
+    </Fragment>
   )
 }
 

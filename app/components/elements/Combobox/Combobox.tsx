@@ -84,7 +84,7 @@ export default function Combobox({
                     value={option}
                   >
                     {({ selected, active }) => (
-                      <>
+                      <Fragment>
                         <span
                           className={`block truncate ${
                             selected ? "font-medium" : "font-normal"
@@ -101,7 +101,7 @@ export default function Combobox({
                             <FAIcon iconName="fa-check" />
                           </span>
                         ) : null}
-                      </>
+                      </Fragment>
                     )}
                   </HeadlessCombobox.Option>
                 ))

@@ -6,7 +6,7 @@ import EntryComment from "./EntryComment"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import BackIcon from "~/components/elements/Icons/BackIcon"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
-import { useEffect, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import FAIcon from "~/components/elements/Icons/FAIcon"
 
 type EditingSidebarProps = {
@@ -51,7 +51,7 @@ export default function EntryEditorSidebar({ entry }: EditingSidebarProps) {
               <FAIcon iconName="fa-check" /> {statusMessage}
             </div>
           ) : (
-            statusMessage || <>&nbsp;</>
+            statusMessage || <Fragment>&nbsp;</Fragment>
           )}
 
           {/* Action: {navigation.formAction || "None"} / State: {navigation.state}

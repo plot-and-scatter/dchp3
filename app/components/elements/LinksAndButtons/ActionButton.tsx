@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { useNavigation } from "react-router"
 import type { ButtonProps } from "./Button"
 import Button from "./Button"
@@ -19,7 +20,7 @@ export default function ActionButton({
     (navigation.state === "submitting" || navigation.state === "loading") &&
     (formActionPath ? navigation.formAction === formActionPath : true)
 
-  const content = isSubmitting ? submittingElement || <>Loading...</> : children
+  const content = isSubmitting ? submittingElement || <Fragment>Loading...</Fragment> : children
 
   return (
     <Button type="submit" disabled={isSubmitting} {...rest}>

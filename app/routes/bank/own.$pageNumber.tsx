@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import {
   getUserIdAndEmail,
   redirectIfUserLacksPermission,
@@ -50,7 +51,7 @@ export default function OwnCitations() {
     useLoaderData<typeof loader>()
 
   return (
-    <>
+    <Fragment>
       <PageHeader>Owned citations</PageHeader>
       <p className="text-center">
         Page {pageNumber} of {pageCount}, {citationCount} citations total
@@ -72,6 +73,6 @@ export default function OwnCitations() {
         currentPage={pageNumber}
         pageCount={pageCount}
       />
-    </>
+    </Fragment>
   )
 }

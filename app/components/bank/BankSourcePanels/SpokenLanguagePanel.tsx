@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { BankSourceTypeEnum } from "~/models/bank.types"
 import Input from "../Input"
 import LabelledField from "../LabelledField"
@@ -12,7 +13,7 @@ export default function SpokenLanguagePanel(
   const showField = source?.type_id === BankSourceTypeEnum["Spoken Language"]
 
   return (
-    <>
+    <Fragment>
       <LabelledField
         label={`Year Heard`}
         field={
@@ -134,6 +135,6 @@ export default function SpokenLanguagePanel(
           />
         }
       />
-    </>
+    </Fragment>
   )
 }

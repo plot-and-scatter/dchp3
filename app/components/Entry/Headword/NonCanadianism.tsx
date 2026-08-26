@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import RadioOrCheckbox from "../../bank/RadioOrCheckbox"
 import TopLabelledField from "../../bank/TopLabelledField"
 
@@ -11,7 +12,7 @@ export default function NonCanadianism({
   isEditingMode,
 }: DaggerProps) {
   if (!isEditingMode) {
-    return <></>
+    return <Fragment></Fragment>
   }
 
   return (

@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { Link } from "../elements/LinksAndButtons/Link"
 import ReferencePopover from "../Entry/References/ReferencePopover"
 import SanitizedTextSpan from "../Entry/Common/SanitizedTextSpan"
@@ -20,13 +21,13 @@ export default function EntryReference({
       <SanitizedTextSpan text={reference.short_display} />
       <ReferencePopover text={reference.reference_text} />
       {referenceLink.link_target && (
-        <>
+        <Fragment>
           {" "}
           •{" "}
           <Link to={referenceLink.link_target} target="_blank" rel="noreferrer">
             {referenceLink.link_text || "Link"}
           </Link>
-        </>
+        </Fragment>
       )}
     </li>
   )

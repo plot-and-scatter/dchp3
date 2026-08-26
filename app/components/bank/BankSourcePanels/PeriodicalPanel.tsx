@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { BankSourceTypeEnum } from "~/models/bank.types"
 import Input from "../Input"
 import TextArea from "../TextArea"
@@ -11,7 +12,7 @@ export default function PeriodicalPanel(props: BankEditCitationFieldsProps) {
   const showField = source?.type_id === BankSourceTypeEnum.Periodical
 
   return (
-    <>
+    <Fragment>
       <LabelledField
         label={`Year Pub`}
         field={
@@ -134,6 +135,6 @@ export default function PeriodicalPanel(props: BankEditCitationFieldsProps) {
           />
         }
       />
-    </>
+    </Fragment>
   )
 }
