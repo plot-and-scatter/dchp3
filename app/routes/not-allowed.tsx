@@ -1,7 +1,7 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/server-runtime"
+import { data, type LoaderFunctionArgs } from "react-router"
 import { getUserRoles, isUserLoggedIn } from "~/services/auth/session.server"
 import LoginButton from "~/components/auth/LoginButton"
-import { useLoaderData } from "@remix-run/react"
+import { useLoaderData } from "react-router"
 import LogoutButton from "~/components/auth/LogoutButton"
 import type { AuthRole } from "~/services/auth/AuthRole"
 import { getPermissionsMap } from "~/services/auth/AuthRole"
@@ -13,7 +13,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const roles = await getUserRoles(request)
   const permissionMap = await getPermissionsMap(roles)
 
-  return json({ loggedIn, roles, permissionMap })
+  return data({ loggedIn, roles, permissionMap })
 }
 
 export default function Admin() {

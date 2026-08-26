@@ -1,4 +1,4 @@
-import { NavLink } from "@remix-run/react"
+import { NavLink } from "react-router"
 import { type MeaningType } from "./Meaning"
 
 export type SeeAlso = MeaningType["seeAlso"][0]

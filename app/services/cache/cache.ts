@@ -1,4 +1,4 @@
-import { json } from "@remix-run/server-runtime"
+import { data } from "react-router"
 import { LocalCache } from "./localCache.server"
 
 declare global {
@@ -31,7 +31,7 @@ export const getOrPopulateCache = async <T>(
 
   if (!cache) {
     console.error("No cache found!")
-    throw json({ message: `Could not find  cache.` }, { status: 502 })
+    throw data({ message: `Could not find  cache.` }, { status: 502 })
   }
 
   if (!forcePopulate) {

@@ -1,5 +1,5 @@
-import type { FormProps } from "@remix-run/react"
-import { Form, useActionData, useNavigation } from "@remix-run/react"
+import type { FormProps } from "react-router"
+import { Form, useActionData, useNavigation } from "react-router"
 import type { EntryEditorFormActionEnum } from "./EntryEditorFormActionEnum"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import { useRef, useEffect } from "react"

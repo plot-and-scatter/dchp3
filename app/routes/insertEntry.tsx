@@ -1,6 +1,5 @@
-import { redirect } from "@remix-run/node"
-import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node"
-import { Form } from "@remix-run/react"
+import { redirect, Form } from "react-router"
+import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router"
 import Main from "~/components/elements/Layouts/Main"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { insertEntry } from "~/models/entry.server"

@@ -1,14 +1,13 @@
-import type { MetaFunction } from "@remix-run/react"
+import type { MetaFunction, LoaderFunctionArgs } from "react-router"
 import {
   canUserEditEntry as _canUserEditEntry,
   userHasPermission,
 } from "~/services/auth/session.server"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { getEntryByHeadword } from "~/models/entry.server"
-import { useLoaderData } from "@remix-run/react"
+import { useLoaderData, data } from "react-router"
 import Entry from "~/components/Entry/Entry"
 import invariant from "tiny-invariant"
-import { json, type LoaderFunctionArgs, type SerializeFrom } from "@remix-run/node"
 import { BASE_APP_TITLE } from "~/root"
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
@@ -25,7 +24,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const entry = await getEntryByHeadword({ headword: headword })
 
   if (!entry) {
-    throw json(`No entry found for headword ${headword}.`, {
+    throw data(`No entry found for headword ${headword}.`, {
       status: 404,
       statusText: "entry-not-found",
     })
@@ -41,7 +40,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const canUserViewEntry = entry.is_public || canUserViewDraftEntry
 
   if (!canUserViewEntry) {
-    throw json(
+    throw data(
       `You do not have permission to view this entry. Please log in or contact an administrator.`,
       {
         status: 403,
@@ -53,8 +52,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return { entry, canUserEditEntry, canUserViewDraftEntry }
 }
 
-export type LoadedEntryDataType = SerializeFrom<
-  Awaited<Promise<ReturnType<typeof loader>>>
+export type LoadedEntryDataType = Awaited<
+  Promise<ReturnType<typeof loader>>
 >["entry"]
 
 export default function EntryDetailsPage() {

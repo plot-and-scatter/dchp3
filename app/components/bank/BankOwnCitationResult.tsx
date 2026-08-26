@@ -1,10 +1,9 @@
-import { NavLink } from "@remix-run/react"
+import { NavLink } from "react-router"
 import { sourceTypeToText } from "utils/source"
 import type { OwnCitationsLoaderData } from "~/routes/bank/own.$pageNumber"
-import type { SerializeFrom } from "@remix-run/server-runtime"
 
 interface BankOwnCitationResultProps {
-  citation: SerializeFrom<OwnCitationsLoaderData["citations"][0]>
+  citation: OwnCitationsLoaderData["citations"][0]
 }
 
 export default function BankOwnCitationResult({

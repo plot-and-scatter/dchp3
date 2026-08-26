@@ -1,5 +1,5 @@
-import type { ActionFunctionArgs } from "@remix-run/server-runtime"
-import { redirect } from "@remix-run/server-runtime"
+import type { ActionFunctionArgs } from "react-router"
+import { redirect } from "react-router"
 import { authenticator } from "~/services/auth/auth.server"
 
 export let loader = () => redirect("/admin")

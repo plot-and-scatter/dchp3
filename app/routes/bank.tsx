@@ -1,5 +1,5 @@
-import { NavLink, Outlet } from "@remix-run/react"
-import type { LoaderFunctionArgs } from "@remix-run/server-runtime"
+import { NavLink, Outlet } from "react-router"
+import type { LoaderFunctionArgs } from "react-router"
 import { redirectIfUserNotLoggedIn } from "~/services/auth/session.server"
 
 const navItems = [

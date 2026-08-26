@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react"
+import { Form } from "react-router"
 import { useState } from "react"
 import Input from "~/components/bank/Input"
 import LabelledField from "~/components/bank/LabelledField"

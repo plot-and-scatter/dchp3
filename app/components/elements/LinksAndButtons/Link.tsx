@@ -1,13 +1,13 @@
 import { buttonAppearanceClass, buttonCommonClasses } from "./ButtonAppearance"
 import { buttonSizeClass } from "./ButtonSize"
-import { Link as RemixLink } from "@remix-run/react"
+import { Link as RemixLink } from "react-router"
 import { type LinkAppearance, linkAppearanceClass } from "./LinkAppearance"
 import clsx from "clsx"
 import type { AppearanceVariant } from "./ButtonAppearance"
 import type { ButtonSize } from "./ButtonSize"
-import type { RemixLinkProps } from "@remix-run/react/dist/components"
+import type { LinkProps as ReactRouterLinkProps } from "react-router"
 
-export type LinkProps = RemixLinkProps & {
+export type LinkProps = ReactRouterLinkProps & {
   appearance?: LinkAppearance
   asButton?: boolean
   bold?: boolean

@@ -1,10 +1,10 @@
 import { type Prisma } from "@prisma/client"
-import { Form, useLoaderData, useParams } from "@remix-run/react"
+import { Form, useLoaderData, useParams } from "react-router"
 import {
   redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
-} from "@remix-run/server-runtime"
+} from "react-router"
 import React from "react"
 import invariant from "tiny-invariant"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"

@@ -1,9 +1,9 @@
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { prisma } from "~/db.server"
-import { useLoaderData, useParams } from "@remix-run/react"
+import { useLoaderData, useParams } from "react-router"
 import invariant from "tiny-invariant"
-import type { LoaderFunctionArgs } from "@remix-run/node"
+import type { LoaderFunctionArgs } from "react-router"
 
 export async function loader({ params }: LoaderFunctionArgs) {
   invariant(params.initialLetter, "initialLetter not found")

@@ -5,8 +5,9 @@ import type {
   BankSourceTypeEnum,
 } from "~/models/bank.types"
 import { calculateSkip } from "~/utils/generalUtils"
+import { BANK_CITATION_PAGE_SIZE } from "~/utils/pageSize"
 
-export const PAGE_SIZE = 100
+export { BANK_CITATION_PAGE_SIZE as PAGE_SIZE } from "~/utils/pageSize"
 
 export type SearchOptions = {
   exactPhrase?: boolean | null
@@ -77,7 +78,7 @@ export default async function (opts: SearchOptions) {
         }
       : { text: opts.exactPhrase ? searchTerm : { contains: searchTerm } }
 
-  const skip = calculateSkip(opts.page, PAGE_SIZE)
+  const skip = calculateSkip(opts.page, BANK_CITATION_PAGE_SIZE)
 
   const count = await prisma.bankCitation.count({
     where: {
@@ -98,7 +99,7 @@ export default async function (opts: SearchOptions) {
       ...textSearch,
     },
     skip: skip,
-    take: PAGE_SIZE,
+    take: BANK_CITATION_PAGE_SIZE,
     orderBy,
     select: {
       user_id: true,

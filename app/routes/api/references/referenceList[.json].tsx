@@ -1,5 +1,5 @@
 import type { Reference } from "@prisma/client"
-import { json, type LoaderFunctionArgs } from "@remix-run/server-runtime"
+import { data, type LoaderFunctionArgs } from "react-router"
 import { prisma } from "~/db.server"
 
 // const DEFAULT_TAKE_SIZE = 500
@@ -9,7 +9,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const containsText = url.searchParams.get("containsText")
 
   if (containsText === null || containsText.length === 0) {
-    throw json(
+    throw data(
       {
         message: `containsText param is required, and must be a string of length > 0`,
       },
@@ -23,5 +23,5 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     Reference[]
   >`SELECT * FROM det_references WHERE LOWER(short_display) LIKE LOWER(${initialLettersWildcard}) OR LOWER(reference_text) LIKE LOWER(${initialLettersWildcard}) ORDER BY LOWER(short_display) ASC`
 
-  return json(references)
+  return data(references)
 }

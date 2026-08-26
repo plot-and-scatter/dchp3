@@ -1,5 +1,5 @@
-import { useLoaderData } from "@remix-run/react"
-import { type LoaderFunctionArgs } from "@remix-run/server-runtime"
+import { useLoaderData } from "react-router"
+import { type LoaderFunctionArgs } from "react-router"
 import { useState } from "react"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import Main from "~/components/elements/Layouts/Main"

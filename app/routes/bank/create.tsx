@@ -5,12 +5,10 @@ import {
   findOrCreateTitle,
 } from "~/models/bank.server"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
-import { Form, useActionData } from "@remix-run/react"
+import { Form, useActionData, data, redirect } from "react-router"
 import { getEmailFromSession } from "~/services/auth/session.server"
 import { getUserIdByEmailOrThrow } from "~/models/user.server"
-import { json, redirect } from "@remix-run/server-runtime"
-import type { ActionFunctionArgs } from "@remix-run/server-runtime"
-import type { MetaFunction } from "@remix-run/react"
+import type { ActionFunctionArgs, MetaFunction } from "react-router"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { parseWithZod } from "@conform-to/zod"
 import { prisma } from "~/db.server"
@@ -81,7 +79,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   })
 
   if (submission.status !== "success") {
-    return json(submission.reply(), {
+    return data(submission.reply(), {
       status: submission.status === "error" ? 400 : 200,
     })
   }
@@ -91,7 +89,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const { headword, ...restOfCitation } = parsedData.citation
 
   const email = await getEmailFromSession(request)
-  if (!email) throw json({ message: `No email on user` }, { status: 500 })
+  if (!email) throw data({ message: `No email on user` }, { status: 500 })
   const userId = await getUserIdByEmailOrThrow({ email })
 
   // Find or create the headword
@@ -124,7 +122,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   })
 
   if (!savedCitation) {
-    return json(submission.reply({ formErrors: ["Submission failed"] }))
+    return data(submission.reply({ formErrors: ["Submission failed"] }))
   }
 
   return redirect(`/bank/edit/${savedCitation.id}`)

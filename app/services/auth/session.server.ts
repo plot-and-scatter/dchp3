@@ -1,6 +1,6 @@
-import { createCookieSessionStorage, json, redirect } from "@remix-run/node"
+import { createCookieSessionStorage, data, redirect } from "react-router"
 import { LOGIN_PATH, NOT_ALLOWED_PATH } from "utils/paths"
-import type { Session } from "@remix-run/node"
+import type { Session } from "react-router"
 import {
   rolesContainPermission,
   type AuthPermission,
@@ -121,7 +121,7 @@ export const redirectIfUserLacksPermission = async (
 
 export const getUserIdAndEmail = async (request: Request) => {
   const email = await getEmailFromSession(request)
-  if (!email) throw json({ message: `No email on user` }, { status: 500 })
+  if (!email) throw data({ message: `No email on user` }, { status: 500 })
 
   const userId = await getUserIdByEmailOrThrow({ email })
   return { userId, email }

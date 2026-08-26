@@ -1,6 +1,6 @@
 import { resetFetcher } from "~/routes/api/reset-fetcher"
 import { useDebouncedCallback } from "use-debounce"
-import { useFetcher } from "@remix-run/react"
+import { useFetcher } from "react-router"
 import Input from "../bank/Input"
 
 const HEADWORD_DATA_URL = `/api/entries/headwords.json`

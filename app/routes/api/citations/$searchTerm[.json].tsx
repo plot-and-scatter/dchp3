@@ -1,7 +1,7 @@
 import { SEARCH_PARAMS } from "../../bank/search"
 import invariant from "tiny-invariant"
 import searchCitations, { PAGE_SIZE } from "~/services/bank/searchCitations"
-import type { LoaderFunctionArgs } from "@remix-run/server-runtime"
+import type { LoaderFunctionArgs } from "react-router"
 import type { SearchOptions } from "~/services/bank/searchCitations"
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -31,7 +31,10 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     pageNumber: page,
     pageCount: Math.ceil(count / PAGE_SIZE),
     citationCount: count,
-    url,
+    // Serialized here rather than passed as a URL: single fetch streams values
+    // with turbo-stream, which has no URL representation, and the only
+    // consumer (PaginationControl) wants the string anyway.
+    url: url.toString(),
   }
 }
 

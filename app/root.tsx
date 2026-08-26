@@ -1,20 +1,22 @@
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node"
-import type { MetaFunction } from "@remix-run/react"
+import type {
+  LinksFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "react-router"
 import {
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
   useLoaderData,
-} from "@remix-run/react"
+} from "react-router"
 
 import smartquotes from "smartquotes"
 import { useEffect } from "react"
 
-import tailwindStylesheetUrl from "./styles/tailwind.css"
-import additionalStylesUrl from "./styles/additional.css"
+import tailwindStylesheetUrl from "./styles/tailwind.css?url"
+import additionalStylesUrl from "./styles/additional.css?url"
 import Header from "./components/elements/Layouts/Header"
 import Nav from "./components/elements/Layouts/Nav"
 import { getUserFromSession } from "./services/auth/session.server"
@@ -77,7 +79,6 @@ const defaultApp = ({
         </div>
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   )

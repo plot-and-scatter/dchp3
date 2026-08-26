@@ -6,11 +6,10 @@ import TextArea from "./TextArea"
 import CitationTextAndClip from "./CitationTextAndClip"
 import LabelledField from "./LabelledField"
 import type { EditCitationIdLoaderData } from "~/routes/bank/edit/$citationId"
-import type { SerializeFrom } from "@remix-run/server-runtime"
 import RadioOrCheckbox from "./RadioOrCheckbox"
 
 export type BankEditCitationFieldsProps = {
-  citation?: SerializeFrom<EditCitationIdLoaderData["citation"]>
+  citation?: EditCitationIdLoaderData["citation"]
   //conformFields?: Fieldset<z.infer<typeof BankCreateFormDataSchema>>
   citationFields?: any
 }

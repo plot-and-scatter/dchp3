@@ -1,4 +1,4 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/server-runtime"
+import { data, type LoaderFunctionArgs } from "react-router"
 import { isPositiveInteger, toNumber } from "utils/numbers"
 import { getEntriesByInitialLetters } from "~/models/entry.server"
 import { userHasPermission } from "~/services/auth/session.server"
@@ -13,7 +13,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const isUserAdmin = await userHasPermission(request, "det:viewEdits")
 
   if (startsWith === null || startsWith.length === 0) {
-    throw json(
+    throw data(
       {
         message: `startsWith param is required, and must be a string of length > 0`,
       },
@@ -33,5 +33,5 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     isUserAdmin
   )
 
-  return json(headwords)
+  return data(headwords)
 }

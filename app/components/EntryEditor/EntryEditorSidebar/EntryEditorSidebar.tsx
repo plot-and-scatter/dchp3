@@ -1,4 +1,4 @@
-import { useNavigation } from "@remix-run/react"
+import { useNavigation } from "react-router"
 import AddNewMeaningForm from "../EntryEditorForm/AddNewMeaningForm"
 import EditingStatus from "./EditingStatus/EditingStatusPanel"
 import EditingTools from "./EditingTools"

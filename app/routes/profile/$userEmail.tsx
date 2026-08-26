@@ -1,6 +1,6 @@
 import { type Prisma } from "@prisma/client"
-import { useLoaderData } from "@remix-run/react"
-import { redirect, type LoaderFunctionArgs } from "@remix-run/server-runtime"
+import { useLoaderData } from "react-router"
+import { redirect, type LoaderFunctionArgs } from "react-router"
 import Main from "~/components/elements/Layouts/Main"
 import EntryList from "~/components/profile/EntryList"
 import ProfileHeader from "~/components/profile/ProfileHeader"

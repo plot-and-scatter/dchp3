@@ -130,9 +130,9 @@ export default function About() {
         and <WordLink>hang a roger</WordLink> (for turning right),{" "}
         <WordLink>gong show</WordLink> (as a synonym for ‘chaos’),{" "}
         <WordLink>beak</WordLink> ‘to diss someone’ and to be in there{" "}
-        <WordLink>like a dirty shirt</WordLink> ‘to really engage in
-        something’. We paid special attention to the informal, as in the de
-        facto Albertanism <WordLink>rig pig</WordLink> ‘oil and gas worker’,{" "}
+        <WordLink>like a dirty shirt</WordLink> ‘to really engage in something’.
+        We paid special attention to the informal, as in the de facto
+        Albertanism <WordLink>rig pig</WordLink> ‘oil and gas worker’,{" "}
         <WordLink>shit disturber</WordLink> ‘troublemaker’ and{" "}
         <WordLink>give’r</WordLink> in its two meanings. New Indigenous terms
         include <WordLink>qajaq</WordLink>, as the decolonized form of{" "}

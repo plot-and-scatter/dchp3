@@ -1,5 +1,5 @@
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
-import { useLoaderData } from "@remix-run/react"
+import { useLoaderData } from "react-router"
 import BankSearchResult from "~/components/bank/BankSearchResult"
 
 // We just import and re-export the JSON-based loader.

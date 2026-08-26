@@ -1,13 +1,15 @@
-import type { MetaFunction } from "@remix-run/react"
+import type {
+  MetaFunction,
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+} from "react-router"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { getEntryByHeadword, updateLogEntries } from "~/models/entry.server"
 import { handleEditFormAction } from "./handleEditFormAction"
 import { redirectIfUserLacksEntryEditPermission } from "~/services/auth/session.server"
-import { useLoaderData } from "@remix-run/react"
+import { useLoaderData, redirect, data } from "react-router"
 import EntryEditor from "~/components/EntryEditor/EntryEditor"
 import invariant from "tiny-invariant"
-import { redirect, json } from "@remix-run/node"
-import type { SerializeFrom, ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { BASE_APP_TITLE } from "~/root"
 
@@ -19,9 +21,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
   },
 ]
 
-export type EntryEditLoaderData = SerializeFrom<
-  Awaited<Promise<ReturnType<typeof loader>>>
->
+export type EntryEditLoaderData = Awaited<Promise<ReturnType<typeof loader>>>
 
 export async function action({ params, request }: ActionFunctionArgs) {
   invariant(params.headword, "No headword specified")
@@ -39,7 +39,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
   const submission = await handleEditFormAction(formData)
 
   if (submission.status !== "success") {
-    return json(submission.reply(), {
+    return data(submission.reply(), {
       status: submission.status === "error" ? 400 : 200,
     })
   }
@@ -74,7 +74,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
     submission.value.entryEditorFormAction
   )
 
-  return json(submission.reply())
+  return data(submission.reply())
 }
 
 export async function loader({ request, params }: LoaderFunctionArgs) {

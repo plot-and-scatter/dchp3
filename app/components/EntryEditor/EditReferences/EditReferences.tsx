@@ -1,5 +1,5 @@
 import { EntryEditorFormActionEnum } from "../EntryEditorForm/EntryEditorFormActionEnum"
-import { Form } from "@remix-run/react"
+import { Form } from "react-router"
 import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 import AddReference from "./AddReference"
 import Button from "~/components/elements/LinksAndButtons/Button"

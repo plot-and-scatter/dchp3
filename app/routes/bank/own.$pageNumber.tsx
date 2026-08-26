@@ -3,10 +3,10 @@ import {
   redirectIfUserLacksPermission,
 } from "~/services/auth/session.server"
 import { DEFAULT_CITATION_SELECT } from "~/services/bank/defaultCitationSelect"
-import { json, type LoaderFunctionArgs } from "@remix-run/server-runtime"
+import { data, type LoaderFunctionArgs } from "react-router"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { prisma } from "~/db.server"
-import { useLoaderData } from "@remix-run/react"
+import { useLoaderData } from "react-router"
 import BankOwnCitationResult from "~/components/bank/BankOwnCitationResult"
 import invariant from "tiny-invariant"
 import PaginationControl from "~/components/bank/PaginationControl"
@@ -17,7 +17,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   await redirectIfUserLacksPermission(request, "bank:create")
 
   const { userId } = await getUserIdAndEmail(request)
-  if (!userId) throw json({ message: `No userId on user` }, { status: 500 })
+  if (!userId) throw data({ message: `No userId on user` }, { status: 500 })
 
   const { pageNumber } = params
   invariant(pageNumber, "No pageNumber supplied")

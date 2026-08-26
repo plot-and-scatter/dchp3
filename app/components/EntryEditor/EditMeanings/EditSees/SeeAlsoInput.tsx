@@ -1,4 +1,4 @@
-import { useFetcher } from "@remix-run/react"
+import { useFetcher } from "react-router"
 import { useDebouncedCallback } from "use-debounce"
 import TopLabelledField from "~/components/bank/TopLabelledField"
 import Combobox from "~/components/elements/Combobox/Combobox"

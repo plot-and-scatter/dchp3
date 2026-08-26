@@ -3,11 +3,10 @@ import {
   countEntriesByInitialLetters,
   getEntriesByInitialLettersAndPage,
 } from "~/models/entry.server"
-import { json } from "@remix-run/node"
+import { data, useLoaderData } from "react-router"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
-import { useLoaderData } from "@remix-run/react"
 import invariant from "tiny-invariant"
-import type { LoaderFunctionArgs } from "@remix-run/node"
+import type { LoaderFunctionArgs } from "react-router"
 import PaginationControl from "~/components/bank/PaginationControl"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { userHasPermission } from "~/services/auth/session.server"
@@ -38,7 +37,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!entries) {
     throw new Response("Not Found", { status: 404 })
   }
-  return json({
+  return data({
     entries,
     initialLetters,
     pageNumber: +pageNumber,
