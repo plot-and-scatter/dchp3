@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import DictionaryVersionLabel from "~/components/elements/Labels/DictionaryVersionLabel"
 import DraftLabel from "../../elements/Labels/DraftLabel"
 import { Link } from "../../elements/LinksAndButtons/Link"
@@ -9,11 +10,11 @@ interface Props {
 
 const SearchResultEntries = ({ text, data }: Props) => {
   if (data === undefined || data.length === 0) {
-    return <>No results.</>
+    return <Fragment>No results.</Fragment>
   }
 
   return (
-    <>
+    <Fragment>
       {data.map((e) => {
         return (
           <p key={e.id} className="flex items-center">
@@ -29,7 +30,7 @@ const SearchResultEntries = ({ text, data }: Props) => {
           </p>
         )
       })}
-    </>
+    </Fragment>
   )
 }
 

@@ -1,7 +1,10 @@
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
-import { DeleteReferenceSchema, deleteReference } from "./deleteReference"
-import { Form, useLoaderData } from "@remix-run/react"
-import { getReferenceById } from "~/models/reference.server"
+import {
+  deleteReference,
+  updateReference,
+  getReferenceById,
+} from "~/models/reference.server"
+import { Form, useLoaderData } from "react-router"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { parseWithZod } from "@conform-to/zod"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
@@ -9,8 +12,8 @@ import {
   type ActionFunctionArgs,
   redirect,
   type LoaderFunctionArgs,
-} from "@remix-run/server-runtime"
-import { UpdateReferenceSchema, updateReference } from "./updateReference"
+} from "react-router"
+
 import { z } from "zod"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
@@ -21,7 +24,11 @@ import ReturnToRefListLink from "./ReturnToRefListLink"
 import SaveIcon from "~/components/elements/Icons/SaveIcon"
 import TextArea from "~/components/bank/TextArea"
 import TopLabelledField from "~/components/bank/TopLabelledField"
-import { ReferenceActionEnum } from "./ReferenceActionEnum"
+import {
+  DeleteReferenceSchema,
+  ReferenceActionEnum,
+  UpdateReferenceSchema,
+} from "~/models/reference.schemas"
 import { getFormProps, useForm } from "@conform-to/react"
 
 export async function action({ request }: ActionFunctionArgs) {

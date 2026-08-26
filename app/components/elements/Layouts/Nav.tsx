@@ -1,4 +1,4 @@
-import { NavLink } from "@remix-run/react"
+import { NavLink } from "react-router"
 import type { LoggedInUser } from "~/services/auth/auth.server"
 import Popover from "../Popovers/Popover"
 import NavPopoverContents from "../Popovers/NavPopoverContents"

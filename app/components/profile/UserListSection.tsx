@@ -1,6 +1,6 @@
 import { type User } from "~/models/user.server"
 import { Link } from "../elements/LinksAndButtons/Link"
-import React from "react"
+import React, { Fragment } from "react"
 
 interface UserListSectionProps {
   header: string
@@ -13,10 +13,10 @@ const UserListSection = ({
   users,
   displayInactive,
 }: UserListSectionProps) => {
-  if (users === undefined) return <></>
+  if (users === undefined) return <Fragment></Fragment>
 
   return (
-    <>
+    <Fragment>
       <h2 className="text-2xl">{header}</h2>
       <div className="grid grid-cols-3">
         {users
@@ -35,7 +35,7 @@ const UserListSection = ({
             )
           })}
       </div>
-    </>
+    </Fragment>
   )
 }
 

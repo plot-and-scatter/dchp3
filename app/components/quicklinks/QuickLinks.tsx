@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import SanitizedTextSpan from "../Entry/Common/SanitizedTextSpan"
 import QuickLink from "./QuickLink"
@@ -14,7 +15,7 @@ const QuickLinks = ({ data }: QuickLinksProps): JSX.Element => {
   }
 
   return (
-    <>
+    <Fragment>
       <h3 className="mb-2 text-lg font-bold text-gray-600">Quick links</h3>
       {data ? (
         <ul className="">
@@ -22,7 +23,7 @@ const QuickLinks = ({ data }: QuickLinksProps): JSX.Element => {
             <span className="text-xl font-bold">{data.headword}</span>
           </QuickLink>
           <QuickLink scrollToId="definitions">Definitions</QuickLink>
-          <>
+          <Fragment>
             {data.meanings
               .sort((a, b) => (a.order || "").localeCompare(b.order || ""))
               .map((meaning) => (
@@ -36,13 +37,13 @@ const QuickLinks = ({ data }: QuickLinksProps): JSX.Element => {
                   <SanitizedTextSpan text={meaning.definition} />
                 </QuickLink>
               ))}
-          </>
+          </Fragment>
           {/* <QuickLink>References</QuickLink> */}
         </ul>
       ) : (
         <div>Loading...</div>
       )}
-    </>
+    </Fragment>
   )
 }
 

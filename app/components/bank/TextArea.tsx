@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import clsx from "clsx"
 import ValidationErrorText from "../elements/Form/ValidationErrorText"
 
@@ -27,7 +28,7 @@ export default function TextArea({
   const hasErrors = !!conformField?.errors && conformField?.errors.length > 0
 
   return (
-    <>
+    <Fragment>
       <textarea
         defaultValue={showField !== false ? defaultValueNoNulls : undefined}
         name={name}
@@ -43,6 +44,6 @@ export default function TextArea({
       {hasErrors && (
         <ValidationErrorText className="flex-wrap">{error}</ValidationErrorText>
       )}
-    </>
+    </Fragment>
   )
 }

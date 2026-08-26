@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { convertToDoubleBreaks } from "~/utils/textUtils"
 import DOMPurify from "isomorphic-dompurify"
 
@@ -10,7 +11,7 @@ const SanitizedTextSpan = ({
   text,
   toDoubleBreaks,
 }: SanitizedTextSpanProps) => {
-  if (!text) return <></>
+  if (!text) return <Fragment></Fragment>
 
   const sanitizedText = DOMPurify.sanitize(
     toDoubleBreaks ? convertToDoubleBreaks(text) : text

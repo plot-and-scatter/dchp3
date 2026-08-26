@@ -1,4 +1,4 @@
-import { Outlet } from "@remix-run/react"
+import { Outlet } from "react-router"
 import Main from "~/components/elements/Layouts/Main"
 
 export default function EntriesPage() {

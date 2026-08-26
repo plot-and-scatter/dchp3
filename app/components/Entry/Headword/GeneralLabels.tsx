@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import SanitizedTextSpan from "../Common/SanitizedTextSpan"
 import TopLabelledField from "../../bank/TopLabelledField"
@@ -13,7 +14,7 @@ const GeneralLabels = ({
   entry,
   isEditingMode,
 }: generalLabelsProps): JSX.Element => {
-  if (!isEditingMode && !entry?.general_labels) return <></>
+  if (!isEditingMode && !entry?.general_labels) return <Fragment></Fragment>
 
   return (
     <div className={clsx(`mb-0`, isEditingMode && "w-full")}>

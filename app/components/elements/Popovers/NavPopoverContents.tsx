@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import NavItem from "./NavItem"
 import type { NavItemProps } from "./NavItem"
 
@@ -65,12 +66,12 @@ export default function NavPopoverContents({
   }
 
   return (
-    <>
+    <Fragment>
       <div className="relative grid gap-2 bg-white p-4">
         {navItems.map((ni) => (
           <NavItem key={`${ni.name}-${ni.href}`} {...ni} />
         ))}
       </div>
-    </>
+    </Fragment>
   )
 }

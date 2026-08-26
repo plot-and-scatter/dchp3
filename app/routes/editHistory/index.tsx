@@ -1,4 +1,4 @@
-import { type LoaderFunctionArgs, redirect } from "@remix-run/server-runtime"
+import { type LoaderFunctionArgs, redirect } from "react-router"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 
 export async function loader({ params }: LoaderFunctionArgs) {

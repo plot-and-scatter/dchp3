@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import type { InputOption } from "./InputOption"
 import clsx from "clsx"
 import ValidationErrorText from "../elements/Form/ValidationErrorText"
@@ -23,7 +24,7 @@ export default function Select({
   const hasErrors = !!conformField?.errors && conformField?.errors.length > 0
 
   return (
-    <>
+    <Fragment>
       <select
         name={name}
         onChange={onChange}
@@ -46,6 +47,6 @@ export default function Select({
           {name}: {error}
         </ValidationErrorText>
       )}
-    </>
+    </Fragment>
   )
 }

@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import HandNoteBlock from "../Common/HandNoteBlock"
 import SanitizedTextSpan from "../Common/SanitizedTextSpan"
@@ -14,13 +15,13 @@ export default function HeadwordHandNote({
 }: HeadwordHandNoteProps) {
   if (!isEditingMode) {
     return (
-      <>
+      <Fragment>
         {entry.fist_note && (
           <HandNoteBlock className="text-xs text-gray-500 md:text-lg">
             <SanitizedTextSpan text={entry.fist_note} />
           </HandNoteBlock>
         )}
-      </>
+      </Fragment>
     )
   }
 

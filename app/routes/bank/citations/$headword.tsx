@@ -1,10 +1,11 @@
+import { Fragment } from "react"
 import { DEFAULT_CITATION_SELECT } from "~/services/bank/defaultCitationSelect"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { prisma } from "~/db.server"
-import { useLoaderData, useParams } from "@remix-run/react"
+import { useLoaderData, useParams } from "react-router"
 import BankOwnCitationResult from "~/components/bank/BankOwnCitationResult"
 import invariant from "tiny-invariant"
-import type { LoaderFunctionArgs } from "@remix-run/node"
+import type { LoaderFunctionArgs } from "react-router"
 
 export async function loader({ params }: LoaderFunctionArgs) {
   invariant(params.headword, "headword not found")
@@ -24,9 +25,9 @@ export default function EntryDetailsPage() {
   return (
     <div>
       <h3 className="text-2xl font-bold">
-        <>
+        <Fragment>
           Citations for {params.headword}: {citations.length}
-        </>
+        </Fragment>
       </h3>
       <div className="my-4 flex flex-col justify-center">
         {citations.map((c) => (

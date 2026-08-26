@@ -1,5 +1,5 @@
-import type { FormProps } from "@remix-run/react"
-import { Form, useActionData, useNavigation } from "@remix-run/react"
+import type { FormProps } from "react-router"
+import { Form, useActionData, useNavigation } from "react-router"
 import type { EntryEditorFormActionEnum } from "./EntryEditorFormActionEnum"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import { useRef, useEffect } from "react"
@@ -35,7 +35,11 @@ export default function MeaningEditorForm({
       if (
         resetOnSuccess &&
         navigation.state === "idle" &&
-        actionData?.status === "success"
+        // The edit action can also return a headword conflict, which has no
+        // `status`. Only a conform submission result should reset the form.
+        actionData !== undefined &&
+        "status" in actionData &&
+        actionData.status === "success"
       ) {
         formRef.current?.reset()
       }

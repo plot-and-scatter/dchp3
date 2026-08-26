@@ -1,9 +1,8 @@
 import { BankLegacyTypeEnum, BankSourceTypeEnum } from "~/models/bank.types"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { enumToOptions } from "~/utils/inputUtils"
-import { Form } from "@remix-run/react"
+import { Form, data, redirect } from "react-router"
 import { getStringFromFormInput } from "~/utils/generalUtils"
-import { json, redirect } from "@remix-run/server-runtime"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { z } from "zod"
 import Input from "~/components/bank/Input"
@@ -12,7 +11,7 @@ import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
 import Select from "~/components/bank/Select"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import LabelledField from "~/components/bank/LabelledField"
-import type { ActionFunctionArgs } from "@remix-run/server-runtime"
+import type { ActionFunctionArgs } from "react-router"
 
 export const SEARCH_PARAMS = [
   "exactPhrase",
@@ -34,16 +33,16 @@ const BankCitationSearchFormDataSchema = z.object({
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const data = Object.fromEntries(await request.formData())
-  const parsedData = BankCitationSearchFormDataSchema.parse(data)
+  const formValues = Object.fromEntries(await request.formData())
+  const parsedData = BankCitationSearchFormDataSchema.parse(formValues)
 
   const searchTerm = parsedData["searchTerm"]
   if (!searchTerm)
-    throw json({ message: "Search term missing from search" }, { status: 400 })
+    throw data({ message: "Search term missing from search" }, { status: 400 })
 
   const searchParams = SEARCH_PARAMS.map((key) => ({
     key,
-    value: getStringFromFormInput(data[key]),
+    value: getStringFromFormInput(formValues[key]),
   }))
 
   const base = new URL(request.url)

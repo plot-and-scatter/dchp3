@@ -27,7 +27,7 @@ function getWhereClause({
       contains: searchTerm === SEARCH_WILDCARD ? "" : searchTerm,
     },
   }
-  
+
   // Handle is_public OR isUserAdmin logic
   if (!isUserAdmin) {
     where.entry.is_public = true

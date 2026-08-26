@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { headwordConflictError } from "~/services/errors/headwordConflict"
 import { prisma } from "~/db.server"
 import { ZPositiveInt } from "../ZPositiveInt"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
@@ -61,8 +62,11 @@ async function assertNonDuplicateHeadword(
     incomingHeadwordEntry !== undefined && incomingHeadwordEntry !== null
 
   if (headwordsAreDifferent && newHeadwordWouldBeDuplicate) {
-    throw new Error(
-      `"${currentHeadword}" can't be changed to "${incomingHeadword}" as an Entry for "${incomingHeadword}" already exists`
+    // Tagged rather than a bare Error so the edit action can return this as a
+    // message on the page. A bare Error reaches the error boundary, which
+    // replaces the editor and loses everything else the user had typed.
+    throw headwordConflictError(
+      `"${currentHeadword}" can't be renamed to "${incomingHeadword}", because an entry for "${incomingHeadword}" already exists. Headwords must be unique.`
     )
   }
 }

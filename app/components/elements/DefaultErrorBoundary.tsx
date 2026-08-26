@@ -1,8 +1,4 @@
-import {
-  isRouteErrorResponse,
-  useNavigate,
-  useRouteError,
-} from "@remix-run/react"
+import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router"
 import { Link } from "./LinksAndButtons/Link"
 import Button from "./LinksAndButtons/Button"
 

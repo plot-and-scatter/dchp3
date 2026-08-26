@@ -1,5 +1,5 @@
-import { Form } from "@remix-run/react"
-import { useState } from "react"
+import { Form } from "react-router"
+import { Fragment, useState } from "react"
 import Input from "~/components/bank/Input"
 import LabelledField from "~/components/bank/LabelledField"
 import Button from "~/components/elements/LinksAndButtons/Button"
@@ -53,7 +53,7 @@ export default function AddImageForm({ entry }: AddImageFormProps) {
           />
         }
       />
-      <>
+      <Fragment>
         <div className="mt-2 flex flex-row items-center gap-x-4">
           <label
             className="block w-fit cursor-pointer rounded border border-gray-500 py-2 px-4 font-semibold transition-colors"
@@ -78,7 +78,7 @@ export default function AddImageForm({ entry }: AddImageFormProps) {
             Save image
           </Button>
         </div>
-      </>
+      </Fragment>
     </Form>
   )
 }

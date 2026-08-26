@@ -1,11 +1,10 @@
-import { useNavigate } from "@remix-run/react"
+import { useNavigate } from "react-router"
 import Select from "./Select"
 import type { EditCitationIdLoaderData } from "~/routes/bank/edit/$citationId"
-import type { SerializeFrom } from "@remix-run/server-runtime"
 
 interface BankHeadwordCitationSelectProps {
-  citations: SerializeFrom<EditCitationIdLoaderData["headwordCitations"][0]>[]
-  currentCitation: SerializeFrom<EditCitationIdLoaderData["citation"]>
+  citations: EditCitationIdLoaderData["headwordCitations"][0][]
+  currentCitation: EditCitationIdLoaderData["citation"]
 }
 
 export default function BankHeadwordCitationSelect({

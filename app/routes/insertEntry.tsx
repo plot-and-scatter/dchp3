@@ -1,6 +1,5 @@
-import { redirect } from "@remix-run/node"
-import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node"
-import { Form } from "@remix-run/react"
+import { redirect, Form, data, useActionData } from "react-router"
+import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router"
 import Main from "~/components/elements/Layouts/Main"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { insertEntry } from "~/models/entry.server"
@@ -10,13 +9,42 @@ import LabelledField from "~/components/bank/LabelledField"
 import Input from "~/components/bank/Input"
 import TextArea from "~/components/bank/TextArea"
 import RadioOrCheckbox from "~/components/bank/RadioOrCheckbox"
+import FormConflictBanner from "~/components/elements/Form/FormConflictBanner"
+
+// Prisma's unique-constraint code. Checked structurally rather than with
+// `instanceof PrismaClientKnownRequestError`, because that would need a
+// runtime import of @prisma/client in a route module.
+const isDuplicateKeyError = (error: unknown): boolean =>
+  typeof error === "object" &&
+  error !== null &&
+  (error as { code?: unknown }).code === "P2002"
 
 export async function action({ request }: ActionFunctionArgs) {
   // TODO: Refactor this along the lines of all the other entry action
   // functions.
-  const data = Object.fromEntries(await request.formData())
-  insertEntry(data, request)
-  return redirect(`/entries/${data.headword}/edit`)
+  const formValues = Object.fromEntries(await request.formData())
+
+  try {
+    // Must stay awaited. Unawaited, the redirect below raced the insert: the
+    // edit page could load before the row committed, and any failure escaped
+    // as an unhandled rejection with a raw Prisma stack trace instead of
+    // reaching the error boundary.
+    await insertEntry(formValues, request)
+  } catch (error) {
+    if (isDuplicateKeyError(error)) {
+      // Returned, not thrown, so the form stays on screen with what was typed
+      // instead of being replaced by the error boundary.
+      return data(
+        {
+          conflictMessage: `An entry for the headword "${formValues.headword}" already exists. Headwords must be unique, so edit the existing entry instead of creating a second one.`,
+        },
+        { status: 409 }
+      )
+    }
+    throw error
+  }
+
+  return redirect(`/entries/${formValues.headword}/edit`)
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -26,10 +54,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Index() {
+  const actionData = useActionData<typeof action>()
+
   return (
     <Main center={true}>
       <PageHeader>Insert entry</PageHeader>
       <p>Enter the following inputs to create a new headword in the DCHP.</p>
+      <FormConflictBanner actionData={actionData} />
       <Form
         id="entryInsertionForm"
         className="flex w-full max-w-3xl flex-col justify-center pt-6 align-middle"

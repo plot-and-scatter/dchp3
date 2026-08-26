@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 export default function SearchIndexPage() {
-  return <></>
+  return <Fragment></Fragment>
 }

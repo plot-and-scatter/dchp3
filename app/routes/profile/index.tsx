@@ -1,4 +1,5 @@
-import { redirect, type LoaderFunctionArgs } from "@remix-run/server-runtime"
+import { Fragment } from "react"
+import { redirect, type LoaderFunctionArgs } from "react-router"
 import { type LoggedInUser } from "~/services/auth/auth.server"
 import { getUserFromSession } from "~/services/auth/session.server"
 
@@ -17,5 +18,5 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Profile() {
-  return <></>
+  return <Fragment></Fragment>
 }

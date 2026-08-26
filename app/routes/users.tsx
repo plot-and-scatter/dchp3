@@ -1,6 +1,6 @@
-import { useLoaderData } from "@remix-run/react"
-import { type LoaderFunctionArgs } from "@remix-run/server-runtime"
-import { useState } from "react"
+import { useLoaderData } from "react-router"
+import { type LoaderFunctionArgs } from "react-router"
+import { Fragment, useState } from "react"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import Main from "~/components/elements/Layouts/Main"
 import UserListSection from "~/components/profile/UserListSection"
@@ -23,7 +23,7 @@ export default function Users() {
   const [displayInactive, setDisplayInactive] = useState(false)
   const data = useLoaderData<typeof loader>()
   const users = data.users
-  if (users === undefined) return <></>
+  if (users === undefined) return <Fragment></Fragment>
 
   return (
     <Main center={true}>

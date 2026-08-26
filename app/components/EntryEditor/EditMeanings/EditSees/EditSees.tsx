@@ -1,5 +1,6 @@
+import { Fragment } from "react"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
-import { Form } from "@remix-run/react"
+import { Form } from "react-router"
 import { type SeeAlsoList } from "~/components/Entry/Meanings/SeeAlsoItems"
 import IconButton from "~/components/elements/LinksAndButtons/IconButton"
 import SeeAlsoItem from "~/components/Entry/Meanings/SeeAlsoItem"
@@ -14,7 +15,7 @@ const SeeAlsoItems = ({
   seeAlsoItems,
 }: SeeAlsoEditingProps): JSX.Element => {
   if (!seeAlsoItems || seeAlsoItems.length === 0) {
-    return <></>
+    return <Fragment></Fragment>
   }
 
   return (

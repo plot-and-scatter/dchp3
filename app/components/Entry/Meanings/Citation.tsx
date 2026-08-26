@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import SanitizedTextSpan from "~/components/Entry/Common/SanitizedTextSpan"
 import BibliographyPopover from "../../elements/Popovers/BibliographyPopover"
 import type { MeaningType } from "./Meaning"
@@ -10,7 +11,7 @@ interface CitationProps {
 }
 
 const Citation = ({ citation }: CitationProps): JSX.Element => {
-  if (!citation) return <></>
+  if (!citation) return <Fragment></Fragment>
   return (
     <div>
       <span className="mr-2 font-bold leading-tight text-gray-500">

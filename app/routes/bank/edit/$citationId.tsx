@@ -1,5 +1,15 @@
-import type { MetaFunction } from "@remix-run/react"
-import { Form, useActionData, useLoaderData } from "@remix-run/react"
+import type {
+  MetaFunction,
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+} from "react-router"
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  data,
+  redirect,
+} from "react-router"
 import {
   getCitationsByHeadwordAndUserId,
   findOrCreateHeadword,
@@ -10,8 +20,6 @@ import {
 } from "~/models/bank.server"
 import { getEmailFromSession } from "~/services/auth/session.server"
 import { getUserIdByEmailOrThrow } from "~/models/user.server"
-import { json, redirect } from "@remix-run/server-runtime"
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/server-runtime"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { prisma } from "~/db.server"
 import BankEditCitationFields from "~/components/bank/BankEditCitationFields"
@@ -40,7 +48,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   })
 
   if (submission.status !== "success") {
-    return json(submission.reply(), {
+    return data(submission.reply(), {
       status: submission.status === "error" ? 400 : 200,
     })
   }
@@ -53,7 +61,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   invariant(citationId)
 
   const email = await getEmailFromSession(request)
-  if (!email) throw json({ message: `No email on user` }, { status: 500 })
+  if (!email) throw data({ message: `No email on user` }, { status: 500 })
   const userId = await getUserIdByEmailOrThrow({ email })
 
   // If the buttonIntent is delete, delete the citation.

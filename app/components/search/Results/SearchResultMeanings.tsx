@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import SanitizedTextSpan from "../../Entry/Common/SanitizedTextSpan"
 import { Link } from "../../elements/LinksAndButtons/Link"
 
@@ -8,11 +9,11 @@ interface Props {
 
 const SearchResultMeanings = ({ text, data }: Props) => {
   if (data === undefined || data.length === 0) {
-    return <>No results.</>
+    return <Fragment>No results.</Fragment>
   }
 
   return (
-    <>
+    <Fragment>
       {data.map((e) => {
         return (
           <div className="m-1" key={"MeaningDiv" + e.id}>
@@ -27,7 +28,7 @@ const SearchResultMeanings = ({ text, data }: Props) => {
           </div>
         )
       })}
-    </>
+    </Fragment>
   )
 }
 

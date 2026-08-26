@@ -1,7 +1,7 @@
 import { Popover } from "@headlessui/react"
 
 import { usePopper } from "react-popper"
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import SanitizedTextSpan from "../Common/SanitizedTextSpan"
 
 interface ReferencePopoverProps {
@@ -13,7 +13,7 @@ const ReferencePopover = ({ text }: ReferencePopoverProps) => {
   let [popperElement, setPopperElement] = useState<HTMLElement | null>()
   let { styles, attributes } = usePopper(referenceElement, popperElement)
 
-  if (!text) return <></>
+  if (!text) return <Fragment></Fragment>
 
   return (
     <Popover className="relative ml-2 inline-block">

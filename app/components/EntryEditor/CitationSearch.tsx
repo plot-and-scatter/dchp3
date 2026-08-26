@@ -1,5 +1,5 @@
 import { resetFetcher } from "~/routes/api/reset-fetcher"
-import { useFetcher } from "@remix-run/react"
+import { useFetcher } from "react-router"
 import Input from "../bank/Input"
 import type { CitationSearchLoaderData } from "~/routes/api/citations/$searchTerm[.json]"
 import RadioOrCheckbox from "../bank/RadioOrCheckbox"

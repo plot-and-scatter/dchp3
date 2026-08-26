@@ -1,5 +1,4 @@
 import type { LogEntry } from "@prisma/client"
-import type { SerializeFrom } from "@remix-run/server-runtime"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import Select from "../bank/Select"
 import TopLabelledField from "../bank/TopLabelledField"
@@ -11,7 +10,7 @@ interface DictionaryVersionProps {
 
 const calculateDictionaryVersion = (
   dchpVersion: string | null,
-  logEntries?: SerializeFrom<LogEntry>[]
+  logEntries?: LogEntry[]
 ): { version: string; year?: number; date: string } => {
   if (dchpVersion === "dchp1") return { version: `DCHP-1`, date: `pre-1967` }
 
@@ -22,25 +21,31 @@ const calculateDictionaryVersion = (
   if (dchpVersion === "dchp3") {
     // Filter to log entries after April 2025
     const april2025 = new Date("2025-04-01").getTime()
-    filteredLogEntries = logEntries.filter(entry => Date.parse(entry.created) >= april2025)
+    filteredLogEntries = logEntries.filter(
+      (entry) => entry.created.getTime() >= april2025
+    )
   } else if (dchpVersion === "dchp3.1") {
     // Filter to log entries after June 2025
     const june2025 = new Date("2025-06-01").getTime()
-    filteredLogEntries = logEntries.filter(entry => Date.parse(entry.created) >= june2025)
+    filteredLogEntries = logEntries.filter(
+      (entry) => entry.created.getTime() >= june2025
+    )
   }
 
   // Find the *earliest* log entry (when this was created)
   const logEntry = [...filteredLogEntries]
     .sort((a, b) => {
-      const aTime = Date.parse(a.created)
-      const bTime = Date.parse(b.created)
+      const aTime = a.created.getTime()
+      const bTime = b.created.getTime()
       return aTime - bTime
     })
     .shift()
 
   if (!logEntry) return { version: `Unknown`, date: `Post-DCHP-1` }
 
-  const date = new Date(Date.parse(logEntry.created))
+  // Single fetch hands `created` to the browser as a real Date, where the
+  // classic compiler's JSON serialization gave an ISO string.
+  const date = logEntry.created
   const year = date.getFullYear()
   const localeMonth = date.toLocaleString(`en-ca`, { month: "short" })
 

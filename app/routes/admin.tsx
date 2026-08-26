@@ -1,11 +1,11 @@
-import { Outlet, useLoaderData } from "@remix-run/react"
+import { Outlet, useLoaderData } from "react-router"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import {
   getEmailFromSession,
   getUserPermissions,
   redirectIfUserNotLoggedIn,
 } from "~/services/auth/session.server"
-import { type LoaderFunctionArgs } from "@remix-run/server-runtime"
+import { type LoaderFunctionArgs } from "react-router"
 import LogoutButton from "~/components/auth/LogoutButton"
 import Main from "~/components/elements/Layouts/Main"
 import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"

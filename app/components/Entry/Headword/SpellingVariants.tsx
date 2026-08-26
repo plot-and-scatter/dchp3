@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import SanitizedTextSpan from "../Common/SanitizedTextSpan"
 import Input from "../../bank/Input"
@@ -11,7 +12,7 @@ const SpellingVariants = ({
   entry,
   isEditingMode,
 }: alternativesProps): JSX.Element => {
-  if (!isEditingMode && !entry?.spelling_variants) return <></>
+  if (!isEditingMode && !entry?.spelling_variants) return <Fragment></Fragment>
 
   return (
     <h2 className="flex items-center leading-tight text-gray-700 md:text-xl">

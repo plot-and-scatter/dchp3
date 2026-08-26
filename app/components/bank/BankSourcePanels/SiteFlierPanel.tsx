@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { BankSourceTypeEnum } from "~/models/bank.types"
 import Input from "../Input"
 import LabelledField from "../LabelledField"
@@ -10,7 +11,7 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
   const showField = source?.type_id === BankSourceTypeEnum["Site/Flier"]
 
   return (
-    <>
+    <Fragment>
       <LabelledField
         label={`Year Pub`}
         field={
@@ -111,6 +112,6 @@ export default function SiteFlierPanel(props: BankEditCitationFieldsProps) {
           />
         }
       />
-    </>
+    </Fragment>
   )
 }

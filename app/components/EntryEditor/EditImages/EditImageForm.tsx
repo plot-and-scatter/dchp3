@@ -1,4 +1,5 @@
-import { Form } from "@remix-run/react"
+import { Fragment } from "react"
+import { Form } from "react-router"
 import Input from "~/components/bank/Input"
 import LabelledField from "~/components/bank/LabelledField"
 import Button from "~/components/elements/LinksAndButtons/Button"
@@ -13,7 +14,7 @@ type EditImageFormProps = {
 
 export default function EditImageForm({ entry, image }: EditImageFormProps) {
   return (
-    <>
+    <Fragment>
       <Form method="post" action={`/entries/${entry.headword}/edit`}>
         <input
           type="hidden"
@@ -77,6 +78,6 @@ export default function EditImageForm({ entry, image }: EditImageFormProps) {
           </Button>
         </Form>
       </div>
-    </>
+    </Fragment>
   )
 }

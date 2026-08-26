@@ -1,61 +1,61 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { getSearchResults } from '../search.server'
-import { SearchResultEnum } from '~/routes/search/searchResultEnum'
-import type { SearchActionSchema } from '~/routes/search'
-import { getEntriesByBasicTextSearch } from './getEntriesByBasicTextSearch'
-import { getCounts } from './getCounts.server'
+import { describe, it, expect, vi, beforeEach } from "vitest"
+import { getSearchResults } from "../search.server"
+import { SearchResultEnum } from "~/routes/search/searchResultEnum"
+import type { SearchActionSchema } from "~/routes/search"
+import { getEntriesByBasicTextSearch } from "./getEntriesByBasicTextSearch"
+import { getCounts } from "./getCounts.server"
 
 // search.server imports calculatePageSkip from entry.server, which constructs a
 // PrismaClient at import time. Mock the client so the suite needs no DATABASE_URL.
-vi.mock('~/db.server', () => ({
-  prisma: {}
+vi.mock("~/db.server", () => ({
+  prisma: {},
 }))
 
 // Mock all search functions
-vi.mock('./getEntriesByBasicTextSearch', () => ({
+vi.mock("./getEntriesByBasicTextSearch", () => ({
   getEntriesByBasicTextSearch: vi.fn(),
-  getHeadwordCount: vi.fn()
+  getHeadwordCount: vi.fn(),
 }))
 
-vi.mock('./getSearchResultMeanings', () => ({
+vi.mock("./getSearchResultMeanings", () => ({
   getSearchResultMeanings: vi.fn(),
-  getMeaningsCount: vi.fn()
+  getMeaningsCount: vi.fn(),
 }))
 
-vi.mock('./getSearchResultCanadianisms', () => ({
+vi.mock("./getSearchResultCanadianisms", () => ({
   getSearchResultCanadianisms: vi.fn(),
-  getCanadianismsCount: vi.fn()
+  getCanadianismsCount: vi.fn(),
 }))
 
-vi.mock('./getSearchResultUsageNotes', () => ({
+vi.mock("./getSearchResultUsageNotes", () => ({
   getSearchResultUsageNotes: vi.fn(),
-  getUsageNotesCount: vi.fn()
+  getUsageNotesCount: vi.fn(),
 }))
 
-vi.mock('./getSearchResultFistNotes', () => ({
+vi.mock("./getSearchResultFistNotes", () => ({
   getSearchResultFistNotes: vi.fn(),
-  getFistNotesCount: vi.fn()
+  getFistNotesCount: vi.fn(),
 }))
 
-vi.mock('./getSearchResultQuotations', () => ({
+vi.mock("./getSearchResultQuotations", () => ({
   getSearchResultQuotations: vi.fn(),
-  getQuotationsCount: vi.fn()
+  getQuotationsCount: vi.fn(),
 }))
 
-vi.mock('./getCounts.server', () => ({
-  getCounts: vi.fn()
+vi.mock("./getCounts.server", () => ({
+  getCounts: vi.fn(),
 }))
 
-describe('Search Edge Cases and Error Handling', () => {
+describe("Search Edge Cases and Error Handling", () => {
   const baseParams: SearchActionSchema = {
-    searchTerm: 'test',
-    database: ['dchp3'],
-    canadianismType: ['1. Origin'],
+    searchTerm: "test",
+    database: ["dchp3"],
+    canadianismType: ["1. Origin"],
     editingStatus: [],
     nonCanadianism: false,
     caseSensitive: false,
     page: 1,
-    attribute: SearchResultEnum.HEADWORD
+    attribute: SearchResultEnum.HEADWORD,
   }
 
   const mockCounts = {
@@ -64,7 +64,7 @@ describe('Search Edge Cases and Error Handling', () => {
     [SearchResultEnum.CANADIANISM]: 0,
     [SearchResultEnum.USAGE_NOTE]: 0,
     [SearchResultEnum.FIST_NOTE]: 0,
-    [SearchResultEnum.QUOTATION]: 0
+    [SearchResultEnum.QUOTATION]: 0,
   }
 
   beforeEach(() => {
@@ -72,8 +72,8 @@ describe('Search Edge Cases and Error Handling', () => {
     vi.mocked(getCounts).mockResolvedValue(mockCounts)
   })
 
-  describe('Empty and Null Results', () => {
-    it('should handle empty search results gracefully', async () => {
+  describe("Empty and Null Results", () => {
+    it("should handle empty search results gracefully", async () => {
       vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([])
 
       const result = await getSearchResults(baseParams, false)
@@ -82,7 +82,7 @@ describe('Search Edge Cases and Error Handling', () => {
       expect(result.counts).toBeDefined()
     })
 
-    it('should handle null search results gracefully', async () => {
+    it("should handle null search results gracefully", async () => {
       vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue(null as any)
 
       const result = await getSearchResults(baseParams, false)
@@ -91,30 +91,32 @@ describe('Search Edge Cases and Error Handling', () => {
     })
   })
 
-  describe('Large Result Sets', () => {
-    it('should handle very large result sets', async () => {
+  describe("Large Result Sets", () => {
+    it("should handle very large result sets", async () => {
       const largeResultSet = Array.from({ length: 10000 }, (_, i) => ({
         id: i + 1,
         headword: `test${i + 1}`,
-        dchp_version: 'dchp3',
-        is_public: true
+        dchp_version: "dchp3",
+        is_public: true,
       }))
 
-      vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue(largeResultSet as any)
+      vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue(
+        largeResultSet as any
+      )
 
       const result = await getSearchResults(baseParams, false)
 
       expect(result.data.entries).toHaveLength(10000)
     })
 
-    it('should handle large count results', async () => {
+    it("should handle large count results", async () => {
       const largeCounts = {
         [SearchResultEnum.HEADWORD]: 1000000,
         [SearchResultEnum.MEANING]: 500000,
         [SearchResultEnum.CANADIANISM]: 250000,
         [SearchResultEnum.USAGE_NOTE]: 100000,
         [SearchResultEnum.FIST_NOTE]: 50000,
-        [SearchResultEnum.QUOTATION]: 750000
+        [SearchResultEnum.QUOTATION]: 750000,
       }
 
       vi.mocked(getCounts).mockResolvedValue(largeCounts)
@@ -126,10 +128,37 @@ describe('Search Edge Cases and Error Handling', () => {
     })
   })
 
-  describe('Special Characters and Edge Case Searches', () => {
-    it('should handle special characters in search terms', async () => {
-      const specialChars = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '[', ']', '{', '}', '|', '\\', ':', ';', '"', "'", '<', '>', ',', '.', '?', '/']
-      
+  describe("Special Characters and Edge Case Searches", () => {
+    it("should handle special characters in search terms", async () => {
+      const specialChars = [
+        "!",
+        "@",
+        "#",
+        "$",
+        "%",
+        "^",
+        "&",
+        "*",
+        "(",
+        ")",
+        "[",
+        "]",
+        "{",
+        "}",
+        "|",
+        "\\",
+        ":",
+        ";",
+        '"',
+        "'",
+        "<",
+        ">",
+        ",",
+        ".",
+        "?",
+        "/",
+      ]
+
       for (const char of specialChars) {
         const params = { ...baseParams, searchTerm: char }
         vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([])
@@ -141,12 +170,12 @@ describe('Search Edge Cases and Error Handling', () => {
       }
     })
 
-    it('should handle SQL injection attempts', async () => {
+    it("should handle SQL injection attempts", async () => {
       const maliciousInputs = [
         "'; DROP TABLE det_entries; --",
         "1' OR '1'='1",
         "test'; SELECT * FROM det_entries; --",
-        "test' UNION SELECT * FROM det_entries --"
+        "test' UNION SELECT * FROM det_entries --",
       ]
 
       for (const input of maliciousInputs) {
@@ -160,10 +189,10 @@ describe('Search Edge Cases and Error Handling', () => {
       }
     })
 
-    it('should handle extremely long search terms', async () => {
-      const longSearchTerm = 'a'.repeat(10000)
+    it("should handle extremely long search terms", async () => {
+      const longSearchTerm = "a".repeat(10000)
       const params = { ...baseParams, searchTerm: longSearchTerm }
-      
+
       vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([])
 
       const result = await getSearchResults(params, false)
@@ -172,9 +201,17 @@ describe('Search Edge Cases and Error Handling', () => {
       expect(result.data.entries).toEqual([])
     })
 
-    it('should handle unicode characters', async () => {
-      const unicodeTerms = ['café', 'naïve', '中文', 'العربية', 'русский', '🌟', 'émigré']
-      
+    it("should handle unicode characters", async () => {
+      const unicodeTerms = [
+        "café",
+        "naïve",
+        "中文",
+        "العربية",
+        "русский",
+        "🌟",
+        "émigré",
+      ]
+
       for (const term of unicodeTerms) {
         const params = { ...baseParams, searchTerm: term }
         vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([])
@@ -187,8 +224,8 @@ describe('Search Edge Cases and Error Handling', () => {
     })
   })
 
-  describe('Boundary Values', () => {
-    it('should handle page number 0', async () => {
+  describe("Boundary Values", () => {
+    it("should handle page number 0", async () => {
       const params = { ...baseParams, page: 0 }
       vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([])
 
@@ -197,7 +234,7 @@ describe('Search Edge Cases and Error Handling', () => {
       expect(result).toBeDefined()
     })
 
-    it('should handle extremely high page numbers', async () => {
+    it("should handle extremely high page numbers", async () => {
       const params = { ...baseParams, page: 999999 }
       vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([])
 
@@ -207,7 +244,7 @@ describe('Search Edge Cases and Error Handling', () => {
       expect(result.data.entries).toEqual([])
     })
 
-    it('should handle empty database array', async () => {
+    it("should handle empty database array", async () => {
       const params = { ...baseParams, database: [] }
       vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([])
 
@@ -216,7 +253,7 @@ describe('Search Edge Cases and Error Handling', () => {
       expect(result).toBeDefined()
     })
 
-    it('should handle empty canadianism type array', async () => {
+    it("should handle empty canadianism type array", async () => {
       const params = { ...baseParams, canadianismType: [] }
       vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([])
 
@@ -225,11 +262,17 @@ describe('Search Edge Cases and Error Handling', () => {
       expect(result).toBeDefined()
     })
 
-    it('should handle all editing statuses selected', async () => {
+    it("should handle all editing statuses selected", async () => {
       const allStatuses = [
-        'first_draft', 'revised_draft', 'semantically_revised', 
-        'edited_for_style', 'proofread', 'chief_editor_ok', 
-        'final_proofing', 'no_cdn_susp', 'no_cdn_conf'
+        "first_draft",
+        "revised_draft",
+        "semantically_revised",
+        "edited_for_style",
+        "proofread",
+        "chief_editor_ok",
+        "final_proofing",
+        "no_cdn_susp",
+        "no_cdn_conf",
       ]
       const params = { ...baseParams, editingStatus: allStatuses }
       vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([])
@@ -240,35 +283,43 @@ describe('Search Edge Cases and Error Handling', () => {
     })
   })
 
-  describe('Database Error Simulation', () => {
-    it('should handle database connection errors', async () => {
-      vi.mocked(getEntriesByBasicTextSearch).mockRejectedValue(new Error('Database connection failed'))
+  describe("Database Error Simulation", () => {
+    it("should handle database connection errors", async () => {
+      vi.mocked(getEntriesByBasicTextSearch).mockRejectedValue(
+        new Error("Database connection failed")
+      )
 
-      await expect(getSearchResults(baseParams, false)).rejects.toThrow('Database connection failed')
+      await expect(getSearchResults(baseParams, false)).rejects.toThrow(
+        "Database connection failed"
+      )
     })
 
-    it('should handle timeout errors', async () => {
-      vi.mocked(getEntriesByBasicTextSearch).mockRejectedValue(new Error('Query timeout'))
+    it("should handle timeout errors", async () => {
+      vi.mocked(getEntriesByBasicTextSearch).mockRejectedValue(
+        new Error("Query timeout")
+      )
 
-      await expect(getSearchResults(baseParams, false)).rejects.toThrow('Query timeout')
+      await expect(getSearchResults(baseParams, false)).rejects.toThrow(
+        "Query timeout"
+      )
     })
 
-    it('should handle malformed data errors', async () => {
+    it("should handle malformed data errors", async () => {
       vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([
-        { id: 'invalid', headword: null, dchp_version: undefined } as any
+        { id: "invalid", headword: null, dchp_version: undefined } as any,
       ])
 
       const result = await getSearchResults(baseParams, false)
 
       expect(result.data.entries).toEqual([
-        { id: 'invalid', headword: null, dchp_version: undefined }
+        { id: "invalid", headword: null, dchp_version: undefined },
       ])
     })
   })
 
-  describe('Invalid Attribute Handling', () => {
-    it('should default to headword search for invalid attribute', async () => {
-      const params = { ...baseParams, attribute: 'invalid_attribute' as any }
+  describe("Invalid Attribute Handling", () => {
+    it("should default to headword search for invalid attribute", async () => {
+      const params = { ...baseParams, attribute: "invalid_attribute" as any }
       vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([])
 
       const result = await getSearchResults(params, false)
@@ -278,9 +329,9 @@ describe('Search Edge Cases and Error Handling', () => {
     })
   })
 
-  describe('Concurrent Request Handling', () => {
-    it('should handle multiple concurrent search requests', async () => {
-      const requests = Array.from({ length: 10 }, (_, i) => 
+  describe("Concurrent Request Handling", () => {
+    it("should handle multiple concurrent search requests", async () => {
+      const requests = Array.from({ length: 10 }, (_, i) =>
         getSearchResults({ ...baseParams, searchTerm: `test${i}` }, false)
       )
 
@@ -289,21 +340,23 @@ describe('Search Edge Cases and Error Handling', () => {
       const results = await Promise.all(requests)
 
       expect(results).toHaveLength(10)
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result).toBeDefined()
         expect(result.data.entries).toEqual([])
       })
     })
   })
 
-  describe('Memory and Performance Edge Cases', () => {
-    it('should handle search results with very long text fields', async () => {
-      const longText = 'a'.repeat(100000)
+  describe("Memory and Performance Edge Cases", () => {
+    it("should handle search results with very long text fields", async () => {
+      const longText = "a".repeat(100000)
       const resultsWithLongText = [
-        { id: 1, headword: longText, dchp_version: 'dchp3', is_public: true }
+        { id: 1, headword: longText, dchp_version: "dchp3", is_public: true },
       ]
 
-      vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue(resultsWithLongText as any)
+      vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue(
+        resultsWithLongText as any
+      )
 
       const result = await getSearchResults(baseParams, false)
 
@@ -313,26 +366,28 @@ describe('Search Edge Cases and Error Handling', () => {
       ).toHaveLength(100000)
     })
 
-    it('should handle deeply nested result objects', async () => {
+    it("should handle deeply nested result objects", async () => {
       const complexResult = {
         id: 1,
-        headword: 'test',
-        dchp_version: 'dchp3',
+        headword: "test",
+        dchp_version: "dchp3",
         is_public: true,
         nested: {
           deep: {
             very: {
               deeply: {
                 nested: {
-                  data: 'value'
-                }
-              }
-            }
-          }
-        }
+                  data: "value",
+                },
+              },
+            },
+          },
+        },
       }
 
-      vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([complexResult as any])
+      vi.mocked(getEntriesByBasicTextSearch).mockResolvedValue([
+        complexResult as any,
+      ])
 
       const result = await getSearchResults(baseParams, false)
 

@@ -1,15 +1,20 @@
-import type { MetaFunction } from "@remix-run/react"
+import { Fragment } from "react"
+import type {
+  MetaFunction,
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+} from "react-router"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { getEntryByHeadword, updateLogEntries } from "~/models/entry.server"
 import { handleEditFormAction } from "./handleEditFormAction"
 import { redirectIfUserLacksEntryEditPermission } from "~/services/auth/session.server"
-import { useLoaderData } from "@remix-run/react"
+import { useLoaderData, useActionData, redirect, data } from "react-router"
 import EntryEditor from "~/components/EntryEditor/EntryEditor"
 import invariant from "tiny-invariant"
-import { redirect, json } from "@remix-run/node"
-import type { SerializeFrom, ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node"
 import { EntryEditorFormActionEnum } from "~/components/EntryEditor/EntryEditorForm/EntryEditorFormActionEnum"
 import { BASE_APP_TITLE } from "~/root"
+import FormConflictBanner from "~/components/elements/Form/FormConflictBanner"
+import { isHeadwordConflictError } from "~/services/errors/headwordConflict"
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
   {
@@ -19,9 +24,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
   },
 ]
 
-export type EntryEditLoaderData = SerializeFrom<
-  Awaited<Promise<ReturnType<typeof loader>>>
->
+export type EntryEditLoaderData = Awaited<Promise<ReturnType<typeof loader>>>
 
 export async function action({ params, request }: ActionFunctionArgs) {
   invariant(params.headword, "No headword specified")
@@ -36,10 +39,20 @@ export async function action({ params, request }: ActionFunctionArgs) {
     await updateLogEntries(params.headword, request, entryEditorFormAction)
   }
 
-  const submission = await handleEditFormAction(formData)
+  let submission
+  try {
+    submission = await handleEditFormAction(formData)
+  } catch (error) {
+    // Returned, not rethrown: the error boundary would replace the editor and
+    // discard every other unsaved change on the page.
+    if (isHeadwordConflictError(error)) {
+      return data({ conflictMessage: error.message }, { status: 409 })
+    }
+    throw error
+  }
 
   if (submission.status !== "success") {
-    return json(submission.reply(), {
+    return data(submission.reply(), {
       status: submission.status === "error" ? 400 : 200,
     })
   }
@@ -74,7 +87,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
     submission.value.entryEditorFormAction
   )
 
-  return json(submission.reply())
+  return data(submission.reply())
 }
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -98,8 +111,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
 export default function EntryDetailsPage() {
   const { entry } = useLoaderData<typeof loader>()
+  const actionData = useActionData<typeof action>()
 
-  return <EntryEditor entry={entry} />
+  return (
+    <Fragment>
+      <FormConflictBanner actionData={actionData} />
+      <EntryEditor entry={entry} />
+    </Fragment>
+  )
 }
 
 export const ErrorBoundary = DefaultErrorBoundary

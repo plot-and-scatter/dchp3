@@ -3,7 +3,7 @@ import type { CitationType } from "../../Entry/Meanings/Citation"
 import BibliographyItem from "./BibliographyItem"
 
 import { usePopper } from "react-popper"
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import { Link } from "../LinksAndButtons/Link"
 
 interface BibliographyPopoverProps {
@@ -15,7 +15,7 @@ const BibliographyPopover = ({ citation }: BibliographyPopoverProps) => {
   let [popperElement, setPopperElement] = useState<HTMLElement | null>()
   let { styles, attributes } = usePopper(referenceElement, popperElement)
 
-  if (!citation) return <></>
+  if (!citation) return <Fragment></Fragment>
 
   return (
     <Popover className="relative ml-2 inline-block">

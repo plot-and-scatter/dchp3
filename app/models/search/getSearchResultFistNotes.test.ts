@@ -1,43 +1,46 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { getSearchResultFistNotes, getFistNotesCount } from './getSearchResultFistNotes'
-import type { SearchResultParams } from '../search.server'
-import { prisma } from '~/db.server'
-import { SEARCH_WILDCARD } from '../search.server'
+import { describe, it, expect, vi, beforeEach } from "vitest"
+import {
+  getSearchResultFistNotes,
+  getFistNotesCount,
+} from "./getSearchResultFistNotes"
+import type { SearchResultParams } from "../search.server"
+import { prisma } from "~/db.server"
+import { SEARCH_WILDCARD } from "../search.server"
 
 // Mock prisma
-vi.mock('~/db.server', () => ({
+vi.mock("~/db.server", () => ({
   prisma: {
-    $queryRaw: vi.fn()
-  }
+    $queryRaw: vi.fn(),
+  },
 }))
 
-describe('getSearchResultFistNotes', () => {
+describe("getSearchResultFistNotes", () => {
   const mockParams: SearchResultParams = {
-    searchTerm: 'test fist note',
-    database: ['dchp3'],
-    canadianismType: ['1. Origin'],
+    searchTerm: "test fist note",
+    database: ["dchp3"],
+    canadianismType: ["1. Origin"],
     editingStatus: [],
     nonCanadianism: false,
     caseSensitive: false,
     page: 1,
-    attribute: 'fist_note',
+    attribute: "fist_note",
     isUserAdmin: false,
     take: 100,
     skip: 0,
-    canadianismTypes: ['1. Origin'],
-    versions: ['dchp3']
+    canadianismTypes: ["1. Origin"],
+    versions: ["dchp3"],
   }
 
   const mockFistNotes = [
-    { headword: 'test1', fistNote: 'test fist note 1', id: 1 },
-    { headword: 'test2', fistNote: 'test fist note 2', id: 2 }
+    { headword: "test1", fistNote: "test fist note 1", id: 1 },
+    { headword: "test2", fistNote: "test fist note 2", id: 2 },
   ]
 
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it('should return fist notes with proper search criteria', async () => {
+  it("should return fist notes with proper search criteria", async () => {
     vi.mocked(prisma.$queryRaw).mockResolvedValue(mockFistNotes)
 
     const result = await getSearchResultFistNotes(mockParams)
@@ -46,7 +49,7 @@ describe('getSearchResultFistNotes', () => {
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
   })
 
-  it('should handle wildcard search', async () => {
+  it("should handle wildcard search", async () => {
     const params = { ...mockParams, searchTerm: SEARCH_WILDCARD }
     vi.mocked(prisma.$queryRaw).mockResolvedValue(mockFistNotes)
 
@@ -55,7 +58,7 @@ describe('getSearchResultFistNotes', () => {
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
   })
 
-  it('should handle case sensitive search', async () => {
+  it("should handle case sensitive search", async () => {
     const params = { ...mockParams, caseSensitive: true }
     vi.mocked(prisma.$queryRaw).mockResolvedValue(mockFistNotes)
 
@@ -64,7 +67,7 @@ describe('getSearchResultFistNotes', () => {
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
   })
 
-  it('should handle pagination', async () => {
+  it("should handle pagination", async () => {
     const params = { ...mockParams, skip: 50, take: 10 }
     vi.mocked(prisma.$queryRaw).mockResolvedValue(mockFistNotes)
 
@@ -73,7 +76,7 @@ describe('getSearchResultFistNotes', () => {
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
   })
 
-  it('should handle non-canadianism filter', async () => {
+  it("should handle non-canadianism filter", async () => {
     const params = { ...mockParams, nonCanadianism: true }
     vi.mocked(prisma.$queryRaw).mockResolvedValue(mockFistNotes)
 
@@ -82,7 +85,7 @@ describe('getSearchResultFistNotes', () => {
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
   })
 
-  it('should handle admin users', async () => {
+  it("should handle admin users", async () => {
     const params = { ...mockParams, isUserAdmin: true }
     vi.mocked(prisma.$queryRaw).mockResolvedValue(mockFistNotes)
 
@@ -91,11 +94,11 @@ describe('getSearchResultFistNotes', () => {
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
   })
 
-  it('should handle multiple database versions', async () => {
-    const params = { 
-      ...mockParams, 
-      database: ['dchp1', 'dchp2', 'dchp3'],
-      versions: ['dchp1', 'dchp2', 'dchp3']
+  it("should handle multiple database versions", async () => {
+    const params = {
+      ...mockParams,
+      database: ["dchp1", "dchp2", "dchp3"],
+      versions: ["dchp1", "dchp2", "dchp3"],
     }
     vi.mocked(prisma.$queryRaw).mockResolvedValue(mockFistNotes)
 
@@ -104,10 +107,10 @@ describe('getSearchResultFistNotes', () => {
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
   })
 
-  it('should handle editing status filters', async () => {
-    const params = { 
-      ...mockParams, 
-      editingStatus: ['first_draft', 'revised_draft']
+  it("should handle editing status filters", async () => {
+    const params = {
+      ...mockParams,
+      editingStatus: ["first_draft", "revised_draft"],
     }
     vi.mocked(prisma.$queryRaw).mockResolvedValue(mockFistNotes)
 
@@ -116,7 +119,7 @@ describe('getSearchResultFistNotes', () => {
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
   })
 
-  it('should return empty array when no results found', async () => {
+  it("should return empty array when no results found", async () => {
     vi.mocked(prisma.$queryRaw).mockResolvedValue([])
 
     const result = await getSearchResultFistNotes(mockParams)
@@ -125,28 +128,28 @@ describe('getSearchResultFistNotes', () => {
   })
 })
 
-describe('getFistNotesCount', () => {
+describe("getFistNotesCount", () => {
   const mockParams: SearchResultParams = {
-    searchTerm: 'test fist note',
-    database: ['dchp3'],
-    canadianismType: ['1. Origin'],
+    searchTerm: "test fist note",
+    database: ["dchp3"],
+    canadianismType: ["1. Origin"],
     editingStatus: [],
     nonCanadianism: false,
     caseSensitive: false,
     page: 1,
-    attribute: 'fist_note',
+    attribute: "fist_note",
     isUserAdmin: false,
     take: 100,
     skip: 0,
-    canadianismTypes: ['1. Origin'],
-    versions: ['dchp3']
+    canadianismTypes: ["1. Origin"],
+    versions: ["dchp3"],
   }
 
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it('should return count with proper search criteria', async () => {
+  it("should return count with proper search criteria", async () => {
     vi.mocked(prisma.$queryRaw).mockResolvedValue([{ count: 42 }])
 
     const result = await getFistNotesCount(mockParams)
@@ -155,7 +158,7 @@ describe('getFistNotesCount', () => {
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
   })
 
-  it('should handle wildcard search in count', async () => {
+  it("should handle wildcard search in count", async () => {
     const params = { ...mockParams, searchTerm: SEARCH_WILDCARD }
     vi.mocked(prisma.$queryRaw).mockResolvedValue([{ count: 100 }])
 
@@ -164,7 +167,7 @@ describe('getFistNotesCount', () => {
     expect(result).toEqual([{ count: 100 }])
   })
 
-  it('should handle case sensitive count', async () => {
+  it("should handle case sensitive count", async () => {
     const params = { ...mockParams, caseSensitive: true }
     vi.mocked(prisma.$queryRaw).mockResolvedValue([{ count: 5 }])
 
@@ -173,7 +176,7 @@ describe('getFistNotesCount', () => {
     expect(result).toEqual([{ count: 5 }])
   })
 
-  it('should return 0 count when no matches found', async () => {
+  it("should return 0 count when no matches found", async () => {
     vi.mocked(prisma.$queryRaw).mockResolvedValue([{ count: 0 }])
 
     const result = await getFistNotesCount(mockParams)

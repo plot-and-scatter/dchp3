@@ -1,6 +1,7 @@
+import { Fragment } from "react"
 import { resetFetcher } from "~/routes/api/reset-fetcher"
 import { useDebouncedCallback } from "use-debounce"
-import { useFetcher } from "@remix-run/react"
+import { useFetcher } from "react-router"
 import Input from "../bank/Input"
 
 const HEADWORD_DATA_URL = `/api/entries/headwords.json`
@@ -37,14 +38,14 @@ export default function HeadwordAutocomplete() {
         </div>
       </div>
       {headwords.data && (
-        <>
+        <Fragment>
           <strong>{headwords.data.length} headwords</strong>
           <ul>
             {headwords.data.map((headword) => (
               <li key={headword.id}>{headword.headword}</li>
             ))}
           </ul>
-        </>
+        </Fragment>
       )}
     </div>
   )

@@ -1,9 +1,12 @@
 import { parseWithZod } from "@conform-to/zod"
 import { z } from "zod"
-import { CreateReferenceSchema } from "./createReference"
-import { DeleteReferenceSchema } from "./deleteReference"
-import { ReferenceActionEnum } from "./ReferenceActionEnum"
-import { UpdateReferenceSchema } from "./updateReference"
+
+import {
+  CreateReferenceSchema,
+  DeleteReferenceSchema,
+  ReferenceActionEnum,
+  UpdateReferenceSchema,
+} from "~/models/reference.schemas"
 
 // references/add-reference posts CreateReferenceSchema; references/$id posts a
 // discriminated union of update and delete. Both actions throw outright on a

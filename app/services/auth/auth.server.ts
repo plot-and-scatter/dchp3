@@ -1,7 +1,7 @@
 import { Auth0Strategy } from "remix-auth-auth0"
 import { Authenticator } from "remix-auth"
 import { getBaseDeploymentUrl } from "utils/api.server"
-import { json } from "@remix-run/server-runtime"
+import { data } from "react-router"
 import { sessionStorage } from "./session.server"
 import { getEmail, getIsAdmin } from "utils/user.server"
 import type { AuthRole } from "./AuthRole"
@@ -46,7 +46,7 @@ export const authenticator = () => {
       const email = getEmail(profile)
 
       if (!email)
-        throw json({ message: "No email defined on user!" }, { status: 500 })
+        throw data({ message: "No email defined on user!" }, { status: 500 })
 
       let user: User | null
 
@@ -64,7 +64,7 @@ export const authenticator = () => {
         })
 
         if (!user) {
-          throw json(
+          throw data(
             {
               message: `No user in database with email ${email}, and could not create one`,
             },

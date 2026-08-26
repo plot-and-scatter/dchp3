@@ -1,13 +1,12 @@
 import { horizonText } from "~/services/bank/textHorizon"
-import { NavLink } from "@remix-run/react"
+import { NavLink } from "react-router"
 import { sourceTypeToText } from "utils/source"
 import Highlighter from "react-highlight-words"
 import type { CitationSearchLoaderData } from "~/routes/api/citations/$searchTerm[.json]"
 import type { SearchOptions } from "~/services/bank/searchCitations"
-import type { SerializeFrom } from "@remix-run/server-runtime"
 
 interface BankSearchResultProps {
-  citation: SerializeFrom<CitationSearchLoaderData["citations"][0]>
+  citation: CitationSearchLoaderData["citations"][0]
   searchOptions: SearchOptions
 }
 

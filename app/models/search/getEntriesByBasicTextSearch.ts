@@ -63,7 +63,9 @@ export function getHeadwordCount({
         (de.semantically_revised = 1 AND ${
           statusMap["semantically_revised"] === true
         }) OR
-        (de.edited_for_style = 1 AND ${statusMap["edited_for_style"] === true}) OR
+        (de.edited_for_style = 1 AND ${
+          statusMap["edited_for_style"] === true
+        }) OR
         (de.proofread = 1 AND ${statusMap["proofread"] === true}) OR
         (de.chief_editor_ok = 1 AND ${statusMap["chief_editor_ok"] === true}) OR
         (de.final_proofing = 1 AND ${statusMap["final_proofing"] === true}) OR
@@ -147,7 +149,9 @@ export function getEntriesByBasicTextSearch({
         (de.semantically_revised = 1 AND ${
           statusMap["semantically_revised"] === true
         }) OR
-        (de.edited_for_style = 1 AND ${statusMap["edited_for_style"] === true}) OR
+        (de.edited_for_style = 1 AND ${
+          statusMap["edited_for_style"] === true
+        }) OR
         (de.proofread = 1 AND ${statusMap["proofread"] === true}) OR
         (de.chief_editor_ok = 1 AND ${statusMap["chief_editor_ok"] === true}) OR
         (de.final_proofing = 1 AND ${statusMap["final_proofing"] === true}) OR

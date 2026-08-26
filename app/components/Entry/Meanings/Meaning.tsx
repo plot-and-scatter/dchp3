@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import Definition from "./Definition"
 import HandNoteBlock from "~/components/Entry/Common/HandNoteBlock"
@@ -21,7 +22,7 @@ const Meaning = ({
   const { order: number, partofspeech: partOfSpeech, usage, dagger } = meaning
 
   return (
-    <>
+    <Fragment>
       <div
         className="-mx-3 my-3 border-l-8 border-gray-200 md:my-8 md:text-lg"
         id={`meaning-${meaning.id}`}
@@ -48,7 +49,7 @@ const Meaning = ({
           <Citations meaning={meaning} />
         </div>
       </div>
-    </>
+    </Fragment>
   )
 }
 

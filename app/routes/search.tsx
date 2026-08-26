@@ -1,5 +1,5 @@
 import { enumValues } from "~/utils/inputUtils"
-import { Form, useLoaderData } from "@remix-run/react"
+import { Form, useLoaderData } from "react-router"
 import { getFormProps, useForm } from "@conform-to/react"
 import { getSearchResults } from "~/models/search.server"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
@@ -16,7 +16,7 @@ import Main from "~/components/elements/Layouts/Main"
 import SearchResult from "~/components/search/Results/SearchResult"
 import SearchTermInput from "~/components/search/SearchTermInput"
 import type { AllSearchResults } from "~/models/search.server"
-import type { LoaderFunctionArgs } from "@remix-run/server-runtime"
+import type { LoaderFunctionArgs } from "react-router"
 
 const searchActionSchema = z.object({
   searchTerm: z

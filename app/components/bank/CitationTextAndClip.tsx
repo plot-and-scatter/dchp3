@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import LabelledField from "./LabelledField"
 import TextArea from "./TextArea"
 import Input from "./Input"
@@ -13,7 +13,7 @@ export default function CitationTextAndClip({
   const [citationText, setCitationText] = useState(citation?.text || "")
 
   return (
-    <>
+    <Fragment>
       <LabelledField
         label={`Citation`}
         field={
@@ -82,7 +82,7 @@ export default function CitationTextAndClip({
         field={
           // TODO: Put this elsewhere. We are using the <code> tag because
           // the smartquotes feature does not apply to it.
-          <>
+          <Fragment>
             <Input
               name={`citation.clipped_text`}
               hidden
@@ -96,9 +96,9 @@ export default function CitationTextAndClip({
               </span>
               {citationText.substring(clipEnd)}
             </code>
-          </>
+          </Fragment>
         }
       />
-    </>
+    </Fragment>
   )
 }

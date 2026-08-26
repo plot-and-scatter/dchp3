@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import Input from "../../bank/Input"
 import TopLabelledField from "../../bank/TopLabelledField"
 
@@ -10,7 +11,7 @@ export default function HeadwordText({
   headword,
   isEditingMode,
 }: HeadwordTextProps) {
-  if (!isEditingMode) return <>{headword}</>
+  if (!isEditingMode) return <Fragment>{headword}</Fragment>
 
   return (
     <TopLabelledField

@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react"
+import { Link } from "react-router"
 
 const Header = (): JSX.Element => {
   return (

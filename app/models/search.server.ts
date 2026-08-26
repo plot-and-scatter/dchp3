@@ -53,9 +53,10 @@ export async function getSearchResults(
   isUserAdmin: boolean
 ): Promise<AllSearchResults> {
   const versions = searchParams.database || ["dchp1", "dchp2", "dchp3"]
-  const canadianismTypes = searchParams.canadianismType?.length > 0 ? searchParams.canadianismType : [
-    ...BASE_CANADANISM_TYPES,
-  ]
+  const canadianismTypes =
+    searchParams.canadianismType?.length > 0
+      ? searchParams.canadianismType
+      : [...BASE_CANADANISM_TYPES]
 
   const params = {
     ...searchParams,

@@ -1,9 +1,10 @@
+import { Fragment } from "react"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { prisma } from "~/db.server"
-import { useLoaderData, useParams } from "@remix-run/react"
+import { useLoaderData, useParams } from "react-router"
 import invariant from "tiny-invariant"
-import type { LoaderFunctionArgs } from "@remix-run/node"
+import type { LoaderFunctionArgs } from "react-router"
 
 export async function loader({ params }: LoaderFunctionArgs) {
   invariant(params.initialLetter, "initialLetter not found")
@@ -28,9 +29,9 @@ export default function EntryDetailsPage() {
   return (
     <div>
       <h3 className="text-2xl font-bold">
-        <>
+        <Fragment>
           Entries starting with {params.initialLetter}: {headwords.length}
-        </>
+        </Fragment>
       </h3>
       <div className="my-4 flex flex-col justify-center">
         {headwords.map((h) => {

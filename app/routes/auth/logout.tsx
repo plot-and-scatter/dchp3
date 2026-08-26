@@ -1,7 +1,6 @@
-import { useSubmit } from "@remix-run/react"
-import type { ActionFunctionArgs } from "@remix-run/server-runtime"
-import { redirect } from "@remix-run/server-runtime"
-import { useEffect } from "react"
+import { useSubmit, redirect } from "react-router"
+import type { ActionFunctionArgs } from "react-router"
+import { Fragment, useEffect } from "react"
 import { getBaseDeploymentUrl } from "utils/api.server"
 import {
   destroySession,
@@ -37,5 +36,5 @@ export default function Logout() {
     return () => clearTimeout(timer)
   }, [submit])
 
-  return <>Logging out...</>
+  return <Fragment>Logging out...</Fragment>
 }

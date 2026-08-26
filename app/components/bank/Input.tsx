@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import ValidationErrorText from "../elements/Form/ValidationErrorText"
 import clsx from "clsx"
 
@@ -27,7 +28,7 @@ export default function Input({
   const hasErrors = !!conformField?.errors && conformField?.errors.length > 0
 
   return (
-    <>
+    <Fragment>
       <input
         name={name}
         className={clsx(
@@ -43,6 +44,6 @@ export default function Input({
       {hasErrors && (
         <ValidationErrorText className="flex-wrap">{error}</ValidationErrorText>
       )}
-    </>
+    </Fragment>
   )
 }
