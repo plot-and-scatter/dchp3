@@ -73,13 +73,18 @@ export default function BankEditCitationFields({
             label={`Time Added`}
             field={
               <>
-                {citation.created} by {citation.creator?.email}
+                {/* Single fetch hands these to the browser as real Dates.
+                    The classic compiler's JSON serialization stringified them
+                    on the way, and rendering a Date directly throws
+                    "Objects are not valid as a React child". toISOString
+                    reproduces exactly what was shown before. */}
+                {citation.created?.toISOString()} by {citation.creator?.email}
               </>
             }
           />
           <LabelledField
             label={`Last Modified`}
-            field={<>{citation.last_modified}</>}
+            field={<>{citation.last_modified?.toISOString()}</>}
           />
         </>
       )}
