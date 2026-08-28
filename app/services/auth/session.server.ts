@@ -19,7 +19,10 @@ export const sessionStorage = createCookieSessionStorage({
     path: "/",
     httpOnly: true,
     secrets: [process.env.COOKIE_SECRET!],
-    secure: process.env.NODE_ENV === "production",
+    // A Secure cookie is dropped by the browser on plain-http deployments
+    // (e.g. staging), which breaks the Auth0 state check — so key this off
+    // the actual protocol rather than NODE_ENV.
+    secure: process.env.SITE_URL?.startsWith("https://") ?? false,
   },
 })
 
