@@ -1,0 +1,11 @@
+[Unit]
+Description=React Router server for DCHP3 staging app
+After=network-online.target mysqld.service
+
+[Service]
+ExecStart=/bin/bash /var/www/dchp3-staging/scripts/server/start-staging.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
