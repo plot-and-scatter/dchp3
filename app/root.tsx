@@ -10,6 +10,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRouteLoaderData,
 } from "react-router"
 
 import smartquotes from "smartquotes"
@@ -42,15 +43,17 @@ export const meta: MetaFunction = () => [{ title: BASE_APP_TITLE }]
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getUserFromSession(request)
-  return { user }
+  return { user, isStaging: process.env.DEPLOYMENT_ENV === "staging" }
 }
 
 const defaultApp = ({
   user,
   error,
+  isStaging,
 }: {
   user: LoggedInUser | undefined
   error?: boolean
+  isStaging?: boolean
 }) => {
   return (
     <html lang="en" className="h-full">
@@ -67,7 +70,7 @@ const defaultApp = ({
       </head>
       <body className="h-full">
         <div className="relative">
-          <Header />
+          <Header isStaging={isStaging} />
           <Nav user={user} />
           {error ? (
             <TextPageMain>
@@ -85,15 +88,18 @@ const defaultApp = ({
 }
 
 export default function App() {
-  const { user } = useLoaderData<typeof loader>()
+  const { user, isStaging } = useLoaderData<typeof loader>()
 
   useEffect(() => {
     smartquotes().listen()
   }, [])
 
-  return defaultApp({ user })
+  return defaultApp({ user, isStaging })
 }
 
 export function ErrorBoundary() {
-  return defaultApp({ user: undefined, error: true })
+  // The root loader's data is still available on error pages unless the
+  // loader itself threw.
+  const data = useRouteLoaderData<typeof loader>("root")
+  return defaultApp({ user: undefined, error: true, isStaging: data?.isStaging })
 }
