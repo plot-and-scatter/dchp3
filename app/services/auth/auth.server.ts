@@ -5,7 +5,7 @@ import { data } from "react-router"
 import { sessionStorage } from "./session.server"
 import { getEmail, getIsAdmin } from "utils/user.server"
 import type { AuthRole } from "./AuthRole"
-import type { User } from "@prisma/client"
+import type { DisplayUser } from "~/models/user.server"
 import { getUserByEmailSafe } from "~/models/user.server"
 import { prisma } from "~/db.server"
 
@@ -48,7 +48,7 @@ export const authenticator = () => {
       if (!email)
         throw data({ message: "No email defined on user!" }, { status: 500 })
 
-      let user: User | null
+      let user: DisplayUser | null
 
       user = await getUserByEmailSafe({ email })
 

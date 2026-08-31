@@ -4,7 +4,7 @@ import { Fragment, useState } from "react"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import Main from "~/components/elements/Layouts/Main"
 import UserListSection from "~/components/profile/UserListSection"
-import { type User, getAllUsers } from "~/models/user.server"
+import { type DisplayUser, getAllUsers } from "~/models/user.server"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -14,7 +14,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return { users }
 }
 
-function isAccessLevel(user: User, level: number) {
+function isAccessLevel(user: DisplayUser, level: number) {
   if (user === null) return false
   return user.access_level === level
 }
