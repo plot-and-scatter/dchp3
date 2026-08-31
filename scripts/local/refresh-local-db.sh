@@ -112,6 +112,8 @@ trap cleanup EXIT
 
 ssh_mux=""
 ssh_opts=()
+remote_tmp=""
+remote_name=""
 open_connection() {
   ssh_mux="$workdir/cm"
   echo "Connecting to $SSH_TARGET (one password prompt for the whole run)..."
@@ -125,8 +127,13 @@ open_connection() {
     ssh_opts=()
   fi
 }
+remote_cleanup() {
+  [ -n "${remote_tmp:-}${remote_name:-}" ] || return 0
+  ssh ${ssh_opts[@]+"${ssh_opts[@]}"} "$SSH_TARGET" \
+    "rm -f ${remote_tmp:-} ${remote_name:-}" 2>/dev/null || true
+}
 close_connection() {
-  [ -n "$ssh_mux" ] && ssh "${ssh_opts[@]}" -O exit "$SSH_TARGET" 2>/dev/null || true
+  [ -n "$ssh_mux" ] && ssh ${ssh_opts[@]+"${ssh_opts[@]}"} -O exit "$SSH_TARGET" 2>/dev/null || true
 }
 
 case "$source_mode" in
@@ -136,7 +143,7 @@ file)
   ;;
 backup)
   open_connection
-  trap 'close_connection; cleanup' EXIT
+  trap 'remote_cleanup; close_connection; cleanup' EXIT
   echo "Staging the newest nightly backup. Enter your sudo password when asked:"
   # This call must NOT be captured. With -t, sudo's prompt comes back on ssh's
   # stdout, so a command substitution here would swallow the prompt and look
@@ -150,7 +157,7 @@ backup)
   # inside sudo, which returns root, leaving files the ssh user could not read.
   # The dump is redirected on the server, so nothing binary crosses the TTY
   # that sudo's prompt needs.
-  ssh -t "${ssh_opts[@]}" "$SSH_TARGET" \
+  ssh -t ${ssh_opts[@]+"${ssh_opts[@]}"} "$SSH_TARGET" \
     "umask 077; : > $remote_tmp; : > $remote_name;
      sudo sh -c 'f=\$(ls -1t /var/backups/all-databases-*.sql.gz | head -1);
        [ -n \"\$f\" ] || exit 1;
@@ -158,32 +165,30 @@ backup)
        echo \"\$f\" > $remote_name'" ||
     die "could not stage a backup file on the server"
 
-  original=$(ssh "${ssh_opts[@]}" "$SSH_TARGET" "cat $remote_name" |
+  original=$(ssh ${ssh_opts[@]+"${ssh_opts[@]}"} "$SSH_TARGET" "cat $remote_name" |
     tr -d '\r' | tail -1)
   [ -n "$original" ] || die "the staged file name came back empty"
-  size=$(ssh "${ssh_opts[@]}" "$SSH_TARGET" "du -h $remote_tmp | cut -f1" |
+  size=$(ssh ${ssh_opts[@]+"${ssh_opts[@]}"} "$SSH_TARGET" "du -h $remote_tmp | cut -f1" |
     tr -d '\r' | tail -1)
   echo "Staged $original ($size). Downloading:"
   # No -q: scp's progress meter is the only feedback during the transfer.
-  scp "${ssh_opts[@]}" "$SSH_TARGET:$remote_tmp" "$workdir/production.sql.gz" ||
+  scp ${ssh_opts[@]+"${ssh_opts[@]}"} "$SSH_TARGET:$remote_tmp" "$workdir/production.sql.gz" ||
     die "scp failed"
-  ssh "${ssh_opts[@]}" "$SSH_TARGET" "rm -f $remote_tmp $remote_name" || true
   ;;
 live)
   open_connection
-  trap 'close_connection; cleanup' EXIT
+  trap 'remote_cleanup; close_connection; cleanup' EXIT
   echo "Dumping $PROD_SCHEMA on the server (no locks, read-only)..."
   remote_tmp="/tmp/dchp3-refresh-$$.sql.gz"
   # -t so the MySQL password prompt is usable; the dump goes to a file on the
   # server rather than through the TTY, so nothing binary crosses it.
-  ssh -t "${ssh_opts[@]}" "$SSH_TARGET" \
+  ssh -t ${ssh_opts[@]+"${ssh_opts[@]}"} "$SSH_TARGET" \
     "umask 077 && mysqldump -u $PROD_READ_USER -p --single-transaction \
        --routines --triggers --databases $PROD_SCHEMA | gzip > $remote_tmp" ||
     die "the remote mysqldump failed"
   echo "Downloading:"
-  scp "${ssh_opts[@]}" "$SSH_TARGET:$remote_tmp" "$workdir/production.sql.gz" ||
+  scp ${ssh_opts[@]+"${ssh_opts[@]}"} "$SSH_TARGET:$remote_tmp" "$workdir/production.sql.gz" ||
     die "scp failed"
-  ssh "${ssh_opts[@]}" "$SSH_TARGET" "rm -f $remote_tmp" || true
   ;;
 esac
 
