@@ -1,4 +1,10 @@
-import { AUTH_ROLES, isAuthRole, parseAuthRoles } from "./AuthRole"
+import {
+  AUTH_ROLES,
+  isAuthRole,
+  parseAuthRoles,
+  roleHasPermission,
+  type AuthRole,
+} from "./AuthRole"
 import { getIsAdmin, getRolesFromProfile } from "utils/user.server"
 import type { DCHPAuth0Profile } from "utils/user.server"
 
@@ -85,5 +91,16 @@ describe("getIsAdmin", () => {
 
   it("is false for the legacy Admin role name, which the tenant does not use", () => {
     expect(getIsAdmin(profileWithRoles(["Admin"]))).toBe(false)
+  })
+})
+
+describe("roleHasPermission with an unrecognised role", () => {
+  it("denies rather than throwing", () => {
+    // parseAuthRoles keeps unknown names out of new sessions, but a cookie
+    // issued before that check existed can still carry one. Looking up its
+    // permissions unguarded turned a denial into a 500.
+    expect(
+      roleHasPermission("Admin" as unknown as AuthRole, "det:manageUsers")
+    ).toBe(false)
   })
 })

@@ -38,6 +38,7 @@ export type AuthPermission =
   | "det:editOwn"
   | "det:publish"
   | "det:viewUsers"
+  | "det:manageUsers"
   | "det:viewEdits"
   | "det:editReferences"
   | "det:TEST" // for testing only
@@ -63,6 +64,7 @@ const SUPERADMIN_PERMISSIONS: AuthPermission[] = [
   "det:deleteAny",
   "det:publish",
   "det:viewUsers",
+  "det:manageUsers",
   "det:viewEdits",
 ]
 
@@ -85,8 +87,14 @@ export const roleHasPermission = (
   role: AuthRole,
   permission: AuthPermission
 ): boolean => {
-  const permissionsForRole = AUTH_PERMISSION_ROLE_MAP[role]
-  return permissionsForRole.includes(permission)
+  // A role name this application does not know grants nothing. parseAuthRoles
+  // keeps unknown names out of new sessions, but a session cookie issued
+  // before that check existed can still carry one, and looking its permissions
+  // up unguarded turned a denial into a 500.
+  const permissionsForRole = AUTH_PERMISSION_ROLE_MAP[role] as
+    | AuthPermission[]
+    | undefined
+  return permissionsForRole?.includes(permission) ?? false
 }
 
 export const roleHasAllPermissions = (
