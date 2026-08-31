@@ -1,8 +1,30 @@
-export type AuthRole =
-  | "Display" // Lowest level
-  | "Student / Editor" // Intermediate level
-  | "Research Assistant" // Senior level
-  | "Superadmin" // Highest level
+// The role names below are the names of the roles in the Auth0 tenant. They
+// arrive on the `https://dchp.ca/roles` claim and are the single source of
+// truth for what a user may do -- see docs/auth/roles.md. Renaming a role in
+// Auth0 without changing this list will stop that role granting anything.
+export const AUTH_ROLES = [
+  "Display", // Lowest level
+  "Student / Editor", // Intermediate level
+  "Research Assistant", // Senior level
+  "Superadmin", // Highest level
+] as const
+
+export type AuthRole = typeof AUTH_ROLES[number]
+
+export const isAuthRole = (value: unknown): value is AuthRole =>
+  typeof value === "string" && (AUTH_ROLES as readonly string[]).includes(value)
+
+/**
+ * Turn the raw `https://dchp.ca/roles` claim into roles this application
+ * recognises. The claim is whatever Auth0 put in the token, so it is treated
+ * as unknown: a missing claim, a claim that is not an array, and a role name
+ * that is not one of AUTH_ROLES all yield no role rather than a role whose
+ * permission set does not exist.
+ */
+export const parseAuthRoles = (claim: unknown): AuthRole[] => {
+  if (!Array.isArray(claim)) return []
+  return claim.filter(isAuthRole)
+}
 
 export type AuthPermission =
   | "bank:create"
