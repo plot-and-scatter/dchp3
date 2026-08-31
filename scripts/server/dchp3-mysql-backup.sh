@@ -23,11 +23,25 @@ ls -1t "$backupfolder"/all-databases-*.sql.gz 2>/dev/null |
 stamp=$(date +%Y-%m-%d_%H-%M-%S)
 outfile=$backupfolder/all-databases-$stamp.sql.gz
 
+# Back up every schema except the staging mirrors: they are rebuilt from
+# production on demand and hold nothing production's own backup does not.
+# Without this, each nightly backup carries a second copy of the dictionary.
+# information_schema and performance_schema are excluded because
+# --all-databases skips them too; sys is kept for the same reason.
+databases=$(mysql -N -B -e "SELECT schema_name FROM information_schema.schemata
+  WHERE schema_name NOT IN ('information_schema','performance_schema')
+    AND schema_name NOT LIKE '%\\_staging'") ||
+  fail "could not list databases to back up"
+[ -n "$databases" ] || fail "database list came back empty"
+
 # Stream the dump straight into gzip: no large intermediate .sql file that
 # could be leaked on failure (the bug that filled the disk in the old script).
 # --single-transaction: consistent InnoDB snapshot, no table locks on prod.
+# $databases is deliberately unquoted: mysqldump wants one argument per
+# schema, and schema names here cannot contain whitespace.
+# shellcheck disable=SC2086
 if ! mysqldump --single-transaction --routines --triggers --events \
-  --all-databases 2>/tmp/dchp3-backup-err | gzip >"$outfile"; then
+  --databases $databases 2>/tmp/dchp3-backup-err | gzip >"$outfile"; then
   rm -f "$outfile"
   fail "mysqldump failed: $(cat /tmp/dchp3-backup-err)"
 fi
