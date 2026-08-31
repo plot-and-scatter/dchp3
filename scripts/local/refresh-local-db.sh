@@ -278,32 +278,51 @@ local_major=${local_version%%.*}
 local_minor=${local_version#*.}
 if [ "$local_major" -gt 8 ] || { [ "$local_major" -eq 8 ] && [ "$local_minor" -ge 4 ]; }; then
   echo "Local MySQL is $local_version; adding unique keys the newer foreign-key rules require..."
+  # The whole CREATE TABLE is buffered because mysqldump writes UNIQUE KEY
+  # lines after the PRIMARY KEY line, so whether the key is already there can
+  # only be known at the closing paren. Once the server itself has the unique
+  # key (see the ALTER in issue #448) this finds it in the dump and does
+  # nothing.
   awk '
-    /^CREATE TABLE `/ { delete autoinc }
-    /^  `[^`]+` / {
+    /^CREATE TABLE `/ {
+      buffering = 1; n = 0; pkline = 0
+      delete buf; delete autoinc; delete singleuniq
+      buf[++n] = $0; next
+    }
+    buffering && /^  `[^`]+` / {
       col = $1; gsub(/`/, "", col)
       if ($0 ~ /AUTO_INCREMENT/) autoinc[col] = 1
+      buf[++n] = $0; next
     }
-    /^  PRIMARY KEY \(/ {
-      line = $0
-      inner = line
-      sub(/^  PRIMARY KEY \(/, "", inner)
-      sub(/\).*$/, "", inner)
-      n = split(inner, cols, ",")
-      first = cols[1]; gsub(/`/, "", first)
-      if (n > 1 && (first in autoinc)) {
-        # Keep the comma structure valid whether or not the primary key was
-        # the last element in the table definition.
-        if (line ~ /,$/) {
-          print line
-        } else {
-          print line ","
+    buffering && /^  PRIMARY KEY \(/ { buf[++n] = $0; pkline = n; next }
+    buffering && /^  UNIQUE KEY `[^`]+` \(/ {
+      inner = $0
+      sub(/^.*\(/, "", inner); sub(/\).*$/, "", inner)
+      if (split(inner, uc, ",") == 1) { u = uc[1]; gsub(/`/, "", u); singleuniq[u] = 1 }
+      buf[++n] = $0; next
+    }
+    buffering && /^\) ENGINE=/ {
+      buf[++n] = $0
+      needed = ""
+      if (pkline) {
+        inner = buf[pkline]
+        sub(/^  PRIMARY KEY \(/, "", inner); sub(/\).*$/, "", inner)
+        if (split(inner, pc, ",") > 1) {
+          first = pc[1]; gsub(/`/, "", first)
+          if ((first in autoinc) && !(first in singleuniq)) needed = first
         }
-        printf "  UNIQUE KEY `mysql84_fk_compat_%s` (`%s`)%s\n", \
-          first, first, (line ~ /,$/ ? "," : "")
-        next
       }
+      for (i = 1; i <= n; i++) {
+        line = buf[i]
+        if (i == pkline && needed != "") {
+          if (line !~ /,$/) line = line ","
+          print line
+          printf "  UNIQUE KEY `mysql84_fk_compat_%s` (`%s`),\n", needed, needed
+        } else print line
+      }
+      buffering = 0; next
     }
+    buffering { buf[++n] = $0; next }
     { print }
   ' "$workdir/schema.sql" >"$workdir/schema.patched.sql"
   mv "$workdir/schema.patched.sql" "$workdir/schema.sql"
