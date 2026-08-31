@@ -1,10 +1,10 @@
-import { type User } from "~/models/user.server"
+import { type DisplayUser } from "~/models/user.server"
 import { Link } from "../elements/LinksAndButtons/Link"
 import React, { Fragment } from "react"
 
 interface UserListSectionProps {
   header: string
-  users?: User[]
+  users?: DisplayUser[]
   displayInactive: boolean
 }
 
