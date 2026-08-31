@@ -1,7 +1,7 @@
-import { type User } from "~/models/user.server"
+import { type DisplayUser } from "~/models/user.server"
 
 interface ProfileHeaderProps {
-  user: User
+  user: DisplayUser
 }
 
 const ProfileHeader = ({ user }: ProfileHeaderProps) => {
