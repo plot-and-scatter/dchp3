@@ -8,7 +8,7 @@ import { type User, getAllUsers } from "~/models/user.server"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  redirectIfUserLacksPermission(request, "det:viewUsers")
+  await redirectIfUserLacksPermission(request, "det:viewUsers")
   const users = await getAllUsers()
 
   return { users }

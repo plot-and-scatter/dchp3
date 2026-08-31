@@ -31,7 +31,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  redirectIfUserLacksPermission(request, "det:viewEdits")
+  await redirectIfUserLacksPermission(request, "det:viewEdits")
   const pageNumber = parsePageNumberOrError(params.page)
 
   const url = new URL(request.url)
