@@ -137,22 +137,31 @@ file)
 backup)
   open_connection
   trap 'close_connection; cleanup' EXIT
-  echo "Staging the newest nightly backup (sudo password follows)..."
-  # /var/backups is root-only. Copy the newest file somewhere dchpadm can read,
-  # and echo its original name. Output is text, so the TTY is harmless here.
+  echo "Staging the newest nightly backup. Enter your sudo password when asked:"
+  # This call must NOT be captured. With -t, sudo's prompt comes back on ssh's
+  # stdout, so a command substitution here would swallow the prompt and look
+  # like a hang. The filename is written to a file on the server instead and
+  # read back by a second, non-interactive call over the same connection.
   remote_tmp="/tmp/dchp3-refresh-$$.sql.gz"
-  original=$(ssh -t "${ssh_opts[@]}" "$SSH_TARGET" \
+  remote_name="/tmp/dchp3-refresh-$$.name"
+  ssh -t "${ssh_opts[@]}" "$SSH_TARGET" \
     "sudo sh -c 'f=\$(ls -1t /var/backups/all-databases-*.sql.gz | head -1);
        [ -n \"\$f\" ] || exit 1;
        cp \"\$f\" $remote_tmp && chmod 600 $remote_tmp &&
-       chown \$(id -un) $remote_tmp && echo \"\$f\"'" |
+       chown \$(id -un) $remote_tmp &&
+       echo \"\$f\" > $remote_name && chown \$(id -un) $remote_name'" ||
+    die "could not stage a backup file on the server"
+
+  original=$(ssh "${ssh_opts[@]}" "$SSH_TARGET" "cat $remote_name" |
     tr -d '\r' | tail -1)
-  [ -n "$original" ] || die "could not stage a backup file on the server"
-  echo "Staged $original"
-  echo "Downloading..."
-  scp "${ssh_opts[@]}" -q "$SSH_TARGET:$remote_tmp" "$workdir/production.sql.gz" ||
+  [ -n "$original" ] || die "the staged file name came back empty"
+  size=$(ssh "${ssh_opts[@]}" "$SSH_TARGET" "du -h $remote_tmp | cut -f1" |
+    tr -d '\r' | tail -1)
+  echo "Staged $original ($size). Downloading:"
+  # No -q: scp's progress meter is the only feedback during the transfer.
+  scp "${ssh_opts[@]}" "$SSH_TARGET:$remote_tmp" "$workdir/production.sql.gz" ||
     die "scp failed"
-  ssh "${ssh_opts[@]}" "$SSH_TARGET" "rm -f $remote_tmp" || true
+  ssh "${ssh_opts[@]}" "$SSH_TARGET" "rm -f $remote_tmp $remote_name" || true
   ;;
 live)
   open_connection
@@ -165,8 +174,8 @@ live)
     "umask 077 && mysqldump -u $PROD_READ_USER -p --single-transaction \
        --routines --triggers --databases $PROD_SCHEMA | gzip > $remote_tmp" ||
     die "the remote mysqldump failed"
-  echo "Downloading..."
-  scp "${ssh_opts[@]}" -q "$SSH_TARGET:$remote_tmp" "$workdir/production.sql.gz" ||
+  echo "Downloading:"
+  scp "${ssh_opts[@]}" "$SSH_TARGET:$remote_tmp" "$workdir/production.sql.gz" ||
     die "scp failed"
   ssh "${ssh_opts[@]}" "$SSH_TARGET" "rm -f $remote_tmp" || true
   ;;
@@ -223,7 +232,7 @@ safety_copy="$BACKUP_DIR/$LOCAL_SCHEMA-before-refresh-$(date +%Y-%m-%d_%H-%M-%S)
 if mysql -u root -h 127.0.0.1 -N -e \
   "SELECT schema_name FROM information_schema.schemata WHERE schema_name='$LOCAL_SCHEMA'" |
   grep -q .; then
-  echo "Backing up the current local database to $safety_copy ..."
+  echo "Backing up the current local database (no output while it runs)..."
   mysqldump -u root -h 127.0.0.1 --single-transaction --routines --triggers \
     "$LOCAL_SCHEMA" | gzip >"$safety_copy"
   [ -s "$safety_copy" ] || die "the safety backup is empty — stopping"
@@ -239,6 +248,7 @@ mysql -u root -h 127.0.0.1 -e \
   "DROP DATABASE IF EXISTS \`$LOCAL_SCHEMA\`;
    CREATE DATABASE \`$LOCAL_SCHEMA\` DEFAULT CHARACTER SET $LOCAL_CHARSET;"
 
+echo "Loading (no output until it finishes; a full dictionary takes a minute)..."
 mysql -u root -h 127.0.0.1 "$LOCAL_SCHEMA" <"$workdir/schema.sql"
 
 # --- Report -----------------------------------------------------------------

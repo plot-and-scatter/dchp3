@@ -48,6 +48,10 @@ the downloaded dump in the working directory instead of deleting it.
    to a mode-600 file in `/tmp` and printing its name — and then moves the
    dump itself with `scp`, which is binary-safe. The staged copy is deleted
    afterwards. Expect one SSH password prompt and one sudo password prompt.
+   The sudo call is deliberately not captured: with `-t`, sudo's prompt comes
+   back on ssh's stdout, so reading that output into a variable swallows the
+   prompt and the script looks hung. The staged filename is written to a file
+   on the server and read back by a second, non-interactive call instead.
    If connection multiplexing is unavailable, it still works, with a prompt
    per step.
 4. Rejects the dump if it is not valid gzip, or if it lacks mysqldump's
