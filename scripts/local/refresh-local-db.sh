@@ -144,12 +144,18 @@ backup)
   # read back by a second, non-interactive call over the same connection.
   remote_tmp="/tmp/dchp3-refresh-$$.sql.gz"
   remote_name="/tmp/dchp3-refresh-$$.name"
+  # The two output files are created by the *login* shell, so they belong to
+  # the ssh user, and sudo then writes into files that already exist —
+  # ownership does not change. An earlier version chowned them with `id -un`
+  # inside sudo, which returns root, leaving files the ssh user could not read.
+  # The dump is redirected on the server, so nothing binary crosses the TTY
+  # that sudo's prompt needs.
   ssh -t "${ssh_opts[@]}" "$SSH_TARGET" \
-    "sudo sh -c 'f=\$(ls -1t /var/backups/all-databases-*.sql.gz | head -1);
+    "umask 077; : > $remote_tmp; : > $remote_name;
+     sudo sh -c 'f=\$(ls -1t /var/backups/all-databases-*.sql.gz | head -1);
        [ -n \"\$f\" ] || exit 1;
-       cp \"\$f\" $remote_tmp && chmod 600 $remote_tmp &&
-       chown \$(id -un) $remote_tmp &&
-       echo \"\$f\" > $remote_name && chown \$(id -un) $remote_name'" ||
+       cat \"\$f\" > $remote_tmp;
+       echo \"\$f\" > $remote_name'" ||
     die "could not stage a backup file on the server"
 
   original=$(ssh "${ssh_opts[@]}" "$SSH_TARGET" "cat $remote_name" |
