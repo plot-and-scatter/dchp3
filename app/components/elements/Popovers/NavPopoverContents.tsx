@@ -1,16 +1,21 @@
 import { Fragment } from "react"
 import NavItem from "./NavItem"
 import type { NavItemProps } from "./NavItem"
+import { rolesContainPermission, type AuthRole } from "~/services/auth/AuthRole"
 
 interface NavPopoverContentsProps {
   userName: string
   isAdmin?: boolean
+  roles?: AuthRole[]
 }
 
 export default function NavPopoverContents({
   userName,
   isAdmin,
+  roles = [],
 }: NavPopoverContentsProps) {
+  const canManageUsers = rolesContainPermission(roles, "det:manageUsers")
+
   const navItems: NavItemProps[] = [
     {
       name: "Your profile",
@@ -30,6 +35,16 @@ export default function NavPopoverContents({
       href: "/users",
       icon: <i className="fas fa-key" />,
     })
+    // Unlike the rest of this block, which is shown to every logged-in user,
+    // this one is gated on the permission itself. det:manageUsers belongs to
+    // Superadmin alone.
+    if (canManageUsers) {
+      navItems.push({
+        name: "Manage users",
+        href: "/admin/users",
+        icon: <i className="fas fa-user-gear" />,
+      })
+    }
     navItems.push({
       name: "All Editing History",
       href: "/editHistory",
