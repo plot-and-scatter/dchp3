@@ -4,8 +4,14 @@ import { ServerRouter } from "react-router"
 import { createReadableStreamFromReadable } from "@react-router/node"
 import type { EntryContext } from "react-router"
 import isbot from "isbot"
+import { installUnhandledRejectionHandler } from "~/services/errors/unhandledRejection.server"
 
 const ABORT_DELAY = 5000
+
+// Registered as the server module is evaluated, before any request is served.
+// Without it Node terminates the process on an unhandled rejection, so a
+// single missing `await` anywhere takes the site down. See #457.
+installUnhandledRejectionHandler()
 
 export default function handleRequest(
   request: Request,
