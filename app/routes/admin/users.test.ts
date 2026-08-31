@@ -17,6 +17,19 @@ import type * as SessionServer from "~/services/auth/session.server"
 // PrismaClient at import time and needs DATABASE_URL. CI has no .env.
 vi.mock("~/db.server", () => ({ prisma: {} }))
 
+// The directory itself is covered by userDirectory.server.test.ts. These
+// tests are about the guard, so the loader's data source is stubbed: a
+// Superadmin getting through must not depend on Auth0 being reachable.
+const getUserDirectory = vi.fn()
+vi.mock("~/services/auth/userDirectory.server", () => ({
+  getUserDirectory: () => getUserDirectory(),
+}))
+
+beforeEach(() => {
+  getUserDirectory.mockClear()
+  getUserDirectory.mockResolvedValue({ users: [], auth0Error: null })
+})
+
 // The guard is exercised through a genuine signed session cookie rather than a
 // stubbed session, because the thing worth proving is that a request carrying
 // the wrong roles is actually turned away -- and a mocked session would prove
@@ -82,7 +95,17 @@ describe("det:manageUsers", () => {
 describe("/admin/users loader", () => {
   it("lets a Superadmin through", async () => {
     const request = await requestWithRoles(["Superadmin"])
-    await expect(loader(args(request))).resolves.toBeNull()
+    await expect(loader(args(request))).resolves.toEqual({
+      users: [],
+      auth0Error: null,
+    })
+  })
+
+  it("does not read the directory for a request it turns away", async () => {
+    const request = await requestWithRoles(["Display"])
+    await rejectionFrom(() => loader(args(request)))
+
+    expect(getUserDirectory).not.toHaveBeenCalled()
   })
 
   it.each(AUTH_ROLES.filter((role) => role !== "Superadmin"))(
