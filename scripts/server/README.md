@@ -73,6 +73,60 @@ zcat /var/backups/all-databases-<stamp>.sql.gz | mysql
 For the staging refresh (single schema into the staging database), see the
 staging setup notes.
 
+## Before upgrading MySQL
+
+The database server cannot be upgraded past **MySQL 8.4** without checking the
+schema first. MySQL 8.0 allows a foreign key to reference a non-unique index;
+8.4 removed that, and a dump containing such a constraint fails to restore with:
+
+```
+ERROR 6125 (HY000): Failed to add the foreign key constraint.
+Missing unique key for constraint '<name>' in the referenced table '<table>'
+```
+
+This was live in this database: `det_entries` had a composite primary key
+`(id, headword)` and five foreign keys referencing `det_entries(id)` alone.
+Resolved on 2026-08-31 by adding a unique key, which is semantically a no-op
+because the column is `AUTO_INCREMENT`:
+
+```sql
+ALTER TABLE det_entries ADD UNIQUE KEY det_entries_unique_id (id),
+  ALGORITHM=INPLACE, LOCK=NONE;
+```
+
+Two things follow:
+
+- **Backups taken before that date still carry the old schema.** Restoring one
+  into 8.4 or newer needs the same fix applied afterwards, or the workaround in
+  `scripts/local/refresh-local-db.sh`, which adds the key during the load.
+- **Check for the same pattern before any future upgrade**, in case another
+  table acquires it. The query below lists foreign keys whose referenced column
+  has no single-column unique index:
+
+```sql
+SELECT k.TABLE_NAME, k.CONSTRAINT_NAME,
+       k.REFERENCED_TABLE_NAME, k.REFERENCED_COLUMN_NAME
+FROM information_schema.KEY_COLUMN_USAGE k
+WHERE k.REFERENCED_TABLE_NAME IS NOT NULL
+  AND k.TABLE_SCHEMA = DATABASE()
+  AND NOT EXISTS (
+    SELECT 1 FROM information_schema.STATISTICS s
+    WHERE s.TABLE_SCHEMA = k.TABLE_SCHEMA
+      AND s.TABLE_NAME = k.REFERENCED_TABLE_NAME
+      AND s.COLUMN_NAME = k.REFERENCED_COLUMN_NAME
+      AND s.NON_UNIQUE = 0 AND s.SEQ_IN_INDEX = 1
+      AND (SELECT COUNT(*) FROM information_schema.STATISTICS s2
+           WHERE s2.TABLE_SCHEMA = s.TABLE_SCHEMA
+             AND s2.TABLE_NAME = s.TABLE_NAME
+             AND s2.INDEX_NAME = s.INDEX_NAME) = 1);
+```
+
+An empty result means the schema will restore into 8.4+.
+
+Run that query **on the server**, on 8.0. A newer server cannot be in this
+state — it refuses to create such a constraint in the first place, with the
+error above — so the check is only meaningful where the schema was built.
+
 ## The split deploy/start design
 
 Both the production and staging instances follow the same two-script shape:
