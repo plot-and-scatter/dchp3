@@ -64,7 +64,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
-  redirectIfUserLacksPermission(request, "det:editReferences")
+  await redirectIfUserLacksPermission(request, "det:editReferences")
 
   invariant(params.id)
   const id = parseInt(params.id)
