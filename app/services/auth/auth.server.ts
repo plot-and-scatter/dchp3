@@ -3,7 +3,7 @@ import { Authenticator } from "remix-auth"
 import { getBaseDeploymentUrl } from "utils/api.server"
 import { data } from "react-router"
 import { sessionStorage } from "./session.server"
-import { getEmail, getIsAdmin } from "utils/user.server"
+import { getEmail, getIsAdmin, getRolesFromProfile } from "utils/user.server"
 import type { AuthRole } from "./AuthRole"
 import type { User } from "@prisma/client"
 import { getUserByEmailSafe } from "~/models/user.server"
@@ -40,7 +40,9 @@ export const authenticator = () => {
       const name = profile.displayName || "No name set in profile"
       const [firstName, ...lastName] = name.split(" ")
 
-      const roles = (profile._json as any)["https://dchp.ca/roles"]
+      // Validated rather than cast: an unrecognised role name yields no
+      // role at all instead of a permission set that does not exist.
+      const roles = getRolesFromProfile(profile)
 
       const isAdmin = getIsAdmin(profile)
       const email = getEmail(profile)

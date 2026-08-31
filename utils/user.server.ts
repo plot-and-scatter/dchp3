@@ -1,19 +1,23 @@
 import type { Auth0Profile } from "remix-auth-auth0"
+import { parseAuthRoles } from "~/services/auth/AuthRole"
 
-export const ADMIN_ROLE = "Admin"
+// The custom claim the Auth0 tenant puts the user's roles on.
+export const DCHP_ROLES_CLAIM = "https://dchp.ca/roles"
 
 export type DCHPAuth0Profile = Auth0Profile & {
   _json?: Auth0Profile["_json"] & {
-    "https://dchp.ca/roles"?: string[]
+    [DCHP_ROLES_CLAIM]?: string[]
   }
 }
 
-export const getIsAdmin = (profile: DCHPAuth0Profile) => {
-  const roles = profile._json
-    ? profile._json["https://dchp.ca/roles"] || []
-    : []
-  return roles.includes(ADMIN_ROLE)
-}
+export const getRolesFromProfile = (profile: DCHPAuth0Profile) =>
+  parseAuthRoles(profile._json?.[DCHP_ROLES_CLAIM])
+
+// This used to test for a role named "Admin", which is not one of the four
+// roles in the tenant and so never matched. Being an administrator means
+// holding the Superadmin role. See docs/auth/roles.md.
+export const getIsAdmin = (profile: DCHPAuth0Profile) =>
+  getRolesFromProfile(profile).includes("Superadmin")
 
 export const getEmail = (profile: Auth0Profile) => {
   return profile._json?.email
