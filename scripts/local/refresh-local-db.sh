@@ -20,6 +20,11 @@
 # See scripts/local/README.md.
 
 set -euo pipefail
+set -E
+
+# A bare `set -e` exit prints nothing, which once left a run stopping silently
+# mid-way. Say where it happened.
+trap 'st=$?; [ $st -ne 0 ] && echo "error: unexpected failure (exit $st) near line $LINENO" >&2' ERR
 
 SSH_TARGET=${SSH_TARGET:-dchpadm@dchp.arts.ubc.ca}
 PROD_SCHEMA=${PROD_SCHEMA:-dchpca_dchp_3}
@@ -195,8 +200,13 @@ esac
 [ -s "$workdir/production.sql.gz" ] || die "the dump came back empty"
 gzip -t "$workdir/production.sql.gz" 2>/dev/null ||
   die "the downloaded file is not valid gzip"
-gzip -dc "$workdir/production.sql.gz" | tail -5 | grep -q "Dump completed" ||
-  die "the dump has no completion marker — it is truncated, refusing to load it"
+# `... | grep -q` would exit on the match and leave the writer with SIGPIPE,
+# which `pipefail` reports as failure. Read the tail first, then test it.
+dump_tail=$(gzip -dc "$workdir/production.sql.gz" | tail -5)
+case "$dump_tail" in
+*"Dump completed"*) : ;;
+*) die "the dump has no completion marker — it is truncated, refusing to load it" ;;
+esac
 
 # --- Extract the one schema -------------------------------------------------
 
@@ -205,10 +215,22 @@ gzip -dc "$workdir/production.sql.gz" | tail -5 | grep -q "Dump completed" ||
 # the locally-named database instead of recreating production's name.
 echo "Extracting \`$PROD_SCHEMA\` ..."
 gzip -dc "$workdir/production.sql.gz" |
-  awk -v schema="$PROD_SCHEMA" '
+  awk -v schema="$PROD_SCHEMA" -v charsetfile="$workdir/charset" \
+      -v preamble="$workdir/preamble.sql" '
+    # Everything before the first schema marker is mysqldump session setup:
+    # SET NAMES, and crucially FOREIGN_KEY_CHECKS=0, without which the tables
+    # fail to load in the order the dump writes them.
+    !seen && /^-- Current Database: `/ { seen = 1 }
+    !seen { print > preamble; next }
     $0 ~ "^-- Current Database: `" schema "`$" { inside = 1; next }
     /^-- Current Database: `/ { inside = 0 }
-    inside && /^CREATE DATABASE/ { next }
+    inside && /^CREATE DATABASE/ {
+      if (match($0, /DEFAULT CHARACTER SET [a-zA-Z0-9_]+/)) {
+        split(substr($0, RSTART, RLENGTH), parts, " ")
+        print parts[5] > charsetfile
+      }
+      next
+    }
     inside && /^USE `/ { next }
     inside { print }
   ' >"$workdir/schema.sql"
@@ -221,9 +243,7 @@ gzip -dc "$workdir/production.sql.gz" |
 # no Prisma migrations and a no-op seed, so nothing creates tables today — but
 # guessing it wrong would quietly plant a difference for whenever that changes.
 if [ -z "$LOCAL_CHARSET" ]; then
-  LOCAL_CHARSET=$(gzip -dc "$workdir/production.sql.gz" |
-    grep -m1 "^CREATE DATABASE.*\`$PROD_SCHEMA\`" |
-    sed -n 's/.*DEFAULT CHARACTER SET \([a-z0-9]*\).*/\1/p')
+  LOCAL_CHARSET=$(head -1 "$workdir/charset" 2>/dev/null || true)
   [ -n "$LOCAL_CHARSET" ] || LOCAL_CHARSET=latin1
   echo "Database default charset from the dump: $LOCAL_CHARSET"
 fi
@@ -233,8 +253,61 @@ fi
 grep -q "^CREATE TABLE" "$workdir/schema.sql" ||
   die "the extracted section contains no tables — refusing to load it"
 
+grep -q "FOREIGN_KEY_CHECKS=0" "$workdir/preamble.sql" 2>/dev/null ||
+  die "the dump preamble has no FOREIGN_KEY_CHECKS=0 — the load would fail on
+table order; check that this is a mysqldump file"
+
 table_count=$(grep -c "^CREATE TABLE" "$workdir/schema.sql")
 echo "Found $table_count tables."
+
+# --- Make the schema loadable on MySQL 8.4+ ---------------------------------
+
+# Production's `det_entries` has a composite primary key, `(id, headword)`, and
+# five foreign keys reference `det_entries(id)` on its own. MySQL 8.0 allowed a
+# foreign key to reference a non-unique index; 8.4 removed that, so on a newer
+# local server the load fails with "Missing unique key for constraint".
+#
+# The fix is an extra UNIQUE KEY on the referenced column. It is safe precisely
+# because that column is AUTO_INCREMENT, so its values are already unique — the
+# index adds a constraint the data already satisfies, and every foreign key,
+# including its ON DELETE CASCADE, survives intact. The alternative, dropping
+# the foreign keys locally, would silently change how deletes behave here
+# compared with production.
+local_version=$(mysql -u root -h 127.0.0.1 -N -e "SELECT VERSION()" | cut -d. -f1,2)
+local_major=${local_version%%.*}
+local_minor=${local_version#*.}
+if [ "$local_major" -gt 8 ] || { [ "$local_major" -eq 8 ] && [ "$local_minor" -ge 4 ]; }; then
+  echo "Local MySQL is $local_version; adding unique keys the newer foreign-key rules require..."
+  awk '
+    /^CREATE TABLE `/ { delete autoinc }
+    /^  `[^`]+` / {
+      col = $1; gsub(/`/, "", col)
+      if ($0 ~ /AUTO_INCREMENT/) autoinc[col] = 1
+    }
+    /^  PRIMARY KEY \(/ {
+      line = $0
+      inner = line
+      sub(/^  PRIMARY KEY \(/, "", inner)
+      sub(/\).*$/, "", inner)
+      n = split(inner, cols, ",")
+      first = cols[1]; gsub(/`/, "", first)
+      if (n > 1 && (first in autoinc)) {
+        # Keep the comma structure valid whether or not the primary key was
+        # the last element in the table definition.
+        if (line ~ /,$/) {
+          print line
+        } else {
+          print line ","
+        }
+        printf "  UNIQUE KEY `mysql84_fk_compat_%s` (`%s`)%s\n", \
+          first, first, (line ~ /,$/ ? "," : "")
+        next
+      }
+    }
+    { print }
+  ' "$workdir/schema.sql" >"$workdir/schema.patched.sql"
+  mv "$workdir/schema.patched.sql" "$workdir/schema.sql"
+fi
 
 # --- Back up what is there now ----------------------------------------------
 
@@ -260,7 +333,8 @@ mysql -u root -h 127.0.0.1 -e \
    CREATE DATABASE \`$LOCAL_SCHEMA\` DEFAULT CHARACTER SET $LOCAL_CHARSET;"
 
 echo "Loading (no output until it finishes; a full dictionary takes a minute)..."
-mysql -u root -h 127.0.0.1 "$LOCAL_SCHEMA" <"$workdir/schema.sql"
+cat "$workdir/preamble.sql" "$workdir/schema.sql" |
+  mysql -u root -h 127.0.0.1 "$LOCAL_SCHEMA"
 
 # --- Report -----------------------------------------------------------------
 
