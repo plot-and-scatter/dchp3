@@ -104,33 +104,77 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# Two facts shape this. The server uses password authentication, so every ssh
+# invocation prompts; and sudo needs a TTY, but a TTY translates newlines and
+# would corrupt a gzip stream piped through it. So: one multiplexed connection
+# for a single password prompt, sudo used only for a command whose output is
+# text, and the dump itself moved by scp, which is binary-safe.
+
+ssh_mux=""
+ssh_opts=()
+open_connection() {
+  ssh_mux="$workdir/cm"
+  echo "Connecting to $SSH_TARGET (one password prompt for the whole run)..."
+  if ssh -o ControlMaster=yes -o ControlPath="$ssh_mux" \
+    -o ControlPersist=600 -fN "$SSH_TARGET" 2>/dev/null; then
+    ssh_opts=(-o ControlPath="$ssh_mux")
+  else
+    # Older ssh, or multiplexing refused. Still works, just prompts each time.
+    echo "note: connection multiplexing unavailable; expect a prompt per step"
+    ssh_mux=""
+    ssh_opts=()
+  fi
+}
+close_connection() {
+  [ -n "$ssh_mux" ] && ssh "${ssh_opts[@]}" -O exit "$SSH_TARGET" 2>/dev/null || true
+}
+
 case "$source_mode" in
 file)
   [ -f "$dump_file" ] || die "no such file: $dump_file"
   cp "$dump_file" "$workdir/production.sql.gz"
   ;;
 backup)
-  echo "Finding the newest nightly backup on $SSH_TARGET..."
-  # /var/backups is root-only, so both steps go through sudo. -t gives sudo a
-  # terminal for its password prompt.
-  newest=$(ssh -t "$SSH_TARGET" \
-    "sudo ls -1t /var/backups/all-databases-*.sql.gz | head -1" |
+  open_connection
+  trap 'close_connection; cleanup' EXIT
+  echo "Staging the newest nightly backup (sudo password follows)..."
+  # /var/backups is root-only. Copy the newest file somewhere dchpadm can read,
+  # and echo its original name. Output is text, so the TTY is harmless here.
+  remote_tmp="/tmp/dchp3-refresh-$$.sql.gz"
+  original=$(ssh -t "${ssh_opts[@]}" "$SSH_TARGET" \
+    "sudo sh -c 'f=\$(ls -1t /var/backups/all-databases-*.sql.gz | head -1);
+       [ -n \"\$f\" ] || exit 1;
+       cp \"\$f\" $remote_tmp && chmod 600 $remote_tmp &&
+       chown \$(id -un) $remote_tmp && echo \"\$f\"'" |
     tr -d '\r' | tail -1)
-  [ -n "$newest" ] || die "no backup files found in /var/backups"
-  echo "Downloading $newest ..."
-  ssh -t "$SSH_TARGET" "sudo cat '$newest'" >"$workdir/production.sql.gz"
+  [ -n "$original" ] || die "could not stage a backup file on the server"
+  echo "Staged $original"
+  echo "Downloading..."
+  scp "${ssh_opts[@]}" -q "$SSH_TARGET:$remote_tmp" "$workdir/production.sql.gz" ||
+    die "scp failed"
+  ssh "${ssh_opts[@]}" "$SSH_TARGET" "rm -f $remote_tmp" || true
   ;;
 live)
-  echo "Dumping $PROD_SCHEMA from $SSH_TARGET (no locks, read-only)..."
-  ssh -t "$SSH_TARGET" \
-    "mysqldump -u $PROD_READ_USER -p --single-transaction --routines \
-       --triggers --databases $PROD_SCHEMA | gzip" >"$workdir/production.sql.gz"
+  open_connection
+  trap 'close_connection; cleanup' EXIT
+  echo "Dumping $PROD_SCHEMA on the server (no locks, read-only)..."
+  remote_tmp="/tmp/dchp3-refresh-$$.sql.gz"
+  # -t so the MySQL password prompt is usable; the dump goes to a file on the
+  # server rather than through the TTY, so nothing binary crosses it.
+  ssh -t "${ssh_opts[@]}" "$SSH_TARGET" \
+    "umask 077 && mysqldump -u $PROD_READ_USER -p --single-transaction \
+       --routines --triggers --databases $PROD_SCHEMA | gzip > $remote_tmp" ||
+    die "the remote mysqldump failed"
+  echo "Downloading..."
+  scp "${ssh_opts[@]}" -q "$SSH_TARGET:$remote_tmp" "$workdir/production.sql.gz" ||
+    die "scp failed"
+  ssh "${ssh_opts[@]}" "$SSH_TARGET" "rm -f $remote_tmp" || true
   ;;
 esac
 
 [ -s "$workdir/production.sql.gz" ] || die "the dump came back empty"
 gzip -t "$workdir/production.sql.gz" 2>/dev/null ||
-  die "the downloaded file is not valid gzip (an sudo prompt may be mixed into it)"
+  die "the downloaded file is not valid gzip"
 gzip -dc "$workdir/production.sql.gz" | tail -5 | grep -q "Dump completed" ||
   die "the dump has no completion marker — it is truncated, refusing to load it"
 

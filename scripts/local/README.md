@@ -39,9 +39,17 @@ the downloaded dump in the working directory instead of deleting it.
 1. Refuses to run unless the active `DATABASE_URL` in `.env` points at
    `127.0.0.1` or `localhost`, and unless local MySQL answers.
 2. Asks for confirmation, naming the database it is about to drop.
-3. Fetches the dump. The nightly backups are root-only, so both the listing
-   and the read go through `sudo` over `ssh -t`, which will prompt for the
-   password. Nothing is written on the server.
+3. Fetches the dump. This is shaped by two facts about the server: it uses
+   password authentication, so every `ssh` invocation prompts; and `sudo`
+   needs a TTY, but a TTY translates newlines and would corrupt a gzip stream
+   piped through it. So the script opens one multiplexed connection (one SSH
+   password prompt for the whole run), uses `sudo` only for a command whose
+   output is text — copying the newest backup out of root-only `/var/backups`
+   to a mode-600 file in `/tmp` and printing its name — and then moves the
+   dump itself with `scp`, which is binary-safe. The staged copy is deleted
+   afterwards. Expect one SSH password prompt and one sudo password prompt.
+   If connection multiplexing is unavailable, it still works, with a prompt
+   per step.
 4. Rejects the dump if it is not valid gzip, or if it lacks mysqldump's
    "Dump completed" marker — a truncated dump loads without error and leaves a
    half-populated database, which is worse than failing.
