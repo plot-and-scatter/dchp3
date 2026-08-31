@@ -331,6 +331,44 @@ fi
 # --- Back up what is there now ----------------------------------------------
 
 mkdir -p "$BACKUP_DIR"
+
+# A directory appearing in someone's home folder should explain itself.
+if [ ! -f "$BACKUP_DIR/README.md" ]; then
+  cat >"$BACKUP_DIR/README.md" <<'READMEEOF'
+# Local dchp3 database backups
+
+Written automatically by `scripts/local/refresh-local-db.sh` in the dchp3
+repository.
+
+## What this is
+
+Safety copies of the **local** `dchp3` database, taken immediately before that
+script drops and replaces it with a fresh copy of production. One file per run,
+named for the moment it was taken. These are backups of your local development
+database, not of production — production has its own nightly backup on the
+server in `/var/backups`.
+
+## Why it exists
+
+The refresh script drops the local database outright. Dumping first means a
+refresh can always be undone.
+
+## Restoring one
+
+    gzip -dc <file> | mysql -u root -h 127.0.0.1 dchp3
+
+## When it is safe to delete
+
+Any backup older than the last successful refresh is disposable once you are
+satisfied with the local database. Files accumulate at roughly 11 MB per run and
+are never rotated, so pruning is manual. The whole directory can go whenever you
+are happy with the current local database, since it can always be rebuilt with:
+
+    scripts/local/refresh-local-db.sh
+
+The directory is recreated on the next refresh.
+READMEEOF
+fi
 safety_copy="$BACKUP_DIR/$LOCAL_SCHEMA-before-refresh-$(date +%Y-%m-%d_%H-%M-%S).sql.gz"
 if mysql -u root -h 127.0.0.1 -N -e \
   "SELECT schema_name FROM information_schema.schemata WHERE schema_name='$LOCAL_SCHEMA'" |
