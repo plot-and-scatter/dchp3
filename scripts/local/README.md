@@ -56,10 +56,24 @@ the downloaded dump in the working directory instead of deleting it.
 
 ### Two things to know
 
-**Character set.** Production is `latin1`; the local database was `utf8mb4`.
-The script recreates the local database as `latin1` to match production. Table
-definitions come from the dump either way, so this only affects tables created
-later, but it means local now matches production and staging.
+**Character set.** The script reads the database default charset out of
+production's own `CREATE DATABASE` line rather than assuming one; override with
+`LOCAL_CHARSET` if needed. That default governs only tables created later, and
+nothing here creates tables — `prisma/migrations/` holds no migration SQL and
+`prisma/seed.ts` is a no-op — so it changes no current behaviour.
+
+**Collation, which does matter.** Table and column collations come from the
+dump and replace whatever local had. Several queries sort with
+`ORDER BY LOWER(headword)` (`app/models/entry.server.ts`,
+`app/models/search/getEntriesByBasicTextSearch.ts`,
+`app/models/search/getSearchResultFistNotes.ts`), and collation decides how
+accented and uppercase characters sort. So the order of browse and search
+results can change after a refresh — toward production's order, which is the
+point, but it can move an entry between pages. `cypress/e2e/smoke.cy.ts`
+asserts that "Cabbagetown" appears on `/entries/browse/c/1`; if that test
+starts failing after a refresh, this is why, and the test is what needs
+updating, not the data. The `WHERE BINARY` lookups in `app/models/bank.server.ts`
+are collation-independent and unaffected.
 
 **Prisma.** If the production schema shape differs from what
 `prisma/schema.prisma` expects, run `npx prisma generate` afterwards. The

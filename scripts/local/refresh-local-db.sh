@@ -24,7 +24,7 @@ set -euo pipefail
 SSH_TARGET=${SSH_TARGET:-dchpadm@dchp.arts.ubc.ca}
 PROD_SCHEMA=${PROD_SCHEMA:-dchpca_dchp_3}
 LOCAL_SCHEMA=${LOCAL_SCHEMA:-dchp3}
-LOCAL_CHARSET=${LOCAL_CHARSET:-latin1}
+LOCAL_CHARSET=${LOCAL_CHARSET:-}  # empty = take it from the dump
 BACKUP_DIR=${BACKUP_DIR:-$HOME/dchp3-local-db-backups}
 PROD_READ_USER=${PROD_READ_USER:-dchpca_user}
 
@@ -151,6 +151,18 @@ gzip -dc "$workdir/production.sql.gz" |
 
 [ -s "$workdir/schema.sql" ] ||
   die "found no section for \`$PROD_SCHEMA\` in the dump"
+
+# Take the database default charset from production's own CREATE DATABASE line
+# rather than assuming one. It governs only tables created later — this repo has
+# no Prisma migrations and a no-op seed, so nothing creates tables today — but
+# guessing it wrong would quietly plant a difference for whenever that changes.
+if [ -z "$LOCAL_CHARSET" ]; then
+  LOCAL_CHARSET=$(gzip -dc "$workdir/production.sql.gz" |
+    grep -m1 "^CREATE DATABASE.*\`$PROD_SCHEMA\`" |
+    sed -n 's/.*DEFAULT CHARACTER SET \([a-z0-9]*\).*/\1/p')
+  [ -n "$LOCAL_CHARSET" ] || LOCAL_CHARSET=latin1
+  echo "Database default charset from the dump: $LOCAL_CHARSET"
+fi
 
 # A dump section that holds no CREATE TABLE is a section header and nothing
 # else, which would silently produce an empty database.
