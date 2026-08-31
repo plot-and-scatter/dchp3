@@ -72,3 +72,94 @@ zcat /var/backups/all-databases-<stamp>.sql.gz | mysql
 
 For the staging refresh (single schema into the staging database), see the
 staging setup notes.
+
+## The split deploy/start design
+
+Both the production and staging instances follow the same two-script shape:
+
+- **`deploy-*.sh`** — run by hand and watched. Pulls, installs, builds,
+  restarts. The only thing that ever installs or builds.
+- **`start-*.sh`** — what systemd runs. Serves the build that is already on
+  disk. Never installs, never builds.
+
+The reason is that production's original single script did all four steps at
+every boot, and the box reboots nightly at 03:28. That made every night an
+unattended reinstall and rebuild of production: ~80s of downtime, a hard
+dependency on the npm registry being reachable at 3am, and a tree that failed
+to build discovered at 3am rather than at deploy time. It also ran `npm i` as
+root nightly, which is what grew root's npm cache to 4.3 GB and filled the
+root partition in April 2025.
+
+With the split, a boot serves the existing build in seconds and deploys
+happen only when someone runs the deploy script and watches it.
+
+## Production: dchp3-remix-server.service, start-production.sh, deploy-production.sh
+
+The unit keeps its original name, so there is nothing to enable or disable —
+only the file contents change.
+
+Unlike staging, production's two scripts install to `/usr/local/sbin` rather
+than being run from `scripts/server/` inside the deployed tree. Two reasons:
+the deployed tree does not contain these scripts until production is upgraded
+to current `main`, and the deploy script rewrites that tree while the unit
+that points into it is running.
+
+### Installation
+
+1. Copy both scripts in, root-only:
+
+   ```
+   sudo curl -fL -o /usr/local/sbin/dchp3-start-production.sh \
+     https://raw.githubusercontent.com/plot-and-scatter/dchp3/main/scripts/server/start-production.sh
+   sudo curl -fL -o /usr/local/sbin/dchp3-deploy-production.sh \
+     https://raw.githubusercontent.com/plot-and-scatter/dchp3/main/scripts/server/deploy-production.sh
+   sudo chown root:root /usr/local/sbin/dchp3-*-production.sh
+   sudo chmod 700 /usr/local/sbin/dchp3-*-production.sh
+   ```
+
+2. Prove the start script by hand before the unit depends on it. This is the
+   only step with downtime — seconds:
+
+   ```
+   sudo systemctl stop dchp3-remix-server
+   sudo bash /usr/local/sbin/dchp3-start-production.sh
+   ```
+
+   In a second shell, `curl -sS -o /dev/null -w '%{http_code}\n' http://localhost:3000/` should print `200`. Then Ctrl-C the script.
+
+3. Install the unit and restart:
+
+   ```
+   sudo curl -fL -o /etc/systemd/system/dchp3-remix-server.service \
+     https://raw.githubusercontent.com/plot-and-scatter/dchp3/main/scripts/server/dchp3-remix-server.service
+   sudo systemctl daemon-reload
+   sudo systemctl restart dchp3-remix-server
+   sudo systemctl status dchp3-remix-server
+   ```
+
+   Keep a copy of the previous unit file first. Rolling back is restoring it
+   and running `daemon-reload` and `restart` — the old `start-shell.sh` stays
+   in the tree untouched, so nothing else has to be undone.
+
+4. Confirm the next morning that the 03:28 reboot brought the site back, and
+   that the journal for the unit shows a start of seconds with no `npm i`.
+
+### Deploying after this
+
+`sudo /usr/local/sbin/dchp3-deploy-production.sh`, watched. It prints the
+current commit and the command to roll back to it before doing anything, and
+asks for confirmation (`-y` skips the prompt).
+
+Both production scripts pin `PATH` at the Node 22 tarball in `/opt`, exactly
+as the staging scripts do; the system Node stays at 18 and nothing else on
+the box is affected. Read the header of the deploy script before its first
+run: as long as the deployed tree predates PR #424, that first deploy is also
+production's move to current `main`. That is a scheduled window, not a
+routine deploy.
+
+## Staging: dchp3-staging.service, start-staging.sh, deploy-staging.sh
+
+The same design, proven on staging first (2026-08-28). Staging runs from
+`/var/www/dchp3-staging` on port 8081, serves out of `scripts/server/` in its
+own tree, and reads `.env.staging`. Its unit is enabled at boot, which is
+safe precisely because the start script only serves.

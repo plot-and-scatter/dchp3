@@ -1,0 +1,19 @@
+[Unit]
+Description=DCHP3 production server
+# The old unit had neither line, so the boot-time `npm i` raced the network:
+# if the registry was unreachable at 03:28 the site did not come back. The
+# unit no longer installs anything, and it now waits for the network and for
+# MySQL regardless.
+Wants=network-online.target
+After=network-online.target mysqld.service
+
+[Service]
+# Serve only. Installing and building happen in deploy-production.sh, by hand.
+# With Restart=always, a crash loop now restarts the server every 10s instead
+# of reinstalling and rebuilding the whole tree every 10s.
+ExecStart=/bin/bash /usr/local/sbin/dchp3-start-production.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
