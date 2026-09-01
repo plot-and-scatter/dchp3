@@ -73,17 +73,30 @@ async function getRolesByAuth0UserId(): Promise<
   const roles = await listAuth0Roles()
   if (!roles.ok) return roles
 
+  // A role this application does not recognise grants nothing here, so it is
+  // not worth a request.
+  const known = roles.data.filter((role) => isAuthRole(role.name))
+
+  // In parallel. They are independent, and run one after another they were
+  // about 390ms of the page's 580ms of Auth0 time.
+  const memberships = await Promise.all(
+    known.map(async (role) => ({
+      name: role.name as AuthRole,
+      result: await listAuth0RoleMembers(role.id),
+    }))
+  )
+
+  const failed = memberships.find((m) => !m.result.ok)
+  if (failed && !failed.result.ok) return failed.result
+
   const byUserId = new Map<string, AuthRole[]>()
 
-  for (const role of roles.data) {
-    if (!isAuthRole(role.name)) continue
+  for (const { name, result } of memberships) {
+    if (!result.ok) continue
 
-    const members = await listAuth0RoleMembers(role.id)
-    if (!members.ok) return members
-
-    for (const member of members.data) {
+    for (const member of result.data) {
       const held = byUserId.get(member.user_id) ?? []
-      held.push(role.name)
+      held.push(name)
       byUserId.set(member.user_id, held)
     }
   }

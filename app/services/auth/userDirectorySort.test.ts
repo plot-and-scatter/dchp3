@@ -1,5 +1,6 @@
 // @vitest-environment node
 import {
+  ACCESS_FILTERS,
   DEFAULT_ACCESS_FILTER,
   isAccessFilter,
   isFullyBlocked,
@@ -364,6 +365,20 @@ describe("the access filter", () => {
   it("counts a partly blocked person as active, since they can still log in", () => {
     // The row most worth seeing must not be hidden by the default.
     expect(matching("active")).toEqual(["canLogIn", "partly", "unknown"])
+  })
+
+  it("offers no two options that select the same people", () => {
+    // Compared with Auth0 readable, which is the normal case. A removed option
+    // called "can log in" selected exactly what "has access" does whenever
+    // Auth0 answered, and differed only when it did not -- by showing an empty
+    // table. Including the unreachable case here would have let that pass.
+    const observable = (filter: Parameters<typeof matchesAccessFilter>[1]) =>
+      matching(filter)
+        .filter((name) => name !== "unknown")
+        .join("|")
+
+    const selections = ACCESS_FILTERS.map(observable)
+    expect(new Set(selections).size).toBe(ACCESS_FILTERS.length)
   })
 
   it("excludes the blocked and the legacy from active", () => {

@@ -172,3 +172,23 @@ issues. No personal data here: counts only.
 
   The list therefore says "no database record" rather than "has never logged
   in", which the join cannot know.
+
+## How the roles claim is populated
+
+Checked against the tenant on 2026-09-01, answering the question #440 left open.
+
+**Roles are Auth0 RBAC and nothing else.** No account in the tenant has any
+`app_metadata` or `user_metadata` at all, and a full user record from
+`GET /api/v2/users/{id}` has no `roles` field. So the `https://dchp.ca/roles`
+claim on the login token is added by an Action or a Rule in the tenant reading
+RBAC role assignments; it is not read from anything stored on the user.
+
+Two consequences for anything that needs to know a user's roles:
+
+- **They cannot be had from the user list.** Reading them means one request per
+  user against `GET /users/{id}/roles`, or one request per role against
+  `GET /roles/{id}/users`. The directory does the latter: four roles rather
+  than several hundred users. The four run in parallel.
+- **Editing a role in the Auth0 dashboard changes what the token carries**,
+  with no other place to keep in step. That is the whole reason
+  `user.access_level` was retired rather than kept in sync.

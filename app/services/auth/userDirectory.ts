@@ -247,6 +247,12 @@ export function sortDirectoryUsers(
 // Column filters. Kept here, next to the predicates they use, so the header
 // menus and the route agree on what each option means.
 //
+// There is no "can log in" option. It would select the same people as "has
+// access" in every state but one -- a legacy contributor has no account and a
+// blocked person is excluded either way -- and in that one state, Auth0 being
+// unreachable, it would show an empty table rather than admitting that nothing
+// is known.
+//
 // The access filter defaults to "active" rather than "all". Most of the list
 // is legacy contributors -- 243 of about 274 -- and a page for managing access
 // that opens on people who have none is not much use. "Active" is deliberately
@@ -256,7 +262,6 @@ export function sortDirectoryUsers(
 
 export const ACCESS_FILTERS = [
   "active",
-  "canLogIn",
   "partlyBlocked",
   "blocked",
   "legacy",
@@ -267,7 +272,6 @@ export const DEFAULT_ACCESS_FILTER: AccessFilter = "active"
 
 export const ACCESS_FILTER_LABELS: Record<AccessFilter, string> = {
   active: "Has access",
-  canLogIn: "Can log in",
   partlyBlocked: "Partly blocked",
   blocked: "Blocked",
   legacy: "Legacy — no account",
@@ -287,8 +291,6 @@ export const matchesAccessFilter = (
       return true
     case "active":
       return !isLegacyUser(user) && !isFullyBlocked(user)
-    case "canLogIn":
-      return user.auth0Accounts.length > 0 && !isFullyBlocked(user)
     case "partlyBlocked":
       return isPartiallyBlocked(user)
     case "blocked":
