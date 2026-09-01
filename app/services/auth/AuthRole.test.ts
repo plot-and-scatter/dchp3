@@ -1,4 +1,5 @@
 import {
+  AUTH_PERMISSION_ROLE_MAP,
   AUTH_ROLES,
   isAuthRole,
   parseAuthRoles,
@@ -102,5 +103,30 @@ describe("roleHasPermission with an unrecognised role", () => {
     expect(
       roleHasPermission("Admin" as unknown as AuthRole, "det:manageUsers")
     ).toBe(false)
+  })
+})
+
+describe("permission sets", () => {
+  it.each(AUTH_ROLES)("lists no permission twice for %s", (role) => {
+    const permissions = AUTH_PERMISSION_ROLE_MAP[role]
+    // The sets are built by spreading the one below, so adding a permission
+    // that a lower role already grants shows it twice on /admin.
+    expect(permissions).toEqual([...new Set(permissions)])
+  })
+
+  it("grants each role everything the role below it has", () => {
+    const ascending: AuthRole[] = [
+      "Display",
+      "Student / Editor",
+      "Research Assistant",
+      "Superadmin",
+    ]
+
+    ascending.slice(1).forEach((role, index) => {
+      const below = AUTH_PERMISSION_ROLE_MAP[ascending[index]]
+      expect(AUTH_PERMISSION_ROLE_MAP[role]).toEqual(
+        expect.arrayContaining(below)
+      )
+    })
   })
 })

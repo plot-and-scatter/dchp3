@@ -65,7 +65,9 @@ const SUPERADMIN_PERMISSIONS: AuthPermission[] = [
   "det:publish",
   "det:viewUsers",
   "det:manageUsers",
-  "det:viewEdits",
+  // det:viewEdits is not repeated here: STUDENT_EDITOR_PERMISSIONS already
+  // grants it and this list spreads that one, so listing it again showed the
+  // permission twice on /admin.
 ]
 
 export const AUTH_PERMISSION_ROLE_MAP: Record<AuthRole, AuthPermission[]> = {

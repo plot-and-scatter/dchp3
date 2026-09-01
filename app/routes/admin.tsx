@@ -1,56 +1,25 @@
-import { Outlet, useLoaderData } from "react-router"
-import { PageHeader } from "~/components/elements/Headings/PageHeader"
-import {
-  getEmailFromSession,
-  getUserPermissions,
-  redirectIfUserNotLoggedIn,
-} from "~/services/auth/session.server"
+import { Outlet } from "react-router"
 import { type LoaderFunctionArgs } from "react-router"
-import LogoutButton from "~/components/auth/LogoutButton"
 import Main from "~/components/elements/Layouts/Main"
-import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
-import type { AuthRole } from "~/services/auth/AuthRole"
+import { redirectIfUserNotLoggedIn } from "~/services/auth/session.server"
+
+// A layout, and only a layout. It used to render "Your access" -- the logged-in
+// email, a log out button, and every role and permission the user holds --
+// which every child route then inherited above its own content. That belongs
+// to /admin itself, so it now lives in admin/index.tsx.
+//
+// The login check stays here, because it should apply to every admin route.
+// Note that it guards loaders only: a child route with an action guards itself.
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await redirectIfUserNotLoggedIn(request)
-
-  const email = await getEmailFromSession(request)
-
-  const roleAndPermissionMap = await getUserPermissions(request)
-
-  return { email, roleAndPermissionMap }
+  return null
 }
 
 export default function Admin() {
-  const { email, roleAndPermissionMap } = useLoaderData<typeof loader>()
-
   return (
     <Main>
-      <div>
-        <PageHeader>Your access</PageHeader>
-        <p>
-          You are logged in as <strong>{email}</strong>
-        </p>
-        <div className="my-4">
-          <LogoutButton />
-        </div>
-        <SecondaryHeader>Roles and permissions</SecondaryHeader>
-        <div className="flex flex-row">
-          {Object.keys(roleAndPermissionMap).map((role) => {
-            return (
-              <div key={role}>
-                <p className="font-semibold">{role}</p>
-                {roleAndPermissionMap[role as AuthRole]?.map((permission) => (
-                  <p key="permission" className="pl-4">
-                    {permission}
-                  </p>
-                ))}
-              </div>
-            )
-          })}
-        </div>
-        <Outlet />
-      </div>
+      <Outlet />
     </Main>
   )
 }
