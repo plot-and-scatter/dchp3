@@ -47,6 +47,17 @@ const ROLE_ICONS: Record<AuthRole, string> = {
   Superadmin: "fa-shield-halved",
 }
 
+// Colour by seniority, so the column reads as a ramp: grey for read-only, then
+// blue, then green, then the site's own red for the role that can do anything.
+// Deliberately not the danger tone for Superadmin -- holding the role is not a
+// problem, and the Auth0 login column uses red to mean blocked.
+const ROLE_TONES: Record<AuthRole, BadgeTone> = {
+  Display: "neutral",
+  "Student / Editor": "info",
+  "Research Assistant": "success",
+  Superadmin: "privileged",
+}
+
 /** Can this person log in at all, and through how many accounts. */
 export function loginBadge(user: DirectoryUser): Badge {
   if (user.presence === "auth0Unknown") {
@@ -93,7 +104,7 @@ export function roleBadges(user: DirectoryUser): Badge[] {
   if (user.roles.length > 0) {
     return user.roles.map((role) => ({
       label: role,
-      tone: "neutral",
+      tone: ROLE_TONES[role],
       iconName: ROLE_ICONS[role],
     }))
   }

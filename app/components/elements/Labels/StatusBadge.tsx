@@ -7,13 +7,24 @@
 
 import FAIcon from "~/components/elements/Icons/FAIcon"
 
-export type BadgeTone = "neutral" | "success" | "warning" | "danger"
+// The first four say how much attention a state deserves. The last two are
+// for identity rather than attention -- a role is not a warning -- and exist
+// so that colour-coding roles does not mean calling a Superadmin "danger".
+export type BadgeTone =
+  | "neutral"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info"
+  | "privileged"
 
 const TONE_CLASS: Record<BadgeTone, string> = {
   neutral: "border-gray-300 bg-gray-100 text-gray-700",
   success: "border-green-300 bg-green-50 text-green-800",
   warning: "border-alert-300 bg-alert-50 text-alert-800",
   danger: "border-red-300 bg-red-50 text-red-800",
+  info: "border-blue-300 bg-blue-50 text-blue-800",
+  privileged: "border-primary-light bg-primary-lightest text-primary-dark",
 }
 
 export default function StatusBadge({
@@ -39,7 +50,7 @@ export default function StatusBadge({
       // on all four sides, though -- px-1 py-0 put the border hard against the
       // letters. leading-tight rather than leading-none, which clips a
       // descender.
-      className={`mr-1 inline-block whitespace-nowrap border px-2 py-1 text-xs leading-tight shadow-sm ${TONE_CLASS[tone]}`}
+      className={`mr-1 inline-block whitespace-nowrap border px-2 py-1 text-sm leading-tight shadow-sm ${TONE_CLASS[tone]}`}
     >
       {iconName && (
         <FAIcon

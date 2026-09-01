@@ -221,6 +221,22 @@ describe("UserDirectoryTable", () => {
     ).toHaveLength(2)
   })
 
+  it("colours the roles by seniority, and not as a danger", () => {
+    renderTable([
+      user({ name: "Boss", roles: ["Superadmin"] }),
+      user({ name: "Reader", roles: ["Display"] }),
+    ])
+
+    const badge = (name: string, label: string) =>
+      within(rowFor(name)).getByText(label).className
+
+    // The Auth0 login column uses red to mean blocked, so holding the most
+    // senior role must not borrow the same tone.
+    expect(badge("Boss", "Superadmin")).toContain("text-primary-dark")
+    expect(badge("Boss", "Superadmin")).not.toContain("text-red-800")
+    expect(badge("Reader", "Display")).toContain("text-gray-700")
+  })
+
   it("gives each role its own icon, marked decorative", () => {
     renderTable([user({ roles: ["Superadmin"] })])
     const row = within(rowFor("Some One"))
