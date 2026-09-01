@@ -41,7 +41,7 @@ const person = (overrides: Partial<DirectoryUser> = {}): DirectoryUser =>
     ...overrides,
   } as DirectoryUser)
 
-const name = { firstName: "New", lastName: "Name" }
+const name = { intent: "name" as const, firstName: "New", lastName: "Name" }
 
 beforeEach(() => {
   vi.clearAllMocks()

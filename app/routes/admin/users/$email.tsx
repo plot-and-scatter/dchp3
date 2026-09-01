@@ -154,7 +154,14 @@ export default function AdminUser() {
         </dd>
       </dl>
 
-      <NameForm user={user} lastResult={actionData} />
+      <NameForm
+        user={user}
+        errors={
+          actionData?.kind === "invalidName"
+            ? actionData.result.error ?? undefined
+            : undefined
+        }
+      />
 
       {actionData?.kind === "saved" && (
         <div className="my-4 border-l-4 border-green-500 bg-green-50 p-4">
@@ -229,13 +236,14 @@ export default function AdminUser() {
  */
 function NameForm({
   user,
-  lastResult,
+  errors,
 }: {
   user: {
     name: string
     localRows: { first_name: string | null; last_name: string | null }[]
   }
-  lastResult: unknown
+  /** Field errors from a refused save, so the refusal is not silent. */
+  errors?: Record<string, string[] | null | undefined>
 }) {
   const row = user.localRows[0]
   const [first, ...rest] = user.name.split(" ")
@@ -252,6 +260,11 @@ function NameForm({
             defaultValue={row?.first_name ?? first ?? ""}
             className="mt-1 w-full border border-gray-400 p-2"
           />
+          {errors?.firstName?.[0] && (
+            <span className="mt-1 block text-red-800">
+              {errors.firstName[0]}
+            </span>
+          )}
         </label>
         <label className="block w-full">
           <span className="font-semibold">Last name</span>
@@ -260,6 +273,11 @@ function NameForm({
             defaultValue={row?.last_name ?? rest.join(" ")}
             className="mt-1 w-full border border-gray-400 p-2"
           />
+          {errors?.lastName?.[0] && (
+            <span className="mt-1 block text-red-800">
+              {errors.lastName[0]}
+            </span>
+          )}
         </label>
       </div>
       <Button type="submit" appearance="secondary" className="mt-2">

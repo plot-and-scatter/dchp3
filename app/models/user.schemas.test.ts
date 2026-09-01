@@ -1,5 +1,5 @@
 import { parseWithZod } from "@conform-to/zod"
-import { CreateUserSchema, NO_ROLE } from "./user.schemas"
+import { CreateUserSchema, NO_ROLE, UpdateUserNameSchema } from "./user.schemas"
 
 // The same schema runs in the browser through conform and on the server in the
 // action, so these go through parseWithZod rather than calling zod directly.
@@ -77,5 +77,39 @@ describe("CreateUserSchema", () => {
     it("does not require the acknowledgement for a real role", () => {
       expect(submit(valid).status).toBe("success")
     })
+  })
+})
+
+describe("UpdateUserNameSchema", () => {
+  const submitName = (entries: Record<string, string>) => {
+    const data = new FormData()
+    Object.entries(entries).forEach(([k, v]) => data.append(k, v))
+    return parseWithZod(data, { schema: UpdateUserNameSchema })
+  }
+
+  it("accepts what the form actually posts", () => {
+    // Including the intent field, which says which of the page's two forms
+    // was submitted. Leaving it out of a strict schema rejected every save.
+    expect(
+      submitName({ intent: "name", firstName: "New", lastName: "Name" }).status
+    ).toBe("success")
+  })
+
+  it("still rejects a field nobody asked for", () => {
+    expect(
+      submitName({
+        intent: "name",
+        firstName: "New",
+        lastName: "Name",
+        isAdmin: "true",
+      }).status
+    ).not.toBe("success")
+  })
+
+  it.each([
+    ["no first name", { intent: "name", firstName: "", lastName: "Name" }],
+    ["no last name", { intent: "name", firstName: "New", lastName: "" }],
+  ])("rejects %s", (_label, entries) => {
+    expect(submitName(entries).status).not.toBe("success")
   })
 })

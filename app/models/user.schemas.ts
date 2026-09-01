@@ -55,6 +55,10 @@ export const ReissuePasswordLinkSchema = z
 
 export const UpdateUserNameSchema = z
   .object({
+    // The person's page has two forms; this says which one was submitted. It
+    // has to be declared, because a strict schema rejects a field it has not
+    // been told about -- which silently refused every save.
+    intent: z.literal("name"),
     firstName: z.string().trim().min(1, "A first name is required."),
     lastName: z.string().trim().min(1, "A last name is required."),
   })
