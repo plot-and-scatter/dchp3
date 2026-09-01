@@ -6,6 +6,7 @@ import UserDirectoryTable from "~/components/admin/UserDirectoryTable"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 import { getUserDirectory } from "~/services/auth/userDirectory.server"
 import {
+  isFullyBlocked,
   isLegacyUser,
   isSortColumn,
   sortDirectoryUsers,
@@ -65,13 +66,31 @@ export default function AdminUsers() {
   const direction: SortDirection =
     searchParams.get("dir") === "desc" ? "desc" : "asc"
 
-  // Legacy contributors are hidden by default. There are far more of them than
-  // there are people who can log in, and this page is for managing access --
-  // which they have none of and are not going to be given. Their count is
-  // always on screen so that hiding them is visible rather than silent.
-  const showLegacy = searchParams.get("legacy") === "show"
-  const legacyCount = users.filter(isLegacyUser).length
-  const visible = showLegacy ? users : users.filter((u) => !isLegacyUser(u))
+  // Two groups are hidden by default, both for the same reason: this page is
+  // for managing who has access, and neither group has any. Each count stays
+  // on screen so that hiding them is visible rather than silent.
+  //
+  // Someone only partly blocked is NOT hidden. They can still log in, so they
+  // are precisely the row worth seeing.
+  const filters = [
+    {
+      key: "legacy",
+      matches: isLegacyUser,
+      label: (n: number) =>
+        `Show ${n} legacy ${n === 1 ? "contributor" : "contributors"}`,
+      hint: "Contributed before this site used Auth0. No account, so no way to log in.",
+    },
+    {
+      key: "blocked",
+      matches: isFullyBlocked,
+      label: (n: number) =>
+        `Show ${n} blocked ${n === 1 ? "person" : "people"}`,
+      hint: "Every Auth0 account they hold is blocked, so they cannot log in.",
+    },
+  ] as const
+
+  const hidden = filters.filter((f) => searchParams.get(f.key) !== "show")
+  const visible = users.filter((user) => !hidden.some((f) => f.matches(user)))
 
   const sorted = sortDirectoryUsers(visible, sort, direction)
 
@@ -118,31 +137,36 @@ export default function AdminUsers() {
         )}
       </p>
 
-      {legacyCount > 0 && (
-        <label className="my-4 flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={showLegacy}
-            onChange={(event) => {
-              const next = new URLSearchParams(searchParams)
-              if (event.target.checked) next.set("legacy", "show")
-              else next.delete("legacy")
-              // The page number means something different once the list
-              // changes length.
-              next.delete("page")
-              setSearchParams(next, { preventScrollReset: true })
-            }}
-          />
-          <span>
-            Show {legacyCount} legacy{" "}
-            {legacyCount === 1 ? "contributor" : "contributors"}
-            <span className="ml-1 text-gray-600">
-              — people who contributed before this site used Auth0. They have no
-              account and cannot log in.
-            </span>
-          </span>
-        </label>
-      )}
+      <div className="my-4 flex flex-col gap-2">
+        {filters.map((filter) => {
+          const count = users.filter(filter.matches).length
+          if (count === 0) return null
+          const checked = searchParams.get(filter.key) === "show"
+
+          return (
+            <label key={filter.key} className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                className="mt-1"
+                checked={checked}
+                onChange={(event) => {
+                  const next = new URLSearchParams(searchParams)
+                  if (event.target.checked) next.set(filter.key, "show")
+                  else next.delete(filter.key)
+                  // The page number means something different once the list
+                  // changes length.
+                  next.delete("page")
+                  setSearchParams(next, { preventScrollReset: true })
+                }}
+              />
+              <span>
+                {filter.label(count)}
+                <span className="ml-1 text-gray-600">— {filter.hint}</span>
+              </span>
+            </label>
+          )
+        })}
+      </div>
 
       <UserDirectoryTable
         users={pageOfUsers}

@@ -1,5 +1,6 @@
 // @vitest-environment node
 import {
+  isFullyBlocked,
   isLegacyUser,
   isSortColumn,
   SORT_COLUMNS,
@@ -229,5 +230,37 @@ describe("isLegacyUser", () => {
     expect(
       isLegacyUser(person({ presence: "auth0Unknown", auth0Accounts: [] }))
     ).toBe(false)
+  })
+})
+
+describe("isFullyBlocked", () => {
+  const blocked = (...flags: boolean[]) =>
+    person({
+      auth0Accounts: flags.map((b, i) =>
+        account({ userId: `auth0|${i}`, blocked: b })
+      ),
+    })
+
+  it("is true when every account is blocked", () => {
+    expect(isFullyBlocked(blocked(true))).toBe(true)
+    expect(isFullyBlocked(blocked(true, true))).toBe(true)
+  })
+
+  it("is false when only some are blocked", () => {
+    // They can still log in through the other account, which is why the list
+    // must not hide them as blocked.
+    expect(isFullyBlocked(blocked(true, false))).toBe(false)
+  })
+
+  it("is false for someone with no Auth0 account at all", () => {
+    // A legacy contributor has not been blocked; they never had an account.
+    expect(
+      isFullyBlocked(person({ presence: "localOnly", auth0Accounts: [] }))
+    ).toBe(false)
+  })
+
+  it("does not overlap with isLegacyUser", () => {
+    const legacy = person({ presence: "localOnly", auth0Accounts: [] })
+    expect(isLegacyUser(legacy) && isFullyBlocked(legacy)).toBe(false)
   })
 })

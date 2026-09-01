@@ -93,6 +93,17 @@ export const totalContributions = (user: DirectoryUser): number =>
 export const isLegacyUser = (user: DirectoryUser): boolean =>
   user.presence === "localOnly"
 
+/**
+ * Blocked out of the application: every Auth0 account on this address is
+ * blocked, so there is no way left in.
+ *
+ * Deliberately false when only some are blocked. Someone whose accounts
+ * disagree can still log in, and hiding them as "blocked" would bury exactly
+ * the row an administrator needs to see.
+ */
+export const isFullyBlocked = (user: DirectoryUser): boolean =>
+  user.auth0Accounts.length > 0 && user.auth0Accounts.every((a) => a.blocked)
+
 /** True when some but not all of a person's Auth0 accounts are blocked. */
 export const isPartiallyBlocked = (user: DirectoryUser): boolean =>
   user.auth0Accounts.length > 1 &&

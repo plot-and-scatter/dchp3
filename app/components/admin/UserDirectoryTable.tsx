@@ -4,6 +4,7 @@ import StatusBadge, {
 // Not from userDirectory.server: isPartiallyBlocked is a value, and importing
 // it from the server module pulls ~/db.server into the client bundle.
 import {
+  isFullyBlocked,
   isPartiallyBlocked,
   type DirectoryUser,
   totalContributions,
@@ -49,7 +50,7 @@ export function loginBadge(user: DirectoryUser): Badge {
     }
   }
 
-  if (user.auth0Accounts.every((a) => a.blocked)) {
+  if (isFullyBlocked(user)) {
     return { label: "Blocked", tone: "danger", title: "Cannot log in." }
   }
 
