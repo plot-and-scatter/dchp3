@@ -11,7 +11,7 @@
 // The helpers below are values, so they belong here.
 
 import type { AuthRole } from "./AuthRole"
-import type { DisplayUser } from "~/models/user.server"
+import type { ContributionCounts, DisplayUser } from "~/models/user.server"
 
 export type AccountPresence =
   | "both"
@@ -55,6 +55,15 @@ export type DirectoryUser = {
    * the page can show that rather than silently dropping one.
    */
   localRows: DisplayUser[]
+  /**
+   * Entries edited and citations created, summed across this person's local
+   * rows. Zero for someone with no local row, who cannot have done any work.
+   *
+   * On screen so that "holds no role" can be read correctly: a contributor
+   * who lost their role and an account that signed itself up and did nothing
+   * are otherwise identical rows, and only one of them should be blocked.
+   */
+  contributions: ContributionCounts
 }
 
 /**
@@ -67,6 +76,9 @@ export type DirectoryUser = {
  */
 export const auth0UserIdsFor = (user: DirectoryUser): string[] =>
   user.auth0Accounts.map((account) => account.userId)
+
+export const totalContributions = (user: DirectoryUser): number =>
+  user.contributions.edits + user.contributions.citations
 
 /** True when some but not all of a person's Auth0 accounts are blocked. */
 export const isPartiallyBlocked = (user: DirectoryUser): boolean =>
@@ -87,6 +99,7 @@ export const SORT_COLUMNS = [
   "name",
   "email",
   "role",
+  "work",
   "login",
   "record",
 ] as const
@@ -137,6 +150,9 @@ const compareBy: Record<
   (a: DirectoryUser, b: DirectoryUser) => number
 > = {
   name: (a, b) => a.name.localeCompare(b.name),
+  // Descending is the useful direction here, so ascending is least-work-first
+  // -- which is also the order that groups the accounts that did nothing.
+  work: (a, b) => totalContributions(a) - totalContributions(b),
   email: (a, b) => {
     if (a.email === b.email) return 0
     if (a.email === null) return 1

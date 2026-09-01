@@ -1,4 +1,9 @@
-import { getAllUsers, type DisplayUser } from "~/models/user.server"
+import {
+  getAllUsers,
+  getContributionCountsByUserId,
+  type ContributionCounts,
+  type DisplayUser,
+} from "~/models/user.server"
 import {
   listAllAuth0Users,
   listAuth0RoleMembers,
@@ -88,8 +93,24 @@ async function getRolesByAuth0UserId(): Promise<
 
 export async function getUserDirectory(): Promise<UserDirectory> {
   // The local rows are read first and unconditionally: they are what the page
-  // falls back to when Auth0 is unreachable.
-  const localUsers = await getAllUsers()
+  // falls back to when Auth0 is unreachable. The contribution counts come from
+  // the same database and are just as unconditional.
+  const [localUsers, contributionsByUserId] = await Promise.all([
+    getAllUsers(),
+    getContributionCountsByUserId(),
+  ])
+
+  const contributionsFor = (rows: DisplayUser[]): ContributionCounts =>
+    rows.reduce(
+      (total, row) => {
+        const counts = contributionsByUserId.get(row.id)
+        return {
+          edits: total.edits + (counts?.edits ?? 0),
+          citations: total.citations + (counts?.citations ?? 0),
+        }
+      },
+      { edits: 0, citations: 0 }
+    )
 
   const localByEmail = new Map<string, DisplayUser[]>()
   const localWithoutEmail: DisplayUser[] = []
@@ -107,7 +128,11 @@ export async function getUserDirectory(): Promise<UserDirectory> {
 
   if (!auth0Users.ok) {
     return {
-      users: toLocalOnlyDirectory(localByEmail, localWithoutEmail),
+      users: toLocalOnlyDirectory(
+        localByEmail,
+        localWithoutEmail,
+        contributionsFor
+      ),
       auth0Error: auth0Users.error,
     }
   }
@@ -115,7 +140,11 @@ export async function getUserDirectory(): Promise<UserDirectory> {
   const roles = await getRolesByAuth0UserId()
   if (!roles.ok) {
     return {
-      users: toLocalOnlyDirectory(localByEmail, localWithoutEmail),
+      users: toLocalOnlyDirectory(
+        localByEmail,
+        localWithoutEmail,
+        contributionsFor
+      ),
       auth0Error: roles.error,
     }
   }
@@ -142,22 +171,26 @@ export async function getUserDirectory(): Promise<UserDirectory> {
     const localRows = localByEmail.get(email) ?? []
     if (localRows.length > 0) matchedEmails.add(email)
 
-    users.push(toDirectoryUser(accounts, email, localRows, roles.data))
+    users.push(
+      toDirectoryUser(accounts, email, localRows, roles.data, contributionsFor)
+    )
   }
 
   for (const auth0User of auth0WithoutEmail) {
-    users.push(toDirectoryUser([auth0User], null, [], roles.data))
+    users.push(
+      toDirectoryUser([auth0User], null, [], roles.data, contributionsFor)
+    )
   }
 
   // Whatever Auth0 did not account for is local-only: a person who cannot log
   // in.
   for (const [email, rows] of localByEmail) {
     if (matchedEmails.has(email)) continue
-    users.push(toLocalOnlyUser(email, rows))
+    users.push(toLocalOnlyUser(email, rows, contributionsFor))
   }
 
   for (const row of localWithoutEmail) {
-    users.push(toLocalOnlyUser(null, [row]))
+    users.push(toLocalOnlyUser(null, [row], contributionsFor))
   }
 
   return { users: sortDirectory(users), auth0Error: null }
@@ -167,7 +200,8 @@ function toDirectoryUser(
   auth0Users: Auth0User[],
   email: string | null,
   localRows: DisplayUser[],
-  rolesByUserId: Map<string, AuthRole[]>
+  rolesByUserId: Map<string, AuthRole[]>,
+  contributions: (rows: DisplayUser[]) => ContributionCounts
 ): DirectoryUser {
   const accounts: DirectoryAuth0Account[] = auth0Users.map((auth0User) => ({
     userId: auth0User.user_id,
@@ -187,12 +221,14 @@ function toDirectoryUser(
     roles: [...new Set(accounts.flatMap((a) => a.roles))],
     auth0Accounts: accounts,
     localRows,
+    contributions: contributions(localRows),
   }
 }
 
 function toLocalOnlyUser(
   email: string | null,
   localRows: DisplayUser[],
+  contributions: (rows: DisplayUser[]) => ContributionCounts,
   presence: Extract<AccountPresence, "localOnly" | "auth0Unknown"> = "localOnly"
 ): DirectoryUser {
   return {
@@ -202,18 +238,20 @@ function toLocalOnlyUser(
     roles: [],
     auth0Accounts: [],
     localRows,
+    contributions: contributions(localRows),
   }
 }
 
 function toLocalOnlyDirectory(
   localByEmail: Map<string, DisplayUser[]>,
-  localWithoutEmail: DisplayUser[]
+  localWithoutEmail: DisplayUser[],
+  contributions: (rows: DisplayUser[]) => ContributionCounts
 ): DirectoryUser[] {
   const users = [...localByEmail].map(([email, rows]) =>
-    toLocalOnlyUser(email, rows, "auth0Unknown")
+    toLocalOnlyUser(email, rows, contributions, "auth0Unknown")
   )
   localWithoutEmail.forEach((row) =>
-    users.push(toLocalOnlyUser(null, [row], "auth0Unknown"))
+    users.push(toLocalOnlyUser(null, [row], contributions, "auth0Unknown"))
   )
   return sortDirectory(users)
 }

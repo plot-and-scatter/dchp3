@@ -22,6 +22,7 @@ const user = (overrides: Partial<DirectoryUser> = {}): DirectoryUser => ({
     },
   ],
   localRows: [{ id: 1, is_active: 1 } as DirectoryUser["localRows"][number]],
+  contributions: { edits: 0, citations: 0 },
   ...overrides,
 })
 
@@ -181,6 +182,20 @@ describe("UserDirectoryTable", () => {
       }),
     ])
     expect(screen.queryByText("No role")).not.toBeInTheDocument()
+  })
+
+  it("shows the work total, summing edits and citations", () => {
+    renderTable([user({ contributions: { edits: 800, citations: 65 } })])
+    expect(screen.getByText("865")).toBeInTheDocument()
+  })
+
+  it("says None rather than nought for someone who has done nothing", () => {
+    // This is the row that pairs with "No role" to mean "signed themselves up".
+    renderTable([
+      user({ roles: [], contributions: { edits: 0, citations: 0 } }),
+    ])
+    expect(screen.getByText("None")).toBeInTheDocument()
+    expect(screen.getByText("No role")).toBeInTheDocument()
   })
 
   it("shows when several database rows share one address", () => {

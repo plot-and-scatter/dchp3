@@ -6,6 +6,7 @@ import StatusBadge, {
 import {
   isPartiallyBlocked,
   type DirectoryUser,
+  totalContributions,
   type SortColumn,
   type SortDirection,
 } from "~/services/auth/userDirectory"
@@ -106,9 +107,42 @@ const COLUMNS: { column: SortColumn; label: string }[] = [
   { column: "name", label: "Name" },
   { column: "email", label: "Email" },
   { column: "role", label: "Role" },
+  { column: "work", label: "Work" },
   { column: "login", label: "Login" },
   { column: "record", label: "Record" },
 ]
+
+/**
+ * Entries edited and citations written. Without this, "holds no role" cannot
+ * be acted on: a contributor whose role was removed and an account that
+ * signed itself up and did nothing are otherwise identical rows.
+ */
+function WorkCell({ user }: { user: DirectoryUser }) {
+  const { edits, citations } = user.contributions
+  const total = totalContributions(user)
+
+  if (total === 0) {
+    return (
+      <span
+        className="text-gray-500"
+        title="Has never edited or written anything."
+      >
+        None
+      </span>
+    )
+  }
+
+  return (
+    <span
+      className="whitespace-nowrap"
+      title={`${edits} ${
+        edits === 1 ? "entry edit" : "entry edits"
+      }, ${citations} ${citations === 1 ? "citation" : "citations"}`}
+    >
+      {total.toLocaleString()}
+    </span>
+  )
+}
 
 /**
  * A column heading that is a link, not a button: sorting lives in the URL, so
@@ -226,6 +260,9 @@ export default function UserDirectoryTable({
                 {roleBadges(user).map((badge) =>
                   renderBadge(badge, `${user.email}-${badge.label}`)
                 )}
+              </td>
+              <td className="py-2 pr-4">
+                <WorkCell user={user} />
               </td>
               <td className="py-2 pr-4">{renderBadge(loginBadge(user))}</td>
               <td className="py-2">

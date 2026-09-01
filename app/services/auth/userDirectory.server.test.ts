@@ -12,6 +12,7 @@ import type { DisplayUser } from "~/models/user.server"
 // production, and what the page gets when Auth0 cannot be read.
 
 const getAllUsers = vi.fn()
+const getContributionCountsByUserId = vi.fn()
 const listAllAuth0Users = vi.fn()
 const listAuth0Roles = vi.fn()
 const listAuth0RoleMembers = vi.fn()
@@ -19,6 +20,7 @@ const listAuth0RoleMembers = vi.fn()
 vi.mock("~/db.server", () => ({ prisma: {} }))
 vi.mock("~/models/user.server", () => ({
   getAllUsers: () => getAllUsers(),
+  getContributionCountsByUserId: () => getContributionCountsByUserId(),
 }))
 vi.mock("./management.server", () => ({
   listAllAuth0Users: () => listAllAuth0Users(),
@@ -46,6 +48,7 @@ const fail = (message: string) => ({
 beforeEach(() => {
   vi.clearAllMocks()
   getAllUsers.mockResolvedValue([])
+  getContributionCountsByUserId.mockResolvedValue(new Map())
   listAllAuth0Users.mockResolvedValue(ok([]))
   listAuth0Roles.mockResolvedValue(ok([]))
   listAuth0RoleMembers.mockResolvedValue(ok([]))
@@ -335,6 +338,63 @@ describe("roles", () => {
     // A role that grants nothing here would misrepresent what they can do.
     expect(users[0].roles).toEqual(["Superadmin"])
     expect(listAuth0RoleMembers).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe("contributions", () => {
+  it("sums a person's entry edits and citations", async () => {
+    getAllUsers.mockResolvedValue([localRow({ id: 4, email: "a@example.com" })])
+    getContributionCountsByUserId.mockResolvedValue(
+      new Map([[4, { edits: 800, citations: 65 }]])
+    )
+    listAllAuth0Users.mockResolvedValue(
+      ok([{ user_id: "auth0|1", email: "a@example.com" }])
+    )
+
+    const { users } = await getUserDirectory()
+
+    expect(users[0].contributions).toEqual({ edits: 800, citations: 65 })
+  })
+
+  it("adds up every local row when an address has more than one", async () => {
+    getAllUsers.mockResolvedValue([
+      localRow({ id: 1, email: "dupe@example.com" }),
+      localRow({ id: 2, email: "dupe@example.com" }),
+    ])
+    getContributionCountsByUserId.mockResolvedValue(
+      new Map([
+        [1, { edits: 5, citations: 1 }],
+        [2, { edits: 2, citations: 3 }],
+      ])
+    )
+
+    const { users } = await getUserDirectory()
+
+    expect(users[0].contributions).toEqual({ edits: 7, citations: 4 })
+  })
+
+  it("is zero for an Auth0 account with no local row", async () => {
+    listAllAuth0Users.mockResolvedValue(
+      ok([{ user_id: "auth0|1", email: "new@example.com" }])
+    )
+
+    const { users } = await getUserDirectory()
+
+    expect(users[0].contributions).toEqual({ edits: 0, citations: 0 })
+  })
+
+  it("is still counted when Auth0 cannot be read", async () => {
+    // The fallback list is the one an administrator acts on when Auth0 is
+    // down, so it needs the same information.
+    getAllUsers.mockResolvedValue([localRow({ id: 4, email: "a@example.com" })])
+    getContributionCountsByUserId.mockResolvedValue(
+      new Map([[4, { edits: 9, citations: 0 }]])
+    )
+    listAllAuth0Users.mockResolvedValue(fail("timeout"))
+
+    const { users } = await getUserDirectory()
+
+    expect(users[0].contributions).toEqual({ edits: 9, citations: 0 })
   })
 })
 

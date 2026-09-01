@@ -28,6 +28,7 @@ const person = (overrides: Partial<DirectoryUser> = {}): DirectoryUser => ({
   roles: [],
   auth0Accounts: [account()],
   localRows: [],
+  contributions: { edits: 0, citations: 0 },
   ...overrides,
 })
 
@@ -128,6 +129,31 @@ describe("sorting by role puts the audit cases first", () => {
       "Just Display",
       "Both",
     ])
+  })
+})
+
+describe("sorting by work", () => {
+  const people = [
+    person({ name: "Prolific", contributions: { edits: 800, citations: 65 } }),
+    person({ name: "Nothing", contributions: { edits: 0, citations: 0 } }),
+    person({ name: "Some", contributions: { edits: 10, citations: 3 } }),
+  ]
+
+  it("sums entry edits and citations", () => {
+    expect(namesOf(sortDirectoryUsers(people, "work", "desc"))).toEqual([
+      "Prolific",
+      "Some",
+      "Nothing",
+    ])
+  })
+
+  it("groups the accounts that did nothing when ascending", () => {
+    // The pairing that makes "holds no role" actionable: no role AND no work
+    // is a signup to remove; no role but a great deal of work is a
+    // contributor whose role went missing.
+    expect(namesOf(sortDirectoryUsers(people, "work", "asc"))[0]).toBe(
+      "Nothing"
+    )
   })
 })
 
