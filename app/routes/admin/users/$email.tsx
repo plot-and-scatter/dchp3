@@ -247,7 +247,7 @@ export default function AdminUser() {
 }
 
 /**
- * Their name, editable. It is written to this site's database and to Auth0
+ * Their name, editable. It is written to the DCHP database and to Auth0
  * both, because the list reads whichever it finds first and writing only one
  * would leave the name on screen unchanged after an apparently successful
  * save.

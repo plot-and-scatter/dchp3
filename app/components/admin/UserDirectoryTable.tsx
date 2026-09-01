@@ -452,8 +452,8 @@ export default function UserDirectoryTable({
                         className="block text-sm text-alert-800"
                         title="The user table has no unique index on email, so the same address can appear on more than one row. Unrelated to how they sign in."
                       >
-                        {user.localRows.length} records in this site&rsquo;s own
-                        database share this address
+                        {user.localRows.length} records in the DCHP database
+                        share this address
                       </span>
                     )}
                     {user.presence === "auth0Only" && (
@@ -462,7 +462,7 @@ export default function UserDirectoryTable({
                           label: "No local record",
                           tone: "warning",
                           title:
-                            "No row in this site's database yet. One is created at first login.",
+                            "No row in the DCHP database yet. One is created at first login.",
                         })}
                       </span>
                     )}

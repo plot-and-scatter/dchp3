@@ -80,7 +80,7 @@ export async function createUser(
     return {
       ok: false,
       kind: "duplicate",
-      message: `${email} already has a record in this site's database. They are a legacy contributor: giving them an Auth0 account is worth doing deliberately rather than through this form.`,
+      message: `${email} already has a record in the DCHP database. They are a legacy contributor: giving them an Auth0 account is worth doing deliberately rather than through this form.`,
     }
   }
 
@@ -144,7 +144,7 @@ export async function createUser(
     })
   } catch (error) {
     warnings.push(
-      `The Auth0 account was created but this site's own record was not: ${
+      `The Auth0 account was created but the DCHP database record was not: ${
         error instanceof Error ? error.message : String(error)
       } One will be created when they first sign in.`
     )

@@ -106,9 +106,9 @@ export default function AdminUsers() {
         >
           <p className="font-semibold">Auth0 could not be reached.</p>
           <p className="mt-1">
-            The people below are the rows in this site's own database. Roles and
-            login accounts are not shown, because they live in Auth0. Nobody has
-            lost access — this page could not read it.
+            The people below are the rows in the DCHP database. Roles and login
+            accounts are not shown, because they live in Auth0. Nobody has lost
+            access — this page could not read it.
           </p>
           <p className="mt-1 text-sm text-gray-700">{auth0Error.message}</p>
         </div>
@@ -123,7 +123,7 @@ export default function AdminUsers() {
       <p className="my-4">
         {visible.length} {visible.length === 1 ? "person" : "people"}
         {visible.length === users.length
-          ? ", from Auth0 and from this site's database."
+          ? ", from Auth0 and from the DCHP database."
           : ` of ${users.length}, filtered by the column headings.`}
         {pageCount > 1 && (
           <span className="text-gray-600">

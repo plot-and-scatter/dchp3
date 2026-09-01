@@ -353,9 +353,7 @@ describe("UserDirectoryTable", () => {
     // Worded so it cannot be read as being about the Auth0 connection: it is
     // about the user table having no unique index on email.
     expect(
-      screen.getByText(
-        /2 records in this site.s own database share this address/
-      )
+      screen.getByText(/2 records in the DCHP database share this address/)
     ).toBeInTheDocument()
   })
 

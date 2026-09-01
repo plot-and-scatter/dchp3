@@ -84,7 +84,7 @@ export const totalContributions = (user: DirectoryUser): number =>
   user.contributions.edits + user.contributions.citations
 
 /**
- * Someone with a row in this site's database and no Auth0 account: they
+ * Someone with a row in the DCHP database and no Auth0 account: they
  * contributed before the project moved to Auth0 and cannot log in now.
  *
  * There is no column recording this. `user.is_dchp1` looks like it should say

@@ -34,7 +34,7 @@ export async function updateUserName(
       })
     } catch (error) {
       warnings.push(
-        `The name in this site's database was not changed: ${
+        `The name in the DCHP database was not changed: ${
           error instanceof Error ? error.message : String(error)
         }`
       )
