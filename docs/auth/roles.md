@@ -86,3 +86,109 @@ nothing.
 `AUTH_ROLES` lists them, `isAuthRole` narrows a string, and `parseAuthRoles`
 turns an unvalidated claim into `AuthRole[]`. Do not re-derive role names
 anywhere else.
+
+## One person can hold more than one Auth0 account
+
+Decided 2026-09-01, while building the user list (#442). Measured against the
+Auth0 tenant, which had never been read from application code before.
+
+### What was found
+
+The tenant has 34 accounts across two connections: a username-and-password
+database connection and a Google social connection. **Three email addresses
+have two accounts each**, one on each connection, and **no account in the
+tenant has ever had its identities linked**. Auth0 treats each as a separate
+user with its own id, its own roles and its own `blocked` flag.
+
+Two of the three are dormant and hold no role. The third is in active use
+through both accounts within the same fortnight, and happens to hold the same
+role on each — by duplication, not by design.
+
+### Why this is not being solved with account linking
+
+Auth0 supports automatic linking in a post-login Action, keyed on a verified
+email address, using `api.authentication.setPrimaryUser()` and the Management
+API. It was considered and rejected:
+
+- It is code to write and maintain, hosted in Auth0. Auth0's own worked
+  example also stands up an external linking service, and the Action needs its
+  own Management API credentials as secrets.
+- There is a known defect where a redirect in a later Action loses the
+  `setPrimaryUser` assignment and the login fails.
+- Linking is gated on the email being **verified**, which is the mitigation
+  for the account-takeover risk Auth0 warns about. **The one actively used
+  duplicate in this tenant has an unverified address on the account it uses
+  most**, so an Action would skip the only case that matters and link the two
+  dormant ones instead.
+
+Three accounts is a manual decision, not a system to build.
+
+### What the application does instead
+
+- **The user list groups Auth0 accounts by email address.** One person is one
+  row, listing each account and its connection, so two accounts are visible
+  rather than appearing as two identical rows.
+- **`auth0UserIdsFor` returns every account id for a person, and #444 and #445
+  apply their change to all of them.** A role change or a block applied to one
+  account leaves the person holding the old role, or still able to log in,
+  through the other.
+- **The list distinguishes "partly deactivated" from "deactivated."** When some
+  but not all of a person's accounts are blocked, saying "deactivated" would be
+  false: they can still log in.
+
+This is correct whether or not any accounts are ever linked, which is why it is
+preferred to depending on linking.
+
+## What the tenant looked like on 2026-09-01
+
+Recorded because several of these contradicted assumptions in the milestone
+issues. No personal data here: counts only.
+
+- **All four role names match `AUTH_ROLES` exactly**, spacing included. This
+  was the most likely silent failure and it is not present.
+- **No account holds more than one role.** This answers the open question in
+  #444: a role change is a remove-then-add, not an addition.
+- **Half the tenant holds no role at all** — 17 of 34 accounts. Those people
+  can log in and receive no permission, not even `bank:read`.
+- **The `Display` role has no members.**
+- **No account is blocked**, so the deactivation in #445 has never been used.
+- **Every account has logged in at least once.** Nothing in the tenant is a
+  never-used invitation.
+- Joined against the local database: 27 addresses in both systems, 4 in Auth0
+  with no local row, 243 local rows with no Auth0 account. Of those 243, only
+  4 are marked active.
+- **The four Auth0 accounts with no local row have all logged in.** Lazy row
+  creation arrived on 2023-10-11, which accounts for three of them: they last
+  logged in on or before that date. The fourth logged in well afterwards, and
+  the reason is that **the tenant is shared between development and
+  production**. Those logins were to a developer's machine, and the local row
+  they created went into that machine's database, not production's.
+
+  This is the general point, and it matters beyond these four accounts:
+  `logins_count` and `last_login` from this tenant say nothing about
+  production, and will say even less once staging uses the same tenant. Do not
+  display either as though it described this deployment, and do not reason from
+  them about whether someone has used the live site.
+
+  The list therefore says "no database record" rather than "has never logged
+  in", which the join cannot know.
+
+## How the roles claim is populated
+
+Checked against the tenant on 2026-09-01, answering the question #440 left open.
+
+**Roles are Auth0 RBAC and nothing else.** No account in the tenant has any
+`app_metadata` or `user_metadata` at all, and a full user record from
+`GET /api/v2/users/{id}` has no `roles` field. So the `https://dchp.ca/roles`
+claim on the login token is added by an Action or a Rule in the tenant reading
+RBAC role assignments; it is not read from anything stored on the user.
+
+Two consequences for anything that needs to know a user's roles:
+
+- **They cannot be had from the user list.** Reading them means one request per
+  user against `GET /users/{id}/roles`, or one request per role against
+  `GET /roles/{id}/users`. The directory does the latter: four roles rather
+  than several hundred users. The four run in parallel.
+- **Editing a role in the Auth0 dashboard changes what the token carries**,
+  with no other place to keep in step. That is the whole reason
+  `user.access_level` was retired rather than kept in sync.

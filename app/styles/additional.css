@@ -18,3 +18,20 @@ blockquote {
   margin-left: 2rem;
   margin-bottom: 1rem;
 }
+
+/*
+ * The admin area is an interface rather than a text, so it is set in the UI
+ * face (font-ui, defined in tailwind.config.js) and applied once on the admin
+ * layout rather than per component.
+ *
+ * Headings are the exception. They are the one part of a screen that reads as
+ * the dictionary's own voice, so they keep the serif. Written here rather than
+ * as a class on PageHeader, because those heading components are shared with
+ * the rest of the site and should not have to know where they are being used.
+ */
+.admin-ui h1,
+.admin-ui h2,
+.admin-ui h3,
+.admin-ui h4 {
+  font-family: "Charter", "Georgia", serif;
+}

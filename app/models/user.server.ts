@@ -80,6 +80,45 @@ export async function userOwnsEntry(request: Request, headword: string) {
   return Boolean(userModifiedThisEntry)
 }
 
+export type ContributionCounts = { edits: number; citations: number }
+
+/**
+ * How much work each local user has to their name, keyed by `user.id`.
+ *
+ * Two grouped counts rather than a per-user query: the directory needs this
+ * for every row at once, and the alternative is one query per person.
+ *
+ * This is what distinguishes a contributor who has lost their role from an
+ * account that signed itself up and did nothing -- the two look identical
+ * otherwise, and only one of them should be blocked.
+ */
+export async function getContributionCountsByUserId(): Promise<
+  Map<number, ContributionCounts>
+> {
+  const [edits, citations] = await Promise.all([
+    prisma.logEntry.groupBy({ by: ["user_id"], _count: { id: true } }),
+    prisma.bankCitation.groupBy({ by: ["user_id"], _count: { id: true } }),
+  ])
+
+  const counts = new Map<number, ContributionCounts>()
+
+  const add = (
+    userId: number | null,
+    key: keyof ContributionCounts,
+    n: number
+  ) => {
+    if (userId === null) return
+    const existing = counts.get(userId) ?? { edits: 0, citations: 0 }
+    existing[key] += n
+    counts.set(userId, existing)
+  }
+
+  edits.forEach((row) => add(row.user_id, "edits", row._count.id))
+  citations.forEach((row) => add(row.user_id, "citations", row._count.id))
+
+  return counts
+}
+
 export async function getEntryLogsByUserEmail(
   email: string
 ): Promise<LogEntries> {
