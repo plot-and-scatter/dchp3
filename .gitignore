@@ -21,3 +21,4 @@ node_modules
 
 # TypeScript incremental build state
 *.tsbuildinfo
+/BACKLOG-ASSESSMENT.md
