@@ -34,9 +34,7 @@ export default function StatusBadge({
   return (
     <span
       title={title}
-      // font-sans: the site sets a serif for the whole document, which suits
-      // dictionary text and not a small uppercase label.
-      className={`mr-1 inline-block whitespace-nowrap border px-1 py-0 font-sans text-xs uppercase shadow-sm ${TONE_CLASS[tone]}`}
+      className={`mr-1 inline-block whitespace-nowrap border px-1 py-0 text-xs uppercase shadow-sm ${TONE_CLASS[tone]}`}
     >
       {iconName && (
         <FAIcon

@@ -19,7 +19,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function Admin() {
   return (
     <Main>
-      <Outlet />
+      {/* One place decides the admin area's typeface. See .admin-ui in
+          app/styles/additional.css for the heading exception. */}
+      <div className="admin-ui font-ui">
+        <Outlet />
+      </div>
     </Main>
   )
 }

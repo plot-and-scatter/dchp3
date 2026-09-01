@@ -213,7 +213,7 @@ function ColumnFilter<Value extends string>({
         next.delete("page")
         onChange(next)
       }}
-      className="mt-1 block w-full border border-gray-300 bg-white p-1 font-sans text-xs font-normal"
+      className="mt-1 block w-full border border-gray-300 bg-white p-1 text-xs font-normal"
     >
       {options.map((option) => (
         <option key={option} value={option}>
@@ -259,9 +259,7 @@ function SortableHeader({
 
   return (
     <th
-      className={`py-2 pr-4 font-sans text-sm ${
-        align === "right" ? "text-right" : ""
-      }`}
+      className={`py-2 pr-4 text-sm ${align === "right" ? "text-right" : ""}`}
       aria-sort={
         active ? (direction === "asc" ? "ascending" : "descending") : "none"
       }

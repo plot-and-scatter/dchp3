@@ -22,7 +22,30 @@ module.exports = {
       amber: colors.amber,
       action: colors.blue,
     },
-    extend: {},
+    extend: {
+      fontFamily: {
+        // The interface face. The site sets "Charter", "Georgia", serif on
+        // html and body, which is right for dictionary text and wrong for
+        // small labels, table headings and form controls. Applied to the admin
+        // area as a whole rather than per component; see .admin-ui in
+        // app/styles/additional.css, which puts headings back to the serif.
+        //
+        // Tailwind's own stack, so nothing is loaded over the network and
+        // there is no flash of unstyled text.
+        ui: [
+          "ui-sans-serif",
+          "system-ui",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Roboto",
+          "Helvetica Neue",
+          "Arial",
+          "Noto Sans",
+          "sans-serif",
+        ],
+      },
+    },
   },
   plugins: [],
 }
