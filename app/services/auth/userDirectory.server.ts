@@ -5,6 +5,8 @@ import {
   type DisplayUser,
 } from "~/models/user.server"
 import {
+  findAuth0UsersByEmail,
+  getAuth0UserRoles,
   listAllAuth0Users,
   listAuth0RoleMembers,
   listAuth0Roles,
@@ -292,10 +294,87 @@ export async function getDirectoryUserByEmail(
   email: string
 ): Promise<{ user: DirectoryUser | null; auth0Error: Auth0Error | null }> {
   const wanted = normaliseEmail(email)
-  const directory = await getUserDirectory()
+  if (!wanted) return { user: null, auth0Error: null }
+
+  // Read this person straight from Auth0 rather than picking them out of the
+  // whole directory.
+  //
+  // The list endpoint the directory uses is backed by a search index that
+  // trails the user store by a short while, so a page opened just after
+  // blocking somebody would show them as able to sign in. /users-by-email is
+  // an exact lookup against the store and does not trail.
+  //
+  // It is also fewer requests: this person's accounts and their roles, rather
+  // than every account in the tenant and every role's membership.
+  const [accounts, localUsers, contributionsByUserId] = await Promise.all([
+    findAuth0UsersByEmail(wanted),
+    getAllUsers(),
+    getContributionCountsByUserId(),
+  ])
+
+  const localRows = localUsers.filter(
+    (row) => normaliseEmail(row.email) === wanted
+  )
+
+  const contributionsFor = (rows: DisplayUser[]): ContributionCounts =>
+    rows.reduce(
+      (total, row) => {
+        const counts = contributionsByUserId.get(row.id)
+        return {
+          edits: total.edits + (counts?.edits ?? 0),
+          citations: total.citations + (counts?.citations ?? 0),
+        }
+      },
+      { edits: 0, citations: 0 }
+    )
+
+  if (!accounts.ok) {
+    // Auth0 could not be asked, so nothing is claimed about their accounts.
+    return {
+      user:
+        localRows.length > 0
+          ? toLocalOnlyUser(wanted, localRows, contributionsFor, "auth0Unknown")
+          : null,
+      auth0Error: accounts.error,
+    }
+  }
+
+  if (accounts.data.length === 0 && localRows.length === 0) {
+    return { user: null, auth0Error: null }
+  }
+
+  if (accounts.data.length === 0) {
+    return {
+      user: toLocalOnlyUser(wanted, localRows, contributionsFor),
+      auth0Error: null,
+    }
+  }
+
+  // One request per account rather than one per role in the tenant: a person
+  // has one or two accounts, and the tenant has four roles.
+  const rolesByUserId = new Map<string, AuthRole[]>()
+  let rolesError: Auth0Error | null = null
+
+  for (const account of accounts.data) {
+    const held = await getAuth0UserRoles(account.user_id)
+    if (!held.ok) {
+      rolesError = held.error
+      continue
+    }
+    rolesByUserId.set(
+      account.user_id,
+      held.data.map((role) => role.name).filter(isAuthRole)
+    )
+  }
 
   return {
-    user: directory.users.find((user) => user.email === wanted) ?? null,
-    auth0Error: directory.auth0Error,
+    user: toDirectoryUser(
+      accounts.data,
+      wanted,
+      localRows,
+      rolesByUserId,
+      contributionsFor
+    ),
+    auth0Error: rolesError,
   }
 }

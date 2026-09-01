@@ -1,6 +1,7 @@
 // @vitest-environment node
 import {
   auth0UserIdsFor,
+  getDirectoryUserByEmail,
   getUserDirectory,
   isPartiallyBlocked,
 } from "./userDirectory.server"
@@ -22,10 +23,15 @@ vi.mock("~/models/user.server", () => ({
   getAllUsers: () => getAllUsers(),
   getContributionCountsByUserId: () => getContributionCountsByUserId(),
 }))
+const findAuth0UsersByEmail = vi.fn()
+const getAuth0UserRoles = vi.fn()
+
 vi.mock("./management.server", () => ({
   listAllAuth0Users: () => listAllAuth0Users(),
   listAuth0Roles: () => listAuth0Roles(),
   listAuth0RoleMembers: (id: string) => listAuth0RoleMembers(id),
+  findAuth0UsersByEmail: (email: string) => findAuth0UsersByEmail(email),
+  getAuth0UserRoles: (id: string) => getAuth0UserRoles(id),
 }))
 
 const localRow = (overrides: Partial<DisplayUser> = {}): DisplayUser =>
@@ -52,6 +58,8 @@ beforeEach(() => {
   listAllAuth0Users.mockResolvedValue(ok([]))
   listAuth0Roles.mockResolvedValue(ok([]))
   listAuth0RoleMembers.mockResolvedValue(ok([]))
+  findAuth0UsersByEmail.mockResolvedValue(ok([]))
+  getAuth0UserRoles.mockResolvedValue(ok([]))
 })
 
 describe("the three join states", () => {
@@ -488,5 +496,76 @@ describe("when Auth0 cannot be read", () => {
   it("returns no error when Auth0 answers", async () => {
     const { auth0Error } = await getUserDirectory()
     expect(auth0Error).toBeNull()
+  })
+})
+
+describe("one person, read on their own", () => {
+  it("asks Auth0 for that address rather than reading the whole list", async () => {
+    // The list endpoint is backed by a search index that trails the user
+    // store, so a page opened just after blocking somebody showed them as
+    // still able to sign in. This lookup is exact and does not trail.
+    findAuth0UsersByEmail.mockResolvedValue(
+      ok([{ user_id: "auth0|1", email: "a@example.com", blocked: true }])
+    )
+
+    const { user } = await getDirectoryUserByEmail("a@example.com")
+
+    expect(findAuth0UsersByEmail).toHaveBeenCalledWith("a@example.com")
+    expect(listAllAuth0Users).not.toHaveBeenCalled()
+    expect(user?.auth0Accounts[0].blocked).toBe(true)
+  })
+
+  it("reads their roles per account rather than per role in the tenant", async () => {
+    findAuth0UsersByEmail.mockResolvedValue(
+      ok([{ user_id: "auth0|1", email: "a@example.com" }])
+    )
+    getAuth0UserRoles.mockResolvedValue(ok([{ id: "r", name: "Superadmin" }]))
+
+    const { user } = await getDirectoryUserByEmail("a@example.com")
+
+    expect(user?.roles).toEqual(["Superadmin"])
+    expect(listAuth0RoleMembers).not.toHaveBeenCalled()
+  })
+
+  it("lower-cases the address it is given", async () => {
+    await getDirectoryUserByEmail("  A@Example.COM ")
+    expect(findAuth0UsersByEmail).toHaveBeenCalledWith("a@example.com")
+  })
+
+  it("finds a legacy contributor who has no Auth0 account", async () => {
+    getAllUsers.mockResolvedValue([localRow({ email: "old@example.com" })])
+
+    const { user } = await getDirectoryUserByEmail("old@example.com")
+
+    expect(user?.presence).toBe("localOnly")
+  })
+
+  it("finds nobody when neither system has the address", async () => {
+    const { user } = await getDirectoryUserByEmail("nobody@example.com")
+    expect(user).toBeNull()
+  })
+
+  it("claims nothing about their accounts when Auth0 cannot be asked", async () => {
+    getAllUsers.mockResolvedValue([localRow({ email: "a@example.com" })])
+    findAuth0UsersByEmail.mockResolvedValue(fail("timeout"))
+
+    const { user, auth0Error } = await getDirectoryUserByEmail("a@example.com")
+
+    expect(user?.presence).toBe("auth0Unknown")
+    expect(auth0Error?.message).toContain("timeout")
+  })
+
+  it("counts their contributions", async () => {
+    getAllUsers.mockResolvedValue([localRow({ id: 4, email: "a@example.com" })])
+    getContributionCountsByUserId.mockResolvedValue(
+      new Map([[4, { edits: 3, citations: 2 }]])
+    )
+    findAuth0UsersByEmail.mockResolvedValue(
+      ok([{ user_id: "auth0|1", email: "a@example.com" }])
+    )
+
+    const { user } = await getDirectoryUserByEmail("a@example.com")
+
+    expect(user?.contributions).toEqual({ edits: 3, citations: 2 })
   })
 })

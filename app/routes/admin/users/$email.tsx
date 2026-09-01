@@ -370,7 +370,7 @@ function PasswordSection({ user }: { user: DirectoryUser }) {
     return (
       <div className="my-6">
         <SecondaryHeader>Password</SecondaryHeader>
-        <p className="my-2 text-gray-700">
+        <p className="mt-2 text-gray-700">
           They sign in with Google, so there is no password here to set.
         </p>
       </div>
@@ -380,7 +380,7 @@ function PasswordSection({ user }: { user: DirectoryUser }) {
   return (
     <div className="my-6">
       <SecondaryHeader>Password</SecondaryHeader>
-      <p className="my-2">
+      <p className="mt-2 text-gray-700">
         Make a link they can use to choose their own password. It works once and
         lasts a week. Nothing is sent for you, so pass it on however suits — and
         make another whenever one runs out.
