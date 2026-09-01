@@ -158,7 +158,17 @@ issues. No personal data here: counts only.
   with no local row, 243 local rows with no Auth0 account. Of those 243, only
   4 are marked active.
 - **The four Auth0 accounts with no local row have all logged in.** Lazy row
-  creation arrived on 2023-10-11; three of the four last logged in on or before
-  that date, which explains them. The fourth logged in many times afterwards
-  and is unexplained. The list therefore says "no database record" rather than
-  "has never logged in", which the join cannot know.
+  creation arrived on 2023-10-11, which accounts for three of them: they last
+  logged in on or before that date. The fourth logged in well afterwards, and
+  the reason is that **the tenant is shared between development and
+  production**. Those logins were to a developer's machine, and the local row
+  they created went into that machine's database, not production's.
+
+  This is the general point, and it matters beyond these four accounts:
+  `logins_count` and `last_login` from this tenant say nothing about
+  production, and will say even less once staging uses the same tenant. Do not
+  display either as though it described this deployment, and do not reason from
+  them about whether someone has used the live site.
+
+  The list therefore says "no database record" rather than "has never logged
+  in", which the join cannot know.
