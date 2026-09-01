@@ -288,51 +288,82 @@ function SortableHeader({
  * database, and using the same word for both is what made the old wording
  * confusing. A key means a password.
  */
+const CONNECTIONS = {
+  "Username-Password-Authentication": {
+    // Listed first so that a person with both always reads key-then-Google.
+    // The order Auth0 returns accounts in is not stable, and two rows showing
+    // the same pair in different orders look like different states.
+    order: 0,
+    iconStyle: "fas",
+    iconName: "fa-key",
+    className: "text-amber-500",
+    description: "Signs in with an email address and password",
+  },
+  "google-oauth2": {
+    order: 1,
+    iconStyle: "fab",
+    iconName: "fa-google",
+    className: "text-red-600",
+    description: "Signs in with Google",
+  },
+} as const
+
+const connectionStyle = (connection: string | null) =>
+  (connection && CONNECTIONS[connection as keyof typeof CONNECTIONS]) || {
+    order: 2,
+    iconStyle: "fas",
+    // fa-circle-question is not in this Font Awesome kit; the v5 name is.
+    iconName: "fa-question-circle",
+    className: "text-gray-500",
+    description: `Signs in through ${
+      connection ?? "an unrecognised connection"
+    }`,
+  }
+
+/**
+ * How this person signs in, one icon per Auth0 account.
+ *
+ * Deliberately not a database icon for the password connection. Auth0 calls it
+ * a "database connection", but this page also talks about rows in the DCHP
+ * database, and using the same word for both is what made the old wording
+ * confusing. A key means a password.
+ */
 function ConnectionIcons({ user }: { user: DirectoryUser }) {
   if (user.auth0Accounts.length === 0) return null
 
   const unlinked = user.auth0Accounts.length > 1
+  const accounts = [...user.auth0Accounts].sort(
+    (a, b) =>
+      connectionStyle(a.connection).order - connectionStyle(b.connection).order
+  )
 
   return (
     // Fixed width, so the addresses all begin at the same point whether a
     // person has one account or two. That is what makes a second icon visible
     // at a glance down the column rather than something to go looking for.
     <span
-      className="mr-2 inline-block w-9 whitespace-nowrap text-gray-600"
+      className="mr-2 inline-block w-9 whitespace-nowrap"
       title={
         unlinked
           ? "Two separate Auth0 accounts on this address, not linked to each other. A role change or a block has to be applied to both."
           : undefined
       }
     >
-      {user.auth0Accounts.map((account) => {
-        const google = account.connection === "google-oauth2"
-        const password =
-          account.connection === "Username-Password-Authentication"
+      {accounts.map((account) => {
+        const style = connectionStyle(account.connection)
 
         return (
           <FAIcon
             key={account.userId}
-            iconStyle={google ? "fab" : "fas"}
-            iconName={
-              google
-                ? "fa-google"
-                : password
-                ? "fa-key"
-                : // fa-circle-question is not in this Font Awesome kit; the
-                  // v5 name is.
-                  "fa-question-circle"
-            }
+            iconStyle={style.iconStyle}
+            iconName={style.iconName}
             margin="mr-1"
-            title={
-              google
-                ? "Signs in with Google"
-                : password
-                ? "Signs in with an email address and password"
-                : `Signs in through ${
-                    account.connection ?? "an unrecognised connection"
-                  }`
-            }
+            className={style.className}
+            // The icon carries meaning, so it needs a name of its own: `title`
+            // alone is not reliably announced.
+            role="img"
+            aria-label={style.description}
+            title={style.description}
           />
         )
       })}

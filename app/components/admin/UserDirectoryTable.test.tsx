@@ -316,6 +316,34 @@ describe("UserDirectoryTable", () => {
     ).toBeInTheDocument()
   })
 
+  it("always orders the icons key-then-Google, whatever order Auth0 returned", () => {
+    // Auth0 does not return accounts in a stable order, and the same pair
+    // shown two ways round looks like two different states.
+    const googleFirst = [
+      account({ userId: "google-oauth2|2", connection: "google-oauth2" }),
+      account({ userId: "auth0|1" }),
+    ]
+    renderTable([user({ name: "Either Way", auth0Accounts: googleFirst })])
+
+    const labels = within(rowFor("Either Way"))
+      .getAllByRole("img")
+      .map((icon) => icon.getAttribute("aria-label"))
+
+    expect(labels).toEqual([
+      "Signs in with an email address and password",
+      "Signs in with Google",
+    ])
+  })
+
+  it("names each icon for a screen reader, not only on hover", () => {
+    renderTable([user()])
+    expect(
+      screen.getByRole("img", {
+        name: "Signs in with an email address and password",
+      })
+    ).toBeInTheDocument()
+  })
+
   it("marks a Google-only account with the Google icon alone", () => {
     renderTable([
       user({
