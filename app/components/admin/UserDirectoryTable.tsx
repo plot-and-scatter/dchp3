@@ -100,11 +100,13 @@ const COLUMNS: {
   column: SortColumn
   label: string
   filter?: "role" | "access"
+  /** Numbers read better against a common right edge. */
+  align?: "right"
 }[] = [
   { column: "name", label: "Name" },
   { column: "email", label: "Email" },
   { column: "role", label: "Role", filter: "role" },
-  { column: "contributions", label: "Contributions" },
+  { column: "contributions", label: "Contributions", align: "right" },
   { column: "lastLogin", label: "Last login" },
   { column: "login", label: "Auth0 login", filter: "access" },
 ]
@@ -194,6 +196,7 @@ function SortableHeader({
   column,
   label,
   filter,
+  align,
   sort,
   direction,
   searchParams,
@@ -204,6 +207,7 @@ function SortableHeader({
   column: SortColumn
   label: string
   filter?: "role" | "access"
+  align?: "right"
   sort: SortColumn
   direction: SortDirection
   searchParams: URLSearchParams
@@ -223,7 +227,7 @@ function SortableHeader({
 
   return (
     <th
-      className="py-2 pr-4"
+      className={`py-2 pr-4 ${align === "right" ? "text-right" : ""}`}
       aria-sort={
         active ? (direction === "asc" ? "ascending" : "descending") : "none"
       }
@@ -346,12 +350,13 @@ export default function UserDirectoryTable({
       <table className="w-full text-left">
         <thead>
           <tr className="border-b border-gray-400">
-            {COLUMNS.map(({ column, label, filter }) => (
+            {COLUMNS.map(({ column, label, filter, align }) => (
               <SortableHeader
                 key={column}
                 column={column}
                 label={label}
                 filter={filter}
+                align={align}
                 sort={sort}
                 direction={direction}
                 searchParams={searchParams}
@@ -426,7 +431,9 @@ export default function UserDirectoryTable({
                   renderBadge(badge, `${user.email}-${badge.label}`)
                 )}
               </td>
-              <td className="py-2 pr-4">
+              {/* tabular-nums so the digits line up column-wise, not just at
+                  the right edge. */}
+              <td className="py-2 pr-4 text-right tabular-nums">
                 <ContributionsCell user={user} />
               </td>
               <td className="py-2 pr-4">
