@@ -221,6 +221,18 @@ describe("UserDirectoryTable", () => {
     ).toHaveLength(2)
   })
 
+  it("gives each role its own icon, marked decorative", () => {
+    renderTable([user({ roles: ["Superadmin"] })])
+    const row = within(rowFor("Some One"))
+
+    // The label beside it already says the role, so the icon is hidden from
+    // screen readers rather than read out twice.
+    expect(row.getByText("Superadmin")).toBeInTheDocument()
+    const icon = rowFor("Some One").querySelector(".fa-shield-halved")
+    expect(icon).not.toBeNull()
+    expect(icon).toHaveAttribute("aria-hidden", "true")
+  })
+
   it("flags an Auth0 account with no role, which is the audit case", () => {
     // Someone who signed themselves up holds no role: they can log in and have
     // no permission at all.

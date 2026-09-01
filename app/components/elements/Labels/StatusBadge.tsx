@@ -5,6 +5,8 @@
 // colour looks right in a given table. "warning" means a person should look at
 // this row; "neutral" means the state is unremarkable.
 
+import FAIcon from "~/components/elements/Icons/FAIcon"
+
 export type BadgeTone = "neutral" | "success" | "warning" | "danger"
 
 const TONE_CLASS: Record<BadgeTone, string> = {
@@ -18,17 +20,32 @@ export default function StatusBadge({
   tone = "neutral",
   children,
   title,
+  iconName,
+  iconStyle,
 }: {
   tone?: BadgeTone
   children: React.ReactNode
   /** Hover text, for a badge whose meaning is not obvious from two words. */
   title?: string
+  /** Decorative: the label beside it already says what the badge means. */
+  iconName?: string
+  iconStyle?: string
 }) {
   return (
     <span
       title={title}
-      className={`mr-1 inline-block whitespace-nowrap border px-1 py-0 text-xs uppercase shadow-sm ${TONE_CLASS[tone]}`}
+      // font-sans: the site sets a serif for the whole document, which suits
+      // dictionary text and not a small uppercase label.
+      className={`mr-1 inline-block whitespace-nowrap border px-1 py-0 font-sans text-xs uppercase shadow-sm ${TONE_CLASS[tone]}`}
     >
+      {iconName && (
+        <FAIcon
+          iconName={iconName}
+          iconStyle={iconStyle}
+          margin="mr-1"
+          aria-hidden="true"
+        />
+      )}
       {children}
     </span>
   )

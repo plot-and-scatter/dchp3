@@ -3,6 +3,7 @@ import StatusBadge, {
 } from "~/components/elements/Labels/StatusBadge"
 // Not from userDirectory.server: isPartiallyBlocked is a value, and importing
 // it from the server module pulls ~/db.server into the client bundle.
+import type { AuthRole } from "~/services/auth/AuthRole"
 import {
   ACCESS_FILTERS,
   ACCESS_FILTER_LABELS,
@@ -27,7 +28,24 @@ import Button from "~/components/elements/LinksAndButtons/Button"
 // legible before: can this person log in, and are they allowed to do anything
 // once they have. Both are badges rather than prose.
 
-type Badge = { label: string; tone: BadgeTone; title?: string }
+type Badge = {
+  label: string
+  tone: BadgeTone
+  title?: string
+  iconName?: string
+  iconStyle?: string
+}
+
+// One icon per role, reading as what the role lets a person do: look at the
+// dictionary, edit it, research it, or administer the site. Every name here is
+// checked against the Font Awesome kit in use, which is a v6 kit still carrying
+// v5 names -- fa-magnifying-glass is absent where fa-search is present.
+const ROLE_ICONS: Record<AuthRole, string> = {
+  Display: "fa-eye",
+  "Student / Editor": "fa-pen-to-square",
+  "Research Assistant": "fa-user-magnifying-glass",
+  Superadmin: "fa-shield-halved",
+}
 
 /** Can this person log in at all, and through how many accounts. */
 export function loginBadge(user: DirectoryUser): Badge {
@@ -73,7 +91,11 @@ export function loginBadge(user: DirectoryUser): Badge {
  */
 export function roleBadges(user: DirectoryUser): Badge[] {
   if (user.roles.length > 0) {
-    return user.roles.map((role) => ({ label: role, tone: "neutral" }))
+    return user.roles.map((role) => ({
+      label: role,
+      tone: "neutral",
+      iconName: ROLE_ICONS[role],
+    }))
   }
 
   if (user.auth0Accounts.length > 0) {
@@ -81,6 +103,7 @@ export function roleBadges(user: DirectoryUser): Badge[] {
       {
         label: "No role",
         tone: "warning",
+        iconName: "fa-exclamation-circle",
         title:
           "Can log in but holds no role, so has no permission at all. Worth checking how this account was created.",
       },
@@ -90,8 +113,17 @@ export function roleBadges(user: DirectoryUser): Badge[] {
   return [{ label: "—", tone: "neutral" }]
 }
 
-const renderBadge = ({ label, tone, title }: Badge, key?: string) => (
-  <StatusBadge key={key ?? label} tone={tone} title={title}>
+const renderBadge = (
+  { label, tone, title, iconName, iconStyle }: Badge,
+  key?: string
+) => (
+  <StatusBadge
+    key={key ?? label}
+    tone={tone}
+    title={title}
+    iconName={iconName}
+    iconStyle={iconStyle}
+  >
     {label}
   </StatusBadge>
 )
@@ -181,7 +213,7 @@ function ColumnFilter<Value extends string>({
         next.delete("page")
         onChange(next)
       }}
-      className="mt-1 block w-full border border-gray-300 bg-white p-1 text-xs font-normal"
+      className="mt-1 block w-full border border-gray-300 bg-white p-1 font-sans text-xs font-normal"
     >
       {options.map((option) => (
         <option key={option} value={option}>
@@ -227,7 +259,9 @@ function SortableHeader({
 
   return (
     <th
-      className={`py-2 pr-4 ${align === "right" ? "text-right" : ""}`}
+      className={`py-2 pr-4 font-sans text-sm ${
+        align === "right" ? "text-right" : ""
+      }`}
       aria-sort={
         active ? (direction === "asc" ? "ascending" : "descending") : "none"
       }
@@ -347,7 +381,7 @@ function ConnectionIcons({ user }: { user: DirectoryUser }) {
     // Smaller than the surrounding text as well: they qualify the address
     // rather than compete with it.
     <span
-      className="mr-2 inline-block w-8 shrink-0 whitespace-nowrap text-right text-sm"
+      className="mr-3 inline-block w-8 shrink-0 whitespace-nowrap text-right text-sm"
       title={
         unlinked
           ? "Two separate Auth0 accounts on this address, not linked to each other. A role change or a block has to be applied to both."
