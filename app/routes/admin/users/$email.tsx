@@ -17,8 +17,12 @@ import {
   roleBadges,
 } from "~/components/admin/userBadges"
 import PasswordLinkPanel from "~/components/admin/PasswordLinkPanel"
-import { ReissuePasswordLinkSchema } from "~/models/user.schemas"
+import {
+  ReissuePasswordLinkSchema,
+  UpdateUserNameSchema,
+} from "~/models/user.schemas"
 import { reissuePasswordLink } from "~/services/auth/createUser.server"
+import { updateUserName } from "~/services/auth/updateUser.server"
 import { getDirectoryUserByEmail } from "~/services/auth/userDirectory.server"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 import { totalContributions } from "~/services/auth/userDirectory"
@@ -49,7 +53,32 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   await redirectIfUserLacksPermission(request, MANAGE_USERS_PERMISSION)
 
-  const submission = parseWithZod(await request.formData(), {
+  const formData = await request.formData()
+
+  // The person is read first either way: both branches act on them, and the
+  // account id posted by the password form has to be checked against them.
+  const { user } = await getDirectoryUserByEmail(params.email ?? "")
+  if (!user) {
+    return { kind: "error" as const, message: "Nobody found for that address." }
+  }
+
+  if (formData.get("intent") === "name") {
+    const submission = parseWithZod(formData, { schema: UpdateUserNameSchema })
+    if (submission.status !== "success") {
+      return { kind: "invalidName" as const, result: submission.reply() }
+    }
+
+    const result = await updateUserName(user, submission.value)
+
+    return result.ok
+      ? { kind: "saved" as const, warnings: result.warnings }
+      : {
+          kind: "error" as const,
+          message: `The name was not changed. ${result.warnings.join(" ")}`,
+        }
+  }
+
+  const submission = parseWithZod(formData, {
     schema: ReissuePasswordLinkSchema,
   })
 
@@ -60,8 +89,7 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   // The posted id is checked against the accounts on this address rather than
   // trusted: it arrives from the browser, and a link may only be minted for
   // the person whose page this is.
-  const { user } = await getDirectoryUserByEmail(params.email ?? "")
-  const owned = user?.auth0Accounts.some(
+  const owned = user.auth0Accounts.some(
     (account) => account.userId === submission.value.auth0UserId
   )
 
@@ -126,6 +154,19 @@ export default function AdminUser() {
         </dd>
       </dl>
 
+      <NameForm user={user} lastResult={actionData} />
+
+      {actionData?.kind === "saved" && (
+        <div className="my-4 border-l-4 border-green-500 bg-green-50 p-4">
+          <p>Name saved.</p>
+          {actionData.warnings.map((warning) => (
+            <p key={warning} className="mt-1 text-alert-800">
+              {warning}
+            </p>
+          ))}
+        </div>
+      )}
+
       {actionData?.kind === "error" && (
         <div
           role="alert"
@@ -177,5 +218,53 @@ export default function AdminUser() {
         </div>
       )}
     </div>
+  )
+}
+
+/**
+ * Their name, editable. It is written to this site's database and to Auth0
+ * both, because the list reads whichever it finds first and writing only one
+ * would leave the name on screen unchanged after an apparently successful
+ * save.
+ */
+function NameForm({
+  user,
+  lastResult,
+}: {
+  user: {
+    name: string
+    localRows: { first_name: string | null; last_name: string | null }[]
+  }
+  lastResult: unknown
+}) {
+  const row = user.localRows[0]
+  const [first, ...rest] = user.name.split(" ")
+
+  return (
+    <Form method="post" className="my-6 max-w-md">
+      <input type="hidden" name="intent" value="name" />
+      <SecondaryHeader>Name</SecondaryHeader>
+      <div className="mt-2 flex gap-4">
+        <label className="block w-full">
+          <span className="font-semibold">First name</span>
+          <input
+            name="firstName"
+            defaultValue={row?.first_name ?? first ?? ""}
+            className="mt-1 w-full border border-gray-400 p-2"
+          />
+        </label>
+        <label className="block w-full">
+          <span className="font-semibold">Last name</span>
+          <input
+            name="lastName"
+            defaultValue={row?.last_name ?? rest.join(" ")}
+            className="mt-1 w-full border border-gray-400 p-2"
+          />
+        </label>
+      </div>
+      <Button type="submit" appearance="secondary" className="mt-2">
+        Save name
+      </Button>
+    </Form>
   )
 }

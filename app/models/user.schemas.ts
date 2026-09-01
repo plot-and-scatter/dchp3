@@ -52,3 +52,12 @@ export const ReissuePasswordLinkSchema = z
     auth0UserId: z.string().min(1),
   })
   .strict()
+
+export const UpdateUserNameSchema = z
+  .object({
+    firstName: z.string().trim().min(1, "A first name is required."),
+    lastName: z.string().trim().min(1, "A last name is required."),
+  })
+  .strict()
+
+export type UpdateUserNameInput = z.infer<typeof UpdateUserNameSchema>

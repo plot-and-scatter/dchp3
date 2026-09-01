@@ -227,8 +227,13 @@ function toDirectoryUser(
 
   return {
     email,
+    // An Auth0 account created without a name gets its email address as one,
+    // which is true of 25 of the 34 accounts in this tenant. Preferring that
+    // over a real name from the local row put an address where a name belongs.
     name:
-      auth0Users.find((u) => u.name?.trim())?.name?.trim() ||
+      auth0Users
+        .map((u) => u.name?.trim())
+        .find((name): name is string => Boolean(name) && name !== email) ||
       localName(localRows[0]) ||
       email ||
       auth0Users[0].user_id,

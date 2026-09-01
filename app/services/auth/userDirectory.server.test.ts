@@ -128,6 +128,56 @@ describe("the three join states", () => {
   })
 })
 
+describe("which name is shown", () => {
+  it("prefers a real name from Auth0", async () => {
+    getAllUsers.mockResolvedValue([
+      localRow({
+        email: "a@example.com",
+        first_name: "Local",
+        last_name: "Name",
+      }),
+    ])
+    listAllAuth0Users.mockResolvedValue(
+      ok([{ user_id: "auth0|1", email: "a@example.com", name: "Auth0 Name" }])
+    )
+
+    const { users } = await getUserDirectory()
+    expect(users[0].name).toBe("Auth0 Name")
+  })
+
+  it("ignores an Auth0 name that is only the email address", async () => {
+    // Auth0 sets name to the address when an account is created without one,
+    // which is true of most accounts in this tenant. Preferring it put an
+    // address where a name belongs.
+    getAllUsers.mockResolvedValue([
+      localRow({
+        email: "a@example.com",
+        first_name: "Real",
+        last_name: "Person",
+      }),
+    ])
+    listAllAuth0Users.mockResolvedValue(
+      ok([
+        { user_id: "auth0|1", email: "a@example.com", name: "a@example.com" },
+      ])
+    )
+
+    const { users } = await getUserDirectory()
+    expect(users[0].name).toBe("Real Person")
+  })
+
+  it("falls back to the address when neither side has a name", async () => {
+    listAllAuth0Users.mockResolvedValue(
+      ok([
+        { user_id: "auth0|1", email: "a@example.com", name: "a@example.com" },
+      ])
+    )
+
+    const { users } = await getUserDirectory()
+    expect(users[0].name).toBe("a@example.com")
+  })
+})
+
 describe("matching", () => {
   it("joins on email case-insensitively and ignores surrounding space", async () => {
     getAllUsers.mockResolvedValue([
