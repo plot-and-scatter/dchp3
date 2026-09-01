@@ -93,6 +93,17 @@ export const totalContributions = (user: DirectoryUser): number =>
  * cannot be read, nobody can be called legacy, because the reason for their
  * having no account is that nothing was asked.
  */
+/**
+ * Auth0's built-in username-and-password connection. The only kind of account
+ * that has a password here at all: a social account's password, if it has one,
+ * belongs to Google.
+ */
+export const DATABASE_CONNECTION = "Username-Password-Authentication"
+
+/** Can a password be set for this account? Only for a database one. */
+export const hasPassword = (account: { connection: string | null }) =>
+  account.connection === DATABASE_CONNECTION
+
 export const isLegacyUser = (user: DirectoryUser): boolean =>
   user.presence === "localOnly"
 

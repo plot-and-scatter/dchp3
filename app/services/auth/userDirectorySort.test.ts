@@ -1,18 +1,20 @@
 // @vitest-environment node
 import {
   ACCESS_FILTERS,
+  DATABASE_CONNECTION,
   DEFAULT_ACCESS_FILTER,
+  hasPassword,
   isAccessFilter,
   isFullyBlocked,
+  isLegacyUser,
   isRoleFilter,
+  isSortColumn,
+  lastLoginAt,
   matchesAccessFilter,
   matchesRoleFilter,
-  lastLoginAt,
-  totalLogins,
-  isLegacyUser,
-  isSortColumn,
   SORT_COLUMNS,
   sortDirectoryUsers,
+  totalLogins,
   USER_DIRECTORY_PAGE_SIZE,
   type DirectoryUser,
 } from "./userDirectory"
@@ -427,5 +429,21 @@ describe("the role filter", () => {
   it("rejects a filter name it does not know", () => {
     expect(isRoleFilter("Superadmin")).toBe(true)
     expect(isRoleFilter("Admin")).toBe(false)
+  })
+})
+
+describe("hasPassword", () => {
+  it("is true for an account on the username-and-password connection", () => {
+    expect(hasPassword({ connection: DATABASE_CONNECTION })).toBe(true)
+  })
+
+  it("is false for a Google account", () => {
+    // A social account has no password in Auth0, so there is nothing to set
+    // and no link worth offering.
+    expect(hasPassword({ connection: "google-oauth2" })).toBe(false)
+  })
+
+  it("is false for an account whose connection is unknown", () => {
+    expect(hasPassword({ connection: null })).toBe(false)
   })
 })

@@ -32,6 +32,7 @@ import {
 import { getDirectoryUserByEmail } from "~/services/auth/userDirectory.server"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 import {
+  hasPassword,
   totalContributions,
   type DirectoryUser,
 } from "~/services/auth/userDirectory"
@@ -134,14 +135,25 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   // The posted id is checked against the accounts on this address rather than
   // trusted: it arrives from the browser, and a link may only be minted for
   // the person whose page this is.
-  const owned = user.auth0Accounts.some(
-    (account) => account.userId === submission.value.auth0UserId
+  const account = user.auth0Accounts.find(
+    (candidate) => candidate.userId === submission.value.auth0UserId
   )
 
-  if (!owned) {
+  if (!account) {
     return {
       kind: "error" as const,
       message: "That account does not belong to this person.",
+    }
+  }
+
+  // Checked here as well as hidden in the page. A social account has no
+  // password in Auth0 to set, so a ticket for one is meaningless whatever the
+  // browser posted.
+  if (!hasPassword(account)) {
+    return {
+      kind: "error" as const,
+      message:
+        "That account signs in with Google, which has no password here to set.",
     }
   }
 
@@ -265,43 +277,121 @@ export default function AdminUser() {
         />
       )}
 
-      {user.auth0Accounts.length > 0 && (
-        <div className="my-6">
-          <SecondaryHeader>Password</SecondaryHeader>
-          <p className="my-2">
-            Make a link they can use to choose their own password. It works once
-            and lasts a week. Nothing is sent for you, so pass it on however
-            suits — and make another whenever one runs out.
-          </p>
-          <Form method="post">
-            <input type="hidden" name="intent" value="password" />
-            {user.auth0Accounts.map((account) => (
-              <ActionButton
-                key={account.userId}
-                formIntent="password"
-                name="auth0UserId"
-                value={account.userId}
-                appearance="action"
-                className="mr-2"
-                submittingElement="Making a link…"
-              >
-                Make a password link
-                {user.auth0Accounts.length > 1 &&
-                  (account.connection === "google-oauth2"
-                    ? " (Google)"
-                    : " (email and password)")}
-              </ActionButton>
-            ))}
-          </Form>
-          {user.auth0Accounts.some((a) => a.connection === "google-oauth2") && (
-            <p className="mt-2 text-sm text-gray-600">
-              A Google account has no password here, so a link for it is rarely
-              what you want.
-            </p>
-          )}
-        </div>
+      <PasswordSection user={user} />
+    </div>
+  )
+}
+
+/**
+ * A password can only be set for an account on Auth0's username-and-password
+ * connection. Someone who signs in with Google has no password here, so there
+ * is nothing to offer -- not a poor option to explain away.
+ */
+function PasswordSection({ user }: { user: DirectoryUser }) {
+  const withPassword = user.auth0Accounts.filter(hasPassword)
+
+  if (user.auth0Accounts.length === 0) return null
+
+  if (withPassword.length === 0) {
+    return (
+      <div className="my-6">
+        <SecondaryHeader>Password</SecondaryHeader>
+        <p className="my-2 text-gray-700">
+          They sign in with Google, so there is no password here to set.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="my-6">
+      <SecondaryHeader>Password</SecondaryHeader>
+      <p className="my-2">
+        Make a link they can use to choose their own password. It works once and
+        lasts a week. Nothing is sent for you, so pass it on however suits — and
+        make another whenever one runs out.
+      </p>
+      <Form method="post">
+        <input type="hidden" name="intent" value="password" />
+        {withPassword.map((account) => (
+          <ActionButton
+            key={account.userId}
+            formIntent="password"
+            name="auth0UserId"
+            value={account.userId}
+            appearance="action"
+            className="mr-2"
+            submittingElement="Making a link…"
+          >
+            Make a password link
+          </ActionButton>
+        ))}
+      </Form>
+      {user.auth0Accounts.length > withPassword.length && (
+        <p className="mt-2 text-sm text-gray-600">
+          They also sign in with Google, which is unaffected by this.
+        </p>
       )}
     </div>
+  )
+}
+
+/**
+ * Their role, which is what decides everything they can do.
+ *
+ * The note about signing in again is not a nicety: roles reach the application
+ * on a claim in the login token, so a change does nothing for a session that
+ * is already open. Without saying so, an administrator changes a role, watches
+ * the person report that nothing happened, and changes it again.
+ */
+function RoleForm({ user }: { user: DirectoryUser }) {
+  if (user.auth0Accounts.length === 0) {
+    return (
+      <div className="my-6 max-w-md">
+        <SecondaryHeader>Role</SecondaryHeader>
+        <p className="mt-2 text-gray-700">
+          Roles live in Auth0, and they have no account there, so there is no
+          role to set.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <Form method="post" className="my-6 max-w-md">
+      <input type="hidden" name="intent" value="role" />
+      <SecondaryHeader>Role</SecondaryHeader>
+      <p className="mt-2 text-gray-700">
+        Takes effect the next time they sign in. Roles arrive with the sign-in,
+        so a session already open keeps the old one until it ends.
+      </p>
+      <select
+        name="role"
+        defaultValue={user.roles[0] ?? NO_ROLE}
+        className="mt-2 w-full border border-gray-400 bg-white p-2"
+      >
+        {AUTH_ROLES.map((name) => (
+          <option key={name} value={name}>
+            {name}
+          </option>
+        ))}
+        <option value={NO_ROLE}>No role</option>
+      </select>
+      {user.auth0Accounts.length > 1 && (
+        <p className="mt-2 text-sm text-gray-600">
+          Applied to both of their Auth0 accounts, so it does not depend on
+          which one they sign in with.
+        </p>
+      )}
+      <ActionButton
+        formIntent="role"
+        appearance="action"
+        className="mt-2"
+        submittingElement="Changing…"
+      >
+        Change role
+      </ActionButton>
+    </Form>
   )
 }
 
@@ -364,65 +454,6 @@ function NameForm({
         submittingElement="Saving…"
       >
         Save name
-      </ActionButton>
-    </Form>
-  )
-}
-
-/**
- * Their role, which is what decides everything they can do.
- *
- * The note about signing in again is not a nicety: roles reach the application
- * on a claim in the login token, so a change does nothing for a session that
- * is already open. Without saying so, an administrator changes a role, watches
- * the person report that nothing happened, and changes it again.
- */
-function RoleForm({ user }: { user: DirectoryUser }) {
-  if (user.auth0Accounts.length === 0) {
-    return (
-      <div className="my-6 max-w-md">
-        <SecondaryHeader>Role</SecondaryHeader>
-        <p className="mt-2 text-gray-700">
-          Roles live in Auth0, and they have no account there, so there is no
-          role to set.
-        </p>
-      </div>
-    )
-  }
-
-  return (
-    <Form method="post" className="my-6 max-w-md">
-      <input type="hidden" name="intent" value="role" />
-      <SecondaryHeader>Role</SecondaryHeader>
-      <p className="mt-2 text-gray-700">
-        Takes effect the next time they sign in. Roles arrive with the sign-in,
-        so a session already open keeps the old one until it ends.
-      </p>
-      <select
-        name="role"
-        defaultValue={user.roles[0] ?? NO_ROLE}
-        className="mt-2 w-full border border-gray-400 bg-white p-2"
-      >
-        {AUTH_ROLES.map((name) => (
-          <option key={name} value={name}>
-            {name}
-          </option>
-        ))}
-        <option value={NO_ROLE}>No role</option>
-      </select>
-      {user.auth0Accounts.length > 1 && (
-        <p className="mt-2 text-sm text-gray-600">
-          Applied to both of their Auth0 accounts, so it does not depend on
-          which one they sign in with.
-        </p>
-      )}
-      <ActionButton
-        formIntent="role"
-        appearance="action"
-        className="mt-2"
-        submittingElement="Changing…"
-      >
-        Change role
       </ActionButton>
     </Form>
   )

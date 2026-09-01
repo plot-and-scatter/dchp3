@@ -56,9 +56,12 @@ export type Auth0Role = {
   description?: string
 }
 
-// The database connection every DCHP user lives in. Auth0 names connections
-// per tenant; this is the default name for the built-in one.
-export const DATABASE_CONNECTION = "Username-Password-Authentication"
+// Imported rather than declared here: the name is also needed in the browser,
+// where deciding whether an account can have a password at all is a rendering
+// question, and this module may not be loaded there.
+import { DATABASE_CONNECTION } from "./userDirectory"
+
+export { DATABASE_CONNECTION }
 
 // Auth0 caps per_page at 100 for the user list.
 const USERS_PER_PAGE = 100
