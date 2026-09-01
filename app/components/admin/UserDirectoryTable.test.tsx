@@ -214,7 +214,11 @@ describe("UserDirectoryTable", () => {
     expect(
       screen.getByTitle("Signs in with an email address and password")
     ).toBeInTheDocument()
-    expect(screen.getByText("(2 accounts)")).toBeInTheDocument()
+    // Two icons in the prefix, aligned so a second one is visible down the
+    // column rather than tucked after an address of arbitrary length.
+    expect(
+      within(rowFor("Two Accounts")).getAllByTitle(/Signs in/)
+    ).toHaveLength(2)
   })
 
   it("flags an Auth0 account with no role, which is the audit case", () => {
@@ -321,7 +325,10 @@ describe("UserDirectoryTable", () => {
       }),
     ])
     expect(screen.getByTitle("Signs in with Google")).toBeInTheDocument()
-    expect(screen.queryByText("(2 accounts)")).not.toBeInTheDocument()
+    // One account, one icon: no key alongside it.
+    expect(
+      screen.queryByTitle("Signs in with an email address and password")
+    ).not.toBeInTheDocument()
   })
 
   it("shows no connection icon for someone with no Auth0 account", () => {

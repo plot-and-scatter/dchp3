@@ -294,8 +294,11 @@ function ConnectionIcons({ user }: { user: DirectoryUser }) {
   const unlinked = user.auth0Accounts.length > 1
 
   return (
+    // Fixed width, so the addresses all begin at the same point whether a
+    // person has one account or two. That is what makes a second icon visible
+    // at a glance down the column rather than something to go looking for.
     <span
-      className="ml-1 whitespace-nowrap text-gray-600"
+      className="mr-2 inline-block w-9 whitespace-nowrap text-gray-600"
       title={
         unlinked
           ? "Two separate Auth0 accounts on this address, not linked to each other. A role change or a block has to be applied to both."
@@ -320,7 +323,7 @@ function ConnectionIcons({ user }: { user: DirectoryUser }) {
                   // v5 name is.
                   "fa-question-circle"
             }
-            margin="ml-1"
+            margin="mr-1"
             title={
               google
                 ? "Signs in with Google"
@@ -333,7 +336,6 @@ function ConnectionIcons({ user }: { user: DirectoryUser }) {
           />
         )
       })}
-      {unlinked && <span className="ml-1 text-xs">(2 accounts)</span>}
     </span>
   )
 }
@@ -458,8 +460,8 @@ export default function UserDirectoryTable({
             >
               <td className="py-2 pr-4">{user.name}</td>
               <td className="py-2 pr-4">
-                {user.email ?? <span className="text-gray-500">No email</span>}
                 <ConnectionIcons user={user} />
+                {user.email ?? <span className="text-gray-500">No email</span>}
                 {user.localRows.length > 1 && (
                   <span
                     className="block text-sm text-alert-800"
