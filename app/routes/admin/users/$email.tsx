@@ -368,7 +368,7 @@ function PasswordSection({ user }: { user: DirectoryUser }) {
 
   if (withPassword.length === 0) {
     return (
-      <div className="my-6">
+      <div className="my-6 max-w-md">
         <SecondaryHeader>Password</SecondaryHeader>
         <p className="mt-2 text-gray-700">
           They sign in with Google, so there is no password here to set.
@@ -378,7 +378,7 @@ function PasswordSection({ user }: { user: DirectoryUser }) {
   }
 
   return (
-    <div className="my-6">
+    <div className="my-6 max-w-md">
       <SecondaryHeader>Password</SecondaryHeader>
       <p className="mt-2 text-gray-700">
         Make a link they can use to choose their own password. It works once and
