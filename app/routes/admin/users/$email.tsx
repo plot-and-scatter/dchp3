@@ -17,6 +17,7 @@ import {
   roleBadges,
 } from "~/components/admin/userBadges"
 import PasswordLinkPanel from "~/components/admin/PasswordLinkPanel"
+import TransientNotice from "~/components/elements/TransientNotice"
 import {
   ReissuePasswordLinkSchema,
   UpdateUserNameSchema,
@@ -169,16 +170,25 @@ export default function AdminUser() {
         }
       />
 
-      {actionData?.kind === "saved" && (
-        <div className="my-4 border-l-4 border-green-500 bg-green-50 p-4">
-          <p>Name saved.</p>
-          {actionData.warnings.map((warning) => (
-            <p key={warning} className="mt-1 text-alert-800">
-              {warning}
-            </p>
-          ))}
-        </div>
-      )}
+      {actionData?.kind === "saved" &&
+        (actionData.warnings.length === 0 ? (
+          <TransientNotice
+            resetKey={actionData}
+            className="my-4 border-l-4 border-green-500 bg-green-50 p-4"
+          >
+            Name saved.
+          </TransientNotice>
+        ) : (
+          // A save that only half worked is something to act on, so it stays.
+          <div className="my-4 border-l-4 border-alert-500 bg-alert-50 p-4">
+            <p>Name saved, but not everywhere.</p>
+            {actionData.warnings.map((warning) => (
+              <p key={warning} className="mt-1 text-alert-800">
+                {warning}
+              </p>
+            ))}
+          </div>
+        ))}
 
       {actionData?.kind === "error" && (
         <div
