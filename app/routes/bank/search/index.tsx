@@ -12,6 +12,7 @@ import Select from "~/components/bank/Select"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import LabelledField from "~/components/bank/LabelledField"
 import type { ActionFunctionArgs } from "react-router"
+import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 export const SEARCH_PARAMS = [
   "exactPhrase",
@@ -33,6 +34,9 @@ const BankCitationSearchFormDataSchema = z.object({
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  // A POST reaches this action without running the bank layout's loader.
+  await redirectIfUserLacksPermission(request, "bank:read")
+
   const formValues = Object.fromEntries(await request.formData())
   const parsedData = BankCitationSearchFormDataSchema.parse(formValues)
 

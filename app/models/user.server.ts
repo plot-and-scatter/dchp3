@@ -119,6 +119,31 @@ export async function getContributionCountsByUserId(): Promise<
   return counts
 }
 
+/**
+ * Whether the logged-in user created this citation. Ownership is the
+ * `user_id` column, which BankCitation exposes as the `creator` relation;
+ * `last_modified_user_id` records who touched it last and is deliberately not
+ * consulted, or editing a citation once would grant permission to edit it
+ * again forever.
+ */
+export async function userOwnsCitation(request: Request, citationId: number) {
+  const email = await getEmailFromSession(request)
+  if (!email) return false
+
+  const user = await prisma.user.findFirst({
+    where: { email },
+    select: { id: true },
+  })
+  if (!user) return false
+
+  const citation = await prisma.bankCitation.findFirst({
+    where: { id: citationId, user_id: user.id },
+    select: { id: true },
+  })
+
+  return citation !== null
+}
+
 export async function getEntryLogsByUserEmail(
   email: string
 ): Promise<LogEntries> {
