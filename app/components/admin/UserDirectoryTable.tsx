@@ -338,11 +338,16 @@ function ConnectionIcons({ user }: { user: DirectoryUser }) {
   )
 
   return (
-    // Fixed width, so the addresses all begin at the same point whether a
-    // person has one account or two. That is what makes a second icon visible
-    // at a glance down the column rather than something to go looking for.
+    // Fixed width so every address begins at the same point, but the icons sit
+    // at its right-hand edge rather than its left. Left-aligned they left a gap
+    // between a single icon and the address it belongs to; right-aligned they
+    // hug the address, and a second grows into the reserved space, still
+    // visible as a filled slot down the column.
+    //
+    // Smaller than the surrounding text as well: they qualify the address
+    // rather than compete with it.
     <span
-      className="mr-2 inline-block w-9 whitespace-nowrap"
+      className="mr-2 inline-block w-8 shrink-0 whitespace-nowrap text-right text-sm"
       title={
         unlinked
           ? "Two separate Auth0 accounts on this address, not linked to each other. A role change or a block has to be applied to both."
@@ -357,7 +362,7 @@ function ConnectionIcons({ user }: { user: DirectoryUser }) {
             key={account.userId}
             iconStyle={style.iconStyle}
             iconName={style.iconName}
-            margin="mr-1"
+            margin="ml-1"
             className={style.className}
             // The icon carries meaning, so it needs a name of its own: `title`
             // alone is not reliably announced.
@@ -491,27 +496,35 @@ export default function UserDirectoryTable({
             >
               <td className="py-2 pr-4">{user.name}</td>
               <td className="py-2 pr-4">
-                <ConnectionIcons user={user} />
-                {user.email ?? <span className="text-gray-500">No email</span>}
-                {user.localRows.length > 1 && (
-                  <span
-                    className="block text-sm text-alert-800"
-                    title="The user table has no unique index on email, so the same address can appear on more than one row. Unrelated to how they sign in."
-                  >
-                    {user.localRows.length} records in this site&rsquo;s own
-                    database share this address
-                  </span>
-                )}
-                {user.presence === "auth0Only" && (
-                  <span className="mt-1 block">
-                    {renderBadge({
-                      label: "No local record",
-                      tone: "warning",
-                      title:
-                        "No row in this site's database yet. One is created at first login.",
-                    })}
-                  </span>
-                )}
+                {/* The icons act as a gutter, so the address and anything said
+                    about it line up with each other rather than with them. */}
+                <div className="flex items-baseline">
+                  <ConnectionIcons user={user} />
+                  <div>
+                    {user.email ?? (
+                      <span className="text-gray-500">No email</span>
+                    )}
+                    {user.localRows.length > 1 && (
+                      <span
+                        className="block text-sm text-alert-800"
+                        title="The user table has no unique index on email, so the same address can appear on more than one row. Unrelated to how they sign in."
+                      >
+                        {user.localRows.length} records in this site&rsquo;s own
+                        database share this address
+                      </span>
+                    )}
+                    {user.presence === "auth0Only" && (
+                      <span className="mt-1 block">
+                        {renderBadge({
+                          label: "No local record",
+                          tone: "warning",
+                          title:
+                            "No row in this site's database yet. One is created at first login.",
+                        })}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </td>
               <td className="py-2 pr-4">
                 {roleBadges(user).map((badge) =>
