@@ -410,7 +410,7 @@ export default function UserDirectoryTable({
                     type="button"
                     className="mt-2"
                     onClick={showEveryone}
-                    appearance="secondary"
+                    appearance="action"
                   >
                     Show everyone
                   </Button>

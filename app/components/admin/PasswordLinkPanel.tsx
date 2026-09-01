@@ -39,7 +39,7 @@ export default function PasswordLinkPanel({
             />
             <Button
               type="button"
-              appearance="secondary"
+              appearance="action"
               onClick={() => {
                 navigator.clipboard?.writeText(ticketUrl)
                 setCopied(true)

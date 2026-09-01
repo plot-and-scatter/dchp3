@@ -1,8 +1,8 @@
-import { Form, useNavigation } from "react-router"
+import { Form } from "react-router"
 import { getFormProps, getInputProps, useForm } from "@conform-to/react"
 import { parseWithZod } from "@conform-to/zod"
 import { useState } from "react"
-import Button from "~/components/elements/LinksAndButtons/Button"
+import ActionButton from "~/components/elements/LinksAndButtons/ActionButton"
 import { CreateUserSchema, NO_ROLE } from "~/models/user.schemas"
 import { AUTH_ROLES } from "~/services/auth/AuthRole"
 
@@ -16,9 +16,6 @@ export default function CreateUserForm({
 }: {
   lastResult?: Parameters<typeof useForm>[0] extends never ? never : unknown
 }) {
-  const navigation = useNavigation()
-  const submitting = navigation.state === "submitting"
-
   const [form, fields] = useForm({
     lastResult: lastResult as never,
     onValidate: ({ formData }) =>
@@ -111,9 +108,9 @@ export default function CreateUserForm({
         </p>
 
         <div>
-          <Button type="submit" disabled={submitting}>
-            {submitting ? "Creating…" : "Create user"}
-          </Button>
+          <ActionButton appearance="action" submittingElement="Creating…">
+            Create user
+          </ActionButton>
         </div>
       </div>
     </Form>
