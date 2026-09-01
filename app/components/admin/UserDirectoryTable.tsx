@@ -540,7 +540,17 @@ export default function UserDirectoryTable({
               }
               className="border-b border-gray-200 align-top"
             >
-              <td className="py-2 pr-4">{user.name}</td>
+              <td className="py-2 pr-4">
+                {/* The name is the way in to the person, as it is in most
+                    lists. Anything done to them lives on their own page. */}
+                {user.email ? (
+                  <Link to={`/admin/users/${encodeURIComponent(user.email)}`}>
+                    {user.name}
+                  </Link>
+                ) : (
+                  user.name
+                )}
+              </td>
               <td className="py-2 pr-4">
                 {/* The icons act as a gutter, so the address and anything said
                     about it line up with each other rather than with them. */}

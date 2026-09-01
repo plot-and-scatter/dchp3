@@ -273,3 +273,24 @@ function toLocalOnlyDirectory(
 
 const sortDirectory = (users: DirectoryUser[]) =>
   users.sort((a, b) => (a.email ?? a.name).localeCompare(b.email ?? b.name))
+
+/**
+ * One person, by the address the directory joins on.
+ *
+ * Built from the whole directory rather than by looking that person up
+ * directly. It costs the same six Auth0 requests as the list for a page that
+ * shows one row, which is worth it here: assembling one person separately
+ * would mean a second copy of the join, the role lookup and the contribution
+ * counting, and two copies would eventually disagree about something.
+ */
+export async function getDirectoryUserByEmail(
+  email: string
+): Promise<{ user: DirectoryUser | null; auth0Error: Auth0Error | null }> {
+  const wanted = normaliseEmail(email)
+  const directory = await getUserDirectory()
+
+  return {
+    user: directory.users.find((user) => user.email === wanted) ?? null,
+    auth0Error: directory.auth0Error,
+  }
+}
