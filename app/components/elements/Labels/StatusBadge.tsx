@@ -34,10 +34,12 @@ export default function StatusBadge({
   return (
     <span
       title={title}
-      // Uppercase at this size needs room to breathe: padding on all four
-      // sides, and letter-spacing, which small capitals want far more than
-      // lower case does. px-1 py-0 put the border hard against the letters.
-      className={`mr-1 inline-block whitespace-nowrap border px-2 py-1 text-xs uppercase leading-none tracking-wider shadow-sm ${TONE_CLASS[tone]}`}
+      // Sentence case, so no letter-spacing: tracking is what small capitals
+      // need to stay legible, and it only pulls sentence case apart. Padding
+      // on all four sides, though -- px-1 py-0 put the border hard against the
+      // letters. leading-tight rather than leading-none, which clips a
+      // descender.
+      className={`mr-1 inline-block whitespace-nowrap border px-2 py-1 text-xs leading-tight shadow-sm ${TONE_CLASS[tone]}`}
     >
       {iconName && (
         <FAIcon
