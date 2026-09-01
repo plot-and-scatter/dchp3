@@ -85,8 +85,12 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
     // Changing your own role is refused. Demoting yourself removes the
     // permission this page needs, so the mistake takes away the means of
     // undoing it.
+    //
+    // Refused too when the session carries no address to compare. Not being
+    // able to tell whose account this is is a reason to stop, not a reason to
+    // carry on.
     const ownEmail = await getEmailFromSession(request)
-    if (ownEmail && ownEmail.trim().toLowerCase() === user.email) {
+    if (!ownEmail || ownEmail.trim().toLowerCase() === user.email) {
       return {
         kind: "error" as const,
         message:
