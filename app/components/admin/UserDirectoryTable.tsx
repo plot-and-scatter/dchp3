@@ -1,3 +1,6 @@
+import StatusBadge, {
+  type BadgeTone,
+} from "~/components/elements/Labels/StatusBadge"
 // Not from userDirectory.server: isPartiallyBlocked is a value, and importing
 // it from the server module pulls ~/db.server into the client bundle.
 import {
@@ -5,50 +8,95 @@ import {
   type DirectoryUser,
 } from "~/services/auth/userDirectory"
 
-// Each row says which of the two systems the person exists in, because that
-// is the thing an administrator cannot otherwise find out and it decides what
-// to do about them.
-const PRESENCE_LABEL: Record<DirectoryUser["presence"], string> = {
-  both: "Auth0 and database",
-  // Not "has never logged in": the join knows only that there is no local
-  // row. Every account in the tenant has in fact logged in at least once, and
-  // lazy row creation only arrived in October 2023, so an older account can
-  // have logged in many times and still have no row.
-  auth0Only: "Auth0 only — no database record",
-  localOnly: "Database only — cannot log in",
-  auth0Unknown: "Database — Auth0 not read",
-}
+// Two questions decide what an administrator does about a row, and neither was
+// legible before: can this person log in, and are they allowed to do anything
+// once they have. Both are badges rather than prose.
 
-const PRESENCE_CLASS: Record<DirectoryUser["presence"], string> = {
-  both: "text-gray-700",
-  auth0Only: "text-amber-800",
-  localOnly: "text-amber-800",
-  auth0Unknown: "text-gray-500",
-}
+type Badge = { label: string; tone: BadgeTone; title?: string }
 
-function StatusCell({ user }: { user: DirectoryUser }) {
-  // Some accounts blocked and others not means the person can still log in
-  // through the ones that are not. Worth saying outright rather than picking
-  // one of the two answers.
-  if (isPartiallyBlocked(user)) {
-    return (
-      <span className="text-red-800">
-        Partly deactivated — can still log in
-      </span>
-    )
+/** Can this person log in at all, and through how many accounts. */
+export function loginBadge(user: DirectoryUser): Badge {
+  if (user.presence === "auth0Unknown") {
+    return {
+      label: "Auth0 not read",
+      tone: "neutral",
+      title: "Auth0 could not be reached, so this is not known.",
+    }
   }
 
-  const blocked =
-    user.auth0Accounts.length > 0 && user.auth0Accounts.every((a) => a.blocked)
-  if (blocked) return <span className="text-red-800">Deactivated</span>
+  if (user.auth0Accounts.length === 0) {
+    return {
+      label: "No login",
+      tone: "warning",
+      title:
+        "A row in this site's database with no Auth0 account. They cannot log in.",
+    }
+  }
 
-  // is_active is set on every login, so a local row says only that they have
-  // logged in at some point. Auth0's blocked flag is what stops a login.
-  const active = user.localRows.some((row) => row.is_active === 1)
+  if (isPartiallyBlocked(user)) {
+    return {
+      label: "Partly blocked",
+      tone: "danger",
+      title:
+        "Some of this person's Auth0 accounts are blocked and others are not, so they can still log in.",
+    }
+  }
 
-  if (user.presence === "auth0Only") return <span>No local record yet</span>
-  return <span>{active ? "Active" : "Inactive"}</span>
+  if (user.auth0Accounts.every((a) => a.blocked)) {
+    return { label: "Blocked", tone: "danger", title: "Cannot log in." }
+  }
+
+  return { label: "Can log in", tone: "success" }
 }
+
+/**
+ * What this person may do. An Auth0 account with no role is the case worth
+ * finding: they can log in and hold no permission at all, which is what a
+ * self-service signup produces.
+ */
+export function roleBadges(user: DirectoryUser): Badge[] {
+  if (user.roles.length > 0) {
+    return user.roles.map((role) => ({ label: role, tone: "neutral" }))
+  }
+
+  if (user.auth0Accounts.length > 0) {
+    return [
+      {
+        label: "No role",
+        tone: "warning",
+        title:
+          "Can log in but holds no role, so has no permission at all. Worth checking how this account was created.",
+      },
+    ]
+  }
+
+  return [{ label: "—", tone: "neutral" }]
+}
+
+const PRESENCE_BADGE: Record<DirectoryUser["presence"], Badge> = {
+  both: { label: "Auth0 + database", tone: "neutral" },
+  auth0Only: {
+    label: "Auth0 only",
+    tone: "warning",
+    title: "No row in this site's database yet. One is created at first login.",
+  },
+  localOnly: {
+    label: "Database only",
+    tone: "warning",
+    title: "No Auth0 account, so no way to log in.",
+  },
+  auth0Unknown: {
+    label: "Database",
+    tone: "neutral",
+    title: "Auth0 could not be reached, so the other half is unknown.",
+  },
+}
+
+const renderBadge = ({ label, tone, title }: Badge, key?: string) => (
+  <StatusBadge key={key ?? label} tone={tone} title={title}>
+    {label}
+  </StatusBadge>
+)
 
 export default function UserDirectoryTable({
   users,
@@ -67,8 +115,8 @@ export default function UserDirectoryTable({
             <th className="py-2 pr-4">Name</th>
             <th className="py-2 pr-4">Email</th>
             <th className="py-2 pr-4">Role</th>
-            <th className="py-2 pr-4">Status</th>
-            <th className="py-2">Account</th>
+            <th className="py-2 pr-4">Login</th>
+            <th className="py-2">Record</th>
           </tr>
         </thead>
         <tbody>
@@ -85,12 +133,12 @@ export default function UserDirectoryTable({
               <td className="py-2 pr-4">
                 {user.email ?? <span className="text-gray-500">No email</span>}
                 {user.localRows.length > 1 && (
-                  <span className="block text-sm text-amber-800">
+                  <span className="block text-sm text-alert-800">
                     {user.localRows.length} database rows share this address
                   </span>
                 )}
                 {user.auth0Accounts.length > 1 && (
-                  <span className="block text-sm text-amber-800">
+                  <span className="block text-sm text-alert-800">
                     {user.auth0Accounts.length} separate Auth0 accounts (
                     {user.auth0Accounts
                       .map((a) => a.connection ?? "unknown")
@@ -100,22 +148,13 @@ export default function UserDirectoryTable({
                 )}
               </td>
               <td className="py-2 pr-4">
-                {user.roles.length > 0 ? (
-                  user.roles.join(", ")
-                ) : (
-                  <span className="text-gray-500">
-                    {user.presence === "localOnly" ||
-                    user.presence === "auth0Unknown"
-                      ? "—"
-                      : "No role assigned"}
-                  </span>
+                {roleBadges(user).map((badge) =>
+                  renderBadge(badge, `${user.email}-${badge.label}`)
                 )}
               </td>
-              <td className="py-2 pr-4">
-                <StatusCell user={user} />
-              </td>
-              <td className={`py-2 ${PRESENCE_CLASS[user.presence]}`}>
-                {PRESENCE_LABEL[user.presence]}
+              <td className="py-2 pr-4">{renderBadge(loginBadge(user))}</td>
+              <td className="py-2">
+                {renderBadge(PRESENCE_BADGE[user.presence])}
               </td>
             </tr>
           ))}

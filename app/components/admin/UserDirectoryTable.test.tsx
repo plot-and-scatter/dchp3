@@ -2,9 +2,10 @@ import { render, screen, within } from "@testing-library/react"
 import UserDirectoryTable from "./UserDirectoryTable"
 import type { DirectoryUser } from "~/services/auth/userDirectory"
 
-// What the table has to communicate is which system each person exists in,
-// because that is what an administrator cannot find out anywhere else and it
-// decides what to do about them.
+// Two questions decide what an administrator does about a row: can this person
+// log in, and may they do anything once they have. Both are badges, and these
+// tests are mostly about the badge being right rather than merely present --
+// several of the states are ones where the obvious wording would be false.
 
 const user = (overrides: Partial<DirectoryUser> = {}): DirectoryUser => ({
   email: "someone@example.com",
@@ -37,11 +38,11 @@ describe("UserDirectoryTable", () => {
 
     expect(row.getByText("someone@example.com")).toBeInTheDocument()
     expect(row.getByText("Student / Editor")).toBeInTheDocument()
-    expect(row.getByText("Active")).toBeInTheDocument()
-    expect(row.getByText("Auth0 and database")).toBeInTheDocument()
+    expect(row.getByText("Can log in")).toBeInTheDocument()
+    expect(row.getByText("Auth0 + database")).toBeInTheDocument()
   })
 
-  it("says an Auth0-only account has never logged in", () => {
+  it("does not claim an Auth0-only account has never logged in", () => {
     render(
       <UserDirectoryTable
         users={[
@@ -53,12 +54,11 @@ describe("UserDirectoryTable", () => {
 
     // Not "has never logged in": the join knows only that there is no local
     // row, and every account in the tenant has logged in at least once.
-    expect(row.getByText("Auth0 only — no database record")).toBeInTheDocument()
-    expect(row.getByText("No local record yet")).toBeInTheDocument()
+    expect(row.getByText("Auth0 only")).toBeInTheDocument()
     expect(row.queryByText(/never logged in/)).not.toBeInTheDocument()
   })
 
-  it("says a database-only person cannot log in", () => {
+  it("shows a database-only person as having no way to log in", () => {
     render(
       <UserDirectoryTable
         users={[
@@ -73,7 +73,9 @@ describe("UserDirectoryTable", () => {
     )
     const row = within(rowFor("Old Hand"))
 
-    expect(row.getByText("Database only — cannot log in")).toBeInTheDocument()
+    expect(row.getByText("Database only")).toBeInTheDocument()
+    // No Auth0 account means no way in, and the badge says so.
+    expect(row.getByText("No login")).toBeInTheDocument()
   })
 
   it("does not claim anything about login when Auth0 was not read", () => {
@@ -91,8 +93,11 @@ describe("UserDirectoryTable", () => {
     )
     const row = within(rowFor("Unknown Status"))
 
-    expect(row.getByText("Database — Auth0 not read")).toBeInTheDocument()
-    expect(row.queryByText(/cannot log in/)).not.toBeInTheDocument()
+    expect(row.getByText("Auth0 not read")).toBeInTheDocument()
+    // Nothing is claimed about whether they can log in.
+    expect(row.queryByText("No login")).not.toBeInTheDocument()
+    expect(row.queryByText("Blocked")).not.toBeInTheDocument()
+    expect(row.queryByText("Can log in")).not.toBeInTheDocument()
   })
 
   const account = (overrides = {}) => ({
@@ -103,7 +108,7 @@ describe("UserDirectoryTable", () => {
     ...overrides,
   })
 
-  it("marks a blocked account as deactivated whatever the local row says", () => {
+  it("marks a blocked account as blocked whatever the local row says", () => {
     render(
       <UserDirectoryTable
         users={[
@@ -116,8 +121,8 @@ describe("UserDirectoryTable", () => {
     )
     const row = within(rowFor("Blocked Person"))
 
-    expect(row.getByText("Deactivated")).toBeInTheDocument()
-    expect(row.queryByText("Active")).not.toBeInTheDocument()
+    expect(row.getByText("Blocked")).toBeInTheDocument()
+    expect(row.queryByText("Can log in")).not.toBeInTheDocument()
   })
 
   it("warns when only some of a person's accounts are blocked", () => {
@@ -140,10 +145,9 @@ describe("UserDirectoryTable", () => {
     )
     const row = within(rowFor("Half Blocked"))
 
-    // Saying "Deactivated" here would be wrong: they can still log in.
-    expect(
-      row.getByText("Partly deactivated — can still log in")
-    ).toBeInTheDocument()
+    // Saying "Blocked" here would be wrong: they can still log in.
+    expect(row.getByText("Partly blocked")).toBeInTheDocument()
+    expect(row.queryByText("Blocked")).not.toBeInTheDocument()
   })
 
   it("shows when one address has two unlinked Auth0 accounts", () => {
@@ -168,9 +172,27 @@ describe("UserDirectoryTable", () => {
     expect(screen.getByText(/google-oauth2/)).toBeInTheDocument()
   })
 
-  it("flags an Auth0 account with no role rather than leaving the cell blank", () => {
+  it("flags an Auth0 account with no role, which is the audit case", () => {
+    // Someone who signed themselves up holds no role: they can log in and have
+    // no permission at all.
     render(<UserDirectoryTable users={[user({ roles: [] })]} />)
-    expect(screen.getByText("No role assigned")).toBeInTheDocument()
+    expect(screen.getByText("No role")).toBeInTheDocument()
+  })
+
+  it("does not call a database-only row role-less, since it cannot log in", () => {
+    render(
+      <UserDirectoryTable
+        users={[
+          user({
+            name: "Old Hand",
+            roles: [],
+            presence: "localOnly",
+            auth0Accounts: [],
+          }),
+        ]}
+      />
+    )
+    expect(screen.queryByText("No role")).not.toBeInTheDocument()
   })
 
   it("shows when several database rows share one address", () => {
