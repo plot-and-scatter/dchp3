@@ -26,12 +26,13 @@ vi.mock("~/services/auth/createUser.server", () => ({
 }))
 
 let action: typeof UserRoute.action
+let loader: typeof UserRoute.loader
 let sessionStorage: typeof SessionServer.sessionStorage
 
 beforeAll(async () => {
   process.env.COOKIE_SECRET = "test-cookie-secret"
   ;({ sessionStorage } = await import("~/services/auth/session.server"))
-  ;({ action } = await import("./$email"))
+  ;({ action, loader } = await import("./$email"))
 })
 
 const SOMEONE_ELSE = "someone.else@example.com"
@@ -86,6 +87,50 @@ const post = async (
     context: {},
   } as never
 }
+
+const get = async ({ as, page }: { as: string | null; page: string }) => {
+  const session = await sessionStorage.getSession()
+  session.set("user", {
+    ...(as === null ? {} : { email: as }),
+    name: "Me",
+    isAdmin: true,
+    roles: ["Superadmin"],
+  })
+  const setCookie = await sessionStorage.commitSession(session)
+
+  return {
+    request: new Request(`http://localhost/admin/users/${page}`, {
+      headers: { cookie: setCookie.split(";")[0] },
+    }),
+    params: { email: page },
+    context: {},
+  } as never
+}
+
+describe("knowing whose page it is", () => {
+  // The page uses this to stop offering a control the action would refuse.
+  it("is not your own page when the addresses differ", async () => {
+    const result = await loader(await get({ as: ME, page: SOMEONE_ELSE }))
+    expect(result.isSelf).toBe(false)
+  })
+
+  it("is your own page when they match", async () => {
+    const result = await loader(await get({ as: ME, page: ME }))
+    expect(result.isSelf).toBe(true)
+  })
+
+  it("ignores case and spacing, as the action does", async () => {
+    const result = await loader(
+      await get({ as: "  ME@Example.COM  ", page: ME })
+    )
+    expect(result.isSelf).toBe(true)
+  })
+
+  it("counts an unreadable session as your own, so nothing is offered", async () => {
+    const result = await loader(await get({ as: null, page: SOMEONE_ELSE }))
+    expect(result.isSelf).toBe(true)
+  })
+})
 
 describe("changing a role", () => {
   it("changes someone else's", async () => {

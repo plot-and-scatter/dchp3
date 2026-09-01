@@ -59,7 +59,16 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     throw data({ message: `Nobody found for ${email}` }, { status: 404 })
   }
 
-  return { user, auth0Error }
+  // Whose page this is. The action refuses a self-change whatever the browser
+  // sends; this is so the page does not offer one in the first place.
+  //
+  // Unknown counts as self, matching the action: if the session carries no
+  // address there is nothing to compare, and the safe reading of that is not
+  // to offer the control.
+  const ownEmail = await getEmailFromSession(request)
+  const isSelf = !ownEmail || ownEmail.trim().toLowerCase() === user.email
+
+  return { user, auth0Error, isSelf }
 }
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
@@ -172,7 +181,7 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 }
 
 export default function AdminUser() {
-  const { user } = useLoaderData<typeof loader>()
+  const { user, isSelf } = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
 
   return (
@@ -234,7 +243,7 @@ export default function AdminUser() {
           </div>
         ))}
 
-      <RoleForm user={user} />
+      <RoleForm user={user} isSelf={isSelf} />
 
       <NameForm
         user={user}
@@ -348,7 +357,21 @@ function PasswordSection({ user }: { user: DirectoryUser }) {
  * is already open. Without saying so, an administrator changes a role, watches
  * the person report that nothing happened, and changes it again.
  */
-function RoleForm({ user }: { user: DirectoryUser }) {
+function RoleForm({ user, isSelf }: { user: DirectoryUser; isSelf: boolean }) {
+  if (isSelf) {
+    return (
+      <div className="my-6 max-w-md">
+        <SecondaryHeader>Role</SecondaryHeader>
+        <p className="mt-2 text-gray-700">
+          This is your own account, so your role cannot be changed here.
+          Removing your own Superadmin role would take away the access this page
+          needs, leaving no way to put it back. Another Superadmin can do it, or
+          you can in the Auth0 dashboard.
+        </p>
+      </div>
+    )
+  }
+
   if (user.auth0Accounts.length === 0) {
     return (
       <div className="my-6 max-w-md">
