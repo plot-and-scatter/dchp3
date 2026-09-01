@@ -80,6 +80,19 @@ export const auth0UserIdsFor = (user: DirectoryUser): string[] =>
 export const totalContributions = (user: DirectoryUser): number =>
   user.contributions.edits + user.contributions.citations
 
+/**
+ * Someone with a row in this site's database and no Auth0 account: they
+ * contributed before the project moved to Auth0 and cannot log in now.
+ *
+ * There is no column recording this. `user.is_dchp1` looks like it should say
+ * so and is NULL on all 389 rows, so the absence of an Auth0 account is the
+ * only evidence there is. That is why auth0Unknown is excluded: when Auth0
+ * cannot be read, nobody can be called legacy, because the reason for their
+ * having no account is that nothing was asked.
+ */
+export const isLegacyUser = (user: DirectoryUser): boolean =>
+  user.presence === "localOnly"
+
 /** True when some but not all of a person's Auth0 accounts are blocked. */
 export const isPartiallyBlocked = (user: DirectoryUser): boolean =>
   user.auth0Accounts.length > 1 &&
@@ -99,7 +112,7 @@ export const SORT_COLUMNS = [
   "name",
   "email",
   "role",
-  "work",
+  "contributions",
   "login",
   "record",
 ] as const
@@ -150,9 +163,9 @@ const compareBy: Record<
   (a: DirectoryUser, b: DirectoryUser) => number
 > = {
   name: (a, b) => a.name.localeCompare(b.name),
-  // Descending is the useful direction here, so ascending is least-work-first
-  // -- which is also the order that groups the accounts that did nothing.
-  work: (a, b) => totalContributions(a) - totalContributions(b),
+  // Descending is the useful direction here, so ascending puts the accounts
+  // that contributed nothing together.
+  contributions: (a, b) => totalContributions(a) - totalContributions(b),
   email: (a, b) => {
     if (a.email === b.email) return 0
     if (a.email === null) return 1

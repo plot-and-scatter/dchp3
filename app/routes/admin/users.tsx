@@ -6,6 +6,7 @@ import UserDirectoryTable from "~/components/admin/UserDirectoryTable"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 import { getUserDirectory } from "~/services/auth/userDirectory.server"
 import {
+  isLegacyUser,
   isSortColumn,
   sortDirectoryUsers,
   USER_DIRECTORY_PAGE_SIZE,
@@ -57,14 +58,22 @@ export function shouldRevalidate({
 
 export default function AdminUsers() {
   const { users, auth0Error } = useLoaderData<typeof loader>()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const sortParam = searchParams.get("sort")
   const sort: SortColumn = isSortColumn(sortParam) ? sortParam : "name"
   const direction: SortDirection =
     searchParams.get("dir") === "desc" ? "desc" : "asc"
 
-  const sorted = sortDirectoryUsers(users, sort, direction)
+  // Legacy contributors are hidden by default. There are far more of them than
+  // there are people who can log in, and this page is for managing access --
+  // which they have none of and are not going to be given. Their count is
+  // always on screen so that hiding them is visible rather than silent.
+  const showLegacy = searchParams.get("legacy") === "show"
+  const legacyCount = users.filter(isLegacyUser).length
+  const visible = showLegacy ? users : users.filter((u) => !isLegacyUser(u))
+
+  const sorted = sortDirectoryUsers(visible, sort, direction)
 
   const pageCount = Math.max(
     1,
@@ -98,8 +107,8 @@ export default function AdminUsers() {
       )}
 
       <p className="my-4">
-        {users.length} {users.length === 1 ? "person" : "people"}, from Auth0
-        and from this site's database.
+        {visible.length} {visible.length === 1 ? "person" : "people"}, from
+        Auth0 and from this site's database.
         {pageCount > 1 && (
           <span className="text-gray-600">
             {" "}
@@ -108,6 +117,32 @@ export default function AdminUsers() {
           </span>
         )}
       </p>
+
+      {legacyCount > 0 && (
+        <label className="my-4 flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={showLegacy}
+            onChange={(event) => {
+              const next = new URLSearchParams(searchParams)
+              if (event.target.checked) next.set("legacy", "show")
+              else next.delete("legacy")
+              // The page number means something different once the list
+              // changes length.
+              next.delete("page")
+              setSearchParams(next, { preventScrollReset: true })
+            }}
+          />
+          <span>
+            Show {legacyCount} legacy{" "}
+            {legacyCount === 1 ? "contributor" : "contributors"}
+            <span className="ml-1 text-gray-600">
+              — people who contributed before this site used Auth0. They have no
+              account and cannot log in.
+            </span>
+          </span>
+        </label>
+      )}
 
       <UserDirectoryTable
         users={pageOfUsers}

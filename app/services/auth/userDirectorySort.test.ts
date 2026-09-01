@@ -1,5 +1,6 @@
 // @vitest-environment node
 import {
+  isLegacyUser,
   isSortColumn,
   SORT_COLUMNS,
   sortDirectoryUsers,
@@ -132,7 +133,7 @@ describe("sorting by role puts the audit cases first", () => {
   })
 })
 
-describe("sorting by work", () => {
+describe("sorting by contributions", () => {
   const people = [
     person({ name: "Prolific", contributions: { edits: 800, citations: 65 } }),
     person({ name: "Nothing", contributions: { edits: 0, citations: 0 } }),
@@ -140,18 +141,16 @@ describe("sorting by work", () => {
   ]
 
   it("sums entry edits and citations", () => {
-    expect(namesOf(sortDirectoryUsers(people, "work", "desc"))).toEqual([
-      "Prolific",
-      "Some",
-      "Nothing",
-    ])
+    expect(
+      namesOf(sortDirectoryUsers(people, "contributions", "desc"))
+    ).toEqual(["Prolific", "Some", "Nothing"])
   })
 
   it("groups the accounts that did nothing when ascending", () => {
     // The pairing that makes "holds no role" actionable: no role AND no work
     // is a signup to remove; no role but a great deal of work is a
     // contributor whose role went missing.
-    expect(namesOf(sortDirectoryUsers(people, "work", "asc"))[0]).toBe(
+    expect(namesOf(sortDirectoryUsers(people, "contributions", "asc"))[0]).toBe(
       "Nothing"
     )
   })
@@ -206,5 +205,29 @@ describe("stability", () => {
 describe("page size", () => {
   it("is a round number that fits a screen", () => {
     expect(USER_DIRECTORY_PAGE_SIZE).toBe(25)
+  })
+})
+
+describe("isLegacyUser", () => {
+  it("is true for someone with a local row and no Auth0 account", () => {
+    expect(
+      isLegacyUser(person({ presence: "localOnly", auth0Accounts: [] }))
+    ).toBe(true)
+  })
+
+  it("is false for someone who has an Auth0 account", () => {
+    expect(isLegacyUser(person({ presence: "both" }))).toBe(false)
+    expect(isLegacyUser(person({ presence: "auth0Only", localRows: [] }))).toBe(
+      false
+    )
+  })
+
+  it("is false when Auth0 could not be read", () => {
+    // Nobody can be called legacy on the strength of a question that was
+    // never asked: the absence of an account is the only evidence there is,
+    // and an unread Auth0 is not absence.
+    expect(
+      isLegacyUser(person({ presence: "auth0Unknown", auth0Accounts: [] }))
+    ).toBe(false)
   })
 })

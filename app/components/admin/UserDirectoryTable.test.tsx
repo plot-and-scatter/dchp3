@@ -82,9 +82,9 @@ describe("UserDirectoryTable", () => {
     ])
     const row = within(rowFor("Old Hand"))
 
-    expect(row.getByText("Database only")).toBeInTheDocument()
+    expect(row.getByText("Legacy")).toBeInTheDocument()
     // No Auth0 account means no way in, and the badge says so.
-    expect(row.getByText("No login")).toBeInTheDocument()
+    expect(row.getByText("No account")).toBeInTheDocument()
   })
 
   it("does not claim anything about login when Auth0 was not read", () => {
@@ -100,7 +100,7 @@ describe("UserDirectoryTable", () => {
 
     expect(row.getByText("Auth0 not read")).toBeInTheDocument()
     // Nothing is claimed about whether they can log in.
-    expect(row.queryByText("No login")).not.toBeInTheDocument()
+    expect(row.queryByText("No account")).not.toBeInTheDocument()
     expect(row.queryByText("Blocked")).not.toBeInTheDocument()
     expect(row.queryByText("Can log in")).not.toBeInTheDocument()
   })
@@ -184,7 +184,25 @@ describe("UserDirectoryTable", () => {
     expect(screen.queryByText("No role")).not.toBeInTheDocument()
   })
 
-  it("shows the work total, summing edits and citations", () => {
+  it("labels a person with no Auth0 account as legacy, not as a problem", () => {
+    renderTable([
+      user({
+        name: "Old Hand",
+        presence: "localOnly",
+        roles: [],
+        auth0Accounts: [],
+        contributions: { edits: 40, citations: 12 },
+      }),
+    ])
+    const row = within(rowFor("Old Hand"))
+
+    expect(row.getByText("Legacy")).toBeInTheDocument()
+    expect(row.getByText("No account")).toBeInTheDocument()
+    // Their contributions are still counted -- that is why the row exists.
+    expect(row.getByText("52")).toBeInTheDocument()
+  })
+
+  it("shows the contributions total, summing edits and citations", () => {
     renderTable([user({ contributions: { edits: 800, citations: 65 } })])
     expect(screen.getByText("865")).toBeInTheDocument()
   })

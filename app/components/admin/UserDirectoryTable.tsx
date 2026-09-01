@@ -31,10 +31,12 @@ export function loginBadge(user: DirectoryUser): Badge {
 
   if (user.auth0Accounts.length === 0) {
     return {
-      label: "No login",
-      tone: "warning",
+      // Neutral, not a warning: a legacy contributor having no account is the
+      // expected state, not a problem to fix.
+      label: "No account",
+      tone: "neutral",
       title:
-        "A row in this site's database with no Auth0 account. They cannot log in.",
+        "No Auth0 account, so no way to log in. Usual for a legacy contributor.",
     }
   }
 
@@ -86,9 +88,10 @@ const PRESENCE_BADGE: Record<DirectoryUser["presence"], Badge> = {
     title: "No row in this site's database yet. One is created at first login.",
   },
   localOnly: {
-    label: "Database only",
-    tone: "warning",
-    title: "No Auth0 account, so no way to log in.",
+    label: "Legacy",
+    tone: "neutral",
+    title:
+      "Contributed before the project moved to Auth0. No account, so no way to log in.",
   },
   auth0Unknown: {
     label: "Database",
@@ -107,8 +110,8 @@ const COLUMNS: { column: SortColumn; label: string }[] = [
   { column: "name", label: "Name" },
   { column: "email", label: "Email" },
   { column: "role", label: "Role" },
-  { column: "work", label: "Work" },
-  { column: "login", label: "Login" },
+  { column: "contributions", label: "Contributions" },
+  { column: "login", label: "Auth0 login" },
   { column: "record", label: "Record" },
 ]
 
@@ -117,7 +120,7 @@ const COLUMNS: { column: SortColumn; label: string }[] = [
  * be acted on: a contributor whose role was removed and an account that
  * signed itself up and did nothing are otherwise identical rows.
  */
-function WorkCell({ user }: { user: DirectoryUser }) {
+function ContributionsCell({ user }: { user: DirectoryUser }) {
   const { edits, citations } = user.contributions
   const total = totalContributions(user)
 
@@ -262,7 +265,7 @@ export default function UserDirectoryTable({
                 )}
               </td>
               <td className="py-2 pr-4">
-                <WorkCell user={user} />
+                <ContributionsCell user={user} />
               </td>
               <td className="py-2 pr-4">{renderBadge(loginBadge(user))}</td>
               <td className="py-2">
