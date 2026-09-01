@@ -20,7 +20,6 @@ import {
   type SortColumn,
   type SortDirection,
 } from "~/services/auth/userDirectory"
-import { Form } from "react-router"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import FAIcon from "~/components/elements/Icons/FAIcon"
 import Button from "~/components/elements/LinksAndButtons/Button"
@@ -157,46 +156,6 @@ const COLUMNS: {
   { column: "lastLogin", label: "Last login" },
   { column: "login", label: "Auth0 login", filter: "access" },
 ]
-
-/**
- * A fresh one-time link for someone who already has an account, for a link
- * that expired or never arrived. Needs no email at any point, which matters:
- * unless a provider has been configured, the tenant sends through Auth0's
- * built-in one, which is for testing and discards what it cannot send.
- *
- * Only for an account that exists in Auth0. A legacy contributor has none, so
- * there is nothing to set a password on.
- */
-function PasswordLinkButton({ user }: { user: DirectoryUser }) {
-  if (user.auth0Accounts.length === 0) return null
-
-  return (
-    <Form method="post" className="whitespace-nowrap">
-      {/* One link per account: an address can carry two, and a password
-          belongs to one of them. */}
-      {user.auth0Accounts.map((account) => (
-        <button
-          key={account.userId}
-          type="submit"
-          name="auth0UserId"
-          value={account.userId}
-          className="mr-2 text-sm text-action-700 underline"
-          title={`Make a one-time link so they can set the password for their ${
-            account.connection === "google-oauth2"
-              ? "Google"
-              : "email and password"
-          } account. Google accounts have no password here, so this is rarely what you want for one.`}
-        >
-          Password link
-          {user.auth0Accounts.length > 1 &&
-            ` (${
-              account.connection === "google-oauth2" ? "Google" : "password"
-            })`}
-        </button>
-      ))}
-    </Form>
-  )
-}
 
 /**
  * Entries edited and citations written. Without this, "holds no role" cannot
@@ -548,15 +507,12 @@ export default function UserDirectoryTable({
                 onFilterChange={onFilterChange}
               />
             ))}
-            <th className="py-2 font-sans text-sm">
-              <span className="sr-only">Actions</span>
-            </th>
           </tr>
         </thead>
         <tbody>
           {isEmpty && (
             <tr>
-              <td className="py-6 text-center" colSpan={COLUMNS.length + 1}>
+              <td className="py-6 text-center" colSpan={COLUMNS.length}>
                 <p>
                   {filtered
                     ? "Nobody matches these filters."
@@ -630,9 +586,6 @@ export default function UserDirectoryTable({
                 <LastLoginCell user={user} />
               </td>
               <td className="py-2 pr-4">{renderBadge(loginBadge(user))}</td>
-              <td className="py-2">
-                <PasswordLinkButton user={user} />
-              </td>
             </tr>
           ))}
         </tbody>

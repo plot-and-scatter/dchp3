@@ -1,5 +1,5 @@
 import { render, screen, within } from "@testing-library/react"
-import { createMemoryRouter, RouterProvider } from "react-router"
+import { MemoryRouter } from "react-router"
 import UserDirectoryTable from "./UserDirectoryTable"
 import type { DirectoryUser } from "~/services/auth/userDirectory"
 
@@ -31,33 +31,24 @@ const user = (overrides: Partial<DirectoryUser> = {}): DirectoryUser => ({
 // The headings are sort links now, so the table needs a router around it.
 // Sorting itself is covered in userDirectory.server.test.ts, against the pure
 // comparator rather than through the DOM.
-// A data router, not MemoryRouter: the row action uses <Form>, which needs
-// one. RouterProvider is the smallest thing that provides it.
 const renderTable = (
   users: DirectoryUser[],
   overrides: Partial<React.ComponentProps<typeof UserDirectoryTable>> = {}
-) => {
-  const router = createMemoryRouter([
-    {
-      path: "/",
-      element: (
-        <UserDirectoryTable
-          users={users}
-          sort="name"
-          direction="asc"
-          searchParams={new URLSearchParams()}
-          roleFilter="all"
-          accessFilter="all"
-          onFilterChange={() => {}}
-          {...overrides}
-        />
-      ),
-      action: () => null,
-    },
-  ])
-
-  return render(<RouterProvider router={router} />)
-}
+) =>
+  render(
+    <MemoryRouter>
+      <UserDirectoryTable
+        users={users}
+        sort="name"
+        direction="asc"
+        searchParams={new URLSearchParams()}
+        roleFilter="all"
+        accessFilter="all"
+        onFilterChange={() => {}}
+        {...overrides}
+      />
+    </MemoryRouter>
+  )
 
 const rowFor = (name: string) => screen.getByText(name).closest("tr")!
 

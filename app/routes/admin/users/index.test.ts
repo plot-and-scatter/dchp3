@@ -25,13 +25,6 @@ vi.mock("~/services/auth/userDirectory.server", () => ({
   getUserDirectory: () => getUserDirectory(),
 }))
 
-// The action's two branches are covered in createUser.server.test.ts; these
-// tests are about the guard, so the writes are stubbed.
-const reissuePasswordLink = vi.fn()
-vi.mock("~/services/auth/createUser.server", () => ({
-  reissuePasswordLink: (...a: unknown[]) => reissuePasswordLink(...a),
-}))
-
 beforeEach(() => {
   getUserDirectory.mockClear()
   getUserDirectory.mockResolvedValue({ users: [], auth0Error: null })
@@ -44,13 +37,12 @@ beforeEach(() => {
 // session.server is imported, since the cookie storage is built at import
 // time, so both modules are imported dynamically.
 let loader: typeof AdminUsersRoute.loader
-let action: typeof AdminUsersRoute.action
 let sessionStorage: typeof SessionServer.sessionStorage
 
 beforeAll(async () => {
   process.env.COOKIE_SECRET = "test-cookie-secret"
   ;({ sessionStorage } = await import("~/services/auth/session.server"))
-  ;({ loader, action } = await import("./index"))
+  ;({ loader } = await import("./index"))
 })
 
 const requestWithRoles = async (
@@ -137,53 +129,6 @@ describe("/admin/users loader", () => {
   it("redirects a user holding a role name the tenant no longer uses", async () => {
     const request = await requestWithRoles(["Admin"] as unknown as AuthRole[])
     const rejection = await rejectionFrom(() => loader(args(request)))
-
-    expect(rejection?.headers.get("location")).toBe(NOT_ALLOWED_PATH)
-  })
-})
-
-describe("/admin/users action", () => {
-  const post = (roles: AuthRole[] | undefined) =>
-    requestWithRoles(roles, { method: "POST", body: new FormData() })
-
-  it("lets a Superadmin post", async () => {
-    const request = await post(["Superadmin"])
-    // An empty body is not a valid request, which is the point: it got past
-    // the guard and was judged on its contents.
-    await expect(action(args(request))).resolves.toMatchObject({
-      kind: "error",
-    })
-  })
-
-  it("does not issue a password link for a request it turns away", async () => {
-    const body = new FormData()
-    body.append("userAction", "reissuePasswordLink")
-    body.append("auth0UserId", "auth0|1")
-
-    const request = await requestWithRoles(["Research Assistant"], {
-      method: "POST",
-      body,
-    })
-    await rejectionFrom(() => action(args(request)))
-
-    expect(reissuePasswordLink).not.toHaveBeenCalled()
-  })
-
-  it.each(AUTH_ROLES.filter((role) => role !== "Superadmin"))(
-    "rejects a post from a %s",
-    async (role) => {
-      const request = await post([role])
-      const rejection = await rejectionFrom(() => action(args(request)))
-
-      expect(rejection).toBeInstanceOf(Response)
-      expect(rejection?.status).toBe(302)
-      expect(rejection?.headers.get("location")).toBe(NOT_ALLOWED_PATH)
-    }
-  )
-
-  it("rejects a post with no session", async () => {
-    const request = await post(undefined)
-    const rejection = await rejectionFrom(() => action(args(request)))
 
     expect(rejection?.headers.get("location")).toBe(NOT_ALLOWED_PATH)
   })

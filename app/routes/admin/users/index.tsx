@@ -1,10 +1,6 @@
-import { type ActionFunctionArgs, type LoaderFunctionArgs } from "react-router"
-import { useActionData, useLoaderData, useSearchParams } from "react-router"
-import { parseWithZod } from "@conform-to/zod"
-import PasswordLinkPanel from "~/components/admin/PasswordLinkPanel"
+import { type LoaderFunctionArgs } from "react-router"
+import { useLoaderData, useSearchParams } from "react-router"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
-import { ReissuePasswordLinkSchema } from "~/models/user.schemas"
-import { reissuePasswordLink } from "~/services/auth/createUser.server"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import PaginationControl from "~/components/bank/PaginationControl"
 import UserDirectoryTable from "~/components/admin/UserDirectoryTable"
@@ -40,27 +36,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return await getUserDirectory()
 }
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  await redirectIfUserLacksPermission(request, MANAGE_USERS_PERMISSION)
-
-  const submission = parseWithZod(await request.formData(), {
-    schema: ReissuePasswordLinkSchema,
-  })
-
-  if (submission.status !== "success") {
-    return { kind: "error" as const, message: "That was not a valid request." }
-  }
-
-  const result = await reissuePasswordLink(submission.value.auth0UserId)
-
-  return result.ok
-    ? { kind: "link" as const, ticketUrl: result.ticketUrl, warnings: [] }
-    : {
-        kind: "error" as const,
-        message: `Could not make a new password link. ${result.message}`,
-      }
-}
-
 /**
  * Sorting and paging are query-string only, and the loader reads every Auth0
  * account, every role's membership and every local row to build its answer.
@@ -83,7 +58,6 @@ export function shouldRevalidate({
 
 export default function AdminUsers() {
   const { users, auth0Error } = useLoaderData<typeof loader>()
-  const actionData = useActionData<typeof action>()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const sortParam = searchParams.get("sort")
@@ -138,22 +112,6 @@ export default function AdminUsers() {
           </p>
           <p className="mt-1 text-sm text-gray-700">{auth0Error.message}</p>
         </div>
-      )}
-
-      {actionData?.kind === "error" && (
-        <div
-          role="alert"
-          className="my-4 border-l-4 border-red-500 bg-red-50 p-4"
-        >
-          {actionData.message}
-        </div>
-      )}
-
-      {actionData?.kind === "link" && (
-        <PasswordLinkPanel
-          ticketUrl={actionData.ticketUrl}
-          warnings={actionData.warnings}
-        />
       )}
 
       <p className="my-4">
