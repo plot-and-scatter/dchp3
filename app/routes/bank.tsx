@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from "react-router"
 import type { LoaderFunctionArgs } from "react-router"
-import { redirectIfUserNotLoggedIn } from "~/services/auth/session.server"
+import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 
 const navItems = [
   {
@@ -26,7 +26,13 @@ const navItems = [
 ]
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await redirectIfUserNotLoggedIn(request)
+  // bank:read, not merely a session. Every child route relied on this loader
+  // for its protection, so being logged in was the whole of the requirement
+  // to read the citation bank -- including for someone holding no role at all.
+  //
+  // A child ACTION does not run this loader, so each route with an action
+  // guards itself as well.
+  await redirectIfUserLacksPermission(request, "bank:read")
 
   return {}
 }

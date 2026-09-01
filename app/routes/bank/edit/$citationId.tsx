@@ -18,7 +18,10 @@ import {
   findOrCreateTitle,
   getFullCitationById,
 } from "~/models/bank.server"
-import { getEmailFromSession } from "~/services/auth/session.server"
+import {
+  getEmailFromSession,
+  redirectIfUserLacksCitationEditPermission,
+} from "~/services/auth/session.server"
 import { getUserIdByEmailOrThrow } from "~/models/user.server"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { prisma } from "~/db.server"
@@ -42,6 +45,13 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 }
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
+  // Before the form is even parsed, and before the delete below: this action
+  // does not run the bank layout's loader, so being logged in was previously
+  // the only thing standing between any account and deleting any citation.
+  const citationIdToEdit = parseInt(params.citationId || "0")
+  invariant(citationIdToEdit)
+  await redirectIfUserLacksCitationEditPermission(request, citationIdToEdit)
+
   const formData = await request.formData()
   const submission = parseWithZod(formData, {
     schema: bankCitationFormDataSchema,
@@ -103,7 +113,11 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   return redirect(`/bank/edit/${citationId}`)
 }
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  const citationIdToView = parseInt(params.citationId || "0")
+  invariant(citationIdToView)
+  await redirectIfUserLacksCitationEditPermission(request, citationIdToView)
+
   const citationId = params.citationId
   invariant(citationId, `citationId not found`)
 
