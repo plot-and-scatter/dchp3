@@ -11,8 +11,14 @@ const user = (overrides: Partial<DirectoryUser> = {}): DirectoryUser => ({
   name: "Some One",
   presence: "both",
   roles: ["Student / Editor"],
-  auth0UserId: "auth0|1",
-  blocked: false,
+  auth0Accounts: [
+    {
+      userId: "auth0|1",
+      connection: "Username-Password-Authentication",
+      blocked: false,
+      roles: ["Student / Editor"],
+    },
+  ],
   localRows: [{ id: 1, is_active: 1 } as DirectoryUser["localRows"][number]],
   ...overrides,
 })
@@ -45,10 +51,11 @@ describe("UserDirectoryTable", () => {
     )
     const row = within(rowFor("New Person"))
 
-    expect(
-      row.getByText("Auth0 only — has never logged in")
-    ).toBeInTheDocument()
+    // Not "has never logged in": the join knows only that there is no local
+    // row, and every account in the tenant has logged in at least once.
+    expect(row.getByText("Auth0 only — no database record")).toBeInTheDocument()
     expect(row.getByText("No local record yet")).toBeInTheDocument()
+    expect(row.queryByText(/never logged in/)).not.toBeInTheDocument()
   })
 
   it("says a database-only person cannot log in", () => {
@@ -59,8 +66,7 @@ describe("UserDirectoryTable", () => {
             name: "Old Hand",
             presence: "localOnly",
             roles: [],
-            auth0UserId: null,
-            blocked: null,
+            auth0Accounts: [],
           }),
         ]}
       />
@@ -78,8 +84,7 @@ describe("UserDirectoryTable", () => {
             name: "Unknown Status",
             presence: "auth0Unknown",
             roles: [],
-            auth0UserId: null,
-            blocked: null,
+            auth0Accounts: [],
           }),
         ]}
       />
@@ -90,16 +95,77 @@ describe("UserDirectoryTable", () => {
     expect(row.queryByText(/cannot log in/)).not.toBeInTheDocument()
   })
 
+  const account = (overrides = {}) => ({
+    userId: "auth0|1",
+    connection: "Username-Password-Authentication",
+    blocked: false,
+    roles: [],
+    ...overrides,
+  })
+
   it("marks a blocked account as deactivated whatever the local row says", () => {
     render(
       <UserDirectoryTable
-        users={[user({ name: "Blocked Person", blocked: true })]}
+        users={[
+          user({
+            name: "Blocked Person",
+            auth0Accounts: [account({ blocked: true })],
+          }),
+        ]}
       />
     )
     const row = within(rowFor("Blocked Person"))
 
     expect(row.getByText("Deactivated")).toBeInTheDocument()
     expect(row.queryByText("Active")).not.toBeInTheDocument()
+  })
+
+  it("warns when only some of a person's accounts are blocked", () => {
+    render(
+      <UserDirectoryTable
+        users={[
+          user({
+            name: "Half Blocked",
+            auth0Accounts: [
+              account({ userId: "auth0|1", blocked: true }),
+              account({
+                userId: "google-oauth2|2",
+                connection: "google-oauth2",
+                blocked: false,
+              }),
+            ],
+          }),
+        ]}
+      />
+    )
+    const row = within(rowFor("Half Blocked"))
+
+    // Saying "Deactivated" here would be wrong: they can still log in.
+    expect(
+      row.getByText("Partly deactivated — can still log in")
+    ).toBeInTheDocument()
+  })
+
+  it("shows when one address has two unlinked Auth0 accounts", () => {
+    render(
+      <UserDirectoryTable
+        users={[
+          user({
+            name: "Two Accounts",
+            auth0Accounts: [
+              account({ userId: "auth0|1" }),
+              account({
+                userId: "google-oauth2|2",
+                connection: "google-oauth2",
+              }),
+            ],
+          }),
+        ]}
+      />
+    )
+
+    expect(screen.getByText(/2 separate Auth0 accounts/)).toBeInTheDocument()
+    expect(screen.getByText(/google-oauth2/)).toBeInTheDocument()
   })
 
   it("flags an Auth0 account with no role rather than leaving the cell blank", () => {

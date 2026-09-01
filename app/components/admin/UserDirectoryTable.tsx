@@ -1,11 +1,18 @@
-import type { DirectoryUser } from "~/services/auth/userDirectory.server"
+import {
+  isPartiallyBlocked,
+  type DirectoryUser,
+} from "~/services/auth/userDirectory.server"
 
 // Each row says which of the two systems the person exists in, because that
 // is the thing an administrator cannot otherwise find out and it decides what
 // to do about them.
 const PRESENCE_LABEL: Record<DirectoryUser["presence"], string> = {
   both: "Auth0 and database",
-  auth0Only: "Auth0 only — has never logged in",
+  // Not "has never logged in": the join knows only that there is no local
+  // row. Every account in the tenant has in fact logged in at least once, and
+  // lazy row creation only arrived in October 2023, so an older account can
+  // have logged in many times and still have no row.
+  auth0Only: "Auth0 only — no database record",
   localOnly: "Database only — cannot log in",
   auth0Unknown: "Database — Auth0 not read",
 }
@@ -18,7 +25,20 @@ const PRESENCE_CLASS: Record<DirectoryUser["presence"], string> = {
 }
 
 function StatusCell({ user }: { user: DirectoryUser }) {
-  if (user.blocked) return <span className="text-red-800">Deactivated</span>
+  // Some accounts blocked and others not means the person can still log in
+  // through the ones that are not. Worth saying outright rather than picking
+  // one of the two answers.
+  if (isPartiallyBlocked(user)) {
+    return (
+      <span className="text-red-800">
+        Partly deactivated — can still log in
+      </span>
+    )
+  }
+
+  const blocked =
+    user.auth0Accounts.length > 0 && user.auth0Accounts.every((a) => a.blocked)
+  if (blocked) return <span className="text-red-800">Deactivated</span>
 
   // is_active is set on every login, so a local row says only that they have
   // logged in at some point. Auth0's blocked flag is what stops a login.
@@ -52,7 +72,11 @@ export default function UserDirectoryTable({
         <tbody>
           {users.map((user) => (
             <tr
-              key={user.auth0UserId ?? user.email ?? user.localRows[0]?.id}
+              key={
+                user.email ??
+                user.auth0Accounts[0]?.userId ??
+                user.localRows[0]?.id
+              }
               className="border-b border-gray-200 align-top"
             >
               <td className="py-2 pr-4">{user.name}</td>
@@ -61,6 +85,15 @@ export default function UserDirectoryTable({
                 {user.localRows.length > 1 && (
                   <span className="block text-sm text-amber-800">
                     {user.localRows.length} database rows share this address
+                  </span>
+                )}
+                {user.auth0Accounts.length > 1 && (
+                  <span className="block text-sm text-amber-800">
+                    {user.auth0Accounts.length} separate Auth0 accounts (
+                    {user.auth0Accounts
+                      .map((a) => a.connection ?? "unknown")
+                      .join(", ")}
+                    ), not linked
                   </span>
                 )}
               </td>

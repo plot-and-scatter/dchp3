@@ -31,17 +31,31 @@ export type AccountPresence =
   // an administrator's screen.
   | "auth0Unknown"
 
+export type DirectoryAuth0Account = {
+  userId: string
+  /** "Username-Password-Authentication", "google-oauth2", and so on. */
+  connection: string | null
+  blocked: boolean
+  roles: AuthRole[]
+}
+
 export type DirectoryUser = {
   /** Lower-cased, the key both sides are joined on. Null only for a local row with no email. */
   email: string | null
   /** Auth0's name if there is one, otherwise the local first and last name. */
   name: string
   presence: AccountPresence
-  /** From Auth0. Empty for a local-only row: this application has no other source of roles. */
+  /** The union of the roles held across every Auth0 account on this address. */
   roles: AuthRole[]
-  auth0UserId: string | null
-  /** Auth0's blocked flag. Null when there is no Auth0 account to ask about. */
-  blocked: boolean | null
+  /**
+   * Every Auth0 account using this address. Usually one, but a person who has
+   * signed in through a social provider and through a username and password
+   * has two, unlinked, and the tenant has never used Auth0's account linking.
+   * Two accounts can hold different roles and be blocked separately, so a
+   * change applied to one of them leaves the other untouched -- which is why
+   * this is a list and why the page shows it.
+   */
+  auth0Accounts: DirectoryAuth0Account[]
   /**
    * Every local row matching this email. Normally one. The `user` table has no
    * unique index on email despite @@unique in schema.prisma, and production
@@ -139,15 +153,33 @@ export async function getUserDirectory(): Promise<UserDirectory> {
     }
   }
 
-  const users: DirectoryUser[] = []
-  const matchedEmails = new Set<string>()
+  // Grouped by address, not one row per Auth0 account: two accounts on one
+  // address are one person, and showing them as two identical-looking rows
+  // would hide the thing that matters about them.
+  const auth0ByEmail = new Map<string, Auth0User[]>()
+  const auth0WithoutEmail: Auth0User[] = []
 
   for (const auth0User of auth0Users.data) {
     const email = normaliseEmail(auth0User.email)
-    const localRows = email ? localByEmail.get(email) ?? [] : []
-    if (email && localRows.length > 0) matchedEmails.add(email)
+    if (!email) {
+      auth0WithoutEmail.push(auth0User)
+      continue
+    }
+    auth0ByEmail.set(email, [...(auth0ByEmail.get(email) ?? []), auth0User])
+  }
 
-    users.push(toDirectoryUser(auth0User, email, localRows, roles.data))
+  const users: DirectoryUser[] = []
+  const matchedEmails = new Set<string>()
+
+  for (const [email, accounts] of auth0ByEmail) {
+    const localRows = localByEmail.get(email) ?? []
+    if (localRows.length > 0) matchedEmails.add(email)
+
+    users.push(toDirectoryUser(accounts, email, localRows, roles.data))
+  }
+
+  for (const auth0User of auth0WithoutEmail) {
+    users.push(toDirectoryUser([auth0User], null, [], roles.data))
   }
 
   // Whatever Auth0 did not account for is local-only: a person who cannot log
@@ -165,22 +197,28 @@ export async function getUserDirectory(): Promise<UserDirectory> {
 }
 
 function toDirectoryUser(
-  auth0User: Auth0User,
+  auth0Users: Auth0User[],
   email: string | null,
   localRows: DisplayUser[],
   rolesByUserId: Map<string, AuthRole[]>
 ): DirectoryUser {
+  const accounts: DirectoryAuth0Account[] = auth0Users.map((auth0User) => ({
+    userId: auth0User.user_id,
+    connection: auth0User.identities?.[0]?.connection ?? null,
+    blocked: auth0User.blocked ?? false,
+    roles: rolesByUserId.get(auth0User.user_id) ?? [],
+  }))
+
   return {
     email,
     name:
-      auth0User.name?.trim() ||
+      auth0Users.find((u) => u.name?.trim())?.name?.trim() ||
       localName(localRows[0]) ||
       email ||
-      auth0User.user_id,
+      auth0Users[0].user_id,
     presence: localRows.length > 0 ? "both" : "auth0Only",
-    roles: rolesByUserId.get(auth0User.user_id) ?? [],
-    auth0UserId: auth0User.user_id,
-    blocked: auth0User.blocked ?? false,
+    roles: [...new Set(accounts.flatMap((a) => a.roles))],
+    auth0Accounts: accounts,
     localRows,
   }
 }
@@ -195,8 +233,7 @@ function toLocalOnlyUser(
     name: localName(localRows[0]) || email || `User ${localRows[0]?.id}`,
     presence,
     roles: [],
-    auth0UserId: null,
-    blocked: null,
+    auth0Accounts: [],
     localRows,
   }
 }
@@ -216,3 +253,20 @@ function toLocalOnlyDirectory(
 
 const sortDirectory = (users: DirectoryUser[]) =>
   users.sort((a, b) => (a.email ?? a.name).localeCompare(b.email ?? b.name))
+
+/**
+ * Every Auth0 account id on this person's address.
+ *
+ * Changing a role or blocking an account acts on ONE account, so a person with
+ * two unlinked accounts would keep the old role, or keep logging in, through
+ * the other. #444 and #445 apply their change to all of these. See
+ * docs/auth/roles.md.
+ */
+export const auth0UserIdsFor = (user: DirectoryUser): string[] =>
+  user.auth0Accounts.map((account) => account.userId)
+
+/** True when some but not all of a person's Auth0 accounts are blocked. */
+export const isPartiallyBlocked = (user: DirectoryUser): boolean =>
+  user.auth0Accounts.length > 1 &&
+  user.auth0Accounts.some((a) => a.blocked) &&
+  !user.auth0Accounts.every((a) => a.blocked)

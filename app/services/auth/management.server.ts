@@ -46,6 +46,8 @@ export type Auth0User = {
   created_at?: string
   last_login?: string
   logins_count?: number
+  /** One entry per linked identity. Unlinked accounts have exactly one. */
+  identities?: { connection?: string; provider?: string; user_id?: string }[]
 }
 
 export type Auth0Role = {

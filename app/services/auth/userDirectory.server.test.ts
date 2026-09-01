@@ -1,5 +1,9 @@
 // @vitest-environment node
-import { getUserDirectory } from "./userDirectory.server"
+import {
+  auth0UserIdsFor,
+  getUserDirectory,
+  isPartiallyBlocked,
+} from "./userDirectory.server"
 import type { DisplayUser } from "~/models/user.server"
 
 // The two sources do not agree, and the point of the directory is to show the
@@ -93,7 +97,7 @@ describe("the three join states", () => {
 
     expect(users[0].presence).toBe("localOnly")
     expect(users[0].name).toBe("Old Hand")
-    expect(users[0].auth0UserId).toBeNull()
+    expect(users[0].auth0Accounts).toEqual([])
     expect(users[0].roles).toEqual([])
   })
 
@@ -154,6 +158,69 @@ describe("matching", () => {
     expect(users[0].localRows.map((r) => r.id)).toEqual([1, 2])
   })
 
+  it("groups two unlinked Auth0 accounts on one address into one person", async () => {
+    // The tenant has never used Auth0 account linking, so a person who has
+    // signed in both ways has two accounts. They are one person, and the two
+    // accounts can hold different roles and be blocked separately.
+    getAllUsers.mockResolvedValue([localRow({ email: "two@example.com" })])
+    listAllAuth0Users.mockResolvedValue(
+      ok([
+        {
+          user_id: "auth0|1",
+          email: "two@example.com",
+          identities: [{ connection: "Username-Password-Authentication" }],
+        },
+        {
+          user_id: "google-oauth2|2",
+          email: "TWO@example.com",
+          blocked: true,
+          identities: [{ connection: "google-oauth2" }],
+        },
+      ])
+    )
+
+    const { users } = await getUserDirectory()
+
+    expect(users).toHaveLength(1)
+    expect(users[0].auth0Accounts.map((a) => a.userId)).toEqual([
+      "auth0|1",
+      "google-oauth2|2",
+    ])
+    expect(users[0].auth0Accounts.map((a) => a.connection)).toEqual([
+      "Username-Password-Authentication",
+      "google-oauth2",
+    ])
+    expect(users[0].presence).toBe("both")
+  })
+
+  it("unions the roles held across a person's Auth0 accounts", async () => {
+    listAllAuth0Users.mockResolvedValue(
+      ok([
+        { user_id: "auth0|1", email: "two@example.com" },
+        { user_id: "google-oauth2|2", email: "two@example.com" },
+      ])
+    )
+    listAuth0Roles.mockResolvedValue(
+      ok([
+        { id: "rol_super", name: "Superadmin" },
+        { id: "rol_display", name: "Display" },
+      ])
+    )
+    listAuth0RoleMembers.mockImplementation((id: string) =>
+      Promise.resolve(
+        ok(
+          id === "rol_super"
+            ? [{ user_id: "auth0|1" }]
+            : [{ user_id: "google-oauth2|2" }]
+        )
+      )
+    )
+
+    const { users } = await getUserDirectory()
+
+    expect(users[0].roles.sort()).toEqual(["Display", "Superadmin"])
+  })
+
   it("keeps a local row that has no email at all", async () => {
     getAllUsers.mockResolvedValue([
       localRow({ id: 5, email: null, first_name: "No", last_name: "Address" }),
@@ -164,6 +231,54 @@ describe("matching", () => {
     expect(users[0].email).toBeNull()
     expect(users[0].presence).toBe("localOnly")
     expect(users[0].name).toBe("No Address")
+  })
+})
+
+describe("acting on every account a person holds", () => {
+  const twoAccounts = () => {
+    listAllAuth0Users.mockResolvedValue(
+      ok([
+        { user_id: "auth0|1", email: "two@example.com" },
+        { user_id: "google-oauth2|2", email: "two@example.com", blocked: true },
+      ])
+    )
+  }
+
+  it("lists every account id, so a change can be applied to all of them", async () => {
+    twoAccounts()
+    const { users } = await getUserDirectory()
+
+    // #444 and #445 change one account at a time; applied to only one, the
+    // person keeps the old role or keeps logging in through the other.
+    expect(auth0UserIdsFor(users[0])).toEqual(["auth0|1", "google-oauth2|2"])
+  })
+
+  it("reports a person whose accounts are only partly blocked", async () => {
+    twoAccounts()
+    const { users } = await getUserDirectory()
+
+    expect(isPartiallyBlocked(users[0])).toBe(true)
+  })
+
+  it("is not partly blocked when every account is blocked", async () => {
+    listAllAuth0Users.mockResolvedValue(
+      ok([
+        { user_id: "auth0|1", email: "two@example.com", blocked: true },
+        { user_id: "google-oauth2|2", email: "two@example.com", blocked: true },
+      ])
+    )
+    const { users } = await getUserDirectory()
+
+    expect(isPartiallyBlocked(users[0])).toBe(false)
+  })
+
+  it("is not partly blocked when there is only one account", async () => {
+    listAllAuth0Users.mockResolvedValue(
+      ok([{ user_id: "auth0|1", email: "one@example.com", blocked: true }])
+    )
+    const { users } = await getUserDirectory()
+
+    expect(isPartiallyBlocked(users[0])).toBe(false)
   })
 })
 
