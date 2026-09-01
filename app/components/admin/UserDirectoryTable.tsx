@@ -1,7 +1,9 @@
+// Not from userDirectory.server: isPartiallyBlocked is a value, and importing
+// it from the server module pulls ~/db.server into the client bundle.
 import {
   isPartiallyBlocked,
   type DirectoryUser,
-} from "~/services/auth/userDirectory.server"
+} from "~/services/auth/userDirectory"
 
 // Each row says which of the two systems the person exists in, because that
 // is the thing an administrator cannot otherwise find out and it decides what

@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react"
 import UserDirectoryTable from "./UserDirectoryTable"
-import type { DirectoryUser } from "~/services/auth/userDirectory.server"
+import type { DirectoryUser } from "~/services/auth/userDirectory"
 
 // What the table has to communicate is which system each person exists in,
 // because that is what an administrator cannot find out anywhere else and it
