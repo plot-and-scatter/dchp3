@@ -31,7 +31,10 @@ const user = (overrides: Partial<DirectoryUser> = {}): DirectoryUser => ({
 // The headings are sort links now, so the table needs a router around it.
 // Sorting itself is covered in userDirectory.server.test.ts, against the pure
 // comparator rather than through the DOM.
-const renderTable = (users: DirectoryUser[]) =>
+const renderTable = (
+  users: DirectoryUser[],
+  overrides: Partial<React.ComponentProps<typeof UserDirectoryTable>> = {}
+) =>
   render(
     <MemoryRouter>
       <UserDirectoryTable
@@ -42,6 +45,7 @@ const renderTable = (users: DirectoryUser[]) =>
         roleFilter="all"
         accessFilter="all"
         onFilterChange={() => {}}
+        {...overrides}
       />
     </MemoryRouter>
   )
@@ -51,7 +55,47 @@ const rowFor = (name: string) => screen.getByText(name).closest("tr")!
 describe("UserDirectoryTable", () => {
   it("says so when there is nobody to show", () => {
     renderTable([])
-    expect(screen.getByText("No users found.")).toBeInTheDocument()
+    expect(screen.getByText("There is nobody to show.")).toBeInTheDocument()
+  })
+
+  describe("filtered down to nothing", () => {
+    // The filter menus are in the table head, so an early return on an empty
+    // list left a reader with no way to undo the filter that emptied it.
+    const renderEmptyFiltered = (onFilterChange = () => {}) =>
+      renderTable([], {
+        roleFilter: "none",
+        accessFilter: "blocked",
+        onFilterChange,
+      })
+
+    it("still shows the filter menus", () => {
+      renderEmptyFiltered()
+      expect(screen.getByLabelText("Filter by role")).toBeInTheDocument()
+      expect(screen.getByLabelText("Filter by Auth0 login")).toBeInTheDocument()
+    })
+
+    it("says the filters are the reason, not that there are no users", () => {
+      renderEmptyFiltered()
+      expect(
+        screen.getByText("Nobody matches these filters.")
+      ).toBeInTheDocument()
+    })
+
+    it("offers a way out that resets both filters", () => {
+      const onFilterChange = vi.fn()
+      renderEmptyFiltered(onFilterChange)
+
+      screen.getByText("Show everyone").click()
+
+      const next = onFilterChange.mock.calls[0][0] as URLSearchParams
+      expect(next.get("role")).toBe("all")
+      expect(next.get("access")).toBe("all")
+    })
+
+    it("does not offer the way out when nothing is filtered", () => {
+      renderTable([])
+      expect(screen.queryByText("Show everyone")).not.toBeInTheDocument()
+    })
   })
 
   it("shows a person in both systems with their role and status", () => {

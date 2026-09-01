@@ -21,6 +21,7 @@ import {
 } from "~/services/auth/userDirectory"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import FAIcon from "~/components/elements/Icons/FAIcon"
+import Button from "~/components/elements/LinksAndButtons/Button"
 
 // Two questions decide what an administrator does about a row, and neither was
 // legible before: can this person log in, and are they allowed to do anything
@@ -324,7 +325,19 @@ export default function UserDirectoryTable({
   accessFilter: AccessFilter
   onFilterChange: (params: URLSearchParams) => void
 }) {
-  if (users.length === 0) return <p>No users found.</p>
+  // No early return when the list is empty. The filter menus live in the table
+  // head, so returning before it left a reader who had filtered down to
+  // nothing with no way to undo it.
+  const isEmpty = users.length === 0
+  const filtered = roleFilter !== "all" || accessFilter !== "all"
+
+  const showEveryone = () => {
+    const next = new URLSearchParams(searchParams)
+    next.set("role", "all")
+    next.set("access", "all")
+    next.delete("page")
+    onFilterChange(next)
+  }
 
   return (
     // The table scrolls inside its own box rather than making the page scroll
@@ -350,6 +363,27 @@ export default function UserDirectoryTable({
           </tr>
         </thead>
         <tbody>
+          {isEmpty && (
+            <tr>
+              <td className="py-6 text-center" colSpan={COLUMNS.length}>
+                <p>
+                  {filtered
+                    ? "Nobody matches these filters."
+                    : "There is nobody to show."}
+                </p>
+                {filtered && (
+                  <Button
+                    type="button"
+                    className="mt-2"
+                    onClick={showEveryone}
+                    appearance="secondary"
+                  >
+                    Show everyone
+                  </Button>
+                )}
+              </td>
+            </tr>
+          )}
           {users.map((user) => (
             <tr
               key={
