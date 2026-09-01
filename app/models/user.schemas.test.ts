@@ -1,5 +1,6 @@
 import { parseWithZod } from "@conform-to/zod"
 import {
+  ChangeRoleSchema,
   CreateUserSchema,
   NO_ROLE,
   ReissuePasswordLinkSchema,
@@ -136,5 +137,29 @@ describe("ReissuePasswordLinkSchema", () => {
 
   it("rejects a submission with no account id", () => {
     expect(submitLink({ intent: "password" }).status).not.toBe("success")
+  })
+})
+
+describe("ChangeRoleSchema", () => {
+  const submitRole = (entries: Record<string, string>) => {
+    const data = new FormData()
+    Object.entries(entries).forEach(([k, v]) => data.append(k, v))
+    return parseWithZod(data, { schema: ChangeRoleSchema })
+  }
+
+  it("accepts what the form actually posts", () => {
+    expect(submitRole({ intent: "role", role: "Superadmin" }).status).toBe(
+      "success"
+    )
+  })
+
+  it("accepts setting no role", () => {
+    expect(submitRole({ intent: "role", role: NO_ROLE }).status).toBe("success")
+  })
+
+  it("rejects a role the tenant does not have", () => {
+    expect(submitRole({ intent: "role", role: "Admin" }).status).not.toBe(
+      "success"
+    )
   })
 })

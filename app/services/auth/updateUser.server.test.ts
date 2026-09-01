@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { updateUserName } from "./updateUser.server"
+import { changeUserRole, updateUserName } from "./updateUser.server"
 import type { DirectoryUser } from "./userDirectory"
 
 // A name lives in two places and the list reads whichever it finds first, so
@@ -9,9 +9,17 @@ import type { DirectoryUser } from "./userDirectory"
 
 const updateAuth0User = vi.fn()
 const updateMany = vi.fn()
+const listAuth0Roles = vi.fn()
+const getAuth0UserRoles = vi.fn()
+const assignAuth0Roles = vi.fn()
+const removeAuth0Roles = vi.fn()
 
 vi.mock("./management.server", () => ({
   updateAuth0User: (...a: unknown[]) => updateAuth0User(...a),
+  listAuth0Roles: (...a: unknown[]) => listAuth0Roles(...a),
+  getAuth0UserRoles: (...a: unknown[]) => getAuth0UserRoles(...a),
+  assignAuth0Roles: (...a: unknown[]) => assignAuth0Roles(...a),
+  removeAuth0Roles: (...a: unknown[]) => removeAuth0Roles(...a),
 }))
 vi.mock("~/db.server", () => ({
   prisma: { user: { updateMany: (...a: unknown[]) => updateMany(...a) } },
@@ -47,6 +55,17 @@ beforeEach(() => {
   vi.clearAllMocks()
   updateMany.mockResolvedValue({ count: 1 })
   updateAuth0User.mockResolvedValue({ ok: true, data: {} })
+  listAuth0Roles.mockResolvedValue({
+    ok: true,
+    data: [
+      { id: "rol_display", name: "Display" },
+      { id: "rol_editor", name: "Student / Editor" },
+      { id: "rol_super", name: "Superadmin" },
+    ],
+  })
+  getAuth0UserRoles.mockResolvedValue({ ok: true, data: [] })
+  assignAuth0Roles.mockResolvedValue({ ok: true, data: undefined })
+  removeAuth0Roles.mockResolvedValue({ ok: true, data: undefined })
 })
 
 describe("updateUserName", () => {
@@ -120,5 +139,128 @@ describe("updateUserName", () => {
 
     expect(updateMany).not.toHaveBeenCalled()
     expect(result.ok).toBe(true)
+  })
+})
+
+const role = (r: string) => ({ intent: "role" as const, role: r as never })
+
+describe("changeUserRole", () => {
+  it("removes what they hold and assigns the new one", async () => {
+    getAuth0UserRoles.mockResolvedValue({
+      ok: true,
+      data: [{ id: "rol_display", name: "Display" }],
+    })
+
+    const result = await changeUserRole(person(), role("Superadmin"))
+
+    expect(result.ok).toBe(true)
+    expect(removeAuth0Roles).toHaveBeenCalledWith("auth0|1", ["rol_display"])
+    expect(assignAuth0Roles).toHaveBeenCalledWith("auth0|1", ["rol_super"])
+  })
+
+  it("removes in front of assigning, so a half-failure grants nothing extra", async () => {
+    getAuth0UserRoles.mockResolvedValue({
+      ok: true,
+      data: [{ id: "rol_display", name: "Display" }],
+    })
+
+    await changeUserRole(person(), role("Superadmin"))
+
+    expect(removeAuth0Roles.mock.invocationCallOrder[0]).toBeLessThan(
+      assignAuth0Roles.mock.invocationCallOrder[0]
+    )
+  })
+
+  it("applies to every Auth0 account on the address", async () => {
+    // A role set on one of two unlinked accounts leaves their permissions
+    // depending on which one they sign in with.
+    await changeUserRole(
+      person({
+        auth0Accounts: [
+          account("auth0|1"),
+          account("google-oauth2|2", "google-oauth2"),
+        ],
+      }),
+      role("Superadmin")
+    )
+
+    expect(assignAuth0Roles).toHaveBeenCalledTimes(2)
+  })
+
+  it("removes their role and assigns nothing when set to no role", async () => {
+    getAuth0UserRoles.mockResolvedValue({
+      ok: true,
+      data: [{ id: "rol_super", name: "Superadmin" }],
+    })
+
+    const result = await changeUserRole(person(), role("none"))
+
+    expect(result.ok).toBe(true)
+    expect(removeAuth0Roles).toHaveBeenCalledWith("auth0|1", ["rol_super"])
+    expect(assignAuth0Roles).not.toHaveBeenCalled()
+  })
+
+  it("removes a role the application does not recognise", async () => {
+    // The directory filters unknown role names out, so the roles on screen
+    // are not the whole truth. Auth0 is asked instead.
+    getAuth0UserRoles.mockResolvedValue({
+      ok: true,
+      data: [{ id: "rol_mystery", name: "Something Else" }],
+    })
+
+    await changeUserRole(person(), role("Display"))
+
+    expect(removeAuth0Roles).toHaveBeenCalledWith("auth0|1", ["rol_mystery"])
+  })
+
+  it("does nothing when they already hold the role", async () => {
+    getAuth0UserRoles.mockResolvedValue({
+      ok: true,
+      data: [{ id: "rol_super", name: "Superadmin" }],
+    })
+
+    const result = await changeUserRole(person(), role("Superadmin"))
+
+    expect(result.ok).toBe(true)
+    expect(removeAuth0Roles).not.toHaveBeenCalled()
+    expect(assignAuth0Roles).not.toHaveBeenCalled()
+  })
+
+  it("changes nothing when the roles cannot be read from Auth0", async () => {
+    listAuth0Roles.mockResolvedValue({
+      ok: false,
+      error: { kind: "network", message: "timeout" },
+    })
+
+    const result = await changeUserRole(person(), role("Superadmin"))
+
+    expect(result.ok).toBe(false)
+    expect(removeAuth0Roles).not.toHaveBeenCalled()
+  })
+
+  it("says plainly when the new role could not be assigned after the old was removed", async () => {
+    getAuth0UserRoles.mockResolvedValue({
+      ok: true,
+      data: [{ id: "rol_display", name: "Display" }],
+    })
+    assignAuth0Roles.mockResolvedValue({
+      ok: false,
+      error: { kind: "api", message: "nope" },
+    })
+
+    const result = await changeUserRole(person(), role("Superadmin"))
+
+    expect(result.ok).toBe(false)
+    expect(result.warnings[0]).toContain("hold no role until this is set again")
+  })
+
+  it("refuses for someone with no Auth0 account", async () => {
+    const result = await changeUserRole(
+      person({ auth0Accounts: [] }),
+      role("Display")
+    )
+
+    expect(result.ok).toBe(false)
+    expect(result.warnings[0]).toContain("no Auth0 account")
   })
 })

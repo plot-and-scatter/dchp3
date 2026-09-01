@@ -19,14 +19,24 @@ import {
 import PasswordLinkPanel from "~/components/admin/PasswordLinkPanel"
 import TransientNotice from "~/components/elements/TransientNotice"
 import {
+  ChangeRoleSchema,
+  NO_ROLE,
   ReissuePasswordLinkSchema,
   UpdateUserNameSchema,
 } from "~/models/user.schemas"
 import { reissuePasswordLink } from "~/services/auth/createUser.server"
-import { updateUserName } from "~/services/auth/updateUser.server"
+import {
+  changeUserRole,
+  updateUserName,
+} from "~/services/auth/updateUser.server"
 import { getDirectoryUserByEmail } from "~/services/auth/userDirectory.server"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
-import { totalContributions } from "~/services/auth/userDirectory"
+import {
+  totalContributions,
+  type DirectoryUser,
+} from "~/services/auth/userDirectory"
+import { AUTH_ROLES } from "~/services/auth/AuthRole"
+import { getEmailFromSession } from "~/services/auth/session.server"
 import { MANAGE_USERS_PERMISSION } from "../users"
 
 // One person, and everything done to them. Changing a role is #444 and
@@ -64,6 +74,34 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   }
 
   const intent = formData.get("intent")
+
+  if (intent === "role") {
+    const submission = parseWithZod(formData, { schema: ChangeRoleSchema })
+    if (submission.status !== "success") {
+      return { kind: "error" as const, message: "That was not a valid role." }
+    }
+
+    // Changing your own role is refused. Demoting yourself removes the
+    // permission this page needs, so the mistake takes away the means of
+    // undoing it.
+    const ownEmail = await getEmailFromSession(request)
+    if (ownEmail && ownEmail.trim().toLowerCase() === user.email) {
+      return {
+        kind: "error" as const,
+        message:
+          "You cannot change your own role here. Ask another Superadmin, or do it in the Auth0 dashboard.",
+      }
+    }
+
+    const result = await changeUserRole(user, submission.value)
+
+    return result.ok
+      ? { kind: "roleChanged" as const, warnings: result.warnings }
+      : {
+          kind: "error" as const,
+          message: `The role was not changed. ${result.warnings.join(" ")}`,
+        }
+  }
 
   if (intent === "name") {
     const submission = parseWithZod(formData, { schema: UpdateUserNameSchema })
@@ -160,6 +198,27 @@ export default function AdminUser() {
               ))}
         </dd>
       </dl>
+
+      {actionData?.kind === "roleChanged" &&
+        (actionData.warnings.length === 0 ? (
+          <TransientNotice
+            resetKey={actionData}
+            className="my-4 border-l-4 border-green-500 bg-green-50 p-4"
+          >
+            Role changed. It applies the next time they sign in.
+          </TransientNotice>
+        ) : (
+          <div className="my-4 border-l-4 border-alert-500 bg-alert-50 p-4">
+            <p>Role changed, but not everywhere.</p>
+            {actionData.warnings.map((warning) => (
+              <p key={warning} className="mt-1 text-alert-800">
+                {warning}
+              </p>
+            ))}
+          </div>
+        ))}
+
+      <RoleForm user={user} />
 
       <NameForm
         user={user}
@@ -305,6 +364,65 @@ function NameForm({
         submittingElement="Saving…"
       >
         Save name
+      </ActionButton>
+    </Form>
+  )
+}
+
+/**
+ * Their role, which is what decides everything they can do.
+ *
+ * The note about signing in again is not a nicety: roles reach the application
+ * on a claim in the login token, so a change does nothing for a session that
+ * is already open. Without saying so, an administrator changes a role, watches
+ * the person report that nothing happened, and changes it again.
+ */
+function RoleForm({ user }: { user: DirectoryUser }) {
+  if (user.auth0Accounts.length === 0) {
+    return (
+      <div className="my-6 max-w-md">
+        <SecondaryHeader>Role</SecondaryHeader>
+        <p className="mt-2 text-gray-700">
+          Roles live in Auth0, and they have no account there, so there is no
+          role to set.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <Form method="post" className="my-6 max-w-md">
+      <input type="hidden" name="intent" value="role" />
+      <SecondaryHeader>Role</SecondaryHeader>
+      <p className="mt-2 text-gray-700">
+        Takes effect the next time they sign in. Roles arrive with the sign-in,
+        so a session already open keeps the old one until it ends.
+      </p>
+      <select
+        name="role"
+        defaultValue={user.roles[0] ?? NO_ROLE}
+        className="mt-2 w-full border border-gray-400 bg-white p-2"
+      >
+        {AUTH_ROLES.map((name) => (
+          <option key={name} value={name}>
+            {name}
+          </option>
+        ))}
+        <option value={NO_ROLE}>No role</option>
+      </select>
+      {user.auth0Accounts.length > 1 && (
+        <p className="mt-2 text-sm text-gray-600">
+          Applied to both of their Auth0 accounts, so it does not depend on
+          which one they sign in with.
+        </p>
+      )}
+      <ActionButton
+        formIntent="role"
+        appearance="action"
+        className="mt-2"
+        submittingElement="Changing…"
+      >
+        Change role
       </ActionButton>
     </Form>
   )

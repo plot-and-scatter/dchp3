@@ -66,3 +66,18 @@ export const UpdateUserNameSchema = z
   .strict()
 
 export type UpdateUserNameInput = z.infer<typeof UpdateUserNameSchema>
+
+export const ChangeRoleSchema = z
+  .object({
+    intent: z.literal("role"),
+    role: z.union([
+      z.literal(NO_ROLE),
+      z.literal("Display"),
+      z.literal("Student / Editor"),
+      z.literal("Research Assistant"),
+      z.literal("Superadmin"),
+    ]),
+  })
+  .strict()
+
+export type ChangeRoleInput = z.infer<typeof ChangeRoleSchema>
