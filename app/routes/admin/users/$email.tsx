@@ -11,7 +11,11 @@ import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import Button from "~/components/elements/LinksAndButtons/Button"
-import StatusBadge from "~/components/elements/Labels/StatusBadge"
+import {
+  loginBadge,
+  renderBadge,
+  roleBadges,
+} from "~/components/admin/userBadges"
 import PasswordLinkPanel from "~/components/admin/PasswordLinkPanel"
 import { ReissuePasswordLinkSchema } from "~/models/user.schemas"
 import { reissuePasswordLink } from "~/services/auth/createUser.server"
@@ -95,15 +99,10 @@ export default function AdminUser() {
         <dd>{user.email ?? "None"}</dd>
 
         <dt className="font-semibold">Role</dt>
-        <dd>
-          {user.roles.length > 0 ? (
-            user.roles.map((role) => (
-              <StatusBadge key={role}>{role}</StatusBadge>
-            ))
-          ) : (
-            <StatusBadge tone="warning">No role</StatusBadge>
-          )}
-        </dd>
+        <dd>{roleBadges(user).map((badge) => renderBadge(badge))}</dd>
+
+        <dt className="font-semibold">Auth0 login</dt>
+        <dd>{renderBadge(loginBadge(user))}</dd>
 
         <dt className="font-semibold">Contributions</dt>
         <dd>
@@ -147,8 +146,9 @@ export default function AdminUser() {
         <div className="my-6">
           <SecondaryHeader>Password</SecondaryHeader>
           <p className="my-2">
-            A one-time link lets them choose their own password. It works once
-            and expires in a week. Nothing is emailed — hand it over yourself.
+            Make a link they can use to choose their own password. It works once
+            and lasts a week. Nothing is sent for you, so pass it on however
+            suits — and make another whenever one runs out.
           </p>
           <Form method="post">
             {user.auth0Accounts.map((account) => (
