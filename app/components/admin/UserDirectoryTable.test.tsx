@@ -230,11 +230,11 @@ describe("UserDirectoryTable", () => {
     const badge = (name: string, label: string) =>
       within(rowFor(name)).getByText(label).className
 
-    // The Auth0 login column uses red to mean blocked, so holding the most
-    // senior role must not borrow the same tone.
-    expect(badge("Boss", "Superadmin")).toContain("text-primary-dark")
+    // Red means blocked and green means can log in, both in the Auth0 login
+    // column. Neither may be reused here for a role.
+    expect(badge("Boss", "Superadmin")).toContain("text-purple-800")
     expect(badge("Boss", "Superadmin")).not.toContain("text-red-800")
-    expect(badge("Reader", "Display")).toContain("text-gray-700")
+    expect(badge("Reader", "Display")).toContain("bg-white")
   })
 
   it("gives each role its own icon, marked decorative", () => {

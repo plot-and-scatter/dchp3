@@ -17,6 +17,9 @@ module.exports = {
       green: colors.emerald,
       gray: colors.slate,
       alert: colors.amber,
+      // For the Superadmin badge. Nothing else in the palette was free: red
+      // means blocked in the neighbouring column and green means can log in.
+      purple: colors.purple,
       success: colors.emerald,
       white: colors.white,
       amber: colors.amber,

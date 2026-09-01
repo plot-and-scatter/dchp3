@@ -11,6 +11,7 @@ import FAIcon from "~/components/elements/Icons/FAIcon"
 // for identity rather than attention -- a role is not a warning -- and exist
 // so that colour-coding roles does not mean calling a Superadmin "danger".
 export type BadgeTone =
+  | "plain"
   | "neutral"
   | "success"
   | "warning"
@@ -19,12 +20,14 @@ export type BadgeTone =
   | "privileged"
 
 const TONE_CLASS: Record<BadgeTone, string> = {
+  // For a label that has to be present but should not draw the eye.
+  plain: "border-gray-200 bg-white text-gray-600",
   neutral: "border-gray-300 bg-gray-100 text-gray-700",
   success: "border-green-300 bg-green-50 text-green-800",
   warning: "border-alert-300 bg-alert-50 text-alert-800",
   danger: "border-red-300 bg-red-50 text-red-800",
   info: "border-blue-300 bg-blue-50 text-blue-800",
-  privileged: "border-primary-light bg-primary-lightest text-primary-dark",
+  privileged: "border-purple-300 bg-purple-50 text-purple-800",
 }
 
 export default function StatusBadge({

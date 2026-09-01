@@ -47,14 +47,17 @@ const ROLE_ICONS: Record<AuthRole, string> = {
   Superadmin: "fa-shield-halved",
 }
 
-// Colour by seniority, so the column reads as a ramp: grey for read-only, then
-// blue, then green, then the site's own red for the role that can do anything.
-// Deliberately not the danger tone for Superadmin -- holding the role is not a
-// problem, and the Auth0 login column uses red to mean blocked.
+// Colour by seniority: barely a badge at all for Display, grey, blue, then
+// purple for the role that can do anything.
+//
+// Purple rather than red, and green is not used here at all. Both of those
+// mean something in the Auth0 login column four columns over -- red is
+// blocked, green is can log in -- and a colour should not mean two things on
+// one screen. Holding the Superadmin role is not a danger either way.
 const ROLE_TONES: Record<AuthRole, BadgeTone> = {
-  Display: "neutral",
-  "Student / Editor": "info",
-  "Research Assistant": "success",
+  Display: "plain",
+  "Student / Editor": "neutral",
+  "Research Assistant": "info",
   Superadmin: "privileged",
 }
 
