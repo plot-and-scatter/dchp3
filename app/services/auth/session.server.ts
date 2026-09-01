@@ -8,7 +8,11 @@ import {
   getPermissionsMap,
 } from "~/services/auth/AuthRole"
 import type { LoggedInUser } from "./auth.server"
-import { getUserIdByEmailOrThrow, userOwnsEntry } from "~/models/user.server"
+import {
+  getUserIdByEmailOrThrow,
+  userOwnsCitation,
+  userOwnsEntry,
+} from "~/models/user.server"
 
 // export the whole sessionStorage object
 export const sessionStorage = createCookieSessionStorage({
@@ -145,6 +149,26 @@ export const canUserEditEntry = async (
 
   // They're not allowed to edit.
   return false
+}
+
+export const canUserEditCitation = async (
+  request: Request,
+  citationId: number
+): Promise<boolean> => {
+  // The same shape as canUserEditEntry: edit-any beats ownership, and without
+  // edit-own there is nothing to check ownership against.
+  if (await userHasPermission(request, "bank:editAny")) return true
+  if (!(await userHasPermission(request, "bank:editOwn"))) return false
+
+  return userOwnsCitation(request, citationId)
+}
+
+export async function redirectIfUserLacksCitationEditPermission(
+  request: Request,
+  citationId: number
+) {
+  if (!(await canUserEditCitation(request, citationId)))
+    throw redirect(`${NOT_ALLOWED_PATH}`)
 }
 
 // Tidy this up, it seems redundant with canUserEditEntry above.

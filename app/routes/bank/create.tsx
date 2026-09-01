@@ -6,9 +6,16 @@ import {
 } from "~/models/bank.server"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { Form, useActionData, data, redirect } from "react-router"
-import { getEmailFromSession } from "~/services/auth/session.server"
+import {
+  getEmailFromSession,
+  redirectIfUserLacksPermission,
+} from "~/services/auth/session.server"
 import { getUserIdByEmailOrThrow } from "~/models/user.server"
-import type { ActionFunctionArgs, MetaFunction } from "react-router"
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "react-router"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { parseWithZod } from "@conform-to/zod"
 import { prisma } from "~/db.server"
@@ -73,6 +80,10 @@ export const bankCitationFormDataSchema = z.object({
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  // Guarded here as well as in the bank layout: a POST to this route runs this
+  // action without running any parent loader.
+  await redirectIfUserLacksPermission(request, "bank:create")
+
   const formData = await request.formData()
   const submission = parseWithZod(formData, {
     schema: bankCitationFormDataSchema,
@@ -128,7 +139,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return redirect(`/bank/edit/${savedCitation.id}`)
 }
 
-export const loader = async () => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  await redirectIfUserLacksPermission(request, "bank:create")
+
   return null
 }
 
