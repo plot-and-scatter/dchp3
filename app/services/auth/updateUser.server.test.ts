@@ -1,5 +1,9 @@
 // @vitest-environment node
-import { changeUserRole, updateUserName } from "./updateUser.server"
+import {
+  changeUserRole,
+  setUserActive,
+  updateUserName,
+} from "./updateUser.server"
 import type { DirectoryUser } from "./userDirectory"
 
 // A name lives in two places and the list reads whichever it finds first, so
@@ -262,5 +266,88 @@ describe("changeUserRole", () => {
 
     expect(result.ok).toBe(false)
     expect(result.warnings[0]).toContain("no Auth0 account")
+  })
+})
+
+const active = (value: boolean) => ({
+  intent: "active" as const,
+  active: value,
+})
+
+describe("setUserActive", () => {
+  it("blocks every Auth0 account and marks the local record inactive", async () => {
+    const result = await setUserActive(
+      person({
+        auth0Accounts: [
+          account("auth0|1"),
+          account("google-oauth2|2", "google-oauth2"),
+        ],
+      }),
+      active(false)
+    )
+
+    expect(result.ok).toBe(true)
+    expect(updateAuth0User).toHaveBeenCalledWith("auth0|1", { blocked: true })
+    expect(updateAuth0User).toHaveBeenCalledWith("google-oauth2|2", {
+      blocked: true,
+    })
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { id: { in: [4] } },
+      data: { is_active: 0 },
+    })
+  })
+
+  it("unblocks and marks active again", async () => {
+    const result = await setUserActive(person(), active(true))
+
+    expect(result.ok).toBe(true)
+    expect(updateAuth0User).toHaveBeenCalledWith("auth0|1", { blocked: false })
+    expect(updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { is_active: 1 } })
+    )
+  })
+
+  it("says they can still sign in when an account could not be blocked", async () => {
+    // Blocking one of two accounts and reporting success would be worse than
+    // useless: the person is described as stopped and is not.
+    updateAuth0User.mockResolvedValue({
+      ok: false,
+      error: { kind: "api", message: "nope" },
+    })
+
+    const result = await setUserActive(person(), active(false))
+
+    expect(result.warnings[0]).toContain("can still sign in")
+  })
+
+  it("blocks the accounts it can when one of two fails", async () => {
+    updateAuth0User
+      .mockResolvedValueOnce({ ok: true, data: {} })
+      .mockResolvedValueOnce({
+        ok: false,
+        error: { kind: "api", message: "nope" },
+      })
+
+    const result = await setUserActive(
+      person({
+        auth0Accounts: [
+          account("auth0|1"),
+          account("google-oauth2|2", "google-oauth2"),
+        ],
+      }),
+      active(false)
+    )
+
+    expect(result.ok).toBe(true)
+    expect(result.warnings).toHaveLength(1)
+  })
+
+  it("says plainly that there was no sign-in to stop for a legacy contributor", async () => {
+    const result = await setUserActive(
+      person({ auth0Accounts: [] }),
+      active(false)
+    )
+
+    expect(result.warnings.at(-1)).toContain("no Auth0 account")
   })
 })

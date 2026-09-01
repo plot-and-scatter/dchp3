@@ -11,6 +11,7 @@ vi.mock("~/db.server", () => ({ prisma: {} }))
 
 const getDirectoryUserByEmail = vi.fn()
 const changeUserRole = vi.fn()
+const setUserActive = vi.fn()
 const updateUserName = vi.fn()
 const reissuePasswordLink = vi.fn()
 
@@ -19,6 +20,7 @@ vi.mock("~/services/auth/userDirectory.server", () => ({
 }))
 vi.mock("~/services/auth/updateUser.server", () => ({
   changeUserRole: (...a: unknown[]) => changeUserRole(...a),
+  setUserActive: (...a: unknown[]) => setUserActive(...a),
   updateUserName: (...a: unknown[]) => updateUserName(...a),
 }))
 vi.mock("~/services/auth/createUser.server", () => ({
@@ -41,6 +43,7 @@ const ME = "me@example.com"
 beforeEach(() => {
   vi.clearAllMocks()
   changeUserRole.mockResolvedValue({ ok: true, warnings: [] })
+  setUserActive.mockResolvedValue({ ok: true, warnings: [] })
   getDirectoryUserByEmail.mockImplementation((email: string) =>
     Promise.resolve({
       user: {
@@ -185,5 +188,49 @@ describe("changing a role", () => {
 
     expect(thrown?.headers.get("location")).toBe(NOT_ALLOWED_PATH)
     expect(changeUserRole).not.toHaveBeenCalled()
+  })
+})
+
+const postActive = async ({ as, page }: { as: string; page: string }) => {
+  const session = await sessionStorage.getSession()
+  session.set("user", {
+    email: as,
+    name: "Me",
+    isAdmin: true,
+    roles: ["Superadmin"],
+  })
+  const setCookie = await sessionStorage.commitSession(session)
+
+  const body = new FormData()
+  body.append("intent", "active")
+  body.append("active", "false")
+
+  return {
+    request: new Request(`http://localhost/admin/users/${page}`, {
+      method: "POST",
+      body,
+      headers: { cookie: setCookie.split(";")[0] },
+    }),
+    params: { email: page },
+    context: {},
+  } as never
+}
+
+describe("deactivating", () => {
+  it("deactivates someone else", async () => {
+    const result = await action(
+      await postActive({ as: ME, page: SOMEONE_ELSE })
+    )
+
+    expect(result).toMatchObject({ kind: "activeChanged", active: false })
+    expect(setUserActive).toHaveBeenCalled()
+  })
+
+  it("refuses your own account", async () => {
+    // Deactivating yourself takes away the access needed to undo it.
+    const result = await action(await postActive({ as: ME, page: ME }))
+
+    expect(result).toMatchObject({ kind: "error" })
+    expect(setUserActive).not.toHaveBeenCalled()
   })
 })

@@ -22,17 +22,20 @@ import {
   ChangeRoleSchema,
   NO_ROLE,
   ReissuePasswordLinkSchema,
+  SetActiveSchema,
   UpdateUserNameSchema,
 } from "~/models/user.schemas"
 import { reissuePasswordLink } from "~/services/auth/createUser.server"
 import {
   changeUserRole,
+  setUserActive,
   updateUserName,
 } from "~/services/auth/updateUser.server"
 import { getDirectoryUserByEmail } from "~/services/auth/userDirectory.server"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 import {
   hasPassword,
+  isFullyBlocked,
   totalContributions,
   type DirectoryUser,
 } from "~/services/auth/userDirectory"
@@ -84,6 +87,41 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   }
 
   const intent = formData.get("intent")
+
+  if (intent === "active") {
+    const submission = parseWithZod(formData, { schema: SetActiveSchema })
+    if (submission.status !== "success") {
+      return {
+        kind: "error" as const,
+        message: "That was not a valid request.",
+      }
+    }
+
+    // Same rule as changing a role, and for the same reason: deactivating
+    // yourself takes away the access needed to undo it. Refused when there is
+    // no address to compare, too.
+    const ownEmail = await getEmailFromSession(request)
+    if (!ownEmail || ownEmail.trim().toLowerCase() === user.email) {
+      return {
+        kind: "error" as const,
+        message:
+          "You cannot deactivate your own account. Ask another Superadmin, or do it in the Auth0 dashboard.",
+      }
+    }
+
+    const result = await setUserActive(user, submission.value)
+
+    return result.ok
+      ? {
+          kind: "activeChanged" as const,
+          active: submission.value.active,
+          warnings: result.warnings,
+        }
+      : {
+          kind: "error" as const,
+          message: `Nothing was changed. ${result.warnings.join(" ")}`,
+        }
+  }
 
   if (intent === "role") {
     const submission = parseWithZod(formData, { schema: ChangeRoleSchema })
@@ -291,6 +329,29 @@ export default function AdminUser() {
       )}
 
       <PasswordSection user={user} />
+
+      <ActivationSection user={user} isSelf={isSelf} />
+
+      {actionData?.kind === "activeChanged" &&
+        (actionData.warnings.length === 0 ? (
+          <TransientNotice
+            resetKey={actionData}
+            className="my-4 border-l-4 border-green-500 bg-green-50 p-4"
+          >
+            {actionData.active
+              ? "They can sign in again."
+              : "They can no longer sign in. A session they already have open lasts until it ends."}
+          </TransientNotice>
+        ) : (
+          <div className="my-4 border-l-4 border-alert-500 bg-alert-50 p-4">
+            <p>Not everything was changed.</p>
+            {actionData.warnings.map((warning) => (
+              <p key={warning} className="mt-1 text-alert-800">
+                {warning}
+              </p>
+            ))}
+          </div>
+        ))}
     </div>
   )
 }
@@ -481,6 +542,80 @@ function NameForm({
         submittingElement="Saving…"
       >
         Save name
+      </ActionButton>
+    </Form>
+  )
+}
+
+/**
+ * Stopping someone signing in, or letting them again.
+ *
+ * There is no deletion here or anywhere in this milestone, deliberately: the
+ * Machine-to-Machine application does not hold delete:users, and a person's
+ * name is attached to entries and citations that should keep it.
+ */
+function ActivationSection({
+  user,
+  isSelf,
+}: {
+  user: DirectoryUser
+  isSelf: boolean
+}) {
+  if (user.auth0Accounts.length === 0) {
+    return (
+      <div className="my-6 max-w-md">
+        <SecondaryHeader>Access</SecondaryHeader>
+        <p className="mt-2 text-gray-700">
+          They have no Auth0 account, so there is no sign-in to stop.
+        </p>
+      </div>
+    )
+  }
+
+  if (isSelf) {
+    return (
+      <div className="my-6 max-w-md">
+        <SecondaryHeader>Access</SecondaryHeader>
+        <p className="mt-2 text-gray-700">
+          This is your own account, so it cannot be deactivated here. Another
+          Superadmin can do it, or you can in the Auth0 dashboard.
+        </p>
+      </div>
+    )
+  }
+
+  const blocked = isFullyBlocked(user)
+
+  return (
+    <Form
+      method="post"
+      className="my-6 max-w-md"
+      onSubmit={(event) => {
+        if (
+          !blocked &&
+          !confirm(
+            `Stop ${user.name} signing in? They keep their name on everything they have written, and you can let them back in at any time.`
+          )
+        ) {
+          event.preventDefault()
+        }
+      }}
+    >
+      <input type="hidden" name="intent" value="active" />
+      <input type="hidden" name="active" value={blocked ? "true" : "false"} />
+      <SecondaryHeader>Access</SecondaryHeader>
+      <p className="mt-2 text-gray-700">
+        {blocked
+          ? "They cannot sign in. Letting them back in restores everything they had; nothing was deleted."
+          : "Stopping someone signing in does not delete them, and their name stays on everything they have written. A session they already have open lasts until it ends."}
+      </p>
+      <ActionButton
+        formIntent="active"
+        appearance={blocked ? "action" : "danger"}
+        className="mt-2"
+        submittingElement={blocked ? "Letting them in…" : "Stopping them…"}
+      >
+        {blocked ? "Let them sign in again" : "Stop them signing in"}
       </ActionButton>
     </Form>
   )

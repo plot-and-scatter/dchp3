@@ -1,5 +1,6 @@
 // @vitest-environment node
 import {
+  ensureLocalUserForLogin,
   USER_DISPLAY_SELECT,
   getAllUsers,
   getUserByEmailSafe,
@@ -16,6 +17,8 @@ import {
 const findMany = vi.fn()
 const findFirst = vi.fn()
 const findFirstOrThrow = vi.fn()
+const create = vi.fn()
+const update = vi.fn()
 
 vi.mock("~/db.server", () => ({
   prisma: {
@@ -23,6 +26,8 @@ vi.mock("~/db.server", () => ({
       findMany: (...args: unknown[]) => findMany(...args),
       findFirst: (...args: unknown[]) => findFirst(...args),
       findFirstOrThrow: (...args: unknown[]) => findFirstOrThrow(...args),
+      create: (...args: unknown[]) => create(...args),
+      update: (...args: unknown[]) => update(...args),
     },
   },
 }))
@@ -101,5 +106,48 @@ describe("getUserIdByEmailOrThrow", () => {
       where: { email: "someone@example.com" },
       select: { id: true },
     })
+  })
+})
+
+describe("ensureLocalUserForLogin", () => {
+  const signIn = () =>
+    ensureLocalUserForLogin({
+      email: "someone@example.com",
+      firstName: "Some",
+      lastName: "One",
+    })
+
+  it("creates a row for someone who has none, marked active", () => {
+    findFirst.mockResolvedValue(null)
+    create.mockResolvedValue({ id: 1 })
+
+    return signIn().then(() => {
+      expect(create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ is_active: 1 }),
+        })
+      )
+    })
+  })
+
+  it("leaves an existing row exactly as it is", async () => {
+    // This is the whole point. is_active used to be written on every login,
+    // so deactivating someone was undone the next time they signed in, and
+    // the flag could only ever mean "has signed in at some point".
+    findFirst.mockResolvedValue({ id: 4, is_active: 0 })
+
+    const user = await signIn()
+
+    expect(user).toEqual({ id: 4, is_active: 0 })
+    expect(update).not.toHaveBeenCalled()
+    expect(create).not.toHaveBeenCalled()
+  })
+
+  it("does not reactivate someone who has been deactivated", async () => {
+    findFirst.mockResolvedValue({ id: 4, is_active: 0 })
+
+    const user = await signIn()
+
+    expect(user.is_active).toBe(0)
   })
 })

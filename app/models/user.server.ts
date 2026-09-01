@@ -126,6 +126,38 @@ export async function getContributionCountsByUserId(): Promise<
  * consulted, or editing a citation once would grant permission to edit it
  * again forever.
  */
+/**
+ * The local row for someone who has just signed in, created if they have none.
+ *
+ * Deliberately does not touch an existing row. It used to set is_active on
+ * every login, which meant the flag could never mean anything but "has signed
+ * in at some point": marking someone inactive was undone the next time they
+ * signed in. It is set by an administrator now and left alone here.
+ */
+export async function ensureLocalUserForLogin({
+  email,
+  firstName,
+  lastName,
+}: {
+  email: string
+  firstName: string
+  lastName: string
+}): Promise<DisplayUser> {
+  const existing = await getUserByEmailSafe({ email })
+  if (existing) return existing
+
+  return prisma.user.create({
+    data: {
+      email,
+      first_name: firstName,
+      last_name: lastName,
+      // A new person is active. This is the only place it is set at sign-in.
+      is_active: 1,
+    },
+    select: USER_DISPLAY_SELECT,
+  })
+}
+
 export async function userOwnsCitation(request: Request, citationId: number) {
   const email = await getEmailFromSession(request)
   if (!email) return false

@@ -7,7 +7,11 @@ import {
   removeAuth0Roles,
   updateAuth0User,
 } from "./management.server"
-import { NO_ROLE, type ChangeRoleInput } from "~/models/user.schemas"
+import {
+  NO_ROLE,
+  type ChangeRoleInput,
+  type SetActiveInput,
+} from "~/models/user.schemas"
 import type { AuthRole } from "./AuthRole"
 import type { DirectoryUser } from "./userDirectory"
 
@@ -170,6 +174,84 @@ export async function changeUserRole(
     }
 
     changed += 1
+  }
+
+  return { ok: changed > 0, warnings }
+}
+
+export type SetActiveResult = {
+  ok: boolean
+  warnings: string[]
+}
+
+/**
+ * Stop someone signing in, or let them again.
+ *
+ * Two flags, and only one of them does anything on its own. Auth0's `blocked`
+ * is what actually refuses a sign-in. The local `is_active` decides how they
+ * are shown and filtered, and used to be overwritten on every login, so it
+ * could never mean "deactivated" -- that is fixed in auth.server.ts alongside
+ * this.
+ *
+ * Applied to every Auth0 account on the address. Three addresses in this
+ * tenant carry two, unlinked, and blocking one of them leaves the person
+ * signing in through the other.
+ *
+ * Blocking does not end a session that is already open. Until sessions are
+ * kept server-side (#465), a deactivation takes effect the next time they
+ * would have to sign in, and the interface says so.
+ */
+export async function setUserActive(
+  user: DirectoryUser,
+  { active }: SetActiveInput
+): Promise<SetActiveResult> {
+  const warnings: string[] = []
+  let changed = 0
+
+  for (const account of user.auth0Accounts) {
+    const label = account.connection === "google-oauth2" ? "Google" : "password"
+
+    const updated = await updateAuth0User(account.userId, { blocked: !active })
+
+    if (updated.ok) {
+      changed += 1
+    } else {
+      warnings.push(
+        `Their ${label} account in Auth0 was not ${
+          active ? "unblocked" : "blocked"
+        }: ${updated.error.message}${
+          active ? "" : " They can still sign in with it."
+        }`
+      )
+    }
+  }
+
+  const localIds = user.localRows.map((row) => row.id)
+
+  if (localIds.length > 0) {
+    try {
+      await prisma.user.updateMany({
+        where: { id: { in: localIds } },
+        data: { is_active: active ? 1 : 0 },
+      })
+      changed += 1
+    } catch (error) {
+      warnings.push(
+        `The record in the DCHP database was not updated: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      )
+    }
+  }
+
+  if (user.auth0Accounts.length === 0) {
+    return {
+      ok: changed > 0,
+      warnings: [
+        ...warnings,
+        "They have no Auth0 account, so there was no sign-in to stop. Only how they are shown has changed.",
+      ],
+    }
   }
 
   return { ok: changed > 0, warnings }

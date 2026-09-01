@@ -81,3 +81,14 @@ export const ChangeRoleSchema = z
   .strict()
 
 export type ChangeRoleInput = z.infer<typeof ChangeRoleSchema>
+
+export const SetActiveSchema = z
+  .object({
+    intent: z.literal("active"),
+    // A string, because that is what a form posts.
+    active: z.union([z.literal("true"), z.literal("false")]),
+  })
+  .strict()
+  .transform(({ active, ...rest }) => ({ ...rest, active: active === "true" }))
+
+export type SetActiveInput = { intent: "active"; active: boolean }
