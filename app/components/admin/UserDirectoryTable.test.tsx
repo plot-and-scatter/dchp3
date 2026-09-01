@@ -209,8 +209,12 @@ describe("UserDirectoryTable", () => {
       }),
     ])
 
-    expect(screen.getByText(/2 separate Auth0 accounts/)).toBeInTheDocument()
-    expect(screen.getByText(/google-oauth2/)).toBeInTheDocument()
+    // One icon per account: a Google mark and a key, rather than a sentence.
+    expect(screen.getByTitle("Signs in with Google")).toBeInTheDocument()
+    expect(
+      screen.getByTitle("Signs in with an email address and password")
+    ).toBeInTheDocument()
+    expect(screen.getByText("(2 accounts)")).toBeInTheDocument()
   })
 
   it("flags an Auth0 account with no role, which is the audit case", () => {
@@ -299,9 +303,30 @@ describe("UserDirectoryTable", () => {
         ] as DirectoryUser["localRows"],
       }),
     ])
+    // Worded so it cannot be read as being about the Auth0 connection: it is
+    // about the user table having no unique index on email.
     expect(
-      screen.getByText("2 database rows share this address")
+      screen.getByText(
+        /2 records in this site.s own database share this address/
+      )
     ).toBeInTheDocument()
+  })
+
+  it("marks a Google-only account with the Google icon alone", () => {
+    renderTable([
+      user({
+        auth0Accounts: [
+          account({ userId: "google-oauth2|1", connection: "google-oauth2" }),
+        ],
+      }),
+    ])
+    expect(screen.getByTitle("Signs in with Google")).toBeInTheDocument()
+    expect(screen.queryByText("(2 accounts)")).not.toBeInTheDocument()
+  })
+
+  it("shows no connection icon for someone with no Auth0 account", () => {
+    renderTable([user({ presence: "localOnly", auth0Accounts: [], roles: [] })])
+    expect(screen.queryByTitle(/Signs in/)).not.toBeInTheDocument()
   })
 
   it("shows a local row that has no email address", () => {

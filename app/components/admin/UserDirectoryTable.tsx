@@ -280,6 +280,64 @@ function SortableHeader({
  * the last sign-in to any of them. The hover text says so, because the column
  * would otherwise read as use of the live site.
  */
+/**
+ * How this person signs in, one icon per Auth0 account.
+ *
+ * Deliberately not a database icon for the password connection. Auth0 calls it
+ * a "database connection", but this page also talks about rows in the DCHP
+ * database, and using the same word for both is what made the old wording
+ * confusing. A key means a password.
+ */
+function ConnectionIcons({ user }: { user: DirectoryUser }) {
+  if (user.auth0Accounts.length === 0) return null
+
+  const unlinked = user.auth0Accounts.length > 1
+
+  return (
+    <span
+      className="ml-1 whitespace-nowrap text-gray-600"
+      title={
+        unlinked
+          ? "Two separate Auth0 accounts on this address, not linked to each other. A role change or a block has to be applied to both."
+          : undefined
+      }
+    >
+      {user.auth0Accounts.map((account) => {
+        const google = account.connection === "google-oauth2"
+        const password =
+          account.connection === "Username-Password-Authentication"
+
+        return (
+          <FAIcon
+            key={account.userId}
+            iconStyle={google ? "fab" : "fas"}
+            iconName={
+              google
+                ? "fa-google"
+                : password
+                ? "fa-key"
+                : // fa-circle-question is not in this Font Awesome kit; the
+                  // v5 name is.
+                  "fa-question-circle"
+            }
+            margin="ml-1"
+            title={
+              google
+                ? "Signs in with Google"
+                : password
+                ? "Signs in with an email address and password"
+                : `Signs in through ${
+                    account.connection ?? "an unrecognised connection"
+                  }`
+            }
+          />
+        )
+      })}
+      {unlinked && <span className="ml-1 text-xs">(2 accounts)</span>}
+    </span>
+  )
+}
+
 function LastLoginCell({ user }: { user: DirectoryUser }) {
   const at = lastLoginAt(user)
 
@@ -401,9 +459,14 @@ export default function UserDirectoryTable({
               <td className="py-2 pr-4">{user.name}</td>
               <td className="py-2 pr-4">
                 {user.email ?? <span className="text-gray-500">No email</span>}
+                <ConnectionIcons user={user} />
                 {user.localRows.length > 1 && (
-                  <span className="block text-sm text-alert-800">
-                    {user.localRows.length} database rows share this address
+                  <span
+                    className="block text-sm text-alert-800"
+                    title="The user table has no unique index on email, so the same address can appear on more than one row. Unrelated to how they sign in."
+                  >
+                    {user.localRows.length} records in this site&rsquo;s own
+                    database share this address
                   </span>
                 )}
                 {user.presence === "auth0Only" && (
@@ -414,15 +477,6 @@ export default function UserDirectoryTable({
                       title:
                         "No row in this site's database yet. One is created at first login.",
                     })}
-                  </span>
-                )}
-                {user.auth0Accounts.length > 1 && (
-                  <span className="block text-sm text-alert-800">
-                    {user.auth0Accounts.length} separate Auth0 accounts (
-                    {user.auth0Accounts
-                      .map((a) => a.connection ?? "unknown")
-                      .join(", ")}
-                    ), not linked
                   </span>
                 )}
               </td>
