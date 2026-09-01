@@ -29,6 +29,9 @@ export type DirectoryAuth0Account = {
   connection: string | null
   blocked: boolean
   roles: AuthRole[]
+  /** ISO timestamp, or null for an account that has never been used. */
+  lastLogin: string | null
+  loginsCount: number
 }
 
 export type DirectoryUser = {
@@ -94,6 +97,26 @@ export const isLegacyUser = (user: DirectoryUser): boolean =>
   user.presence === "localOnly"
 
 /**
+ * The most recent login across every Auth0 account on this address, as an ISO
+ * timestamp. Null when there is no account, or none has ever been used.
+ *
+ * A caveat that belongs wherever this is displayed: the tenant is shared
+ * between development, staging and production, so this is the last time the
+ * person signed in to ANY of them. It describes the Auth0 account, not use of
+ * the live site.
+ */
+export const lastLoginAt = (user: DirectoryUser): string | null => {
+  const logins = user.auth0Accounts
+    .map((a) => a.lastLogin)
+    .filter((at): at is string => at !== null)
+
+  return logins.length === 0 ? null : logins.sort().at(-1)!
+}
+
+export const totalLogins = (user: DirectoryUser): number =>
+  user.auth0Accounts.reduce((sum, a) => sum + a.loginsCount, 0)
+
+/**
  * Blocked out of the application: every Auth0 account on this address is
  * blocked, so there is no way left in.
  *
@@ -124,6 +147,7 @@ export const SORT_COLUMNS = [
   "email",
   "role",
   "contributions",
+  "lastLogin",
   "login",
   "record",
 ] as const
@@ -184,6 +208,15 @@ const compareBy: Record<
     return a.email.localeCompare(b.email)
   },
   role: (a, b) => roleRank(a) - roleRank(b),
+  lastLogin: (a, b) => {
+    const [x, y] = [lastLoginAt(a), lastLoginAt(b)]
+    if (x === y) return 0
+    // Never logged in stays at the end whichever way the sort runs, as with a
+    // missing email: it is not what someone sorting by date is looking for.
+    if (x === null) return 1
+    if (y === null) return -1
+    return x.localeCompare(y)
+  },
   login: (a, b) => loginRank(a) - loginRank(b),
   record: (a, b) => recordRank(a) - recordRank(b),
 }
@@ -201,6 +234,12 @@ export function sortDirectoryUsers(
     // sign is applied to the column comparison only.
     if (column === "email" && (a.email === null || b.email === null)) {
       return compareBy.email(a, b)
+    }
+    if (
+      column === "lastLogin" &&
+      (lastLoginAt(a) === null || lastLoginAt(b) === null)
+    ) {
+      return compareBy.lastLogin(a, b)
     }
 
     const byColumn = compareBy[column](a, b) * sign

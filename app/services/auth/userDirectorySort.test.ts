@@ -1,6 +1,8 @@
 // @vitest-environment node
 import {
   isFullyBlocked,
+  lastLoginAt,
+  totalLogins,
   isLegacyUser,
   isSortColumn,
   SORT_COLUMNS,
@@ -19,6 +21,8 @@ const account = (
   userId: "auth0|1",
   connection: "Username-Password-Authentication",
   blocked: false,
+  lastLogin: null,
+  loginsCount: 0,
   roles: [],
   ...overrides,
 })
@@ -262,5 +266,65 @@ describe("isFullyBlocked", () => {
   it("does not overlap with isLegacyUser", () => {
     const legacy = person({ presence: "localOnly", auth0Accounts: [] })
     expect(isLegacyUser(legacy) && isFullyBlocked(legacy)).toBe(false)
+  })
+})
+
+describe("last login", () => {
+  const withLogins = (...logins: [string | null, number][]) =>
+    person({
+      auth0Accounts: logins.map(([at, count], i) =>
+        account({ userId: `auth0|${i}`, lastLogin: at, loginsCount: count })
+      ),
+    })
+
+  it("takes the most recent across a person's accounts", () => {
+    // Someone with a database account and a Google one has two dates, and the
+    // question is when they were last here, not when each account was.
+    const user = withLogins(
+      ["2026-08-23T10:00:00.000Z", 29],
+      ["2026-08-28T09:00:00.000Z", 2]
+    )
+    expect(lastLoginAt(user)).toBe("2026-08-28T09:00:00.000Z")
+  })
+
+  it("sums the sign-in counts across accounts", () => {
+    expect(
+      totalLogins(withLogins(["2026-01-01T00:00:00.000Z", 29], [null, 2]))
+    ).toBe(31)
+  })
+
+  it("is null when no account has ever been used", () => {
+    expect(lastLoginAt(withLogins([null, 0]))).toBeNull()
+  })
+
+  it("is null for someone with no Auth0 account", () => {
+    expect(
+      lastLoginAt(person({ presence: "localOnly", auth0Accounts: [] }))
+    ).toBeNull()
+  })
+
+  it("sorts oldest first, holding never-signed-in at the end both ways", () => {
+    const people = [
+      person({
+        name: "Recent",
+        auth0Accounts: [account({ lastLogin: "2026-08-28T00:00:00.000Z" })],
+      }),
+      person({ name: "Never", auth0Accounts: [account({ lastLogin: null })] }),
+      person({
+        name: "Old",
+        auth0Accounts: [account({ lastLogin: "2023-07-18T00:00:00.000Z" })],
+      }),
+    ]
+
+    expect(namesOf(sortDirectoryUsers(people, "lastLogin", "asc"))).toEqual([
+      "Old",
+      "Recent",
+      "Never",
+    ])
+    expect(namesOf(sortDirectoryUsers(people, "lastLogin", "desc"))).toEqual([
+      "Recent",
+      "Old",
+      "Never",
+    ])
   })
 })

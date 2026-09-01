@@ -208,6 +208,8 @@ function toDirectoryUser(
     connection: auth0User.identities?.[0]?.connection ?? null,
     blocked: auth0User.blocked ?? false,
     roles: rolesByUserId.get(auth0User.user_id) ?? [],
+    lastLogin: auth0User.last_login ?? null,
+    loginsCount: auth0User.logins_count ?? 0,
   }))
 
   return {

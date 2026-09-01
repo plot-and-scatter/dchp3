@@ -7,7 +7,9 @@ import {
   isFullyBlocked,
   isPartiallyBlocked,
   type DirectoryUser,
+  lastLoginAt,
   totalContributions,
+  totalLogins,
   type SortColumn,
   type SortDirection,
 } from "~/services/auth/userDirectory"
@@ -112,6 +114,7 @@ const COLUMNS: { column: SortColumn; label: string }[] = [
   { column: "email", label: "Email" },
   { column: "role", label: "Role" },
   { column: "contributions", label: "Contributions" },
+  { column: "lastLogin", label: "Last login" },
   { column: "login", label: "Auth0 login" },
   { column: "record", label: "Record" },
 ]
@@ -200,6 +203,46 @@ function SortableHeader({
   )
 }
 
+/**
+ * The date alone, formatted in UTC rather than the reader's locale so that the
+ * server and the browser render the same string.
+ *
+ * The tenant is shared between development, staging and production, so this is
+ * the last sign-in to any of them. The hover text says so, because the column
+ * would otherwise read as use of the live site.
+ */
+function LastLoginCell({ user }: { user: DirectoryUser }) {
+  const at = lastLoginAt(user)
+
+  if (at === null) {
+    return (
+      <span
+        className="text-gray-500"
+        title={
+          user.auth0Accounts.length === 0
+            ? "No Auth0 account, so no sign-in to record."
+            : "This account has never been used to sign in."
+        }
+      >
+        Never
+      </span>
+    )
+  }
+
+  const logins = totalLogins(user)
+
+  return (
+    <span
+      className="whitespace-nowrap"
+      title={`${at}\n${logins} ${
+        logins === 1 ? "sign-in" : "sign-ins"
+      } in total, to any of production, staging or development.`}
+    >
+      {at.slice(0, 10)}
+    </span>
+  )
+}
+
 export default function UserDirectoryTable({
   users,
   sort,
@@ -267,6 +310,9 @@ export default function UserDirectoryTable({
               </td>
               <td className="py-2 pr-4">
                 <ContributionsCell user={user} />
+              </td>
+              <td className="py-2 pr-4">
+                <LastLoginCell user={user} />
               </td>
               <td className="py-2 pr-4">{renderBadge(loginBadge(user))}</td>
               <td className="py-2">

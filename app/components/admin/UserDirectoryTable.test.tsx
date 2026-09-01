@@ -18,6 +18,8 @@ const user = (overrides: Partial<DirectoryUser> = {}): DirectoryUser => ({
       userId: "auth0|1",
       connection: "Username-Password-Authentication",
       blocked: false,
+      lastLogin: null,
+      loginsCount: 0,
       roles: ["Student / Editor"],
     },
   ],
@@ -109,6 +111,8 @@ describe("UserDirectoryTable", () => {
     userId: "auth0|1",
     connection: "Username-Password-Authentication",
     blocked: false,
+    lastLogin: null,
+    loginsCount: 0,
     roles: [],
     ...overrides,
   })
@@ -214,6 +218,28 @@ describe("UserDirectoryTable", () => {
     ])
     expect(screen.getByText("None")).toBeInTheDocument()
     expect(screen.getByText("No role")).toBeInTheDocument()
+  })
+
+  it("shows the date of the most recent sign-in across accounts", () => {
+    renderTable([
+      user({
+        auth0Accounts: [
+          account({ userId: "auth0|1", lastLogin: "2026-08-23T10:00:00.000Z" }),
+          account({
+            userId: "google-oauth2|2",
+            connection: "google-oauth2",
+            lastLogin: "2026-08-28T09:00:00.000Z",
+          }),
+        ],
+      }),
+    ])
+    // Formatted in UTC, so the server and the browser agree.
+    expect(screen.getByText("2026-08-28")).toBeInTheDocument()
+  })
+
+  it("says Never for an account that has not been used", () => {
+    renderTable([user({ auth0Accounts: [account({ lastLogin: null })] })])
+    expect(screen.getByText("Never")).toBeInTheDocument()
   })
 
   it("shows when several database rows share one address", () => {
