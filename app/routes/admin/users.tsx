@@ -1,5 +1,17 @@
 import { type ActionFunctionArgs, type LoaderFunctionArgs } from "react-router"
-import { useLoaderData, useSearchParams } from "react-router"
+import { useActionData, useLoaderData, useSearchParams } from "react-router"
+import { parseWithZod } from "@conform-to/zod"
+import CreateUserForm from "~/components/admin/CreateUserForm"
+import PasswordLinkPanel from "~/components/admin/PasswordLinkPanel"
+import {
+  CreateUserSchema,
+  ReissuePasswordLinkSchema,
+  UserActionEnum,
+} from "~/models/user.schemas"
+import {
+  createUser,
+  reissuePasswordLink,
+} from "~/services/auth/createUser.server"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import PaginationControl from "~/components/bank/PaginationControl"
 import UserDirectoryTable from "~/components/admin/UserDirectoryTable"
@@ -38,7 +50,49 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   await redirectIfUserLacksPermission(request, MANAGE_USERS_PERMISSION)
-  return null
+
+  const formData = await request.formData()
+
+  if (formData.get("userAction") === UserActionEnum.REISSUE_PASSWORD_LINK) {
+    const submission = parseWithZod(formData, {
+      schema: ReissuePasswordLinkSchema,
+    })
+    if (submission.status !== "success") {
+      return {
+        kind: "error" as const,
+        message: "That was not a valid request.",
+      }
+    }
+
+    const result = await reissuePasswordLink(submission.value.auth0UserId)
+
+    return result.ok
+      ? { kind: "link" as const, ticketUrl: result.ticketUrl, warnings: [] }
+      : {
+          kind: "error" as const,
+          message: `Could not make a new password link. ${result.message}`,
+        }
+  }
+
+  const submission = parseWithZod(formData, { schema: CreateUserSchema })
+  if (submission.status !== "success") {
+    // Returned rather than thrown, so conform can put each message beside the
+    // field it belongs to.
+    return { kind: "invalid" as const, result: submission.reply() }
+  }
+
+  const result = await createUser(submission.value)
+
+  if (!result.ok) {
+    return { kind: "error" as const, message: result.message }
+  }
+
+  return {
+    kind: "link" as const,
+    ticketUrl: result.ticketUrl,
+    warnings: result.warnings,
+    created: submission.value.email,
+  }
 }
 
 /**
@@ -63,6 +117,7 @@ export function shouldRevalidate({
 
 export default function AdminUsers() {
   const { users, auth0Error } = useLoaderData<typeof loader>()
+  const actionData = useActionData<typeof action>()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const sortParam = searchParams.get("sort")
@@ -118,6 +173,29 @@ export default function AdminUsers() {
           <p className="mt-1 text-sm text-gray-700">{auth0Error.message}</p>
         </div>
       )}
+
+      {actionData?.kind === "error" && (
+        <div
+          role="alert"
+          className="my-4 border-l-4 border-red-500 bg-red-50 p-4"
+        >
+          {actionData.message}
+        </div>
+      )}
+
+      {actionData?.kind === "link" && (
+        <PasswordLinkPanel
+          ticketUrl={actionData.ticketUrl}
+          warnings={actionData.warnings}
+          created={"created" in actionData ? actionData.created : undefined}
+        />
+      )}
+
+      <CreateUserForm
+        lastResult={
+          actionData?.kind === "invalid" ? actionData.result : undefined
+        }
+      />
 
       <p className="my-4">
         {visible.length} {visible.length === 1 ? "person" : "people"}

@@ -169,6 +169,32 @@ export async function createUser(
   }
 }
 
+export type ReissueResult =
+  | { ok: true; ticketUrl: string }
+  | { ok: false; message: string }
+
+/**
+ * A fresh password link for someone who already has an account.
+ *
+ * The reason this exists rather than leaving people to "forgot password": the
+ * tenant sends mail through Auth0's built-in provider unless one has been
+ * configured, which is for testing, caps at ten messages a minute and discards
+ * the rest silently. This path needs no email at all -- the link comes back
+ * here and is handed over by whatever means suits.
+ */
+export async function reissuePasswordLink(
+  auth0UserId: string
+): Promise<ReissueResult> {
+  const ticket = await createPasswordChangeTicket({
+    userId: auth0UserId,
+    ttlSeconds: TICKET_TTL_SECONDS,
+  })
+
+  return ticket.ok
+    ? { ok: true, ticketUrl: ticket.data.ticket }
+    : { ok: false, message: ticket.error.message }
+}
+
 const describe = (error: Auth0Error) =>
   error.kind === "rate_limited"
     ? `Auth0 is rate limiting this application, so nothing was created. ${error.message}`

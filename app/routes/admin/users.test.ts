@@ -25,6 +25,15 @@ vi.mock("~/services/auth/userDirectory.server", () => ({
   getUserDirectory: () => getUserDirectory(),
 }))
 
+// The action's two branches are covered in createUser.server.test.ts; these
+// tests are about the guard, so the writes are stubbed.
+const createUser = vi.fn()
+const reissuePasswordLink = vi.fn()
+vi.mock("~/services/auth/createUser.server", () => ({
+  createUser: (...a: unknown[]) => createUser(...a),
+  reissuePasswordLink: (...a: unknown[]) => reissuePasswordLink(...a),
+}))
+
 beforeEach(() => {
   getUserDirectory.mockClear()
   getUserDirectory.mockResolvedValue({ users: [], auth0Error: null })
@@ -141,7 +150,42 @@ describe("/admin/users action", () => {
 
   it("lets a Superadmin post", async () => {
     const request = await post(["Superadmin"])
-    await expect(action(args(request))).resolves.toBeNull()
+    // An empty body is not a valid submission, which is the point: it got past
+    // the guard and was judged on its contents.
+    await expect(action(args(request))).resolves.toMatchObject({
+      kind: "invalid",
+    })
+  })
+
+  it("does not create anyone for a request it turns away", async () => {
+    const body = new FormData()
+    body.append("userAction", "createUser")
+    body.append("email", "someone@example.com")
+    body.append("firstName", "Some")
+    body.append("lastName", "One")
+    body.append("role", "Superadmin")
+
+    const request = await requestWithRoles(["Display"], {
+      method: "POST",
+      body,
+    })
+    await rejectionFrom(() => action(args(request)))
+
+    expect(createUser).not.toHaveBeenCalled()
+  })
+
+  it("does not issue a password link for a request it turns away", async () => {
+    const body = new FormData()
+    body.append("userAction", "reissuePasswordLink")
+    body.append("auth0UserId", "auth0|1")
+
+    const request = await requestWithRoles(["Research Assistant"], {
+      method: "POST",
+      body,
+    })
+    await rejectionFrom(() => action(args(request)))
+
+    expect(reissuePasswordLink).not.toHaveBeenCalled()
   })
 
   it.each(AUTH_ROLES.filter((role) => role !== "Superadmin"))(

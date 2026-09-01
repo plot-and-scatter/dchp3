@@ -1,5 +1,5 @@
 import { parseWithZod } from "@conform-to/zod"
-import { CreateUserSchema, NO_ROLE } from "./user.schemas"
+import { CreateUserSchema, NO_ROLE, UserActionEnum } from "./user.schemas"
 
 // The same schema runs in the browser through conform and on the server in the
 // action, so these go through parseWithZod rather than calling zod directly.
@@ -11,6 +11,7 @@ const submit = (entries: Record<string, string>) => {
 }
 
 const valid = {
+  userAction: UserActionEnum.CREATE_USER,
   email: "New.Person@Example.COM",
   firstName: "New",
   lastName: "Person",
