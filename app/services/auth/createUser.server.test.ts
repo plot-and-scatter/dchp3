@@ -183,7 +183,7 @@ describe("when the account exists but a later step does not", () => {
     // second time.
     expect(result.ok).toBe(true)
     expect(result.ok && result.warnings).toHaveLength(1)
-    expect(result.ok && result.warnings[0]).toContain("Set it from the list")
+    expect(result.ok && result.warnings[0]).toContain("Set it on their page")
   })
 
   it("still succeeds when the local row cannot be written", async () => {

@@ -71,7 +71,7 @@ export async function createUser(
     return {
       ok: false,
       kind: "duplicate",
-      message: `${email} already has an Auth0 account (${connections}). Change their role from the list instead of creating a second account.`,
+      message: `${email} already has an Auth0 account (${connections}). Change their role on their own page instead of creating a second account.`,
     }
   }
 
@@ -128,7 +128,7 @@ export async function createUser(
     const assigned = await assignAuth0Roles(created.data.user_id, [roleId])
     if (!assigned.ok) {
       warnings.push(
-        `The account was created but the ${role} role was not assigned: ${assigned.error.message} Set it from the list.`
+        `The account was created but the ${role} role was not assigned: ${assigned.error.message} Set it on their page.`
       )
     }
   }

@@ -38,7 +38,7 @@ describe("PasswordLinkPanel", () => {
     render(<PasswordLinkPanel ticketUrl={null} warnings={[]} />)
 
     expect(screen.queryByDisplayValue(LINK)).not.toBeInTheDocument()
-    expect(screen.getByText(/Issue one from their row/)).toBeInTheDocument()
+    expect(screen.getByText(/Make one from their page/)).toBeInTheDocument()
   })
 
   it("shows every warning, since each is something to act on", () => {

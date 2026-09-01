@@ -3,8 +3,8 @@ import Button from "~/components/elements/LinksAndButtons/Button"
 
 // The link is a credential for as long as it lives: anyone holding it can set
 // that account's password. So it is shown once, never stored, and never
-// logged. If it is lost, issue another from the list rather than trying to
-// recover this one.
+// logged. If it is lost, issue another from their own page rather than
+// trying to recover this one.
 
 export default function PasswordLinkPanel({
   ticketUrl,
@@ -28,7 +28,7 @@ export default function PasswordLinkPanel({
           <p className="mt-1">
             Send them this link. It lets them choose their own password, works
             once, and expires in a week. It is not shown again — if it is lost,
-            make another from their row in the list.
+            make another from their page.
           </p>
           <div className="mt-2 flex items-center gap-2">
             <input
@@ -51,7 +51,7 @@ export default function PasswordLinkPanel({
         </Fragment>
       ) : (
         <p className="mt-1">
-          No password link was made. Issue one from their row in the list.
+          No password link was made. Make one from their page.
         </p>
       )}
 
