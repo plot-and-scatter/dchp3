@@ -371,6 +371,23 @@ export async function listAllAuth0Users(): Promise<Auth0Result<Auth0User[]>> {
   }
 }
 
+/**
+ * Every Auth0 account on one address. There is usually one, and sometimes two:
+ * a person who has signed in both with Google and with a password holds two
+ * unlinked accounts. See docs/auth/roles.md.
+ *
+ * This is a different endpoint from /users with a query, and an exact match on
+ * the address rather than a search, so it is not subject to the search index
+ * being a moment behind.
+ */
+export async function findAuth0UsersByEmail(
+  email: string
+): Promise<Auth0Result<Auth0User[]>> {
+  return managementRequest<Auth0User[]>("/users-by-email", {
+    searchParams: { email: email.trim().toLowerCase() },
+  })
+}
+
 /** The roles defined in the tenant. Role IDs differ per tenant, so read them. */
 export async function listAuth0Roles(): Promise<Auth0Result<Auth0Role[]>> {
   return managementRequest<Auth0Role[]>("/roles", {
