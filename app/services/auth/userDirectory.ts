@@ -73,3 +73,99 @@ export const isPartiallyBlocked = (user: DirectoryUser): boolean =>
   user.auth0Accounts.length > 1 &&
   user.auth0Accounts.some((a) => a.blocked) &&
   !user.auth0Accounts.every((a) => a.blocked)
+
+// Sorting and paging happen in the browser, from the URL. The loader fetches
+// the whole directory in one go -- every Auth0 account, every role's
+// membership, every local row -- so re-running it for a sort click would
+// re-read Auth0 and spend rate limit to reorder data already in hand. The
+// route's shouldRevalidate keeps the loader from re-running when only the
+// query string changes.
+
+export const USER_DIRECTORY_PAGE_SIZE = 25
+
+export const SORT_COLUMNS = [
+  "name",
+  "email",
+  "role",
+  "login",
+  "record",
+] as const
+export type SortColumn = typeof SORT_COLUMNS[number]
+export type SortDirection = "asc" | "desc"
+
+export const isSortColumn = (value: unknown): value is SortColumn =>
+  typeof value === "string" &&
+  (SORT_COLUMNS as readonly string[]).includes(value)
+
+// Rank rather than alphabetical, so that ascending puts the rows worth looking
+// at first. Someone who can log in and holds no role is the case an audit is
+// looking for, so it leads; a row with no Auth0 account at all has no role to
+// speak of and sorts last.
+const roleRank = (user: DirectoryUser): number => {
+  if (user.auth0Accounts.length === 0) return 5
+  if (user.roles.length === 0) return 0
+
+  const seniority: AuthRole[] = [
+    "Display",
+    "Student / Editor",
+    "Research Assistant",
+    "Superadmin",
+  ]
+  return Math.max(...user.roles.map((role) => seniority.indexOf(role) + 1))
+}
+
+// Same idea: the states that need attention sort first.
+const loginRank = (user: DirectoryUser): number => {
+  if (user.presence === "auth0Unknown") return 3
+  if (isPartiallyBlocked(user)) return 0
+  if (user.auth0Accounts.length === 0) return 2
+  if (user.auth0Accounts.every((a) => a.blocked)) return 1
+  return 4
+}
+
+const recordRank = (user: DirectoryUser): number =>
+  ({ auth0Only: 0, localOnly: 1, auth0Unknown: 2, both: 3 }[user.presence])
+
+/**
+ * A comparator per column. Text is compared with localeCompare so that
+ * accented names order sensibly. A missing email sorts last in both
+ * directions, because a row with no address is never what someone is looking
+ * for when they sort by address.
+ */
+const compareBy: Record<
+  SortColumn,
+  (a: DirectoryUser, b: DirectoryUser) => number
+> = {
+  name: (a, b) => a.name.localeCompare(b.name),
+  email: (a, b) => {
+    if (a.email === b.email) return 0
+    if (a.email === null) return 1
+    if (b.email === null) return -1
+    return a.email.localeCompare(b.email)
+  },
+  role: (a, b) => roleRank(a) - roleRank(b),
+  login: (a, b) => loginRank(a) - loginRank(b),
+  record: (a, b) => recordRank(a) - recordRank(b),
+}
+
+export function sortDirectoryUsers(
+  users: DirectoryUser[],
+  column: SortColumn,
+  direction: SortDirection
+): DirectoryUser[] {
+  const sign = direction === "desc" ? -1 : 1
+
+  // Copied, not sorted in place: the loader's array is React state.
+  return [...users].sort((a, b) => {
+    // A missing email is held at the end whichever way the sort runs, so the
+    // sign is applied to the column comparison only.
+    if (column === "email" && (a.email === null || b.email === null)) {
+      return compareBy.email(a, b)
+    }
+
+    const byColumn = compareBy[column](a, b) * sign
+    // Ties fall back to the name, so paging is stable rather than dependent on
+    // the order Auth0 happened to return.
+    return byColumn !== 0 ? byColumn : a.name.localeCompare(b.name)
+  })
+}

@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react"
+import { MemoryRouter } from "react-router"
 import UserDirectoryTable from "./UserDirectoryTable"
 import type { DirectoryUser } from "~/services/auth/userDirectory"
 
@@ -24,16 +25,31 @@ const user = (overrides: Partial<DirectoryUser> = {}): DirectoryUser => ({
   ...overrides,
 })
 
+// The headings are sort links now, so the table needs a router around it.
+// Sorting itself is covered in userDirectory.server.test.ts, against the pure
+// comparator rather than through the DOM.
+const renderTable = (users: DirectoryUser[]) =>
+  render(
+    <MemoryRouter>
+      <UserDirectoryTable
+        users={users}
+        sort="name"
+        direction="asc"
+        searchParams={new URLSearchParams()}
+      />
+    </MemoryRouter>
+  )
+
 const rowFor = (name: string) => screen.getByText(name).closest("tr")!
 
 describe("UserDirectoryTable", () => {
   it("says so when there is nobody to show", () => {
-    render(<UserDirectoryTable users={[]} />)
+    renderTable([])
     expect(screen.getByText("No users found.")).toBeInTheDocument()
   })
 
   it("shows a person in both systems with their role and status", () => {
-    render(<UserDirectoryTable users={[user()]} />)
+    renderTable([user()])
     const row = within(rowFor("Some One"))
 
     expect(row.getByText("someone@example.com")).toBeInTheDocument()
@@ -43,13 +59,9 @@ describe("UserDirectoryTable", () => {
   })
 
   it("does not claim an Auth0-only account has never logged in", () => {
-    render(
-      <UserDirectoryTable
-        users={[
-          user({ name: "New Person", presence: "auth0Only", localRows: [] }),
-        ]}
-      />
-    )
+    renderTable([
+      user({ name: "New Person", presence: "auth0Only", localRows: [] }),
+    ])
     const row = within(rowFor("New Person"))
 
     // Not "has never logged in": the join knows only that there is no local
@@ -59,18 +71,14 @@ describe("UserDirectoryTable", () => {
   })
 
   it("shows a database-only person as having no way to log in", () => {
-    render(
-      <UserDirectoryTable
-        users={[
-          user({
-            name: "Old Hand",
-            presence: "localOnly",
-            roles: [],
-            auth0Accounts: [],
-          }),
-        ]}
-      />
-    )
+    renderTable([
+      user({
+        name: "Old Hand",
+        presence: "localOnly",
+        roles: [],
+        auth0Accounts: [],
+      }),
+    ])
     const row = within(rowFor("Old Hand"))
 
     expect(row.getByText("Database only")).toBeInTheDocument()
@@ -79,18 +87,14 @@ describe("UserDirectoryTable", () => {
   })
 
   it("does not claim anything about login when Auth0 was not read", () => {
-    render(
-      <UserDirectoryTable
-        users={[
-          user({
-            name: "Unknown Status",
-            presence: "auth0Unknown",
-            roles: [],
-            auth0Accounts: [],
-          }),
-        ]}
-      />
-    )
+    renderTable([
+      user({
+        name: "Unknown Status",
+        presence: "auth0Unknown",
+        roles: [],
+        auth0Accounts: [],
+      }),
+    ])
     const row = within(rowFor("Unknown Status"))
 
     expect(row.getByText("Auth0 not read")).toBeInTheDocument()
@@ -109,16 +113,12 @@ describe("UserDirectoryTable", () => {
   })
 
   it("marks a blocked account as blocked whatever the local row says", () => {
-    render(
-      <UserDirectoryTable
-        users={[
-          user({
-            name: "Blocked Person",
-            auth0Accounts: [account({ blocked: true })],
-          }),
-        ]}
-      />
-    )
+    renderTable([
+      user({
+        name: "Blocked Person",
+        auth0Accounts: [account({ blocked: true })],
+      }),
+    ])
     const row = within(rowFor("Blocked Person"))
 
     expect(row.getByText("Blocked")).toBeInTheDocument()
@@ -126,23 +126,19 @@ describe("UserDirectoryTable", () => {
   })
 
   it("warns when only some of a person's accounts are blocked", () => {
-    render(
-      <UserDirectoryTable
-        users={[
-          user({
-            name: "Half Blocked",
-            auth0Accounts: [
-              account({ userId: "auth0|1", blocked: true }),
-              account({
-                userId: "google-oauth2|2",
-                connection: "google-oauth2",
-                blocked: false,
-              }),
-            ],
+    renderTable([
+      user({
+        name: "Half Blocked",
+        auth0Accounts: [
+          account({ userId: "auth0|1", blocked: true }),
+          account({
+            userId: "google-oauth2|2",
+            connection: "google-oauth2",
+            blocked: false,
           }),
-        ]}
-      />
-    )
+        ],
+      }),
+    ])
     const row = within(rowFor("Half Blocked"))
 
     // Saying "Blocked" here would be wrong: they can still log in.
@@ -151,22 +147,18 @@ describe("UserDirectoryTable", () => {
   })
 
   it("shows when one address has two unlinked Auth0 accounts", () => {
-    render(
-      <UserDirectoryTable
-        users={[
-          user({
-            name: "Two Accounts",
-            auth0Accounts: [
-              account({ userId: "auth0|1" }),
-              account({
-                userId: "google-oauth2|2",
-                connection: "google-oauth2",
-              }),
-            ],
+    renderTable([
+      user({
+        name: "Two Accounts",
+        auth0Accounts: [
+          account({ userId: "auth0|1" }),
+          account({
+            userId: "google-oauth2|2",
+            connection: "google-oauth2",
           }),
-        ]}
-      />
-    )
+        ],
+      }),
+    ])
 
     expect(screen.getByText(/2 separate Auth0 accounts/)).toBeInTheDocument()
     expect(screen.getByText(/google-oauth2/)).toBeInTheDocument()
@@ -175,52 +167,40 @@ describe("UserDirectoryTable", () => {
   it("flags an Auth0 account with no role, which is the audit case", () => {
     // Someone who signed themselves up holds no role: they can log in and have
     // no permission at all.
-    render(<UserDirectoryTable users={[user({ roles: [] })]} />)
+    renderTable([user({ roles: [] })])
     expect(screen.getByText("No role")).toBeInTheDocument()
   })
 
   it("does not call a database-only row role-less, since it cannot log in", () => {
-    render(
-      <UserDirectoryTable
-        users={[
-          user({
-            name: "Old Hand",
-            roles: [],
-            presence: "localOnly",
-            auth0Accounts: [],
-          }),
-        ]}
-      />
-    )
+    renderTable([
+      user({
+        name: "Old Hand",
+        roles: [],
+        presence: "localOnly",
+        auth0Accounts: [],
+      }),
+    ])
     expect(screen.queryByText("No role")).not.toBeInTheDocument()
   })
 
   it("shows when several database rows share one address", () => {
-    render(
-      <UserDirectoryTable
-        users={[
-          user({
-            localRows: [
-              { id: 1, is_active: 1 },
-              { id: 2, is_active: 0 },
-            ] as DirectoryUser["localRows"],
-          }),
-        ]}
-      />
-    )
+    renderTable([
+      user({
+        localRows: [
+          { id: 1, is_active: 1 },
+          { id: 2, is_active: 0 },
+        ] as DirectoryUser["localRows"],
+      }),
+    ])
     expect(
       screen.getByText("2 database rows share this address")
     ).toBeInTheDocument()
   })
 
   it("shows a local row that has no email address", () => {
-    render(
-      <UserDirectoryTable
-        users={[
-          user({ name: "No Address", email: null, presence: "localOnly" }),
-        ]}
-      />
-    )
+    renderTable([
+      user({ name: "No Address", email: null, presence: "localOnly" }),
+    ])
     expect(screen.getByText("No email")).toBeInTheDocument()
   })
 })

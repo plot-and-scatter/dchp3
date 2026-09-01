@@ -6,7 +6,11 @@ import StatusBadge, {
 import {
   isPartiallyBlocked,
   type DirectoryUser,
+  type SortColumn,
+  type SortDirection,
 } from "~/services/auth/userDirectory"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
+import FAIcon from "~/components/elements/Icons/FAIcon"
 
 // Two questions decide what an administrator does about a row, and neither was
 // legible before: can this person log in, and are they allowed to do anything
@@ -98,10 +102,76 @@ const renderBadge = ({ label, tone, title }: Badge, key?: string) => (
   </StatusBadge>
 )
 
+const COLUMNS: { column: SortColumn; label: string }[] = [
+  { column: "name", label: "Name" },
+  { column: "email", label: "Email" },
+  { column: "role", label: "Role" },
+  { column: "login", label: "Login" },
+  { column: "record", label: "Record" },
+]
+
+/**
+ * A column heading that is a link, not a button: sorting lives in the URL, so
+ * the order survives a reload and can be sent to someone. Clicking the column
+ * already sorted reverses it.
+ */
+function SortableHeader({
+  column,
+  label,
+  sort,
+  direction,
+  searchParams,
+}: {
+  column: SortColumn
+  label: string
+  sort: SortColumn
+  direction: SortDirection
+  searchParams: URLSearchParams
+}) {
+  const active = sort === column
+  const nextDirection: SortDirection =
+    active && direction === "asc" ? "desc" : "asc"
+
+  const params = new URLSearchParams(searchParams)
+  params.set("sort", column)
+  params.set("dir", nextDirection)
+  // Reordering the whole list makes the current page number meaningless.
+  params.delete("page")
+
+  return (
+    <th
+      className="py-2 pr-4"
+      aria-sort={
+        active ? (direction === "asc" ? "ascending" : "descending") : "none"
+      }
+    >
+      <Link to={`?${params}`} className="font-bold" preventScrollReset>
+        {label}
+        {active && (
+          <FAIcon
+            iconName={
+              direction === "asc"
+                ? "fa-arrow-up-short-wide"
+                : "fa-arrow-down-wide-short"
+            }
+            className="ml-1"
+          />
+        )}
+      </Link>
+    </th>
+  )
+}
+
 export default function UserDirectoryTable({
   users,
+  sort,
+  direction,
+  searchParams,
 }: {
   users: DirectoryUser[]
+  sort: SortColumn
+  direction: SortDirection
+  searchParams: URLSearchParams
 }) {
   if (users.length === 0) return <p>No users found.</p>
 
@@ -112,11 +182,16 @@ export default function UserDirectoryTable({
       <table className="w-full text-left">
         <thead>
           <tr className="border-b border-gray-400">
-            <th className="py-2 pr-4">Name</th>
-            <th className="py-2 pr-4">Email</th>
-            <th className="py-2 pr-4">Role</th>
-            <th className="py-2 pr-4">Login</th>
-            <th className="py-2">Record</th>
+            {COLUMNS.map(({ column, label }) => (
+              <SortableHeader
+                key={column}
+                column={column}
+                label={label}
+                sort={sort}
+                direction={direction}
+                searchParams={searchParams}
+              />
+            ))}
           </tr>
         </thead>
         <tbody>
