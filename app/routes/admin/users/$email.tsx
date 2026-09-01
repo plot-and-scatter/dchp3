@@ -224,6 +224,8 @@ export default function AdminUser() {
         </dd>
       </dl>
 
+      <RoleForm user={user} isSelf={isSelf} />
+
       {actionData?.kind === "roleChanged" &&
         (actionData.warnings.length === 0 ? (
           <TransientNotice
@@ -242,8 +244,6 @@ export default function AdminUser() {
             ))}
           </div>
         ))}
-
-      <RoleForm user={user} isSelf={isSelf} />
 
       <NameForm
         user={user}
