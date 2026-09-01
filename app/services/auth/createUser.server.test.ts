@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { createUser } from "./createUser.server"
-import { UserActionEnum, type CreateUserInput } from "~/models/user.schemas"
+import type { CreateUserInput } from "~/models/user.schemas"
 
 // Creating a user is four calls that can each fail on their own, and Auth0 has
 // no transaction across them. What these tests mostly pin is the line between
@@ -38,7 +38,6 @@ const fail = (message: string) => ({
 })
 
 const input = (overrides: Partial<CreateUserInput> = {}): CreateUserInput => ({
-  userAction: UserActionEnum.CREATE_USER,
   email: "new@example.com",
   firstName: "New",
   lastName: "Person",

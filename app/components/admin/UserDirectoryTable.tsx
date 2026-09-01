@@ -22,7 +22,6 @@ import {
 } from "~/services/auth/userDirectory"
 import { Form } from "react-router"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
-import { UserActionEnum } from "~/models/user.schemas"
 import FAIcon from "~/components/elements/Icons/FAIcon"
 import Button from "~/components/elements/LinksAndButtons/Button"
 
@@ -173,11 +172,6 @@ function PasswordLinkButton({ user }: { user: DirectoryUser }) {
 
   return (
     <Form method="post" className="whitespace-nowrap">
-      <input
-        type="hidden"
-        name="userAction"
-        value={UserActionEnum.REISSUE_PASSWORD_LINK}
-      />
       {/* One link per account: an address can carry two, and a password
           belongs to one of them. */}
       {user.auth0Accounts.map((account) => (

@@ -10,7 +10,7 @@ import type { AuthRole } from "~/services/auth/AuthRole"
 // Type-only imports: they name the shapes below without executing either
 // module, so the dynamic imports in beforeAll still happen after
 // COOKIE_SECRET is set.
-import type * as AdminUsersRoute from "./users"
+import type * as AdminUsersRoute from "./index"
 import type * as SessionServer from "~/services/auth/session.server"
 
 // session.server pulls in ~/models/user.server, which builds a real
@@ -27,10 +27,8 @@ vi.mock("~/services/auth/userDirectory.server", () => ({
 
 // The action's two branches are covered in createUser.server.test.ts; these
 // tests are about the guard, so the writes are stubbed.
-const createUser = vi.fn()
 const reissuePasswordLink = vi.fn()
 vi.mock("~/services/auth/createUser.server", () => ({
-  createUser: (...a: unknown[]) => createUser(...a),
   reissuePasswordLink: (...a: unknown[]) => reissuePasswordLink(...a),
 }))
 
@@ -52,7 +50,7 @@ let sessionStorage: typeof SessionServer.sessionStorage
 beforeAll(async () => {
   process.env.COOKIE_SECRET = "test-cookie-secret"
   ;({ sessionStorage } = await import("~/services/auth/session.server"))
-  ;({ loader, action } = await import("./users"))
+  ;({ loader, action } = await import("./index"))
 })
 
 const requestWithRoles = async (
@@ -150,28 +148,11 @@ describe("/admin/users action", () => {
 
   it("lets a Superadmin post", async () => {
     const request = await post(["Superadmin"])
-    // An empty body is not a valid submission, which is the point: it got past
+    // An empty body is not a valid request, which is the point: it got past
     // the guard and was judged on its contents.
     await expect(action(args(request))).resolves.toMatchObject({
-      kind: "invalid",
+      kind: "error",
     })
-  })
-
-  it("does not create anyone for a request it turns away", async () => {
-    const body = new FormData()
-    body.append("userAction", "createUser")
-    body.append("email", "someone@example.com")
-    body.append("firstName", "Some")
-    body.append("lastName", "One")
-    body.append("role", "Superadmin")
-
-    const request = await requestWithRoles(["Display"], {
-      method: "POST",
-      body,
-    })
-    await rejectionFrom(() => action(args(request)))
-
-    expect(createUser).not.toHaveBeenCalled()
   })
 
   it("does not issue a password link for a request it turns away", async () => {

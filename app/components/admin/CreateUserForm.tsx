@@ -3,12 +3,7 @@ import { getFormProps, getInputProps, useForm } from "@conform-to/react"
 import { parseWithZod } from "@conform-to/zod"
 import { useState } from "react"
 import Button from "~/components/elements/LinksAndButtons/Button"
-import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
-import {
-  CreateUserSchema,
-  NO_ROLE,
-  UserActionEnum,
-} from "~/models/user.schemas"
+import { CreateUserSchema, NO_ROLE } from "~/models/user.schemas"
 import { AUTH_ROLES } from "~/services/auth/AuthRole"
 
 // A first and last name are required rather than optional. Without them the
@@ -36,14 +31,6 @@ export default function CreateUserForm({
 
   return (
     <Form method="post" {...getFormProps(form)} className="max-w-xl">
-      <input
-        type="hidden"
-        name="userAction"
-        value={UserActionEnum.CREATE_USER}
-      />
-
-      <SecondaryHeader>Add someone</SecondaryHeader>
-
       <div className="mt-4 flex flex-col gap-4">
         <Field
           label="Email address"
@@ -104,8 +91,7 @@ export default function CreateUserForm({
             </p>
             <p className="mt-1">
               Someone with no role holds no permission at all, not even reading
-              the citation bank. This is the same state an account gets by
-              signing itself up, so it is worth being deliberate about.
+              the citation bank.
             </p>
             <label className="mt-2 flex items-center gap-2">
               <input type="checkbox" name="acknowledgeNoRole" />

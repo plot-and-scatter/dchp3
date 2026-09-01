@@ -3,18 +3,11 @@ import { z } from "zod"
 // Validated on the server in the action and re-run in the browser by conform,
 // so this file must not reach for Prisma or the Management API.
 
-/** The forms that post to /admin/users, told apart by this field. */
-export enum UserActionEnum {
-  CREATE_USER = "createUser",
-  REISSUE_PASSWORD_LINK = "reissuePasswordLink",
-}
-
 /** The value the role select uses for "create them with no role at all". */
 export const NO_ROLE = "none"
 
 export const CreateUserSchema = z
   .object({
-    userAction: z.literal(UserActionEnum.CREATE_USER),
     email: z
       .string()
       .trim()
@@ -54,7 +47,6 @@ export type CreateUserInput = z.infer<typeof CreateUserSchema>
 
 export const ReissuePasswordLinkSchema = z
   .object({
-    userAction: z.literal(UserActionEnum.REISSUE_PASSWORD_LINK),
     // Auth0's own id for the account, from the list. Not an email: an address
     // can carry two accounts, and a link is issued for one of them.
     auth0UserId: z.string().min(1),
