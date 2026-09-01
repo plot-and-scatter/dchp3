@@ -39,6 +39,9 @@ const renderTable = (users: DirectoryUser[]) =>
         sort="name"
         direction="asc"
         searchParams={new URLSearchParams()}
+        roleFilter="all"
+        accessFilter="all"
+        onFilterChange={() => {}}
       />
     </MemoryRouter>
   )
@@ -58,7 +61,6 @@ describe("UserDirectoryTable", () => {
     expect(row.getByText("someone@example.com")).toBeInTheDocument()
     expect(row.getByText("Student / Editor")).toBeInTheDocument()
     expect(row.getByText("Can log in")).toBeInTheDocument()
-    expect(row.getByText("Auth0 + database")).toBeInTheDocument()
   })
 
   it("does not claim an Auth0-only account has never logged in", () => {
@@ -69,7 +71,7 @@ describe("UserDirectoryTable", () => {
 
     // Not "has never logged in": the join knows only that there is no local
     // row, and every account in the tenant has logged in at least once.
-    expect(row.getByText("Auth0 only")).toBeInTheDocument()
+    expect(row.getByText("No local record")).toBeInTheDocument()
     expect(row.queryByText(/never logged in/)).not.toBeInTheDocument()
   })
 
@@ -84,7 +86,6 @@ describe("UserDirectoryTable", () => {
     ])
     const row = within(rowFor("Old Hand"))
 
-    expect(row.getByText("Legacy")).toBeInTheDocument()
     // No Auth0 account means no way in, and the badge says so.
     expect(row.getByText("No account")).toBeInTheDocument()
   })
@@ -100,7 +101,6 @@ describe("UserDirectoryTable", () => {
     ])
     const row = within(rowFor("Unknown Status"))
 
-    expect(row.getByText("Auth0 not read")).toBeInTheDocument()
     // Nothing is claimed about whether they can log in.
     expect(row.queryByText("No account")).not.toBeInTheDocument()
     expect(row.queryByText("Blocked")).not.toBeInTheDocument()
@@ -173,7 +173,8 @@ describe("UserDirectoryTable", () => {
     // Someone who signed themselves up holds no role: they can log in and have
     // no permission at all.
     renderTable([user({ roles: [] })])
-    expect(screen.getByText("No role")).toBeInTheDocument()
+    // Scoped to the row: the Role heading's filter menu also offers "No role".
+    expect(within(rowFor("Some One")).getByText("No role")).toBeInTheDocument()
   })
 
   it("does not call a database-only row role-less, since it cannot log in", () => {
@@ -185,7 +186,9 @@ describe("UserDirectoryTable", () => {
         auth0Accounts: [],
       }),
     ])
-    expect(screen.queryByText("No role")).not.toBeInTheDocument()
+    expect(
+      within(rowFor("Old Hand")).queryByText("No role")
+    ).not.toBeInTheDocument()
   })
 
   it("labels a person with no Auth0 account as legacy, not as a problem", () => {
@@ -200,7 +203,6 @@ describe("UserDirectoryTable", () => {
     ])
     const row = within(rowFor("Old Hand"))
 
-    expect(row.getByText("Legacy")).toBeInTheDocument()
     expect(row.getByText("No account")).toBeInTheDocument()
     // Their contributions are still counted -- that is why the row exists.
     expect(row.getByText("52")).toBeInTheDocument()
@@ -216,8 +218,10 @@ describe("UserDirectoryTable", () => {
     renderTable([
       user({ roles: [], contributions: { edits: 0, citations: 0 } }),
     ])
-    expect(screen.getByText("None")).toBeInTheDocument()
-    expect(screen.getByText("No role")).toBeInTheDocument()
+    // Scoped to the row: the Role heading's filter menu also offers "No role".
+    const row = within(rowFor("Some One"))
+    expect(row.getByText("None")).toBeInTheDocument()
+    expect(row.getByText("No role")).toBeInTheDocument()
   })
 
   it("shows the date of the most recent sign-in across accounts", () => {

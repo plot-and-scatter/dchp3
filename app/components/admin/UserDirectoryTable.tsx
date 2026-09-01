@@ -4,12 +4,18 @@ import StatusBadge, {
 // Not from userDirectory.server: isPartiallyBlocked is a value, and importing
 // it from the server module pulls ~/db.server into the client bundle.
 import {
+  ACCESS_FILTERS,
+  ACCESS_FILTER_LABELS,
   isFullyBlocked,
   isPartiallyBlocked,
-  type DirectoryUser,
   lastLoginAt,
+  ROLE_FILTERS,
+  ROLE_FILTER_LABELS,
   totalContributions,
   totalLogins,
+  type AccessFilter,
+  type DirectoryUser,
+  type RoleFilter,
   type SortColumn,
   type SortDirection,
 } from "~/services/auth/userDirectory"
@@ -83,40 +89,23 @@ export function roleBadges(user: DirectoryUser): Badge[] {
   return [{ label: "—", tone: "neutral" }]
 }
 
-const PRESENCE_BADGE: Record<DirectoryUser["presence"], Badge> = {
-  both: { label: "Auth0 + database", tone: "neutral" },
-  auth0Only: {
-    label: "Auth0 only",
-    tone: "warning",
-    title: "No row in this site's database yet. One is created at first login.",
-  },
-  localOnly: {
-    label: "Legacy",
-    tone: "neutral",
-    title:
-      "Contributed before the project moved to Auth0. No account, so no way to log in.",
-  },
-  auth0Unknown: {
-    label: "Database",
-    tone: "neutral",
-    title: "Auth0 could not be reached, so the other half is unknown.",
-  },
-}
-
 const renderBadge = ({ label, tone, title }: Badge, key?: string) => (
   <StatusBadge key={key ?? label} tone={tone} title={title}>
     {label}
   </StatusBadge>
 )
 
-const COLUMNS: { column: SortColumn; label: string }[] = [
+const COLUMNS: {
+  column: SortColumn
+  label: string
+  filter?: "role" | "access"
+}[] = [
   { column: "name", label: "Name" },
   { column: "email", label: "Email" },
-  { column: "role", label: "Role" },
+  { column: "role", label: "Role", filter: "role" },
   { column: "contributions", label: "Contributions" },
   { column: "lastLogin", label: "Last login" },
-  { column: "login", label: "Auth0 login" },
-  { column: "record", label: "Record" },
+  { column: "login", label: "Auth0 login", filter: "access" },
 ]
 
 /**
@@ -156,18 +145,70 @@ function ContributionsCell({ user }: { user: DirectoryUser }) {
  * the order survives a reload and can be sent to someone. Clicking the column
  * already sorted reverses it.
  */
+/**
+ * A filter menu in a column heading. Navigating on change keeps the state in
+ * the URL alongside the sort, so a filtered view can be reloaded or sent to
+ * someone. Choosing a filter drops the page number, which means something
+ * different once the list changes length.
+ */
+function ColumnFilter<Value extends string>({
+  paramName,
+  value,
+  options,
+  labels,
+  searchParams,
+  onChange,
+  describedBy,
+}: {
+  paramName: string
+  value: Value
+  options: readonly Value[]
+  labels: Record<Value, string>
+  searchParams: URLSearchParams
+  onChange: (params: URLSearchParams) => void
+  describedBy: string
+}) {
+  return (
+    <select
+      aria-label={`Filter by ${describedBy}`}
+      value={value}
+      onChange={(event) => {
+        const next = new URLSearchParams(searchParams)
+        next.set(paramName, event.target.value)
+        next.delete("page")
+        onChange(next)
+      }}
+      className="mt-1 block w-full border border-gray-300 bg-white p-1 text-xs font-normal"
+    >
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {labels[option]}
+        </option>
+      ))}
+    </select>
+  )
+}
+
 function SortableHeader({
   column,
   label,
+  filter,
   sort,
   direction,
   searchParams,
+  roleFilter,
+  accessFilter,
+  onFilterChange,
 }: {
   column: SortColumn
   label: string
+  filter?: "role" | "access"
   sort: SortColumn
   direction: SortDirection
   searchParams: URLSearchParams
+  roleFilter: RoleFilter
+  accessFilter: AccessFilter
+  onFilterChange: (params: URLSearchParams) => void
 }) {
   const active = sort === column
   const nextDirection: SortDirection =
@@ -199,6 +240,29 @@ function SortableHeader({
           />
         )}
       </Link>
+
+      {filter === "role" && (
+        <ColumnFilter
+          paramName="role"
+          describedBy="role"
+          value={roleFilter}
+          options={ROLE_FILTERS}
+          labels={ROLE_FILTER_LABELS}
+          searchParams={searchParams}
+          onChange={onFilterChange}
+        />
+      )}
+      {filter === "access" && (
+        <ColumnFilter
+          paramName="access"
+          describedBy="Auth0 login"
+          value={accessFilter}
+          options={ACCESS_FILTERS}
+          labels={ACCESS_FILTER_LABELS}
+          searchParams={searchParams}
+          onChange={onFilterChange}
+        />
+      )}
     </th>
   )
 }
@@ -248,11 +312,17 @@ export default function UserDirectoryTable({
   sort,
   direction,
   searchParams,
+  roleFilter,
+  accessFilter,
+  onFilterChange,
 }: {
   users: DirectoryUser[]
   sort: SortColumn
   direction: SortDirection
   searchParams: URLSearchParams
+  roleFilter: RoleFilter
+  accessFilter: AccessFilter
+  onFilterChange: (params: URLSearchParams) => void
 }) {
   if (users.length === 0) return <p>No users found.</p>
 
@@ -263,14 +333,18 @@ export default function UserDirectoryTable({
       <table className="w-full text-left">
         <thead>
           <tr className="border-b border-gray-400">
-            {COLUMNS.map(({ column, label }) => (
+            {COLUMNS.map(({ column, label, filter }) => (
               <SortableHeader
                 key={column}
                 column={column}
                 label={label}
+                filter={filter}
                 sort={sort}
                 direction={direction}
                 searchParams={searchParams}
+                roleFilter={roleFilter}
+                accessFilter={accessFilter}
+                onFilterChange={onFilterChange}
               />
             ))}
           </tr>
@@ -291,6 +365,16 @@ export default function UserDirectoryTable({
                 {user.localRows.length > 1 && (
                   <span className="block text-sm text-alert-800">
                     {user.localRows.length} database rows share this address
+                  </span>
+                )}
+                {user.presence === "auth0Only" && (
+                  <span className="mt-1 block">
+                    {renderBadge({
+                      label: "No local record",
+                      tone: "warning",
+                      title:
+                        "No row in this site's database yet. One is created at first login.",
+                    })}
                   </span>
                 )}
                 {user.auth0Accounts.length > 1 && (
@@ -315,9 +399,6 @@ export default function UserDirectoryTable({
                 <LastLoginCell user={user} />
               </td>
               <td className="py-2 pr-4">{renderBadge(loginBadge(user))}</td>
-              <td className="py-2">
-                {renderBadge(PRESENCE_BADGE[user.presence])}
-              </td>
             </tr>
           ))}
         </tbody>

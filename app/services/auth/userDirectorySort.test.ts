@@ -1,6 +1,11 @@
 // @vitest-environment node
 import {
+  DEFAULT_ACCESS_FILTER,
+  isAccessFilter,
   isFullyBlocked,
+  isRoleFilter,
+  matchesAccessFilter,
+  matchesRoleFilter,
   lastLoginAt,
   totalLogins,
   isLegacyUser,
@@ -326,5 +331,86 @@ describe("last login", () => {
       "Old",
       "Never",
     ])
+  })
+})
+
+describe("the access filter", () => {
+  const canLogIn = person({ auth0Accounts: [account({ blocked: false })] })
+  const blocked = person({ auth0Accounts: [account({ blocked: true })] })
+  const partly = person({
+    auth0Accounts: [
+      account({ userId: "auth0|1", blocked: true }),
+      account({ userId: "auth0|2", blocked: false }),
+    ],
+  })
+  const legacy = person({ presence: "localOnly", auth0Accounts: [] })
+  const unknown = person({ presence: "auth0Unknown", auth0Accounts: [] })
+
+  const matching = (filter: Parameters<typeof matchesAccessFilter>[1]) =>
+    [
+      ["canLogIn", canLogIn],
+      ["blocked", blocked],
+      ["partly", partly],
+      ["legacy", legacy],
+      ["unknown", unknown],
+    ]
+      .filter(([, u]) => matchesAccessFilter(u as never, filter))
+      .map(([name]) => name)
+
+  it("defaults to everyone who has access", () => {
+    expect(DEFAULT_ACCESS_FILTER).toBe("active")
+  })
+
+  it("counts a partly blocked person as active, since they can still log in", () => {
+    // The row most worth seeing must not be hidden by the default.
+    expect(matching("active")).toEqual(["canLogIn", "partly", "unknown"])
+  })
+
+  it("excludes the blocked and the legacy from active", () => {
+    expect(matching("active")).not.toContain("blocked")
+    expect(matching("active")).not.toContain("legacy")
+  })
+
+  it.each([
+    ["blocked", ["blocked"]],
+    ["partlyBlocked", ["partly"]],
+    ["legacy", ["legacy"]],
+  ])("%s selects only that state", (filter, expected) => {
+    expect(matching(filter as never)).toEqual(expected)
+  })
+
+  it("everyone selects everyone", () => {
+    expect(matching("all")).toHaveLength(5)
+  })
+
+  it("rejects a filter name it does not know", () => {
+    expect(isAccessFilter("active")).toBe(true)
+    expect(isAccessFilter("nonsense")).toBe(false)
+  })
+})
+
+describe("the role filter", () => {
+  const superadmin = person({ roles: ["Superadmin"] })
+  const noRole = person({ roles: [] })
+  const legacy = person({ presence: "localOnly", roles: [], auth0Accounts: [] })
+
+  it("selects a single role", () => {
+    expect(matchesRoleFilter(superadmin, "Superadmin")).toBe(true)
+    expect(matchesRoleFilter(noRole, "Superadmin")).toBe(false)
+  })
+
+  it("selects accounts that can log in and hold no role", () => {
+    expect(matchesRoleFilter(noRole, "none")).toBe(true)
+  })
+
+  it("does not report a legacy contributor as having no role", () => {
+    // They have no Auth0 account, so no role is expected rather than a
+    // finding. Including them would bury the accounts that can log in.
+    expect(matchesRoleFilter(legacy, "none")).toBe(false)
+  })
+
+  it("rejects a filter name it does not know", () => {
+    expect(isRoleFilter("Superadmin")).toBe(true)
+    expect(isRoleFilter("Admin")).toBe(false)
   })
 })

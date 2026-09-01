@@ -10,7 +10,7 @@
 // Types alone could have stayed there, since a type-only import is erased.
 // The helpers below are values, so they belong here.
 
-import type { AuthRole } from "./AuthRole"
+import { AUTH_ROLES, type AuthRole } from "./AuthRole"
 import type { ContributionCounts, DisplayUser } from "~/models/user.server"
 
 export type AccountPresence =
@@ -149,7 +149,6 @@ export const SORT_COLUMNS = [
   "contributions",
   "lastLogin",
   "login",
-  "record",
 ] as const
 export type SortColumn = typeof SORT_COLUMNS[number]
 export type SortDirection = "asc" | "desc"
@@ -184,9 +183,6 @@ const loginRank = (user: DirectoryUser): number => {
   return 4
 }
 
-const recordRank = (user: DirectoryUser): number =>
-  ({ auth0Only: 0, localOnly: 1, auth0Unknown: 2, both: 3 }[user.presence])
-
 /**
  * A comparator per column. Text is compared with localeCompare so that
  * accented names order sensibly. A missing email sorts last in both
@@ -218,7 +214,6 @@ const compareBy: Record<
     return x.localeCompare(y)
   },
   login: (a, b) => loginRank(a) - loginRank(b),
-  record: (a, b) => recordRank(a) - recordRank(b),
 }
 
 export function sortDirectoryUsers(
@@ -247,4 +242,88 @@ export function sortDirectoryUsers(
     // the order Auth0 happened to return.
     return byColumn !== 0 ? byColumn : a.name.localeCompare(b.name)
   })
+}
+
+// Column filters. Kept here, next to the predicates they use, so the header
+// menus and the route agree on what each option means.
+//
+// The access filter defaults to "active" rather than "all". Most of the list
+// is legacy contributors -- 243 of about 274 -- and a page for managing access
+// that opens on people who have none is not much use. "Active" is deliberately
+// a compound of two negatives rather than a single badge value: it means not
+// blocked and not legacy, so someone whose accounts disagree with each other
+// still appears, which is the row most worth seeing.
+
+export const ACCESS_FILTERS = [
+  "active",
+  "canLogIn",
+  "partlyBlocked",
+  "blocked",
+  "legacy",
+  "all",
+] as const
+export type AccessFilter = typeof ACCESS_FILTERS[number]
+export const DEFAULT_ACCESS_FILTER: AccessFilter = "active"
+
+export const ACCESS_FILTER_LABELS: Record<AccessFilter, string> = {
+  active: "Has access",
+  canLogIn: "Can log in",
+  partlyBlocked: "Partly blocked",
+  blocked: "Blocked",
+  legacy: "Legacy — no account",
+  all: "Everyone",
+}
+
+export const isAccessFilter = (value: unknown): value is AccessFilter =>
+  typeof value === "string" &&
+  (ACCESS_FILTERS as readonly string[]).includes(value)
+
+export const matchesAccessFilter = (
+  user: DirectoryUser,
+  filter: AccessFilter
+): boolean => {
+  switch (filter) {
+    case "all":
+      return true
+    case "active":
+      return !isLegacyUser(user) && !isFullyBlocked(user)
+    case "canLogIn":
+      return user.auth0Accounts.length > 0 && !isFullyBlocked(user)
+    case "partlyBlocked":
+      return isPartiallyBlocked(user)
+    case "blocked":
+      return isFullyBlocked(user)
+    case "legacy":
+      return isLegacyUser(user)
+  }
+}
+
+/** "none" is the audit case: can log in, holds no role. */
+export const ROLE_FILTERS = ["all", "none", ...AUTH_ROLES] as const
+export type RoleFilter = typeof ROLE_FILTERS[number]
+export const DEFAULT_ROLE_FILTER: RoleFilter = "all"
+
+export const ROLE_FILTER_LABELS: Record<RoleFilter, string> = {
+  all: "Any role",
+  none: "No role",
+  Display: "Display",
+  "Student / Editor": "Student / Editor",
+  "Research Assistant": "Research Assistant",
+  Superadmin: "Superadmin",
+}
+
+export const isRoleFilter = (value: unknown): value is RoleFilter =>
+  typeof value === "string" &&
+  (ROLE_FILTERS as readonly string[]).includes(value)
+
+export const matchesRoleFilter = (
+  user: DirectoryUser,
+  filter: RoleFilter
+): boolean => {
+  if (filter === "all") return true
+  // A legacy contributor has no Auth0 account and so no role. Reporting them
+  // under "No role" would bury the accounts that can actually log in.
+  if (filter === "none")
+    return user.auth0Accounts.length > 0 && user.roles.length === 0
+  return user.roles.includes(filter)
 }

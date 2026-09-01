@@ -6,9 +6,13 @@ import UserDirectoryTable from "~/components/admin/UserDirectoryTable"
 import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
 import { getUserDirectory } from "~/services/auth/userDirectory.server"
 import {
-  isFullyBlocked,
-  isLegacyUser,
+  DEFAULT_ACCESS_FILTER,
+  DEFAULT_ROLE_FILTER,
+  isAccessFilter,
+  isRoleFilter,
   isSortColumn,
+  matchesAccessFilter,
+  matchesRoleFilter,
   sortDirectoryUsers,
   USER_DIRECTORY_PAGE_SIZE,
   type SortColumn,
@@ -66,31 +70,21 @@ export default function AdminUsers() {
   const direction: SortDirection =
     searchParams.get("dir") === "desc" ? "desc" : "asc"
 
-  // Two groups are hidden by default, both for the same reason: this page is
-  // for managing who has access, and neither group has any. Each count stays
-  // on screen so that hiding them is visible rather than silent.
-  //
-  // Someone only partly blocked is NOT hidden. They can still log in, so they
-  // are precisely the row worth seeing.
-  const filters = [
-    {
-      key: "legacy",
-      matches: isLegacyUser,
-      label: (n: number) =>
-        `Show ${n} legacy ${n === 1 ? "contributor" : "contributors"}`,
-      hint: "Contributed before this site used Auth0. No account, so no way to log in.",
-    },
-    {
-      key: "blocked",
-      matches: isFullyBlocked,
-      label: (n: number) =>
-        `Show ${n} blocked ${n === 1 ? "person" : "people"}`,
-      hint: "Every Auth0 account they hold is blocked, so they cannot log in.",
-    },
-  ] as const
+  // Filtering happens in the column headings. The access filter defaults to
+  // "active" rather than "everyone": most of the list is legacy contributors,
+  // and a page for managing access should not open on people who have none.
+  const roleParam = searchParams.get("role")
+  const roleFilter = isRoleFilter(roleParam) ? roleParam : DEFAULT_ROLE_FILTER
+  const accessParam = searchParams.get("access")
+  const accessFilter = isAccessFilter(accessParam)
+    ? accessParam
+    : DEFAULT_ACCESS_FILTER
 
-  const hidden = filters.filter((f) => searchParams.get(f.key) !== "show")
-  const visible = users.filter((user) => !hidden.some((f) => f.matches(user)))
+  const visible = users.filter(
+    (user) =>
+      matchesRoleFilter(user, roleFilter) &&
+      matchesAccessFilter(user, accessFilter)
+  )
 
   const sorted = sortDirectoryUsers(visible, sort, direction)
 
@@ -126,8 +120,10 @@ export default function AdminUsers() {
       )}
 
       <p className="my-4">
-        {visible.length} {visible.length === 1 ? "person" : "people"}, from
-        Auth0 and from this site's database.
+        {visible.length} {visible.length === 1 ? "person" : "people"}
+        {visible.length === users.length
+          ? ", from Auth0 and from this site's database."
+          : ` of ${users.length}, filtered by the column headings.`}
         {pageCount > 1 && (
           <span className="text-gray-600">
             {" "}
@@ -137,42 +133,16 @@ export default function AdminUsers() {
         )}
       </p>
 
-      <div className="my-4 flex flex-col gap-2">
-        {filters.map((filter) => {
-          const count = users.filter(filter.matches).length
-          if (count === 0) return null
-          const checked = searchParams.get(filter.key) === "show"
-
-          return (
-            <label key={filter.key} className="flex items-start gap-2">
-              <input
-                type="checkbox"
-                className="mt-1"
-                checked={checked}
-                onChange={(event) => {
-                  const next = new URLSearchParams(searchParams)
-                  if (event.target.checked) next.set(filter.key, "show")
-                  else next.delete(filter.key)
-                  // The page number means something different once the list
-                  // changes length.
-                  next.delete("page")
-                  setSearchParams(next, { preventScrollReset: true })
-                }}
-              />
-              <span>
-                {filter.label(count)}
-                <span className="ml-1 text-gray-600">— {filter.hint}</span>
-              </span>
-            </label>
-          )
-        })}
-      </div>
-
       <UserDirectoryTable
         users={pageOfUsers}
         sort={sort}
         direction={direction}
         searchParams={searchParams}
+        roleFilter={roleFilter}
+        accessFilter={accessFilter}
+        onFilterChange={(next) =>
+          setSearchParams(next, { preventScrollReset: true })
+        }
       />
 
       {pageCount > 1 && (
