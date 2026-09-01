@@ -10,7 +10,7 @@ import { parseWithZod } from "@conform-to/zod"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import { SecondaryHeader } from "~/components/elements/Headings/SecondaryHeader"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
-import Button from "~/components/elements/LinksAndButtons/Button"
+import ActionButton from "~/components/elements/LinksAndButtons/ActionButton"
 import {
   loginBadge,
   renderBadge,
@@ -62,7 +62,9 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
     return { kind: "error" as const, message: "Nobody found for that address." }
   }
 
-  if (formData.get("intent") === "name") {
+  const intent = formData.get("intent")
+
+  if (intent === "name") {
     const submission = parseWithZod(formData, { schema: UpdateUserNameSchema })
     if (submission.status !== "success") {
       return { kind: "invalidName" as const, result: submission.reply() }
@@ -76,6 +78,10 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
           kind: "error" as const,
           message: `The name was not changed. ${result.warnings.join(" ")}`,
         }
+  }
+
+  if (intent !== "password") {
+    return { kind: "error" as const, message: "That was not a valid request." }
   }
 
   const submission = parseWithZod(formData, {
@@ -199,21 +205,23 @@ export default function AdminUser() {
             suits — and make another whenever one runs out.
           </p>
           <Form method="post">
+            <input type="hidden" name="intent" value="password" />
             {user.auth0Accounts.map((account) => (
-              <Button
+              <ActionButton
                 key={account.userId}
-                type="submit"
+                formIntent="password"
                 name="auth0UserId"
                 value={account.userId}
-                appearance="secondary"
+                appearance="action"
                 className="mr-2"
+                submittingElement="Making a link…"
               >
                 Make a password link
                 {user.auth0Accounts.length > 1 &&
                   (account.connection === "google-oauth2"
                     ? " (Google)"
                     : " (email and password)")}
-              </Button>
+              </ActionButton>
             ))}
           </Form>
           {user.auth0Accounts.some((a) => a.connection === "google-oauth2") && (
@@ -280,9 +288,14 @@ function NameForm({
           )}
         </label>
       </div>
-      <Button type="submit" appearance="secondary" className="mt-2">
+      <ActionButton
+        formIntent="name"
+        appearance="action"
+        className="mt-2"
+        submittingElement="Saving…"
+      >
         Save name
-      </Button>
+      </ActionButton>
     </Form>
   )
 }

@@ -1,5 +1,10 @@
 import { parseWithZod } from "@conform-to/zod"
-import { CreateUserSchema, NO_ROLE, UpdateUserNameSchema } from "./user.schemas"
+import {
+  CreateUserSchema,
+  NO_ROLE,
+  ReissuePasswordLinkSchema,
+  UpdateUserNameSchema,
+} from "./user.schemas"
 
 // The same schema runs in the browser through conform and on the server in the
 // action, so these go through parseWithZod rather than calling zod directly.
@@ -111,5 +116,25 @@ describe("UpdateUserNameSchema", () => {
     ["no last name", { intent: "name", firstName: "New", lastName: "" }],
   ])("rejects %s", (_label, entries) => {
     expect(submitName(entries).status).not.toBe("success")
+  })
+})
+
+describe("ReissuePasswordLinkSchema", () => {
+  const submitLink = (entries: Record<string, string>) => {
+    const data = new FormData()
+    Object.entries(entries).forEach(([k, v]) => data.append(k, v))
+    return parseWithZod(data, { schema: ReissuePasswordLinkSchema })
+  }
+
+  it("accepts what the form actually posts", () => {
+    // Including the intent field. The same omission silently refused every
+    // name save, so it is asserted here too.
+    expect(
+      submitLink({ intent: "password", auth0UserId: "auth0|1" }).status
+    ).toBe("success")
+  })
+
+  it("rejects a submission with no account id", () => {
+    expect(submitLink({ intent: "password" }).status).not.toBe("success")
   })
 })

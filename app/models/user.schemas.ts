@@ -47,6 +47,7 @@ export type CreateUserInput = z.infer<typeof CreateUserSchema>
 
 export const ReissuePasswordLinkSchema = z
   .object({
+    intent: z.literal("password"),
     // Auth0's own id for the account, from the list. Not an email: an address
     // can carry two accounts, and a link is issued for one of them.
     auth0UserId: z.string().min(1),
