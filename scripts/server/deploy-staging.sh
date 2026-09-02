@@ -21,11 +21,15 @@ readonly REPO=plot-and-scatter/dchp3
 
 cd "${TREE}"
 
-# A deploy overwrites the tree, so anything uncommitted in it is about to be
+# A checkout overwrites tracked files, so local edits to them are about to be
 # lost. Stop rather than take that decision for somebody.
-if [ -n "$(git status --porcelain)" ]; then
-  echo "There are uncommitted changes in ${TREE}. Deal with those first:"
-  git status --short
+#
+# --untracked-files=no because a checkout leaves untracked files alone, and the
+# tree legitimately contains one: .env.staging, which is not in the repository
+# and must not be. Without this the guard refused every deploy.
+if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+  echo "Tracked files have been edited in ${TREE}. Deal with those first:"
+  git status --short --untracked-files=no
   exit 1
 fi
 
