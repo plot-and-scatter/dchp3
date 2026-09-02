@@ -53,7 +53,7 @@ const Nav = ({ user }: NavProps): JSX.Element => {
                 </div>
               }
             >
-              <NavPopoverContents userName={user.name} isAdmin={!!user} />
+              <NavPopoverContents roles={user.roles} />
             </Popover>
           ) : (
             <NavLink to="/login">

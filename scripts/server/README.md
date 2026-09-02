@@ -198,6 +198,31 @@ that points into it is running.
 4. Confirm the next morning that the 03:28 reboot brought the site back, and
    that the journal for the unit shows a start of seconds with no `npm i`.
 
+### Before a deploy that brings new environment variables
+
+`.env.production` is not in the repository and the deploy script does not
+touch it, so a variable added in code has to be added on the server by hand
+**before** the deploy that needs it.
+
+The failure is quiet when this is missed. The site starts, serves every page,
+and passes the deploy script's own health check; only the feature that needed
+the variable fails, and only when somebody opens it.
+
+Currently outstanding: `AUTH0_MGMT_CLIENT_ID` and `AUTH0_MGMT_CLIENT_SECRET`,
+for user management. Both belong to the Auth0 Machine-to-Machine application,
+which is a different application from the one the login flow uses — see
+`.env.example` for the distinction and the scopes it needs, and
+`docs/auth/user-management.md` for what depends on them.
+
+To check what the server has before deploying, without printing any values:
+
+```
+sudo grep -c AUTH0_MGMT_CLIENT_ID /var/www/dchp3/.env.production
+```
+
+`1` means it is set. `0` means the deploy will appear to work and
+`/admin/users` will not.
+
 ### Deploying after this
 
 `sudo /usr/local/sbin/dchp3-deploy-production.sh`, watched. It prints the
@@ -214,6 +239,49 @@ routine deploy.
 ## Staging: dchp3-staging.service, start-staging.sh, deploy-staging.sh
 
 The same design, proven on staging first (2026-08-28). Staging runs from
-`/var/www/dchp3-staging` on port 8081, serves out of `scripts/server/` in its
-own tree, and reads `.env.staging`. Its unit is enabled at boot, which is
-safe precisely because the start script only serves.
+`/var/www/dchp3-staging` on port 8081 and reads `.env.staging`. Its unit is
+enabled at boot, which is safe precisely because the start script only serves.
+
+### Deploying to staging
+
+```
+sudo /usr/local/sbin/dchp3-deploy-staging.sh
+```
+
+It lists the open pull requests and asks which to deploy, because trying a
+branch before it reaches `main` is what staging is for. `0` is `main`. A branch
+name can be typed instead of a number, or passed as an argument to skip the
+menu entirely:
+
+```
+sudo /usr/local/sbin/dchp3-deploy-staging.sh main
+```
+
+The list comes from the GitHub API without credentials, the repository being
+public. If GitHub cannot be reached the menu still offers `main` and still
+accepts a branch name typed by hand.
+
+It prints the current commit and the command to roll back to it before making
+any change, refuses to run over uncommitted changes in the tree, and prints the
+branch and commit it ended on. **That last line is the one worth reading.** A
+deploy that quietly stayed on the wrong branch otherwise looks exactly like one
+that worked, which has happened.
+
+### Installing the staging scripts
+
+`start-staging.sh` runs from the deployed tree, which is fine: it only serves.
+
+**`deploy-staging.sh` must be installed to `/usr/local/sbin`, not run from the
+tree.** It rewrites that tree while running, and bash reads a script as it
+goes, so a copy running from inside the tree can be replaced underneath itself
+part-way through.
+
+```
+sudo curl -fL -o /usr/local/sbin/dchp3-deploy-staging.sh \
+  https://raw.githubusercontent.com/plot-and-scatter/dchp3/main/scripts/server/deploy-staging.sh
+sudo chown root:root /usr/local/sbin/dchp3-deploy-staging.sh
+sudo chmod 700 /usr/local/sbin/dchp3-deploy-staging.sh
+```
+
+Re-copy it whenever the script itself changes; a deploy updates the tree's copy
+and not this one.

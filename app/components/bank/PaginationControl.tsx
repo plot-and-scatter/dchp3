@@ -6,20 +6,33 @@ const buildUrl = (
   baseLink: string,
   pageNumber: number,
   useSearch?: string,
-  url?: string
+  url?: string,
+  searchParams?: URLSearchParams
 ) => {
   if (!useSearch) {
     return `${baseLink}/${pageNumber}`
-  } else {
-    if (!url)
-      throw new Error(
-        `Can't use PaginationControl in useSearch mode without supplying url`
-      )
-    const _url = new URL(url)
-    _url.searchParams.set(useSearch, String(pageNumber))
-
-    return String(_url)
   }
+
+  // A query-only link, resolved by the router against the current location.
+  // Preferred over `url` when the caller's page is sorted or filtered in the
+  // browser: an absolute URL taken from loader data goes stale as soon as the
+  // loader stops re-running, and the links then drop whatever the reader had
+  // just chosen.
+  if (searchParams) {
+    const params = new URLSearchParams(searchParams)
+    params.set(useSearch, String(pageNumber))
+    return `?${params}`
+  }
+
+  if (!url)
+    throw new Error(
+      `Can't use PaginationControl in useSearch mode without supplying url or searchParams`
+    )
+
+  const _url = new URL(url)
+  _url.searchParams.set(useSearch, String(pageNumber))
+
+  return String(_url)
 }
 
 type PaginationControlProps = {
@@ -28,6 +41,8 @@ type PaginationControlProps = {
   pageCount: number
   useSearch?: string
   url?: string
+  /** With useSearch, builds query-only links from these instead of from `url`. */
+  searchParams?: URLSearchParams
 }
 
 export default function PaginationControl({
@@ -36,6 +51,7 @@ export default function PaginationControl({
   pageCount,
   useSearch,
   url,
+  searchParams,
 }: PaginationControlProps) {
   const showPrevious = currentPage > 1
   const showNext = currentPage < pageCount
@@ -46,7 +62,7 @@ export default function PaginationControl({
     middlePageLinks.push(
       <Link
         key={`page-link-${pageNumber}`}
-        to={buildUrl(baseLink, pageNumber, useSearch, url)}
+        to={buildUrl(baseLink, pageNumber, useSearch, url, searchParams)}
         className={clsx(
           "block px-1 py-1 md:px-2",
           pageNumber === currentPage && " bg-primary-dark font-bold text-white"
@@ -93,7 +109,7 @@ export default function PaginationControl({
       <Link
         buttonVariant="outline"
         asButton
-        to={buildUrl(baseLink, currentPage - 1, useSearch, url)}
+        to={buildUrl(baseLink, currentPage - 1, useSearch, url, searchParams)}
         className={showPrevious ? "visible" : "invisible"}
       >
         <FAIcon iconName="fa-arrow-left" />
@@ -105,7 +121,7 @@ export default function PaginationControl({
       <Link
         buttonVariant="outline"
         asButton
-        to={buildUrl(baseLink, currentPage + 1, useSearch, url)}
+        to={buildUrl(baseLink, currentPage + 1, useSearch, url, searchParams)}
         className={showNext ? "visible" : "invisible"}
       >
         Next<span className="hidden md:inline"> page</span>&nbsp;

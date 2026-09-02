@@ -80,6 +80,45 @@ export async function userOwnsEntry(request: Request, headword: string) {
   return Boolean(userModifiedThisEntry)
 }
 
+export type ContributionCounts = { edits: number; citations: number }
+
+/**
+ * How much work each local user has to their name, keyed by `user.id`.
+ *
+ * Two grouped counts rather than a per-user query: the directory needs this
+ * for every row at once, and the alternative is one query per person.
+ *
+ * This is what distinguishes a contributor who has lost their role from an
+ * account that signed itself up and did nothing -- the two look identical
+ * otherwise, and only one of them should be blocked.
+ */
+export async function getContributionCountsByUserId(): Promise<
+  Map<number, ContributionCounts>
+> {
+  const [edits, citations] = await Promise.all([
+    prisma.logEntry.groupBy({ by: ["user_id"], _count: { id: true } }),
+    prisma.bankCitation.groupBy({ by: ["user_id"], _count: { id: true } }),
+  ])
+
+  const counts = new Map<number, ContributionCounts>()
+
+  const add = (
+    userId: number | null,
+    key: keyof ContributionCounts,
+    n: number
+  ) => {
+    if (userId === null) return
+    const existing = counts.get(userId) ?? { edits: 0, citations: 0 }
+    existing[key] += n
+    counts.set(userId, existing)
+  }
+
+  edits.forEach((row) => add(row.user_id, "edits", row._count.id))
+  citations.forEach((row) => add(row.user_id, "citations", row._count.id))
+
+  return counts
+}
+
 /**
  * Whether the logged-in user created this citation. Ownership is the
  * `user_id` column, which BankCitation exposes as the `creator` relation;
@@ -87,6 +126,38 @@ export async function userOwnsEntry(request: Request, headword: string) {
  * consulted, or editing a citation once would grant permission to edit it
  * again forever.
  */
+/**
+ * The local row for someone who has just signed in, created if they have none.
+ *
+ * Deliberately does not touch an existing row. It used to set is_active on
+ * every login, which meant the flag could never mean anything but "has signed
+ * in at some point": marking someone inactive was undone the next time they
+ * signed in. It is set by an administrator now and left alone here.
+ */
+export async function ensureLocalUserForLogin({
+  email,
+  firstName,
+  lastName,
+}: {
+  email: string
+  firstName: string
+  lastName: string
+}): Promise<DisplayUser> {
+  const existing = await getUserByEmailSafe({ email })
+  if (existing) return existing
+
+  return prisma.user.create({
+    data: {
+      email,
+      first_name: firstName,
+      last_name: lastName,
+      // A new person is active. This is the only place it is set at sign-in.
+      is_active: 1,
+    },
+    select: USER_DISPLAY_SELECT,
+  })
+}
+
 export async function userOwnsCitation(request: Request, citationId: number) {
   const email = await getEmailFromSession(request)
   if (!email) return false

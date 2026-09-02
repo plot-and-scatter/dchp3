@@ -5,11 +5,19 @@ import Button from "./Button"
 
 type ActionButtonProps = ButtonProps & {
   formActionPath?: string
+  /**
+   * Which form this button belongs to, matched against the submitted
+   * `intent` field. Needed where a page has two forms posting to the same
+   * path, since formActionPath cannot tell those apart and every button would
+   * show as busy whichever was submitted.
+   */
+  formIntent?: string
   submittingElement?: React.ReactNode
 }
 
 export default function ActionButton({
   formActionPath,
+  formIntent,
   children,
   submittingElement,
   ...rest
@@ -18,9 +26,12 @@ export default function ActionButton({
 
   const isSubmitting =
     (navigation.state === "submitting" || navigation.state === "loading") &&
-    (formActionPath ? navigation.formAction === formActionPath : true)
+    (formActionPath ? navigation.formAction === formActionPath : true) &&
+    (formIntent ? navigation.formData?.get("intent") === formIntent : true)
 
-  const content = isSubmitting ? submittingElement || <Fragment>Loading...</Fragment> : children
+  const content = isSubmitting
+    ? submittingElement || <Fragment>Loading...</Fragment>
+    : children
 
   return (
     <Button type="submit" disabled={isSubmitting} {...rest}>
