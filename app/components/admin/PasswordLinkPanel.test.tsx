@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
 import PasswordLinkPanel from "./PasswordLinkPanel"
 
 // This is the only place the one-time link is ever shown. It is not stored and
@@ -57,5 +57,64 @@ describe("PasswordLinkPanel", () => {
     render(<PasswordLinkPanel ticketUrl={LINK} warnings={[]} />)
 
     expect(screen.getByText("Copy")).toBeInTheDocument()
+  })
+})
+
+describe("copying the link", () => {
+  // navigator.clipboard exists only in a secure context, so it is absent over
+  // plain http. Staging is served that way, and the button used to report
+  // success there having copied nothing.
+  const withClipboard = (writeText: () => Promise<void>) =>
+    vi.stubGlobal("navigator", { clipboard: { writeText } })
+
+  afterEach(() => vi.unstubAllGlobals())
+
+  it("uses the clipboard when there is one", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    withClipboard(writeText)
+
+    render(<PasswordLinkPanel ticketUrl={LINK} warnings={[]} />)
+    screen.getByText("Copy").click()
+
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith(LINK))
+    await waitFor(() => expect(screen.getByText("Copied")).toBeInTheDocument())
+  })
+
+  it("falls back when there is no clipboard, as on plain http", async () => {
+    vi.stubGlobal("navigator", {})
+    document.execCommand = vi.fn().mockReturnValue(true)
+
+    render(<PasswordLinkPanel ticketUrl={LINK} warnings={[]} />)
+    screen.getByText("Copy").click()
+
+    await waitFor(() =>
+      expect(document.execCommand).toHaveBeenCalledWith("copy")
+    )
+    await waitFor(() => expect(screen.getByText("Copied")).toBeInTheDocument())
+  })
+
+  it("says so rather than claiming success when nothing worked", async () => {
+    vi.stubGlobal("navigator", {})
+    document.execCommand = vi.fn().mockReturnValue(false)
+
+    render(<PasswordLinkPanel ticketUrl={LINK} warnings={[]} />)
+    screen.getByText("Copy").click()
+
+    await waitFor(() =>
+      expect(screen.getByText(/copy it yourself/)).toBeInTheDocument()
+    )
+    expect(screen.queryByText("Copied")).not.toBeInTheDocument()
+  })
+
+  it("does not claim success when the clipboard rejects", async () => {
+    withClipboard(vi.fn().mockRejectedValue(new Error("denied")))
+    document.execCommand = vi.fn().mockReturnValue(false)
+
+    render(<PasswordLinkPanel ticketUrl={LINK} warnings={[]} />)
+    screen.getByText("Copy").click()
+
+    await waitFor(() =>
+      expect(screen.getByText(/copy it yourself/)).toBeInTheDocument()
+    )
   })
 })
