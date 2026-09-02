@@ -1,5 +1,8 @@
 # Roles and permissions: Auth0 is the source of truth
 
+For how the administration screens use all this, and what it takes to run
+them, see [user-management.md](./user-management.md).
+
 Decided 2026-08-31, as part of the user management milestone (#438, issue #440).
 
 ## The decision

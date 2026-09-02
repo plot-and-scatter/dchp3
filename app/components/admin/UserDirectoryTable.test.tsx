@@ -53,6 +53,21 @@ const renderTable = (
 const rowFor = (name: string) => screen.getByText(name).closest("tr")!
 
 describe("UserDirectoryTable", () => {
+  it("links the name to that person's page", () => {
+    renderTable([user({ email: "some.one@example.com" })])
+    expect(screen.getByText("Some One").closest("a")).toHaveAttribute(
+      "href",
+      "/admin/users/some.one%40example.com"
+    )
+  })
+
+  it("does not link a row with no address, which has no page", () => {
+    renderTable([user({ name: "No Address", email: null })])
+    expect(
+      screen.queryByRole("link", { name: "No Address" })
+    ).not.toBeInTheDocument()
+  })
+
   it("says so when there is nobody to show", () => {
     renderTable([])
     expect(screen.getByText("There is nobody to show.")).toBeInTheDocument()
@@ -338,9 +353,7 @@ describe("UserDirectoryTable", () => {
     // Worded so it cannot be read as being about the Auth0 connection: it is
     // about the user table having no unique index on email.
     expect(
-      screen.getByText(
-        /2 records in this site.s own database share this address/
-      )
+      screen.getByText(/2 records in the DCHP database share this address/)
     ).toBeInTheDocument()
   })
 

@@ -198,6 +198,31 @@ that points into it is running.
 4. Confirm the next morning that the 03:28 reboot brought the site back, and
    that the journal for the unit shows a start of seconds with no `npm i`.
 
+### Before a deploy that brings new environment variables
+
+`.env.production` is not in the repository and the deploy script does not
+touch it, so a variable added in code has to be added on the server by hand
+**before** the deploy that needs it.
+
+The failure is quiet when this is missed. The site starts, serves every page,
+and passes the deploy script's own health check; only the feature that needed
+the variable fails, and only when somebody opens it.
+
+Currently outstanding: `AUTH0_MGMT_CLIENT_ID` and `AUTH0_MGMT_CLIENT_SECRET`,
+for user management. Both belong to the Auth0 Machine-to-Machine application,
+which is a different application from the one the login flow uses — see
+`.env.example` for the distinction and the scopes it needs, and
+`docs/auth/user-management.md` for what depends on them.
+
+To check what the server has before deploying, without printing any values:
+
+```
+sudo grep -c AUTH0_MGMT_CLIENT_ID /var/www/dchp3/.env.production
+```
+
+`1` means it is set. `0` means the deploy will appear to work and
+`/admin/users` will not.
+
 ### Deploying after this
 
 `sudo /usr/local/sbin/dchp3-deploy-production.sh`, watched. It prints the

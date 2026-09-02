@@ -14,6 +14,11 @@
 // callers can render a partial page when Auth0 is unreachable rather than
 // losing the whole route to an error boundary.
 
+// Imported rather than declared here: the name is also needed in the browser,
+// where deciding whether an account can have a password at all is a rendering
+// question, and this module may not be loaded there.
+import { DATABASE_CONNECTION } from "./userDirectory"
+
 export type Auth0ErrorKind =
   // A required environment variable is missing.
   | "config"
@@ -56,9 +61,7 @@ export type Auth0Role = {
   description?: string
 }
 
-// The database connection every DCHP user lives in. Auth0 names connections
-// per tenant; this is the default name for the built-in one.
-export const DATABASE_CONNECTION = "Username-Password-Authentication"
+export { DATABASE_CONNECTION }
 
 // Auth0 caps per_page at 100 for the user list.
 const USERS_PER_PAGE = 100
@@ -369,6 +372,23 @@ export async function listAllAuth0Users(): Promise<Auth0Result<Auth0User[]>> {
       } users, which this client does not page past.`,
     },
   }
+}
+
+/**
+ * Every Auth0 account on one address. There is usually one, and sometimes two:
+ * a person who has signed in both with Google and with a password holds two
+ * unlinked accounts. See docs/auth/roles.md.
+ *
+ * This is a different endpoint from /users with a query, and an exact match on
+ * the address rather than a search, so it is not subject to the search index
+ * being a moment behind.
+ */
+export async function findAuth0UsersByEmail(
+  email: string
+): Promise<Auth0Result<Auth0User[]>> {
+  return managementRequest<Auth0User[]>("/users-by-email", {
+    searchParams: { email: email.trim().toLowerCase() },
+  })
 }
 
 /** The roles defined in the tenant. Role IDs differ per tenant, so read them. */

@@ -5,9 +5,7 @@ import { data } from "react-router"
 import { sessionStorage } from "./session.server"
 import { getEmail, getIsAdmin, getRolesFromProfile } from "utils/user.server"
 import type { AuthRole } from "./AuthRole"
-import type { DisplayUser } from "~/models/user.server"
-import { getUserByEmailSafe } from "~/models/user.server"
-import { prisma } from "~/db.server"
+import { ensureLocalUserForLogin } from "~/models/user.server"
 
 export type LoggedInUser = {
   email: string
@@ -50,37 +48,22 @@ export const authenticator = () => {
       if (!email)
         throw data({ message: "No email defined on user!" }, { status: 500 })
 
-      let user: DisplayUser | null
+      // Creating the row if there is none, and leaving it alone if there is.
+      // See ensureLocalUserForLogin: signing in must not reactivate someone an
+      // administrator has deactivated.
+      const user = await ensureLocalUserForLogin({
+        email,
+        firstName,
+        lastName: lastName.join(" "),
+      })
 
-      user = await getUserByEmailSafe({ email })
-
-      // TODO: Handle this case more elegantly.
       if (!user) {
-        user = await prisma.user.create({
-          data: {
-            first_name: firstName,
-            last_name: lastName.join(" "),
-            email,
-            is_active: 1,
+        throw data(
+          {
+            message: `No user in database with email ${email}, and could not create one`,
           },
-        })
-
-        if (!user) {
-          throw data(
-            {
-              message: `No user in database with email ${email}, and could not create one`,
-            },
-            { status: 500 }
-          )
-        }
-      } else {
-        // User exists, we just need to update their is_active status.
-        user = await prisma.user.update({
-          where: { email },
-          data: {
-            is_active: 1,
-          },
-        })
+          { status: 500 }
+        )
       }
 
       return {
