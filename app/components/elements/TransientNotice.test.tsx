@@ -32,7 +32,7 @@ describe("TransientNotice", () => {
     render(<TransientNotice>Name saved.</TransientNotice>)
     advance(5000)
 
-    expect(screen.getByRole("status").className).toContain("opacity-0")
+    expect(screen.getByRole("status")).toHaveClass("opacity-0")
     expect(screen.getByText("Name saved.")).toBeInTheDocument()
   })
 
@@ -57,7 +57,7 @@ describe("TransientNotice", () => {
 
   it("turns the fade off where motion is not wanted", () => {
     render(<TransientNotice>Name saved.</TransientNotice>)
-    expect(screen.getByRole("status").className).toContain(
+    expect(screen.getByRole("status")).toHaveClass(
       "motion-reduce:transition-none"
     )
   })

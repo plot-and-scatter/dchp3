@@ -42,13 +42,13 @@ describe("role badges", () => {
       </span>
     )
 
-    expect(screen.getByText(role).className).toContain(tone)
+    expect(screen.getByText(role)).toHaveClass(tone)
     expect(container.querySelector(`.${icon}`)).not.toBeNull()
   })
 
   it("marks an account with no role as one to look at", () => {
     render(<span>{roleBadges(user()).map((badge) => renderBadge(badge))}</span>)
-    expect(screen.getByText("No role").className).toContain("alert")
+    expect(screen.getByText("No role")).toHaveClass("text-alert-800")
   })
 })
 

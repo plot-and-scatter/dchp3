@@ -14,6 +14,11 @@
 // callers can render a partial page when Auth0 is unreachable rather than
 // losing the whole route to an error boundary.
 
+// Imported rather than declared here: the name is also needed in the browser,
+// where deciding whether an account can have a password at all is a rendering
+// question, and this module may not be loaded there.
+import { DATABASE_CONNECTION } from "./userDirectory"
+
 export type Auth0ErrorKind =
   // A required environment variable is missing.
   | "config"
@@ -55,11 +60,6 @@ export type Auth0Role = {
   name: string
   description?: string
 }
-
-// Imported rather than declared here: the name is also needed in the browser,
-// where deciding whether an account can have a password at all is a rendering
-// question, and this module may not be loaded there.
-import { DATABASE_CONNECTION } from "./userDirectory"
 
 export { DATABASE_CONNECTION }
 

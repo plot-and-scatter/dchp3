@@ -11,7 +11,7 @@
     "dev:css": "npm run generate:css -- --watch",
     "format": "prettier --write .",
     "generate:css": "tailwindcss -o ./app/styles/tailwind.css",
-    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "lint": "eslint --cache --cache-strategy content --cache-location ./node_modules/.cache/eslint .",
     "setup": "prisma generate && prisma migrate deploy && prisma db seed",
     "start": "react-router-serve ./build/server/index.js",
     "start-shell": "/usr/local/bin/dotenv -e .env.production react-router-serve ./build/server/index.js",

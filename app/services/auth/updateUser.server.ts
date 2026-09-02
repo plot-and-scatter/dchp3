@@ -1,5 +1,10 @@
 import { prisma } from "~/db.server"
-import type { UpdateUserNameInput } from "~/models/user.schemas"
+import {
+  NO_ROLE,
+  type ChangeRoleInput,
+  type SetActiveInput,
+  type UpdateUserNameInput,
+} from "~/models/user.schemas"
 import {
   assignAuth0Roles,
   getAuth0UserRoles,
@@ -7,11 +12,6 @@ import {
   removeAuth0Roles,
   updateAuth0User,
 } from "./management.server"
-import {
-  NO_ROLE,
-  type ChangeRoleInput,
-  type SetActiveInput,
-} from "~/models/user.schemas"
 import type { AuthRole } from "./AuthRole"
 import type { DirectoryUser } from "./userDirectory"
 

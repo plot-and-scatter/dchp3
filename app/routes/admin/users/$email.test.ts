@@ -167,9 +167,7 @@ describe("changing a role", () => {
 
   it("refuses when the session carries no address to compare", async () => {
     // Not being able to tell whose account this is is a reason to stop.
-    const result = await action(
-      await post({ as: null, page: SOMEONE_ELSE, role: "Display" })
-    )
+    await action(await post({ as: null, page: SOMEONE_ELSE, role: "Display" }))
 
     expect(changeUserRole).not.toHaveBeenCalled()
   })

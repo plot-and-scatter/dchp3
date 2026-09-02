@@ -8,8 +8,6 @@ import {
 import {
   ACCESS_FILTERS,
   ACCESS_FILTER_LABELS,
-  isFullyBlocked,
-  isPartiallyBlocked,
   lastLoginAt,
   ROLE_FILTERS,
   ROLE_FILTER_LABELS,

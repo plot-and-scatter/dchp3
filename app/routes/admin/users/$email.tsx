@@ -32,7 +32,7 @@ import {
   updateUserName,
 } from "~/services/auth/updateUser.server"
 import { getDirectoryUserByEmail } from "~/services/auth/userDirectory.server"
-import { redirectIfUserLacksPermission } from "~/services/auth/session.server"
+import { redirectIfUserLacksPermission , getEmailFromSession } from "~/services/auth/session.server"
 import {
   hasPassword,
   isFullyBlocked,
@@ -40,7 +40,6 @@ import {
   type DirectoryUser,
 } from "~/services/auth/userDirectory"
 import { AUTH_ROLES } from "~/services/auth/AuthRole"
-import { getEmailFromSession } from "~/services/auth/session.server"
 import { MANAGE_USERS_PERMISSION } from "../users"
 
 // One person, and everything done to them. Changing a role is #444 and
