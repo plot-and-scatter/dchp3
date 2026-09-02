@@ -4,6 +4,7 @@ node_modules
 /.react-router
 .env
 .env.production
+.env.staging
 .update-code.sh
 
 /cypress/screenshots
