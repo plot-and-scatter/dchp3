@@ -8,7 +8,7 @@ Wants=network-online.target
 After=network-online.target mysqld.service
 
 [Service]
-# Serve only. Installing and building happen in deploy-production.sh, by hand.
+# Serve only. Installing and building happen in deploy.sh, by hand.
 # With Restart=always, a crash loop now restarts the server every 10s instead
 # of reinstalling and rebuilding the whole tree every 10s.
 ExecStart=/bin/bash /usr/local/sbin/dchp3-start-production.sh
