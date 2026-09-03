@@ -147,28 +147,26 @@ root partition in April 2025.
 With the split, a boot serves the existing build in seconds and deploys
 happen only when someone runs the deploy script and watches it.
 
-## Production: dchp3-remix-server.service, start-production.sh, deploy-production.sh
+## Production: dchp3-remix-server.service, start-production.sh
 
 The unit keeps its original name, so there is nothing to enable or disable —
 only the file contents change.
 
-Unlike staging, production's two scripts install to `/usr/local/sbin` rather
-than being run from `scripts/server/` inside the deployed tree. Two reasons:
-the deployed tree does not contain these scripts until production is upgraded
-to current `main`, and the deploy script rewrites that tree while the unit
-that points into it is running.
+`start-production.sh` installs to `/usr/local/sbin` rather than running from
+the deployed tree, so that a tree which fails to build can still be served from
+a script that does not depend on it. The deploy script goes there for a
+stronger reason; see "Installing the deploy script" below.
 
 ### Installation
 
-1. Copy both scripts in, root-only:
+1. Copy the start script in, root-only. The deploy script is shared with
+   staging and is installed separately, below.
 
    ```
    sudo curl -fL -o /usr/local/sbin/dchp3-start-production.sh \
      https://raw.githubusercontent.com/plot-and-scatter/dchp3/main/scripts/server/start-production.sh
-   sudo curl -fL -o /usr/local/sbin/dchp3-deploy-production.sh \
-     https://raw.githubusercontent.com/plot-and-scatter/dchp3/main/scripts/server/deploy-production.sh
-   sudo chown root:root /usr/local/sbin/dchp3-*-production.sh
-   sudo chmod 700 /usr/local/sbin/dchp3-*-production.sh
+   sudo chown root:root /usr/local/sbin/dchp3-start-production.sh
+   sudo chmod 700 /usr/local/sbin/dchp3-start-production.sh
    ```
 
 2. Prove the start script by hand before the unit depends on it. This is the
@@ -200,9 +198,9 @@ that points into it is running.
 
 ### Before a deploy that brings new environment variables
 
-`.env.production` is not in the repository and the deploy script does not
-touch it, so a variable added in code has to be added on the server by hand
-**before** the deploy that needs it.
+`.env.production` and `.env.staging` are not in the repository and the deploy
+script does not touch them, so a variable added in code has to be added on the
+server by hand **before** the deploy that needs it.
 
 The failure is quiet when this is missed. The site starts, serves every page,
 and passes the deploy script's own health check; only the feature that needed
@@ -214,7 +212,7 @@ which is a different application from the one the login flow uses — see
 `.env.example` for the distinction and the scopes it needs, and
 `docs/auth/user-management.md` for what depends on them.
 
-To check what the server has before deploying, without printing any values:
+To check what a server has before deploying, without printing any values:
 
 ```
 sudo grep -c AUTH0_MGMT_CLIENT_ID /var/www/dchp3/.env.production
@@ -223,65 +221,61 @@ sudo grep -c AUTH0_MGMT_CLIENT_ID /var/www/dchp3/.env.production
 `1` means it is set. `0` means the deploy will appear to work and
 `/admin/users` will not.
 
-### Deploying after this
+### Deploying
 
-`sudo /usr/local/sbin/dchp3-deploy-production.sh`, watched. It prints the
-current commit and the command to roll back to it before doing anything, and
-asks for confirmation (`-y` skips the prompt).
-
-Both production scripts pin `PATH` at the Node 22 tarball in `/opt`, exactly
-as the staging scripts do; the system Node stays at 18 and nothing else on
-the box is affected. Read the header of the deploy script before its first
-run: as long as the deployed tree predates PR #424, that first deploy is also
-production's move to current `main`. That is a scheduled window, not a
-routine deploy.
-
-## Staging: dchp3-staging.service, start-staging.sh, deploy-staging.sh
-
-The same design, proven on staging first (2026-08-28). Staging runs from
-`/var/www/dchp3-staging` on port 8081 and reads `.env.staging`. Its unit is
-enabled at boot, which is safe precisely because the start script only serves.
-
-### Deploying to staging
+One script, both environments:
 
 ```
-sudo /usr/local/sbin/dchp3-deploy-staging.sh
+sudo dchp3-deploy staging
+sudo dchp3-deploy production
 ```
 
-It lists the open pull requests and asks which to deploy, because trying a
-branch before it reaches `main` is what staging is for. `0` is `main`. A branch
-name can be typed instead of a number, or passed as an argument to skip the
-menu entirely:
+It prints the current commit and the command to roll back to it before making
+any change, refuses to run over edited tracked files, asks for confirmation,
+and checks the site answers afterwards. **Read the last two lines**, which name
+the branch and commit it ended on. A deploy that quietly stayed on the wrong
+branch otherwise looks exactly like one that worked, which has happened.
+
+**Staging asks which branch**, listing the open pull requests, because trying a
+branch before it reaches `main` is what staging is for. `0` is `main`, a branch
+name can be typed instead of a number, and one can be passed as an argument to
+skip the menu:
 
 ```
-sudo /usr/local/sbin/dchp3-deploy-staging.sh main
+sudo dchp3-deploy staging feature/some-branch
 ```
 
 The list comes from the GitHub API without credentials, the repository being
 public. If GitHub cannot be reached the menu still offers `main` and still
 accepts a branch name typed by hand.
 
-It prints the current commit and the command to roll back to it before making
-any change, refuses to run over uncommitted changes in the tree, and prints the
-branch and commit it ended on. **That last line is the one worth reading.** A
-deploy that quietly stayed on the wrong branch otherwise looks exactly like one
-that worked, which has happened.
+**Production deploys `main` and nothing else.** Putting anything else on it
+means checking the tree out by hand first; the extra step is the point.
 
-### Installing the staging scripts
+### Installing the deploy script
+
+**It goes in `/usr/local/sbin`, not in either deployed tree.** It rewrites the
+tree while running, and bash reads a script as it goes, so a copy running from
+inside the tree can be replaced underneath itself part-way through.
+
+```
+sudo curl -fL -o /usr/local/sbin/dchp3-deploy \
+  https://raw.githubusercontent.com/plot-and-scatter/dchp3/main/scripts/server/deploy.sh
+sudo chown root:root /usr/local/sbin/dchp3-deploy
+sudo chmod 700 /usr/local/sbin/dchp3-deploy
+```
+
+Re-copy it whenever the script changes; a deploy updates the tree's copy and
+not this one. If `sudo dchp3-deploy` says the command is not found, sudo's
+`secure_path` does not include `/usr/local/sbin`, and the full path works.
+
+The two earlier scripts, `deploy-production.sh` and `deploy-staging.sh`, are
+replaced by this one. Delete them from `/usr/local/sbin` once it is in place.
+
+## Staging: dchp3-staging.service, start-staging.sh
+
+The same design, proven on staging first (2026-08-28). Staging runs from
+`/var/www/dchp3-staging` on port 8081 and reads `.env.staging`. Its unit is
+enabled at boot, which is safe precisely because the start script only serves.
 
 `start-staging.sh` runs from the deployed tree, which is fine: it only serves.
-
-**`deploy-staging.sh` must be installed to `/usr/local/sbin`, not run from the
-tree.** It rewrites that tree while running, and bash reads a script as it
-goes, so a copy running from inside the tree can be replaced underneath itself
-part-way through.
-
-```
-sudo curl -fL -o /usr/local/sbin/dchp3-deploy-staging.sh \
-  https://raw.githubusercontent.com/plot-and-scatter/dchp3/main/scripts/server/deploy-staging.sh
-sudo chown root:root /usr/local/sbin/dchp3-deploy-staging.sh
-sudo chmod 700 /usr/local/sbin/dchp3-deploy-staging.sh
-```
-
-Re-copy it whenever the script itself changes; a deploy updates the tree's copy
-and not this one.
