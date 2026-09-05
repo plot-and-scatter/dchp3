@@ -24,16 +24,8 @@ export const EDITING_STATUS_INPUTS: {
     label: "Semantically revised",
   },
   {
-    type: EditingStatusTypeEnum.EDITED_FOR_STYLE,
-    label: "Edited for style",
-  },
-  {
     type: EditingStatusTypeEnum.CHIEF_EDITOR_OK,
     label: "Chief editor OK",
-  },
-  {
-    type: EditingStatusTypeEnum.NO_CDN_SUSP,
-    label: "Not Cdn. suspected",
   },
   {
     type: EditingStatusTypeEnum.NO_CDN_CONF,
