@@ -23,6 +23,8 @@ export const UpdateEditingStatusSchema = z
     first_draft: ZCheckboxValueToBoolean,
     revised_draft: ZCheckboxValueToBoolean,
     semantically_revised: ZCheckboxValueToBoolean,
+    // Retained so a stale form submitting these is not rejected by .strict();
+    // updateEditingStatus discards both. See issue #476.
     edited_for_style: ZCheckboxValueToBoolean,
     chief_editor_ok: ZCheckboxValueToBoolean,
     no_cdn_susp: ZCheckboxValueToBoolean,
@@ -35,7 +37,16 @@ export const UpdateEditingStatusSchema = z
 export async function updateEditingStatus(
   data: z.infer<typeof UpdateEditingStatusSchema>
 ) {
-  const { entryEditorFormAction, entryId, ...rest } = data
+  // `edited_for_style` and `no_cdn_susp` are no longer shown in the editor, so
+  // the form never submits them and the schema would resolve both to false.
+  // Leave them out of the update so existing values in the database stand.
+  const {
+    entryEditorFormAction,
+    entryId,
+    edited_for_style,
+    no_cdn_susp,
+    ...rest
+  } = data
 
   await prisma.entry.update({
     where: { id: entryId },
