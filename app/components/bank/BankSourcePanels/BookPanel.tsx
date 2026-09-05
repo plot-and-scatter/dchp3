@@ -53,7 +53,7 @@ export default function BookPanel(props: BankEditCitationFieldsProps) {
             name={`source.editor`}
             showField={showField}
             defaultValue={source?.editor}
-            placeholder="e.g. Cruikshank, E. E."
+            placeholder="e.g. Cruikshank, E. E., John Smith, Suzanne Clark"
           />
         }
       />
