@@ -19,7 +19,12 @@ const renderNav = (roles?: AuthRole[]) =>
 const ALWAYS = ["Your profile", "Admin interface"]
 const BANK_READ = ["Bank", "Browse citations", "Search citations"]
 const BANK_WRITE = ["Add citation", "Your citations"]
-const EDITOR = ["All Editing History", "DCHP", "Insert entry"]
+const EDITOR = [
+  "All Editing History",
+  "DCHP",
+  "Insert entry",
+  "Frequency Index",
+]
 const SUPERADMIN_ONLY = ["Display Users", "Manage users"]
 
 const EVERY_ITEM = [

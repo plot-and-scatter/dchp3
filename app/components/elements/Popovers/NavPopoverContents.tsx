@@ -92,6 +92,12 @@ const NAV_SECTIONS: NavSection[] = [
         icon: <i className="fa fa-book-font" />,
         permission: "det:createDraft",
       },
+      {
+        name: "Frequency Index",
+        href: "/frequency-index",
+        icon: <i className="fa fa-chart-simple" />,
+        permission: "det:frequencyIndex",
+      },
     ],
   },
 ]
