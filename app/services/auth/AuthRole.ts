@@ -41,6 +41,7 @@ export type AuthPermission =
   | "det:manageUsers"
   | "det:viewEdits"
   | "det:editReferences"
+  | "det:frequencyIndex" // use the Frequency Index tool
   | "det:TEST" // for testing only
 
 const DISPLAY_PERMISSIONS: AuthPermission[] = ["bank:read"]
@@ -51,6 +52,7 @@ const STUDENT_EDITOR_PERMISSIONS: AuthPermission[] = [
   "det:createDraft",
   "det:editOwn",
   "det:viewEdits",
+  "det:frequencyIndex",
 ]
 const RESEARCH_ASSISTANT_PERMISSIONS: AuthPermission[] = [
   ...STUDENT_EDITOR_PERMISSIONS,

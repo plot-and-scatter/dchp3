@@ -17,6 +17,10 @@ import type * as SessionServer from "~/services/auth/session.server"
 import type * as BankLayout from "./bank"
 import type * as BankCreate from "./bank/create"
 import type * as BankEdit from "./bank/edit/$citationId"
+import type * as FrequencyIndex from "./frequency-index/index"
+import type * as FrequencyLookup from "./frequency-index/$id"
+import type * as FrequencyLookupEdit from "./frequency-index/$id.edit"
+import type * as FrequencyNormalizers from "./frequency-index/normalizers"
 
 // These loaders reach Prisma once the guard lets them through, and
 // ~/db.server builds a real PrismaClient at import time. CI has no .env.
@@ -61,6 +65,14 @@ let sessionStorage: typeof SessionServer.sessionStorage
 let bankLayoutLoader: typeof BankLayout.loader
 let bankCreateAction: typeof BankCreate.action
 let bankEditAction: typeof BankEdit.action
+let frequencyIndexLoader: typeof FrequencyIndex.loader
+let frequencyIndexAction: typeof FrequencyIndex.action
+let frequencyLookupLoader: typeof FrequencyLookup.loader
+let frequencyLookupAction: typeof FrequencyLookup.action
+let frequencyNormalizersAction: typeof FrequencyNormalizers.action
+let frequencyLookupEditLoader: typeof FrequencyLookupEdit.loader
+let frequencyLookupEditAction: typeof FrequencyLookupEdit.action
+let frequencyNormalizersLoader: typeof FrequencyNormalizers.loader
 
 beforeAll(async () => {
   process.env.COOKIE_SECRET = "test-cookie-secret"
@@ -73,6 +85,14 @@ beforeAll(async () => {
   ;({ loader: bankLayoutLoader } = await import("./bank"))
   ;({ action: bankCreateAction } = await import("./bank/create"))
   ;({ action: bankEditAction } = await import("./bank/edit/$citationId"))
+  ;({ loader: frequencyIndexLoader, action: frequencyIndexAction } =
+    await import("./frequency-index/index"))
+  ;({ loader: frequencyLookupLoader, action: frequencyLookupAction } =
+    await import("./frequency-index/$id"))
+  ;({ loader: frequencyLookupEditLoader, action: frequencyLookupEditAction } =
+    await import("./frequency-index/$id.edit"))
+  ;({ loader: frequencyNormalizersLoader, action: frequencyNormalizersAction } =
+    await import("./frequency-index/normalizers"))
 })
 
 beforeEach(() => {
@@ -147,6 +167,62 @@ const GUARDED = [
     params: { id: "1" },
     run: (request: Request, params: object) =>
       referenceAction(args(request, params)),
+  },
+  {
+    name: "/frequency-index loader",
+    url: "http://localhost/frequency-index",
+    params: {},
+    run: (request: Request, params: object) =>
+      frequencyIndexLoader(args(request, params)),
+  },
+  {
+    name: "/frequency-index action",
+    url: "http://localhost/frequency-index",
+    params: {},
+    run: (request: Request, params: object) =>
+      frequencyIndexAction(args(request, params)),
+  },
+  {
+    name: "/frequency-index/$id loader",
+    url: "http://localhost/frequency-index/1",
+    params: { id: "1" },
+    run: (request: Request, params: object) =>
+      frequencyLookupLoader(args(request, params)),
+  },
+  {
+    name: "/frequency-index/$id action",
+    url: "http://localhost/frequency-index/1",
+    params: { id: "1" },
+    run: (request: Request, params: object) =>
+      frequencyLookupAction(args(request, params)),
+  },
+  {
+    name: "/frequency-index/$id/edit loader",
+    url: "http://localhost/frequency-index/1/edit",
+    params: { id: "1" },
+    run: (request: Request, params: object) =>
+      frequencyLookupEditLoader(args(request, params)),
+  },
+  {
+    name: "/frequency-index/$id/edit action",
+    url: "http://localhost/frequency-index/1/edit",
+    params: { id: "1" },
+    run: (request: Request, params: object) =>
+      frequencyLookupEditAction(args(request, params)),
+  },
+  {
+    name: "/frequency-index/normalizers loader",
+    url: "http://localhost/frequency-index/normalizers",
+    params: {},
+    run: (request: Request, params: object) =>
+      frequencyNormalizersLoader(args(request, params)),
+  },
+  {
+    name: "/frequency-index/normalizers action",
+    url: "http://localhost/frequency-index/normalizers",
+    params: {},
+    run: (request: Request, params: object) =>
+      frequencyNormalizersAction(args(request, params)),
   },
 ]
 
