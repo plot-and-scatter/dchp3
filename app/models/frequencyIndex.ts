@@ -32,7 +32,7 @@ export const FREQUENCY_DOMAIN_KEYS = FREQUENCY_DOMAINS.map((d) => d.key) as [
 ]
 
 export const DEFAULT_NORMALIZER = "the"
-export const MULTIPLIERS = [10_000, 100_000] as const
+export const MULTIPLIERS = [10_000, 100_000, 1_000_000] as const
 export const DEFAULT_MULTIPLIER: typeof MULTIPLIERS[number] = 10_000
 
 /** Language pinned on every generated link so all students run the same query. */
@@ -47,6 +47,23 @@ const quoteIfPhrase = (term: string) =>
   /\s/.test(term) && !/^".*"$/.test(term) ? `"${term}"` : term
 
 /**
+ * `toque AND hockey` means pages that contain both words. Google has no AND
+ * operator (every term is required by default, but a bare word may be
+ * dropped or matched loosely), so each side is quoted: `"toque" "hockey"`.
+ * AND must be upper case with a space on each side; "and" in a phrase is
+ * left alone. A side that is already a phrase is quoted once.
+ */
+export const searchTerms = (term: string) => {
+  const parts = term
+    .trim()
+    .split(/\s+AND\s+/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+  if (parts.length <= 1) return quoteIfPhrase(term.trim())
+  return parts.map((p) => (/^".*"$/.test(p) ? p : `"${p}"`)).join(" ")
+}
+
+/**
  * The query for the term on one domain. Exclusions (`-word`, `-site:x`) go
  * here and only here: they narrow the numerator, never the normalizer,
  * because the normalizer count stands in for the size of the domain.
@@ -57,13 +74,11 @@ export const termQuery = (
   exclusions?: string | null
 ) => {
   const ex = normalizeExclusions(exclusions)
-  return [quoteIfPhrase(term.trim()), ex, siteClause(domain)]
-    .filter(Boolean)
-    .join(" ")
+  return [searchTerms(term), ex, siteClause(domain)].filter(Boolean).join(" ")
 }
 
 export const normalizerQuery = (normalizer: string, domain: FrequencyDomain) =>
-  `${quoteIfPhrase(normalizer.trim())} ${siteClause(domain)}`
+  `${searchTerms(normalizer)} ${siteClause(domain)}`
 
 /**
  * Exclusions are typed as free text. Each whitespace-separated token that
@@ -121,6 +136,13 @@ export const formatIndex = (index: number | null) =>
 export const formatCount = (n: number | null | undefined) =>
   n === null || n === undefined ? "" : n.toLocaleString("en-CA")
 
+/** 4,380,000,000 as "4.4B", 247,000,000 as "247M": for labels, not records. */
+export const formatCompact = (n: number) =>
+  new Intl.NumberFormat("en-CA", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(n)
+
 // ---------------------------------------------------------------- form schema
 
 const countField = z
@@ -128,6 +150,24 @@ const countField = z
   .int()
   .min(0)
   .max(Number.MAX_SAFE_INTEGER)
+
+const multiplierField = z
+  .number()
+  .refine((m) => (MULTIPLIERS as readonly number[]).includes(m), {
+    message: `Multiplier must be one of ${MULTIPLIERS.map((m) =>
+      formatCount(m)
+    ).join(", ")}`,
+  })
+
+const rowsField = <T extends z.ZodType<{ domainKey: string }>>(row: T) =>
+  z
+    .array(row)
+    .length(FREQUENCY_DOMAINS.length, "One row per domain is required")
+    .refine(
+      (rows) =>
+        new Set(rows.map((r) => r.domainKey)).size === FREQUENCY_DOMAINS.length,
+      { message: "Each domain must appear exactly once" }
+    )
 
 export const FrequencyLookupSchema = z.object({
   term: z
@@ -139,29 +179,49 @@ export const FrequencyLookupSchema = z.object({
     .trim()
     .min(1, "Enter a normalizer"),
   exclusions: z.string().trim().optional(),
-  multiplier: z
-    .number()
-    .refine((m) => (MULTIPLIERS as readonly number[]).includes(m), {
-      message: "Multiplier must be 10,000 or 100,000",
-    }),
-  rows: z
-    .array(
-      z.object({
-        domainKey: z.enum(FREQUENCY_DOMAIN_KEYS),
-        termHits: countField,
-        normalizerHits: countField.min(1, "Normalizer count must be above 0"),
-        normalizerReusedFromId: z.number().int().optional(),
-      })
-    )
-    .length(FREQUENCY_DOMAINS.length, "One row per domain is required")
-    .refine(
-      (rows) =>
-        new Set(rows.map((r) => r.domainKey)).size === FREQUENCY_DOMAINS.length,
-      { message: "Each domain must appear exactly once" }
-    ),
+  multiplier: multiplierField,
+  rows: rowsField(
+    z.object({
+      domainKey: z.enum(FREQUENCY_DOMAIN_KEYS),
+      termHits: countField,
+      normalizerHits: countField.min(1, "Normalizer count must be above 0"),
+      /** Set when the normalizer count was reused from an existing observation. */
+      normalizerCountId: z.number().int().optional(),
+    })
+  ),
 })
 
 export type FrequencyLookupInput = z.infer<typeof FrequencyLookupSchema>
 
+/**
+ * Correcting a saved lookup: the counts and the multiplier can change, the
+ * term, normalizer and exclusions cannot, because the stored queries and
+ * links were built from them. A wrong term is a new lookup.
+ *
+ * A changed normalizer count is either a correction of the observation,
+ * which changes every lookup that used it, or a new observation for this
+ * lookup alone. `normalizerChange` says which; it is only read when the
+ * count differs from the stored one.
+ */
+export const NORMALIZER_CHANGES = ["correct", "new"] as const
+export type NormalizerChange = typeof NORMALIZER_CHANGES[number]
+
+export const FrequencyLookupEditSchema = z.object({
+  multiplier: multiplierField,
+  rows: rowsField(
+    z.object({
+      domainKey: z.enum(FREQUENCY_DOMAIN_KEYS),
+      termHits: countField,
+      normalizerHits: countField.min(1, "Normalizer count must be above 0"),
+      normalizerChange: z.enum(NORMALIZER_CHANGES).default("correct"),
+    })
+  ),
+})
+
+export type FrequencyLookupEditInput = z.infer<typeof FrequencyLookupEditSchema>
+
 export const domainByKey = (key: string) =>
   FREQUENCY_DOMAINS.find((d) => d.key === key)
+
+/** Source label for a normalizer count read during a term lookup. */
+export const SOURCE_LOOKUP = "lookup"

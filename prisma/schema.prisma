@@ -379,23 +379,26 @@ model BankTitle {
 }
 
 model User {
-  id                    Int               @id @default(autoincrement())
-  student_id            Int?
-  course                String?           @db.VarChar(100)
-  access_level          Int?
-  is_active             Int?
-  first_name            String?           @db.VarChar(100)
-  last_name             String?           @db.VarChar(100)
-  email                 String?           @db.VarChar(200)
-  password              String?           @db.VarChar(50)
-  password_key          String?           @db.VarChar(50)
-  is_dchp1              Int?              @db.TinyInt
-  is_proofer            Int?              @default(1)
-  is_teach              Int?              @db.TinyInt
-  logEntries            LogEntry[]
-  createdCitations      BankCitation[]    @relation(name: "creator")
-  lastModifiedCitations BankCitation[]    @relation(name: "lastModifier")
-  frequencyLookups      FrequencyLookup[]
+  id                              Int                        @id @default(autoincrement())
+  student_id                      Int?
+  course                          String?                    @db.VarChar(100)
+  access_level                    Int?
+  is_active                       Int?
+  first_name                      String?                    @db.VarChar(100)
+  last_name                       String?                    @db.VarChar(100)
+  email                           String?                    @db.VarChar(200)
+  password                        String?                    @db.VarChar(50)
+  password_key                    String?                    @db.VarChar(50)
+  is_dchp1                        Int?                       @db.TinyInt
+  is_proofer                      Int?                       @default(1)
+  is_teach                        Int?                       @db.TinyInt
+  logEntries                      LogEntry[]
+  createdCitations                BankCitation[]             @relation(name: "creator")
+  lastModifiedCitations           BankCitation[]             @relation(name: "lastModifier")
+  frequencyLookups                FrequencyLookup[]          @relation("FrequencyLookupUser")
+  frequencyLookupUpdates          FrequencyLookup[]          @relation("FrequencyLookupUpdatedUser")
+  frequencyNormalizerCounts       FrequencyNormalizerCount[] @relation("FrequencyNormalizerCountUser")
+  frequencyNormalizerCountUpdates FrequencyNormalizerCount[] @relation("FrequencyNormalizerCountUpdatedUser")
 
   @@unique([email])
   @@map("user")
@@ -406,39 +409,68 @@ model User {
 // change of method (normalizer, multiplier, backend) relabels old rows
 // instead of invalidating them. See docs/frequency-index/frequency-index.md.
 model FrequencyLookup {
-  id         Int                  @id @default(autoincrement())
-  term       String               @db.VarChar(255)
-  normalizer String               @db.VarChar(100)
-  exclusions String?              @db.VarChar(500)
-  multiplier Int
-  backend    String               @db.VarChar(50)
-  hl         String?              @db.VarChar(10)
-  gl         String?              @db.VarChar(10)
-  user_id    Int
-  created    DateTime             @db.DateTime(0)
-  user       User                 @relation(fields: [user_id], references: [id], onDelete: NoAction)
-  rows       FrequencyLookupRow[]
+  id              Int                        @id @default(autoincrement())
+  term            String                     @db.VarChar(255)
+  normalizer      String                     @db.VarChar(100)
+  exclusions      String?                    @db.VarChar(500)
+  multiplier      Int
+  backend         String                     @db.VarChar(50)
+  hl              String?                    @db.VarChar(10)
+  gl              String?                    @db.VarChar(10)
+  user_id         Int
+  created         DateTime                   @db.DateTime(0)
+  updated         DateTime?                  @db.DateTime(0)
+  updated_user_id Int?
+  user            User                       @relation("FrequencyLookupUser", fields: [user_id], references: [id], onDelete: NoAction)
+  updated_user    User?                      @relation("FrequencyLookupUpdatedUser", fields: [updated_user_id], references: [id], onDelete: NoAction)
+  rows            FrequencyLookupRow[]
+  /// Observations read during this lookup.
+  readCounts      FrequencyNormalizerCount[]
 
   @@index([term], map: "frequency_lookup_term_idx")
   @@index([user_id], map: "frequency_lookup_user_idx")
+  @@index([normalizer], map: "frequency_lookup_normalizer_idx")
   @@map("det_frequency_lookups")
 }
 
+/// One reading of the normalizer's hit count on one domain, whatever it was
+/// read for. Lookup rows point at the reading they used.
+model FrequencyNormalizerCount {
+  id              Int                  @id @default(autoincrement())
+  normalizer      String               @db.VarChar(100)
+  domain_key      String               @db.VarChar(20)
+  hits            BigInt
+  observed        DateTime             @db.Date
+  source          String               @db.VarChar(100)
+  lookup_id       Int?
+  user_id         Int
+  created         DateTime             @db.DateTime(0)
+  updated         DateTime?            @db.DateTime(0)
+  updated_user_id Int?
+  lookup          FrequencyLookup?     @relation(fields: [lookup_id], references: [id], onDelete: SetNull)
+  user            User                 @relation("FrequencyNormalizerCountUser", fields: [user_id], references: [id], onDelete: NoAction)
+  updated_user    User?                @relation("FrequencyNormalizerCountUpdatedUser", fields: [updated_user_id], references: [id], onDelete: NoAction)
+  rows            FrequencyLookupRow[]
+
+  @@index([normalizer, domain_key, observed], map: "frequency_normalizer_count_series_idx")
+  @@index([lookup_id], map: "frequency_normalizer_count_lookup_idx")
+  @@map("det_frequency_normalizer_counts")
+}
+
 model FrequencyLookupRow {
-  id                        Int             @id @default(autoincrement())
-  lookup_id                 Int
-  domain_key                String          @db.VarChar(20)
-  domain_label              String          @db.VarChar(50)
-  site_clause               String          @db.VarChar(255)
-  term_query                String          @db.VarChar(1000)
-  normalizer_query          String          @db.VarChar(500)
-  term_hits                 BigInt
-  normalizer_hits           BigInt
-  frequency_index           Float
-  normalizer_reused_from_id Int?
-  lookup                    FrequencyLookup @relation(fields: [lookup_id], references: [id], onDelete: Cascade)
+  id                  Int                      @id @default(autoincrement())
+  lookup_id           Int
+  domain_key          String                   @db.VarChar(20)
+  domain_label        String                   @db.VarChar(50)
+  site_clause         String                   @db.VarChar(255)
+  term_query          String                   @db.VarChar(1000)
+  term_hits           BigInt
+  normalizer_count_id Int
+  lookup              FrequencyLookup          @relation(fields: [lookup_id], references: [id], onDelete: Cascade)
+  normalizer_count    FrequencyNormalizerCount @relation(fields: [normalizer_count_id], references: [id], onDelete: Restrict)
 
   @@index([lookup_id], map: "frequency_lookup_row_lookup_idx")
+  @@index([normalizer_count_id], map: "frequency_lookup_row_count_idx")
   @@map("det_frequency_lookup_rows")
 }
 

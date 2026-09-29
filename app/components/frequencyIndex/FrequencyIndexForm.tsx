@@ -10,9 +10,11 @@ import { Form, useNavigation } from "react-router"
 import type { SubmissionResult } from "@conform-to/react"
 import clsx from "clsx"
 import Button from "~/components/elements/LinksAndButtons/Button"
+import { Link } from "~/components/elements/LinksAndButtons/Link"
+import FAIcon from "~/components/elements/Icons/FAIcon"
+import SaveIcon from "~/components/elements/Icons/SaveIcon"
 import Input from "~/components/bank/Input"
 import TopLabelledField from "~/components/bank/TopLabelledField"
-import KeyboardGuide from "./KeyboardGuide"
 import {
   FREQUENCY_DOMAINS,
   MULTIPLIERS,
@@ -26,7 +28,19 @@ import {
   parseCount,
   termQuery,
 } from "~/models/frequencyIndex"
-import type { RecentNormalizerCounts } from "~/models/frequencyIndex.server"
+import type {
+  NormalizerHistory,
+  RecentNormalizerCounts,
+} from "~/models/frequencyIndex.server"
+import NormalizerSparklines from "./NormalizerSparklines"
+import NormalizerSeriesChart from "./NormalizerSeriesChart"
+import { historyHref, timeRangeOf } from "~/models/normalizerSeries"
+import {
+  clearDraft,
+  draftHasWork,
+  readDraft,
+  writeDraft,
+} from "~/models/frequencyIndexDraft"
 
 type Defaults = {
   term: string
@@ -38,15 +52,17 @@ type Defaults = {
 type Props = {
   defaults: Defaults
   recentNormalizerCounts: RecentNormalizerCounts
+  normalizerHistories: Record<string, NormalizerHistory>
+  sparklineDays: number
   lastResult: SubmissionResult | null
 }
 
 type RowState = {
   termHits: string
   normalizerHits: string
-  /** Row id the normalizer count was copied from, until the student edits it. */
-  reusedFromId: number | null
-  reusedFrom: { created: string; term: string } | null
+  /** The observation the normalizer count was copied from, until the student edits it. */
+  normalizerCountId: number | null
+  reusedFrom: { observed: string; source: string; term: string | null } | null
 }
 
 /** The inputs the table was built for; links and counts belong to these. */
@@ -59,7 +75,7 @@ const emptyRows = (): Record<string, RowState> =>
       {
         termHits: "",
         normalizerHits: "",
-        reusedFromId: null,
+        normalizerCountId: null,
         reusedFrom: null,
       },
     ])
@@ -74,6 +90,8 @@ const targetFor = (key: string) => `dchp-google-${key}`
 export default function FrequencyIndexForm({
   defaults,
   recentNormalizerCounts,
+  normalizerHistories,
+  sparklineDays,
   lastResult,
 }: Props) {
   const formRef = useRef<HTMLFormElement>(null)
@@ -88,6 +106,45 @@ export default function FrequencyIndexForm({
   const [rows, setRows] = useState<Record<string, RowState>>(emptyRows)
   const [popupsBlocked, setPopupsBlocked] = useState(false)
   const [focusFirst, setFocusFirst] = useState(0)
+  const [restoredFrom, setRestoredFrom] = useState<string | null>(null)
+  // Set once the first render is done, so a draft is never written before
+  // it has had the chance to be read.
+  const [hydrated, setHydrated] = useState(false)
+
+  // Restore an unsaved lookup after the tab was closed or the page reloaded.
+  // A "Repeat this lookup" link carries a term in the URL and wins over the
+  // draft, because it is what the student just asked for.
+  useEffect(() => {
+    const draft = readDraft()
+    if (draft && draftHasWork(draft) && defaults.term === "") {
+      setTerm(draft.term)
+      setNormalizer(draft.normalizer)
+      setExclusions(draft.exclusions)
+      setMultiplier(draft.multiplier)
+      setSnapshot(draft.snapshot)
+      setRows({ ...emptyRows(), ...draft.rows })
+      setRestoredFrom(draft.savedAt)
+    }
+    setHydrated(true)
+  }, [defaults.term])
+
+  useEffect(() => {
+    if (!hydrated) return
+    if (snapshot === null) return
+    writeDraft({ term, normalizer, exclusions, multiplier, snapshot, rows })
+  }, [hydrated, term, normalizer, exclusions, multiplier, snapshot, rows])
+
+  const discardDraft = () => {
+    clearDraft()
+    setRestoredFrom(null)
+    setSnapshot(null)
+    setRows(emptyRows())
+    setTerm(defaults.term)
+    setNormalizer(defaults.normalizer)
+    setExclusions(defaults.exclusions)
+    setMultiplier(defaults.multiplier)
+    termInput()?.focus()
+  }
 
   const countInputs = useCallback(
     () =>
@@ -116,6 +173,20 @@ export default function FrequencyIndexForm({
       termInput()?.focus()
       return
     }
+    // Resetting throws away typed term counts, so ask first when there are any.
+    const typedTermCounts = Object.values(rows).filter(
+      (r) => r.termHits !== ""
+    ).length
+    if (
+      snapshot &&
+      typedTermCounts > 0 &&
+      !window.confirm(
+        `Reset the table? The ${typedTermCounts} term count${
+          typedTermCounts === 1 ? "" : "s"
+        } you have typed will be cleared.`
+      )
+    )
+      return
     const n = normalizer.trim()
     const sameNormalizer = snapshot?.normalizer === n
     const recent = recentNormalizerCounts[n] ?? {}
@@ -131,10 +202,18 @@ export default function FrequencyIndexForm({
               : reuse
               ? {
                   normalizerHits: String(reuse.hits),
-                  reusedFromId: reuse.rowId,
-                  reusedFrom: { created: reuse.created, term: reuse.term },
+                  normalizerCountId: reuse.id,
+                  reusedFrom: {
+                    observed: reuse.observed,
+                    source: reuse.source,
+                    term: reuse.lookup?.term ?? null,
+                  },
                 }
-              : { normalizerHits: "", reusedFromId: null, reusedFrom: null }
+              : {
+                  normalizerHits: "",
+                  normalizerCountId: null,
+                  reusedFrom: null,
+                }
           return [d.key, { ...normalizerState, termHits: "" }]
         })
       )
@@ -148,6 +227,12 @@ export default function FrequencyIndexForm({
     (snapshot.term !== term.trim() ||
       snapshot.normalizer !== normalizer.trim() ||
       snapshot.exclusions !== exclusions.trim())
+
+  // For the sparkline beside each normalizer count once the table is built.
+  const snapshotHistory = snapshot
+    ? normalizerHistories[snapshot.normalizer]
+    : undefined
+  const sparkRange = timeRangeOf(snapshotHistory)
 
   const queries = useMemo(() => {
     if (!snapshot) return null
@@ -194,7 +279,7 @@ export default function FrequencyIndexForm({
           ? {
               ...prev[key],
               normalizerHits: value,
-              reusedFromId: null,
+              normalizerCountId: null,
               reusedFrom: null,
             }
           : { ...prev[key], termHits: value },
@@ -251,9 +336,25 @@ export default function FrequencyIndexForm({
       ref={formRef}
       method="post"
       onKeyDown={onFormKeyDown}
-      className="max-w-5xl"
+      className="w-full"
     >
-      <KeyboardGuide />
+      {restoredFrom && (
+        <p className="my-4 flex flex-wrap items-center gap-3 border-l-4 border-blue-500 bg-blue-50 p-3">
+          <span>
+            Restored your unsaved lookup from{" "}
+            {new Date(restoredFrom).toLocaleString("en-CA")}.
+          </span>
+          <Button
+            type="button"
+            appearance="secondary"
+            variant="outline"
+            size="small"
+            onClick={discardDraft}
+          >
+            <FAIcon iconName="fa-trash-can" /> Discard it and start over
+          </Button>
+        </p>
+      )}
 
       {errors.length > 0 && (
         <div
@@ -269,7 +370,7 @@ export default function FrequencyIndexForm({
         </div>
       )}
 
-      <div className="grid gap-4 md:grid-cols-[2fr_1fr_2fr_1fr]">
+      <div className="grid items-start gap-4 md:grid-cols-[2fr_1fr_3fr_1fr]">
         <TopLabelledField
           label="Term"
           field={
@@ -278,7 +379,7 @@ export default function FrequencyIndexForm({
               value={term}
               onChange={(e) => setTerm(e.target.value)}
               onKeyDown={onTopFieldKeyDown}
-              placeholder="e.g. toque"
+              placeholder="e.g. toque, or toque AND hockey"
               autoComplete="off"
               lightBorder
             />
@@ -298,14 +399,14 @@ export default function FrequencyIndexForm({
           }
         />
         <TopLabelledField
-          label="Exclusions (optional)"
+          label="Exclusions"
           field={
             <Input
               name="exclusions"
               value={exclusions}
               onChange={(e) => setExclusions(e.target.value)}
               onKeyDown={onTopFieldKeyDown}
-              placeholder="e.g. monkey site:example.com"
+              placeholder="optional, e.g. monkey site:example.com"
               autoComplete="off"
               lightBorder
             />
@@ -318,7 +419,7 @@ export default function FrequencyIndexForm({
               name="multiplier"
               value={multiplier}
               onChange={(e) => setMultiplier(Number(e.target.value))}
-              className="my-0 w-full rounded border border-gray-300 px-4 py-2"
+              className="my-0 h-[42px] w-full rounded border border-gray-300 bg-white px-4 py-2"
             >
               {MULTIPLIERS.map((m) => (
                 <option key={m} value={m}>
@@ -329,48 +430,63 @@ export default function FrequencyIndexForm({
           }
         />
       </div>
-      <p className="mt-1 text-sm text-gray-600">
-        Exclusions apply to the term on every domain and never to the
-        normalizer. Words become <code>-word</code>; use{" "}
-        <code>site:example.com</code> to drop a whole site.
-      </p>
+      {!snapshot && (
+        <NormalizerSparklines
+          normalizer={normalizer}
+          history={normalizerHistories[normalizer.trim()]}
+          days={sparklineDays}
+        />
+      )}
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <Button type="button" appearance="primary" onClick={build}>
-          {snapshot ? "Rebuild table" : "Build table"}
-        </Button>
+        {snapshot ? (
+          <Button
+            type="button"
+            appearance="danger"
+            variant="outline"
+            onClick={build}
+          >
+            <FAIcon iconName="fa-rotate-left" /> Reset table
+          </Button>
+        ) : (
+          <Button type="button" appearance="primary" onClick={build}>
+            <FAIcon iconName="fa-table-list" /> Build table
+          </Button>
+        )}
         {snapshot && !stale && (
           <Fragment>
             <Button
               type="button"
-              appearance="secondary"
+              appearance="primary"
               variant="outline"
               onClick={() => openAll("term")}
             >
-              Open all seven term searches
+              <FAIcon iconName="fa-arrow-up-right-from-square" /> Open all seven
+              term searches
             </Button>
             <Button
               type="button"
-              appearance="secondary"
+              appearance="primary"
               variant="outline"
               onClick={() => openAll("normalizer")}
             >
-              Open all seven normalizer searches
+              <FAIcon iconName="fa-arrow-up-right-from-square" /> Open all seven
+              normalizer searches
             </Button>
           </Fragment>
         )}
       </div>
 
       {stale && (
-        <p className="mt-3 max-w-3xl border-l-4 border-amber-500 bg-amber-50 p-3">
+        <p className="mt-3 border-l-4 border-amber-500 bg-amber-50 p-3">
           The term, normalizer or exclusions changed since the table was built.
-          Rebuild it before saving; the links below still point at the old
-          query. Rebuilding clears the term counts.
+          Reset the table before saving; the links below still point at the old
+          query. Resetting clears the term counts.
         </p>
       )}
 
       {popupsBlocked && (
-        <p className="mt-3 max-w-3xl border-l-4 border-amber-500 bg-amber-50 p-3">
+        <p className="mt-3 border-l-4 border-amber-500 bg-amber-50 p-3">
           Your browser blocked some of the tabs. Look for the blocked-popup icon
           at the right end of the address bar, choose &ldquo;Always allow
           pop-ups from this site&rdquo;, and click the button again. Or use the
@@ -398,6 +514,14 @@ export default function FrequencyIndexForm({
                   <span className="font-normal text-gray-500">
                     ({snapshot.normalizer})
                   </span>
+                  {sparkRange && (
+                    <span className="ml-2 text-xs font-normal text-gray-500">
+                      line: last {sparklineDays} days,{" "}
+                      <Link to={historyHref(snapshot.normalizer)}>
+                        full history
+                      </Link>
+                    </span>
+                  )}
                 </th>
                 <th className="py-2 pr-4 text-right">
                   Index (&times;{formatCount(multiplier)})
@@ -444,31 +568,42 @@ export default function FrequencyIndexForm({
                       />
                     </td>
                     <td className="py-3 pr-4">
-                      <CountCell
-                        name={`rows[${i}].normalizerHits`}
-                        value={row.normalizerHits}
-                        url={normUrl}
-                        query={q.normalizer}
-                        target={targetFor(`normalizer-${d.key}`)}
-                        onChange={(v) => setCount(d.key, "normalizerHits", v)}
-                        onKeyDown={(e) => onCountKeyDown(e, normUrl)}
-                        onOpen={() => open(normUrl, SINGLE_TARGET)}
-                      />
-                      {row.reusedFromId !== null && row.reusedFrom && (
+                      <div className="flex items-start gap-4">
+                        <CountCell
+                          name={`rows[${i}].normalizerHits`}
+                          value={row.normalizerHits}
+                          url={normUrl}
+                          query={q.normalizer}
+                          target={targetFor(`normalizer-${d.key}`)}
+                          onChange={(v) => setCount(d.key, "normalizerHits", v)}
+                          onKeyDown={(e) => onCountKeyDown(e, normUrl)}
+                          onOpen={() => open(normUrl, SINGLE_TARGET)}
+                        />
+                        {sparkRange && (
+                          <span className="w-28 shrink-0 pt-2">
+                            <NormalizerSeriesChart
+                              variant="spark"
+                              label={d.label}
+                              normalizer={snapshot.normalizer}
+                              series={snapshotHistory?.[d.key] ?? []}
+                              range={sparkRange}
+                              showLabel={false}
+                            />
+                          </span>
+                        )}
+                      </div>
+                      {row.normalizerCountId !== null && row.reusedFrom && (
                         <Fragment>
                           <input
                             type="hidden"
-                            name={`rows[${i}].normalizerReusedFromId`}
-                            value={row.reusedFromId}
+                            name={`rows[${i}].normalizerCountId`}
+                            value={row.normalizerCountId}
                           />
                           <div className="mt-1 text-sm text-gray-500">
-                            Reused from the lookup of &ldquo;
-                            {row.reusedFrom.term}
-                            &rdquo; on{" "}
-                            {new Date(
-                              row.reusedFrom.created
-                            ).toLocaleDateString("en-CA")}
-                            . Edit to replace.
+                            {row.reusedFrom.term !== null
+                              ? `Reused from the lookup of “${row.reusedFrom.term}” on ${row.reusedFrom.observed}.`
+                              : `Reused from the ${row.reusedFrom.source} count of ${row.reusedFrom.observed}.`}{" "}
+                            Type a new count to take a fresh reading instead.
                           </div>
                         </Fragment>
                       )}
@@ -490,7 +625,7 @@ export default function FrequencyIndexForm({
               appearance="success"
               disabled={!complete || saving}
             >
-              {saving ? "Saving…" : "Save lookup"}
+              <SaveIcon /> {saving ? "Saving…" : "Save lookup"}
             </Button>
             <span
               className={clsx(
@@ -558,6 +693,7 @@ function CountCell({
           }}
           className="text-sm underline"
         >
+          <FAIcon iconName="fa-arrow-up-right-from-square" margin="mr-0.5" />
           open
         </a>
       </div>

@@ -1,6 +1,8 @@
 import {
   FREQUENCY_DOMAINS,
+  FrequencyLookupEditSchema,
   FrequencyLookupSchema,
+  MULTIPLIERS,
   digitsOnly,
   frequencyIndex,
   googleSearchUrl,
@@ -30,6 +32,17 @@ describe("termQuery", () => {
 
   it("does not double-quote an already quoted term", () => {
     expect(termQuery('"double double"', ca)).toBe('"double double" site:.ca')
+  })
+
+  it("quotes each side of AND so both words are required", () => {
+    expect(termQuery("toque AND hockey", ca)).toBe('"toque" "hockey" site:.ca')
+    expect(termQuery('"double double" AND toque', ca)).toBe(
+      '"double double" "toque" site:.ca'
+    )
+  })
+
+  it("leaves a lower-case and inside a phrase alone", () => {
+    expect(termQuery("rock and roll", ca)).toBe('"rock and roll" site:.ca')
   })
 
   it("adds exclusions before the site clause", () => {
@@ -124,6 +137,48 @@ describe("FrequencyLookupSchema", () => {
   it("rejects an unknown multiplier", () => {
     expect(
       FrequencyLookupSchema.safeParse({ ...valid, multiplier: 5 }).success
+    ).toBe(false)
+  })
+  it("accepts every listed multiplier, including one million", () => {
+    for (const multiplier of MULTIPLIERS)
+      expect(
+        FrequencyLookupSchema.safeParse({ ...valid, multiplier }).success
+      ).toBe(true)
+    expect(MULTIPLIERS).toContain(1_000_000)
+  })
+})
+
+describe("FrequencyLookupEditSchema", () => {
+  const rows = FREQUENCY_DOMAINS.map((d, i) => ({
+    domainKey: d.key,
+    termHits: i * 10,
+    normalizerHits: 1000,
+  }))
+
+  it("accepts counts and a multiplier without the term, defaulting to a correction", () => {
+    const r = FrequencyLookupEditSchema.safeParse({
+      multiplier: 1_000_000,
+      rows: [{ ...rows[0], normalizerChange: "new" }, ...rows.slice(1)],
+    })
+    expect(r.success).toBe(true)
+    const parsed = r.success ? r.data.rows : []
+    expect(parsed[0]?.normalizerChange).toBe("new")
+    expect(parsed[1]?.normalizerChange).toBe("correct")
+  })
+  it("rejects an unknown kind of normalizer change", () => {
+    expect(
+      FrequencyLookupEditSchema.safeParse({
+        multiplier: 10_000,
+        rows: rows.map((r) => ({ ...r, normalizerChange: "maybe" })),
+      }).success
+    ).toBe(false)
+  })
+  it("still requires one row per domain", () => {
+    expect(
+      FrequencyLookupEditSchema.safeParse({
+        multiplier: 10_000,
+        rows: rows.slice(1),
+      }).success
     ).toBe(false)
   })
 })

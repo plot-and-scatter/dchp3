@@ -103,3 +103,28 @@ Environment variables, all with sensible defaults:
 gzip -dc ~/dchp3-local-db-backups/dchp3-before-refresh-<stamp>.sql.gz \
   | mysql -u root -h 127.0.0.1 dchp3
 ```
+
+## import-normalizer-counts.mjs
+
+Loads normalizer counts kept in a spreadsheet into
+`det_frequency_normalizer_counts`, so the Frequency Index history page and
+the sparklines under its form show them alongside counts saved by the tool.
+
+### Usage
+
+From the repository root, with `DATABASE_URL` in `.env` pointing at the
+database to load:
+
+```
+node scripts/local/import-normalizer-counts.mjs "<path to csv>" <user email> [normalizer] [source]
+```
+
+The normalizer defaults to `the` and the source to `spreadsheet`. The user
+is found by email, so the same command works on any environment. The CSV
+has a header of domain columns (`.ca .uk .ie .nz .au .za US`; other
+columns are ignored) and one row per date such as `19-Jul-26`. Reading stops
+at the first blank line. Rows already present for the same normalizer,
+domain, date and source are skipped, so the script can be re-run.
+
+First used 2026-09-24 for Natalia Mohar's sheet of "the" counts from July to
+September 2026.

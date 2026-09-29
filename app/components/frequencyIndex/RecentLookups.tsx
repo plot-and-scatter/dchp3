@@ -1,11 +1,9 @@
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import type { FrequencyLookupView } from "~/models/frequencyIndex.server"
 import { formatIndex } from "~/models/frequencyIndex"
+import { userName } from "./userName"
 
 type Props = { lookups: FrequencyLookupView[] }
-
-const userName = (u: { first_name: string | null; last_name: string | null }) =>
-  [u.first_name, u.last_name].filter(Boolean).join(" ") || "unknown"
 
 export default function RecentLookups({ lookups }: Props) {
   if (lookups.length === 0) return null
@@ -18,7 +16,7 @@ export default function RecentLookups({ lookups }: Props) {
   return (
     <section className="mt-12">
       <h2 className="mb-3 text-xl font-semibold">Recent lookups</h2>
-      <table className="w-full max-w-4xl border-collapse text-left">
+      <table className="w-full border-collapse text-left">
         <thead>
           <tr className="border-b-2 border-gray-400">
             <th className="py-2 pr-4">Term</th>
