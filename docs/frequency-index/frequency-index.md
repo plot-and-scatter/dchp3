@@ -40,7 +40,11 @@ domains; there is no threshold, and Type 5 remains an editorial judgment.
   Stefan.
 - **Exclusions**: whitespace-separated pieces, each given one `-`; a quoted
   phrase stays together (`"skate bag"` becomes `-"skate bag"`); commas are
-  ignored. Added 2026-10-02 after Stefan's "bag skate" lookup, where the
+  ignored. This is the opposite default from the term field, where a
+  multi-word term is a phrase and `AND` separates words; Frank considered
+  switching the term field to plain Google syntax and decided to keep it as
+  is (2026-10-02), so the help text names the difference instead. Added
+  2026-10-02 after Stefan's "bag skate" lookup, where the
   unquoted form would have excluded the word "skate" and so every hit. A
   saved lookup's exclusions cannot be edited, because each stored count was
   read from the stored query; "Try different exclusions" on the lookup page

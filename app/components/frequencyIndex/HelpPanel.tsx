@@ -66,14 +66,14 @@ export default function HelpPanel({
           <strong>Exclusions.</strong> Leave out pages that match them. Enter a
           word to drop pages containing it (for example <code>monkey</code> when
           counting &ldquo;toque&rdquo;), or <code>site:example.com</code> to
-          drop a whole site. Put a phrase in quotes: <code>"skate bag"</code>{" "}
-          drops pages with that phrase, while <code>skate bag</code> drops every
-          page containing either word, which for a search on &ldquo;bag
-          skate&rdquo; is every page. Separate pieces with spaces. They apply to
-          the term search on every domain, and never to the normalizer. To
-          change the exclusions of a saved lookup, use &ldquo;Try different
-          exclusions&rdquo; on its page; it starts a new lookup, so the two can
-          be compared.
+          drop a whole site. Unlike the term field, spaces here separate pieces,
+          so put a phrase in quotes: <code>"skate bag"</code> drops pages with
+          that phrase, while <code>skate bag</code> drops every page containing
+          either word, which for a search on &ldquo;bag skate&rdquo; is every
+          page. Separate pieces with spaces. They apply to the term search on
+          every domain, and never to the normalizer. To change the exclusions of
+          a saved lookup, use &ldquo;Try different exclusions&rdquo; on its
+          page; it starts a new lookup, so the two can be compared.
         </li>
         <li>
           <strong>Multiplier.</strong> Scales the index for readability only.
