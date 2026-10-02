@@ -27,7 +27,6 @@ const GeneralLabels = ({
               className="italic"
               lightBorder
               defaultValue={entry.general_labels}
-              placeholder="e.g. Fur Trade, Hist."
             />
           }
         />
