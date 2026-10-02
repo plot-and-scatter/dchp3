@@ -38,7 +38,7 @@ export default function HelpPanel({
         </h2>
         <Button
           type="button"
-          appearance="secondary"
+          appearance="primary"
           variant="outline"
           size="small"
           onClick={onClose}

@@ -346,7 +346,7 @@ export default function FrequencyIndexForm({
           </span>
           <Button
             type="button"
-            appearance="secondary"
+            appearance="primary"
             variant="outline"
             size="small"
             onClick={discardDraft}
