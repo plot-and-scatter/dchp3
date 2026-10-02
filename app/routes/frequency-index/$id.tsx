@@ -10,6 +10,7 @@ import {
 } from "react-router"
 import Main from "~/components/elements/Layouts/Main"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
+import BackLink from "~/components/frequencyIndex/BackLink"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import Button from "~/components/elements/LinksAndButtons/Button"
@@ -84,6 +85,7 @@ export default function FrequencyLookupPage() {
         <PageHeader>
           Frequency Index: <span className="italic">{lookup.term}</span>
         </PageHeader>
+        <BackLink />
 
         <dl className="mb-6 grid max-w-2xl grid-cols-[max-content_1fr] gap-x-6 gap-y-1">
           <dt className="font-semibold">Normalizer</dt>

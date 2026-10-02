@@ -12,6 +12,7 @@ import {
 import { parseWithZod } from "@conform-to/zod"
 import Main from "~/components/elements/Layouts/Main"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
+import BackLink from "~/components/frequencyIndex/BackLink"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
@@ -166,6 +167,7 @@ export default function EditFrequencyLookupPage() {
         <PageHeader>
           Correct the counts for <span className="italic">{lookup.term}</span>
         </PageHeader>
+        <BackLink />
 
         <p className="mb-6 max-w-3xl">
           Change any count that was typed wrongly and save. The term, normalizer
