@@ -23,7 +23,6 @@ import {
   formatIndex,
   frequencyIndex,
   googleSearchUrl,
-  normalizeExclusions,
   normalizerQuery,
   parseCount,
   termQuery,
@@ -512,15 +511,7 @@ export default function FrequencyIndexForm({
             <thead>
               <tr className="border-b-2 border-gray-400">
                 <th className="py-2 pr-4">Domain</th>
-                <th className="py-2 pr-4">
-                  Term hits{" "}
-                  <span className="font-normal text-gray-500">
-                    ({snapshot.term}
-                    {snapshot.exclusions &&
-                      ` ${normalizeExclusions(snapshot.exclusions)}`}
-                    )
-                  </span>
-                </th>
+                <th className="py-2 pr-4">Term hits</th>
                 <th className="py-2 pr-4">
                   Normalizer hits{" "}
                   <span className="font-normal text-gray-500">
