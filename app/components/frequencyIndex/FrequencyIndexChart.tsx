@@ -94,7 +94,7 @@ export default function FrequencyIndexChart({ lookup }: Props) {
         <Button
           type="button"
           asLink
-          className="italic underline"
+          className="underline"
           aria-expanded={fontNote}
           onClick={() => setFontNote((v) => !v)}
         >
