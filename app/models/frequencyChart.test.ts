@@ -3,6 +3,7 @@ import {
   CHART_HEIGHT_PT,
   CHART_WIDTH_PT,
   chartCaption,
+  chartDomainLabel,
   chartFileName,
   dataLabel,
   formatTick,
@@ -74,6 +75,13 @@ describe("text", () => {
     expect(chartCaption("2024-10-21T18:00:00.000Z")).toMatch(
       /^Internet Domain Search, 2[12] October 2024$/
     )
+  })
+
+  it("labels columns by domain, with the US group as US", () => {
+    expect(
+      ["ca", "us", "uk", "ie", "nz", "au", "za"].map(chartDomainLabel)
+    ).toEqual([".ca", "US", ".uk", ".ie", ".nz", ".au", ".za"])
+    expect(chartDomainLabel("xx")).toBe("xx")
   })
 
   it("builds a safe file name from the term and date", () => {

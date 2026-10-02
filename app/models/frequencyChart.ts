@@ -8,7 +8,11 @@
 // No server imports: the chart is drawn in the browser, where the PNG is
 // also rendered.
 
-import { FREQUENCY_DOMAIN_KEYS, formatCount } from "./frequencyIndex"
+import {
+  FREQUENCY_DOMAIN_KEYS,
+  domainByKey,
+  formatCount,
+} from "./frequencyIndex"
 
 export const CM_TO_PT = 72 / 2.54
 export const CHART_WIDTH_PT = 14 * CM_TO_PT
@@ -65,6 +69,17 @@ export const longDate = (iso: string) =>
 /** The caption typed into the entry's image upload, not drawn on the image. */
 export const chartCaption = (created: string) =>
   `Internet Domain Search, ${longDate(created)}`
+
+/**
+ * Column labels are the domain searched, not the country: ".ca", ".uk". The
+ * US is a group of four top-level domains, so it is labelled "US" (Frank,
+ * 2026-09-30). An unknown key is shown as itself.
+ */
+export const chartDomainLabel = (key: string) => {
+  const domain = domainByKey(key)
+  if (!domain) return key
+  return domain.tlds.length === 1 ? domain.tlds[0] : domain.key.toUpperCase()
+}
 
 /** One decimal place on every column, as the guide asks ("e.g. 80.9"). */
 export const dataLabel = (value: number) => value.toFixed(1)

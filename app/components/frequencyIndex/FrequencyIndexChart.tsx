@@ -10,6 +10,7 @@ import {
   FONT_SIZE,
   GRID_STROKE,
   chartCaption,
+  chartDomainLabel,
   chartFileName,
   layoutChart,
 } from "~/models/frequencyChart"
@@ -33,7 +34,7 @@ export default function FrequencyIndexChart({ lookup }: Props) {
   const layout = layoutChart(
     lookup.rows.map((r) => ({
       key: r.domainKey,
-      label: r.domainLabel,
+      label: chartDomainLabel(r.domainKey),
       value: r.frequencyIndex,
     })),
     { title: lookup.term, multiplier: lookup.multiplier }
