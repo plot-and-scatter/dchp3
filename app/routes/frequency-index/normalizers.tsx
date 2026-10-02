@@ -9,6 +9,7 @@ import {
 import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
 import Main from "~/components/elements/Layouts/Main"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
+import BackLink from "~/components/frequencyIndex/BackLink"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import NormalizerHistoryChart from "~/components/frequencyIndex/NormalizerHistoryChart"
@@ -95,6 +96,7 @@ export default function NormalizerHistoryPage() {
         <PageHeader>
           Normalizer history: <span className="italic">{normalizer}</span>
         </PageHeader>
+        <BackLink />
 
         <p className="mb-6 max-w-3xl">
           Every count of the normalizer read from Google, one line per domain,

@@ -38,7 +38,7 @@ export default function HelpPanel({
         </h2>
         <Button
           type="button"
-          appearance="secondary"
+          appearance="primary"
           variant="outline"
           size="small"
           onClick={onClose}
@@ -121,6 +121,16 @@ export default function HelpPanel({
         will sometimes stop you with an &ldquo;I&rsquo;m not a robot&rdquo;
         check, even several times in one lookup. Solve it and carry on. Pausing
         a few seconds between searches can trigger it less often.
+      </p>
+
+      <h3 className="mt-5 font-semibold">The chart for the entry</h3>
+      <p className="mt-2">
+        Every saved lookup has a chart in the DCHP-2 format under its table: one
+        column per domain labelled ".ca", "US", ".uk" and so on, the index on
+        the y-axis, one decimal place on each column, no legend, 9 x 14 cm.
+        Download it as a PNG and upload it to the entry as an image; the caption
+        to type is shown beside the button. If a count is corrected later, the
+        chart changes with it, so download it again.
       </p>
 
       <h3 className="mt-5 font-semibold">Your work is saved as you go</h3>

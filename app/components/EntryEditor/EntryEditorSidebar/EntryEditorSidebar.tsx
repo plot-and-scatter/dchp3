@@ -39,7 +39,7 @@ export default function EntryEditorSidebar({ entry }: EditingSidebarProps) {
             bold
             to={`/entries/${entry.headword}`}
             className="w-full"
-            appearance="secondary"
+            appearance="primary"
             asButton
           >
             <BackIcon /> Return to entry

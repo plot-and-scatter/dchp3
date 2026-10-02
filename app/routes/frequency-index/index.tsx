@@ -157,7 +157,7 @@ export default function FrequencyIndexPage() {
             <div className="flex justify-end pb-2 xl:absolute xl:right-[17px] xl:top-[17px] xl:pb-0">
               <Button
                 type="button"
-                appearance="secondary"
+                appearance="primary"
                 variant="outline"
                 size="small"
                 onClick={() => toggleHelp(true)}

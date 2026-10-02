@@ -10,12 +10,14 @@ import {
 } from "react-router"
 import Main from "~/components/elements/Layouts/Main"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
+import BackLink from "~/components/frequencyIndex/BackLink"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import Button from "~/components/elements/LinksAndButtons/Button"
 import FAIcon from "~/components/elements/Icons/FAIcon"
 import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
 import LookupRowsTable from "~/components/frequencyIndex/LookupRowsTable"
+import FrequencyIndexChart from "~/components/frequencyIndex/FrequencyIndexChart"
 import { formatCount } from "~/models/frequencyIndex"
 import {
   deleteFrequencyLookup,
@@ -84,6 +86,7 @@ export default function FrequencyLookupPage() {
         <PageHeader>
           Frequency Index: <span className="italic">{lookup.term}</span>
         </PageHeader>
+        <BackLink />
 
         <dl className="mb-6 grid max-w-2xl grid-cols-[max-content_1fr] gap-x-6 gap-y-1">
           <dt className="font-semibold">Normalizer</dt>
@@ -137,6 +140,8 @@ export default function FrequencyLookupPage() {
           The index is computed from the stored counts each time this page is
           shown, so a corrected normalizer count is reflected here at once.
         </p>
+
+        <FrequencyIndexChart lookup={lookup} />
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <Link
