@@ -45,7 +45,7 @@ export function getCanadianismsCount({
     )
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
-    AND (de.no_cdn_conf = 1 OR NOT ${nonCanadianism === true})
+    AND (de.no_cdn_conf = 0 OR ${nonCanadianism === true})
     AND (det_meanings.canadianism_type IN (${Prisma.join(canadianismTypes)}))
     AND (${allStatuses} OR (
       (de.first_draft = 1 AND ${statusMap["first_draft"] === true}) OR
@@ -98,7 +98,7 @@ export function getSearchResultCanadianisms({
     )
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
-    AND (de.no_cdn_conf = 1 OR NOT ${nonCanadianism === true})
+    AND (de.no_cdn_conf = 0 OR ${nonCanadianism === true})
     AND (det_meanings.canadianism_type IN (${Prisma.join(canadianismTypes)}))
     AND (${allStatuses} OR (
       (de.first_draft = 1 AND ${statusMap["first_draft"] === true}) OR

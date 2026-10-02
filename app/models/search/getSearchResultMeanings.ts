@@ -20,7 +20,7 @@ function getWhereClause({
 }: SearchResultParams) {
   const where: any = {
     entry: {
-      no_cdn_conf: nonCanadianism,
+      no_cdn_conf: nonCanadianism === true ? undefined : false,
       dchp_version: { in: versions },
     },
     definition: {

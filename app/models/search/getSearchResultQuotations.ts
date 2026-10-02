@@ -30,7 +30,7 @@ function getMeaningCondition({
     meaning: {
       entry: {
         is_public: isUserAdmin ? undefined : true,
-        no_cdn_conf: nonCanadianism === true ? true : undefined,
+        no_cdn_conf: nonCanadianism === true ? undefined : false,
         dchp_version: { in: versions },
       },
     },

@@ -111,14 +111,25 @@ describe("getHeadwordCount", () => {
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
   })
 
-  it("should handle non-canadianism filter", async () => {
-    const params = { ...mockParams, nonCanadianism: true }
-
+  it("includes confirmed non-Canadianisms only when the box is checked", async () => {
     vi.mocked(prisma.$queryRaw).mockResolvedValue([{ count: 3 }])
 
-    await getHeadwordCount(params)
+    await getHeadwordCount({ ...mockParams, nonCanadianism: true })
+    await getHeadwordCount({ ...mockParams, nonCanadianism: undefined })
 
-    expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
+    // The clause is `no_cdn_conf = 0 OR <checked>`: checked lets every entry
+    // through; unchecked keeps only entries not confirmed non-Canadian. In a
+    // tagged template the value after strings[i] is values[i].
+    const checkedValue = (call: number) => {
+      const [strings, ...values] = vi.mocked(prisma.$queryRaw).mock.calls[
+        call
+      ] as unknown as [TemplateStringsArray, ...unknown[]]
+      const i = strings.findIndex((s) => s.includes("de.no_cdn_conf = 0 OR"))
+      expect(i).toBeGreaterThan(-1)
+      return values[i]
+    }
+    expect(checkedValue(0)).toBe(true)
+    expect(checkedValue(1)).toBe(false)
   })
 
   it("should handle admin users", async () => {

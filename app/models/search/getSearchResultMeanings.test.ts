@@ -131,21 +131,24 @@ describe("getSearchResultMeanings", () => {
     )
   })
 
-  it("should handle non-canadianism filter", async () => {
+  it("does not filter on no_cdn_conf when non-Canadianisms are included", async () => {
     const params = { ...mockParams, nonCanadianism: true }
     vi.mocked(prisma.meaning.findMany).mockResolvedValue(mockMeanings as any)
 
     await getSearchResultMeanings(params)
 
-    expect(prisma.meaning.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: expect.objectContaining({
-          entry: expect.objectContaining({
-            no_cdn_conf: true,
-          }),
-        }),
-      })
-    )
+    const { where } = vi.mocked(prisma.meaning.findMany).mock.calls[0][0] as any
+    expect(where.entry.no_cdn_conf).toBeUndefined()
+  })
+
+  it("excludes confirmed non-Canadianisms when the box is unchecked", async () => {
+    const params = { ...mockParams, nonCanadianism: undefined }
+    vi.mocked(prisma.meaning.findMany).mockResolvedValue(mockMeanings as any)
+
+    await getSearchResultMeanings(params)
+
+    const { where } = vi.mocked(prisma.meaning.findMany).mock.calls[0][0] as any
+    expect(where.entry.no_cdn_conf).toBe(false)
   })
 
   it("should handle editing status filters", async () => {
