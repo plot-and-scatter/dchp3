@@ -25,12 +25,17 @@ import { withPngDpi } from "~/utils/pngDpi"
 
 type Props = { lookup: FrequencyLookupView }
 
+// Office for Mac bundles Calibri privately; this makes it visible to browsers.
+const MAC_FONT_COMMAND =
+  'cp "/Applications/Microsoft Word.app/Contents/Resources/DFonts/Calibri"*.ttf ~/Library/Fonts/'
+
 export default function FrequencyIndexChart({ lookup }: Props) {
   const svgRef = useRef<SVGSVGElement>(null)
   const [state, setState] = useState<"idle" | "busy" | "failed" | "copied">(
     "idle"
   )
   const captionRef = useRef<HTMLInputElement>(null)
+  const [fontNote, setFontNote] = useState(false)
 
   const layout = layoutChart(
     lookup.rows.map((r) => ({
@@ -85,10 +90,38 @@ export default function FrequencyIndexChart({ lookup }: Props) {
       <h2 className="mb-2 text-xl font-semibold">Chart for the entry</h2>
       <p className="mb-3 max-w-3xl text-sm text-gray-600">
         The DCHP-2 frequency chart: one column per domain, 9 x 14 cm at{" "}
-        {EXPORT_DPI} dpi, Calibri, no legend, one decimal place on each column.
-        Download it and upload it to the entry as an image, with the caption
-        below. The title is the term, then any exclusions as "NOT word".
+        {EXPORT_DPI} dpi, Calibri (
+        <Button
+          type="button"
+          asLink
+          className="italic underline"
+          aria-expanded={fontNote}
+          onClick={() => setFontNote((v) => !v)}
+        >
+          not seeing it?
+        </Button>
+        ), no legend, one decimal place on each column. Download it and upload
+        it to the entry as an image, with the caption below. The title is the
+        term, then any exclusions as "NOT word".
       </p>
+      {fontNote && (
+        <div className="mb-3 max-w-3xl rounded border border-gray-300 bg-gray-50 p-3 text-sm">
+          <p>
+            The chart uses whatever fonts your browser can see. On a Mac, Office
+            keeps Calibri inside the Word app, where browsers cannot find it, so
+            the chart falls back to Arial. Copy the font files into your own
+            fonts folder once, in Terminal, then reload:
+          </p>
+          <pre className="mt-2 overflow-x-auto rounded bg-white p-2 font-mono text-xs">
+            {MAC_FONT_COMMAND}
+          </pre>
+          <p className="mt-2">
+            On Windows, Office installs Calibri for every program, so nothing is
+            needed. Without Calibri the chart is still correct, only in a
+            different typeface.
+          </p>
+        </div>
+      )}
       <svg
         ref={svgRef}
         xmlns="http://www.w3.org/2000/svg"
