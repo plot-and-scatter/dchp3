@@ -34,8 +34,10 @@ domains; there is no threshold, and Type 5 remains an editorial judgment.
   (2016, "Googleology as Smart Lexicography", *Dictionaries* 37: 60–98) used
   `could`. The field is editable, and the normalizer is stored on every lookup
   so indices made with different normalizers are never confused.
-- **Multiplier**: 10,000, 100,000 or 1,000,000, for readability only. The
-  million was added on 2026-09-24 at Frank's request for rare terms.
+- **Multiplier**: 10,000, 100,000, 1,000,000, 10,000,000 or 100,000,000,
+  for readability only. The million was added on 2026-09-24 at Frank's
+  request for rare terms; ten and a hundred million on 2026-10-02 for
+  Stefan.
 - **AND**: `toque AND hockey` (upper-case AND, spaces on both sides) becomes
   `"toque" "hockey"`, which requires both words on the page. Google drops or
   loosens unquoted words, so each side is quoted. Handled by `searchTerms` in
