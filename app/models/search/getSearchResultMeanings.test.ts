@@ -61,15 +61,17 @@ describe("getSearchResultMeanings", () => {
       where: {
         entry: {
           is_public: true,
-          no_cdn_conf: false,
           dchp_version: { in: ["dchp3"] },
         },
         definition: {
           contains: "test definition",
         },
-        canadianism_type: {
-          in: ["1. Origin", "2. Preservation"],
-        },
+        OR: [
+          {
+            entry: { no_cdn_conf: false },
+            canadianism_type: { in: ["1. Origin", "2. Preservation"] },
+          },
+        ],
       },
       select: {
         entry: { select: { headword: true } },
@@ -131,24 +133,31 @@ describe("getSearchResultMeanings", () => {
     )
   })
 
-  it("does not filter on no_cdn_conf when non-Canadianisms are included", async () => {
+  it("adds the non-Canadianism branch when that box is checked", async () => {
     const params = { ...mockParams, nonCanadianism: true }
     vi.mocked(prisma.meaning.findMany).mockResolvedValue(mockMeanings as any)
 
     await getSearchResultMeanings(params)
 
     const { where } = vi.mocked(prisma.meaning.findMany).mock.calls[0][0] as any
-    expect(where.entry.no_cdn_conf).toBeUndefined()
+    expect(where.OR).toEqual([
+      { entry: { no_cdn_conf: true } },
+      {
+        entry: { no_cdn_conf: false },
+        canadianism_type: { in: ["1. Origin", "2. Preservation"] },
+      },
+    ])
   })
 
-  it("excludes confirmed non-Canadianisms when the box is unchecked", async () => {
+  it("leaves confirmed non-Canadianisms out when the box is unchecked", async () => {
     const params = { ...mockParams, nonCanadianism: undefined }
     vi.mocked(prisma.meaning.findMany).mockResolvedValue(mockMeanings as any)
 
     await getSearchResultMeanings(params)
 
     const { where } = vi.mocked(prisma.meaning.findMany).mock.calls[0][0] as any
-    expect(where.entry.no_cdn_conf).toBe(false)
+    expect(where.OR).toHaveLength(1)
+    expect(where.OR[0].entry).toEqual({ no_cdn_conf: false })
   })
 
   it("should handle editing status filters", async () => {
@@ -225,15 +234,17 @@ describe("getMeaningsCount", () => {
       where: {
         entry: {
           is_public: true,
-          no_cdn_conf: false,
           dchp_version: { in: ["dchp3"] },
         },
         definition: {
           contains: "test definition",
         },
-        canadianism_type: {
-          in: ["1. Origin"],
-        },
+        OR: [
+          {
+            entry: { no_cdn_conf: false },
+            canadianism_type: { in: ["1. Origin"] },
+          },
+        ],
       },
     })
   })

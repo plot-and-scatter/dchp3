@@ -211,7 +211,7 @@ describe("getSearchResults", () => {
     )
   })
 
-  it("should use all canadianism types when not provided", async () => {
+  it("passes no canadianism types through when none are checked", async () => {
     const params = { ...mockSearchParams, canadianismType: undefined as any }
     const mockEntries = [{ id: 1, headword: "test", dchp_version: "dchp3" }]
 
@@ -219,17 +219,10 @@ describe("getSearchResults", () => {
 
     await getSearchResults(params, false)
 
+    // Nothing checked means no Canadian entries; the queries decide that, not
+    // a default here.
     expect(getEntriesByBasicTextSearch).toHaveBeenCalledWith(
-      expect.objectContaining({
-        canadianismTypes: [
-          "1. Origin",
-          "2. Preservation",
-          "3. Semantic Change",
-          "4. Culturally Significant",
-          "5. Frequency",
-          "6. Memorial",
-        ],
-      })
+      expect.objectContaining({ canadianismTypes: [] })
     )
   })
 
