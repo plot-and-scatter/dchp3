@@ -12,7 +12,7 @@ export default function BackLink() {
       <Link
         to="/frequency-index"
         asButton
-        appearance="secondary"
+        appearance="primary"
         buttonVariant="outline"
         buttonSize="small"
       >
