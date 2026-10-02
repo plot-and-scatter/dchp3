@@ -127,8 +127,13 @@ domains; there is no threshold, and Type 5 remains an editorial judgment.
   .ie, .nz, .au, .za, US; the form and table keep the tool's order), labelled
   by domain with "US" for the US group (Frank, 2026-09-30 and 10-01), the index on the y-axis labelled
   "Frequency index (x10,000)" with the lookup's multiplier, a data label with
-  one decimal place on each column, no legend, Calibri (Carlito, then a
-  sans-serif, when Calibri is not installed) at 18 pt bold for the title and
+  one decimal place on each column, no legend, Calibri, or Carlito when the browser
+  cannot see Calibri (Office for Mac keeps it inside the Word app; a "not
+  seeing it?" link on the page gives the copy command). Carlito, Calibri's
+  open-licence metric twin, is served from `public/fonts` as subset WOFF
+  files, declared in `app/styles/additional.css`, and inlined into the SVG
+  as data URLs before rasterizing, since an SVG in an image cannot load
+  external resources (Frank, 2026-10-01) at 18 pt bold for the title and
   12 pt for the axes, 9 x 14 cm. The title is the term followed by each exclusion as "NOT word" or "NOT site:x" ("toque NOT monkey"; Frank, 2026-10-01). "Download
   PNG" serializes the SVG, draws it on a canvas at 300 dpi (1654 x 1063 px)
   and stamps a pHYs chunk (`app/utils/pngDpi.ts`) so Word opens it at 9 x 14

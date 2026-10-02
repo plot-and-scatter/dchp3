@@ -107,18 +107,20 @@ export default function FrequencyIndexChart({ lookup }: Props) {
       {fontNote && (
         <div className="mb-3 max-w-3xl rounded border border-gray-300 bg-gray-50 p-3 text-sm">
           <p>
-            The chart uses whatever fonts your browser can see. On a Mac, Office
-            keeps Calibri inside the Word app, where browsers cannot find it, so
-            the chart falls back to Arial. Copy the font files into your own
-            fonts folder once, in Terminal, then reload:
+            The chart uses Calibri when your browser can see it. When it cannot,
+            it uses Carlito, which the app supplies: an open-licence typeface
+            with the same letter widths as Calibri, so the chart lays out the
+            same and looks nearly identical. On a Mac, Office keeps Calibri
+            inside the Word app, where browsers cannot find it. To have real
+            Calibri, copy the font files into your own fonts folder once, in
+            Terminal, then reload:
           </p>
           <pre className="mt-2 overflow-x-auto rounded bg-white p-2 font-mono text-xs">
             {MAC_FONT_COMMAND}
           </pre>
           <p className="mt-2">
             On Windows, Office installs Calibri for every program, so nothing is
-            needed. Without Calibri the chart is still correct, only in a
-            different typeface.
+            needed.
           </p>
         </div>
       )}
@@ -251,9 +253,10 @@ export default function FrequencyIndexChart({ lookup }: Props) {
 
 /**
  * Draw the SVG onto a canvas at print resolution and return a PNG with the
- * resolution recorded, so Word opens it at 9 x 14 cm. System fonts are used
- * as the browser finds them; without Calibri or Carlito installed the chart
- * falls back to the next font in the list.
+ * resolution recorded, so Word opens it at 9 x 14 cm. An SVG loaded into an
+ * image cannot reach the page's stylesheet or fetch anything, so Carlito is
+ * embedded in it as data URLs. Calibri is still named first and wins when
+ * the system has it.
  */
 const renderPng = async (
   svg: SVGSVGElement,
@@ -264,6 +267,9 @@ const renderPng = async (
   clone.removeAttribute("class")
   clone.setAttribute("width", String(widthPt))
   clone.setAttribute("height", String(heightPt))
+  const style = document.createElementNS("http://www.w3.org/2000/svg", "style")
+  style.textContent = await embeddedFontCss()
+  clone.insertBefore(style, clone.firstChild)
   const xml = new XMLSerializer().serializeToString(clone)
   const svgUrl = URL.createObjectURL(
     new Blob([xml], { type: "image/svg+xml;charset=utf-8" })
@@ -289,6 +295,34 @@ const renderPng = async (
     URL.revokeObjectURL(svgUrl)
   }
 }
+
+const CARLITO_FILES = [
+  { weight: 400, url: "/fonts/Carlito-Regular.woff" },
+  { weight: 700, url: "/fonts/Carlito-Bold.woff" },
+]
+
+let fontCssPromise: Promise<string> | null = null
+
+/** The @font-face rules for Carlito with the files inlined; fetched once. */
+const embeddedFontCss = () => {
+  fontCssPromise ??= Promise.all(
+    CARLITO_FILES.map(async ({ weight, url }) => {
+      const res = await fetch(url)
+      if (!res.ok) throw new Error(`font ${url}: ${res.status}`)
+      const data = await blobToDataUrl(await res.blob())
+      return `@font-face{font-family:"Carlito";font-weight:${weight};src:url("${data}") format("woff")}`
+    })
+  ).then((rules) => rules.join("\n"))
+  return fontCssPromise
+}
+
+const blobToDataUrl = (blob: Blob) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = () => reject(reader.error)
+    reader.readAsDataURL(blob)
+  })
 
 const loadImage = (src: string) =>
   new Promise<HTMLImageElement>((resolve, reject) => {

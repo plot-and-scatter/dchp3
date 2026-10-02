@@ -35,3 +35,24 @@ blockquote {
 .admin-ui h4 {
   font-family: "Charter", "Georgia", serif;
 }
+
+/*
+ * Carlito is the open-licence twin of Calibri, which the DCHP-2 frequency
+ * chart is set in. Office for Mac keeps Calibri inside the Word app where
+ * browsers cannot see it, so the chart names Calibri first and falls back to
+ * this. Files and licence in public/fonts.
+ */
+@font-face {
+  font-family: "Carlito";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Carlito-Regular.woff") format("woff");
+}
+@font-face {
+  font-family: "Carlito";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/Carlito-Bold.woff") format("woff");
+}
