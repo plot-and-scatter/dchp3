@@ -92,6 +92,9 @@ describe("text", () => {
     expect(chartTitle("toque", "monkey site:example.com")).toBe(
       "toque NOT monkey NOT site:example.com"
     )
+    expect(chartTitle("bag skate", '"skate bag" rollerblades')).toBe(
+      'bag skate NOT "skate bag" NOT rollerblades'
+    )
   })
 
   it("builds a safe file name from the term and date", () => {

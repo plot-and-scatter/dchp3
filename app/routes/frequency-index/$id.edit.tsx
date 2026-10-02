@@ -96,6 +96,12 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export default function EditFrequencyLookupPage() {
   const { lookup, otherUsers } = useLoaderData<typeof loader>()
+  const repeatParams = new URLSearchParams({
+    term: lookup.term,
+    normalizer: lookup.normalizer,
+    exclusions: lookup.exclusions ?? "",
+    multiplier: String(lookup.multiplier),
+  })
   const actionData = useActionData<typeof action>()
   const navigation = useNavigation()
   const saving = navigation.state !== "idle"
@@ -171,10 +177,15 @@ export default function EditFrequencyLookupPage() {
 
         <p className="mb-6 max-w-3xl">
           Change any count that was typed wrongly and save. The term, normalizer
-          and exclusions cannot change, because the saved searches were built
-          from them; if one of those is wrong,{" "}
-          <Link to="/frequency-index">record a new lookup</Link> instead. Each
-          count links to the search it came from.
+          and exclusions cannot change here, because each saved count was read
+          from the search built from them. To narrow the search, for example to
+          leave out a sense that is adding noise,{" "}
+          <Link to={`/frequency-index?${repeatParams}&focus=exclusions`}>
+            try different exclusions
+          </Link>
+          : that starts a new lookup of the same term with the exclusions field
+          ready to edit, and this lookup is kept for comparison. Each count
+          below links to the search it came from.
         </p>
 
         {errors.length > 0 && (

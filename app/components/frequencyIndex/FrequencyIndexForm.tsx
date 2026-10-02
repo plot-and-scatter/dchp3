@@ -23,7 +23,6 @@ import {
   formatIndex,
   frequencyIndex,
   googleSearchUrl,
-  normalizeExclusions,
   normalizerQuery,
   parseCount,
   termQuery,
@@ -51,6 +50,8 @@ type Defaults = {
 
 type Props = {
   defaults: Defaults
+  /** Put the cursor here on arrival: "Try different exclusions" lands on that field. */
+  focusField?: "exclusions" | null
   recentNormalizerCounts: RecentNormalizerCounts
   normalizerHistories: Record<string, NormalizerHistory>
   sparklineDays: number
@@ -93,6 +94,7 @@ export default function FrequencyIndexForm({
   normalizerHistories,
   sparklineDays,
   lastResult,
+  focusField = null,
 }: Props) {
   const formRef = useRef<HTMLFormElement>(null)
   const navigation = useNavigation()
@@ -162,6 +164,15 @@ export default function FrequencyIndexForm({
 
   const termInput = () =>
     formRef.current?.querySelector<HTMLInputElement>("input[name=term]")
+
+  useEffect(() => {
+    if (focusField !== "exclusions") return
+    const input = formRef.current?.querySelector<HTMLInputElement>(
+      "input[name=exclusions]"
+    )
+    input?.focus()
+    input?.select()
+  }, [focusField])
 
   useEffect(() => {
     termInput()?.focus()
@@ -406,7 +417,7 @@ export default function FrequencyIndexForm({
               value={exclusions}
               onChange={(e) => setExclusions(e.target.value)}
               onKeyDown={onTopFieldKeyDown}
-              placeholder="optional, e.g. monkey site:example.com"
+              placeholder='optional, e.g. rollerblades "skate bag" site:example.com'
               autoComplete="off"
               lightBorder
             />
@@ -500,15 +511,7 @@ export default function FrequencyIndexForm({
             <thead>
               <tr className="border-b-2 border-gray-400">
                 <th className="py-2 pr-4">Domain</th>
-                <th className="py-2 pr-4">
-                  Term hits{" "}
-                  <span className="font-normal text-gray-500">
-                    ({snapshot.term}
-                    {snapshot.exclusions &&
-                      ` ${normalizeExclusions(snapshot.exclusions)}`}
-                    )
-                  </span>
-                </th>
+                <th className="py-2 pr-4">Term hits</th>
                 <th className="py-2 pr-4">
                   Normalizer hits{" "}
                   <span className="font-normal text-gray-500">

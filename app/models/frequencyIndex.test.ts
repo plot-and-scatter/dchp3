@@ -64,6 +64,20 @@ describe("normalizeExclusions", () => {
       "-monkey -hat -site:x.com"
     )
   })
+  it("keeps a quoted phrase together", () => {
+    expect(normalizeExclusions('"skate bag" rollerblades')).toBe(
+      '-"skate bag" -rollerblades'
+    )
+    expect(normalizeExclusions('-"skate bag"')).toBe('-"skate bag"')
+  })
+  it("treats commas between pieces as spaces", () => {
+    expect(normalizeExclusions('"skate bag", rollerblades,hockey')).toBe(
+      '-"skate bag" -rollerblades -hockey'
+    )
+  })
+  it("drops empty quotes", () => {
+    expect(normalizeExclusions('"" monkey')).toBe("-monkey")
+  })
   it("is empty for nothing", () => {
     expect(normalizeExclusions(undefined)).toBe("")
     expect(normalizeExclusions("   ")).toBe("")

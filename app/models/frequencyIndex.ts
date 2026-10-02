@@ -84,16 +84,22 @@ export const normalizerQuery = (normalizer: string, domain: FrequencyDomain) =>
   `${searchTerms(normalizer)} ${siteClause(domain)}`
 
 /**
- * Exclusions are typed as free text. Each whitespace-separated token that
- * does not already start with `-` gets one, so "monkey site:foo.com" and
- * "-monkey -site:foo.com" mean the same thing.
+ * Exclusions are typed as free text. A bare word excludes pages containing
+ * that word; a quoted phrase excludes pages containing the phrase, which is
+ * what you want for a multi-word exclusion. Each piece gets one `-`, so
+ * "monkey site:foo.com" and `-monkey -site:foo.com` mean the same thing, and
+ * `"skate bag"` becomes `-"skate bag"`, not two broken halves. Commas between
+ * pieces are ignored. Decided after Stefan's "bag skate" lookup, 2026-10-02:
+ * excluding the bare word "skate" from that search removes every hit.
  */
+export const exclusionTokens = (exclusions?: string | null) =>
+  Array.from((exclusions ?? "").matchAll(/-?"[^"]*"|[^\s,]+/g), (m) => m[0])
+    .map((token) => token.replace(/^-/, ""))
+    .filter((token) => token !== "" && token !== '""')
+
 export const normalizeExclusions = (exclusions?: string | null) =>
-  (exclusions ?? "")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((token) => (token.startsWith("-") ? token : `-${token}`))
+  exclusionTokens(exclusions)
+    .map((token) => `-${token}`)
     .join(" ")
 
 export const googleSearchUrl = (query: string) => {

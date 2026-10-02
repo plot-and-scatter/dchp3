@@ -153,6 +153,15 @@ export default function FrequencyLookupPage() {
             <FAIcon iconName="fa-pen" /> Correct the counts
           </Link>
           <Link
+            to={`/frequency-index?${repeatParams}&focus=exclusions`}
+            asButton
+            appearance="primary"
+            buttonVariant="outline"
+            title="Start a new lookup of the same term with different exclusions"
+          >
+            <FAIcon iconName="fa-filter" /> Try different exclusions
+          </Link>
+          <Link
             to={`/frequency-index?${repeatParams}`}
             asButton
             appearance="primary"
