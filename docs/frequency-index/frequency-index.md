@@ -129,7 +129,7 @@ domains; there is no threshold, and Type 5 remains an editorial judgment.
   "Frequency index (x10,000)" with the lookup's multiplier, a data label with
   one decimal place on each column, no legend, Calibri (Carlito, then a
   sans-serif, when Calibri is not installed) at 18 pt bold for the title and
-  12 pt for the axes, 9 x 14 cm. The title is the term as entered. "Download
+  12 pt for the axes, 9 x 14 cm. The title is the term followed by each exclusion as "NOT word" or "NOT site:x" ("toque NOT monkey"; Frank, 2026-10-01). "Download
   PNG" serializes the SVG, draws it on a canvas at 300 dpi (1654 x 1063 px)
   and stamps a pHYs chunk (`app/utils/pngDpi.ts`) so Word opens it at 9 x 14
   cm. The caption the guide wants ("Internet Domain Search, 30 September

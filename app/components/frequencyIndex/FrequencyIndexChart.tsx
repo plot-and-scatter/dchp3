@@ -12,6 +12,7 @@ import {
   chartCaption,
   chartDomainLabel,
   chartFileName,
+  chartTitle,
   layoutChart,
 } from "~/models/frequencyChart"
 import { withPngDpi } from "~/utils/pngDpi"
@@ -37,7 +38,10 @@ export default function FrequencyIndexChart({ lookup }: Props) {
       label: chartDomainLabel(r.domainKey),
       value: r.frequencyIndex,
     })),
-    { title: lookup.term, multiplier: lookup.multiplier }
+    {
+      title: chartTitle(lookup.term, lookup.exclusions),
+      multiplier: lookup.multiplier,
+    }
   )
   const caption = chartCaption(lookup.created)
 
@@ -83,7 +87,7 @@ export default function FrequencyIndexChart({ lookup }: Props) {
         The DCHP-2 frequency chart: one column per domain, 9 x 14 cm at{" "}
         {EXPORT_DPI} dpi, Calibri, no legend, one decimal place on each column.
         Download it and upload it to the entry as an image, with the caption
-        below. The title is the term as entered.
+        below. The title is the term, then any exclusions as "NOT word".
       </p>
       <svg
         ref={svgRef}

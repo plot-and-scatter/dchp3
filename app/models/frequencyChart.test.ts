@@ -5,6 +5,7 @@ import {
   chartCaption,
   chartDomainLabel,
   chartFileName,
+  chartTitle,
   dataLabel,
   formatTick,
   layoutChart,
@@ -82,6 +83,15 @@ describe("text", () => {
       ["ca", "us", "uk", "ie", "nz", "au", "za"].map(chartDomainLabel)
     ).toEqual([".ca", "US", ".uk", ".ie", ".nz", ".au", ".za"])
     expect(chartDomainLabel("xx")).toBe("xx")
+  })
+
+  it("puts exclusions in the title as NOT", () => {
+    expect(chartTitle("toque")).toBe("toque")
+    expect(chartTitle("toque", null)).toBe("toque")
+    expect(chartTitle("toque", "-monkey")).toBe("toque NOT monkey")
+    expect(chartTitle("toque", "monkey site:example.com")).toBe(
+      "toque NOT monkey NOT site:example.com"
+    )
   })
 
   it("builds a safe file name from the term and date", () => {

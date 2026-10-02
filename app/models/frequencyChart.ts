@@ -8,7 +8,7 @@
 // No server imports: the chart is drawn in the browser, where the PNG is
 // also rendered.
 
-import { domainByKey, formatCount } from "./frequencyIndex"
+import { domainByKey, formatCount, normalizeExclusions } from "./frequencyIndex"
 
 export const CM_TO_PT = 72 / 2.54
 export const CHART_WIDTH_PT = 14 * CM_TO_PT
@@ -49,6 +49,19 @@ export type ChartLayout = {
   }[]
   dataLabelSize: number
   xLabelSize: number
+}
+
+/**
+ * The chart's title names what was counted: the term, then each exclusion
+ * as "NOT word" or "NOT site:example.com", so a reader can tell "toque NOT
+ * monkey" from a plain "toque" (Frank, 2026-10-01).
+ */
+export const chartTitle = (term: string, exclusions?: string | null) => {
+  const nots = normalizeExclusions(exclusions)
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((token) => `NOT ${token.slice(1)}`)
+  return [term.trim(), ...nots].join(" ")
 }
 
 export const yAxisLabel = (multiplier: number) =>
