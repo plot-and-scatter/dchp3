@@ -49,6 +49,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       ? multiplierParam
       : DEFAULT_MULTIPLIER,
   }
+  const focusField =
+    params.get("focus") === "exclusions" ? ("exclusions" as const) : null
 
   const since = new Date(Date.now() - SPARKLINE_DAYS * 24 * 3600 * 1000)
   const [recentNormalizerCounts, recentLookups, normalizerHistories] =
@@ -60,6 +62,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   return {
     defaults,
+    focusField,
     recentNormalizerCounts,
     recentLookups,
     normalizerHistories,
@@ -88,6 +91,7 @@ const HELP_BUTTON_CLASS = "w-24 text-center"
 export default function FrequencyIndexPage() {
   const {
     defaults,
+    focusField,
     recentNormalizerCounts,
     recentLookups,
     normalizerHistories,
@@ -137,6 +141,7 @@ export default function FrequencyIndexPage() {
             </p>
             <FrequencyIndexForm
               defaults={defaults}
+              focusField={focusField}
               recentNormalizerCounts={recentNormalizerCounts}
               normalizerHistories={normalizerHistories}
               sparklineDays={SPARKLINE_DAYS}

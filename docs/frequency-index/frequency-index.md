@@ -38,6 +38,16 @@ domains; there is no threshold, and Type 5 remains an editorial judgment.
   for readability only. The million was added on 2026-09-24 at Frank's
   request for rare terms; ten and a hundred million on 2026-10-02 for
   Stefan.
+- **Exclusions**: whitespace-separated pieces, each given one `-`; a quoted
+  phrase stays together (`"skate bag"` becomes `-"skate bag"`); commas are
+  ignored. Added 2026-10-02 after Stefan's "bag skate" lookup, where the
+  unquoted form would have excluded the word "skate" and so every hit. A
+  saved lookup's exclusions cannot be edited, because each stored count was
+  read from the stored query; "Try different exclusions" on the lookup page
+  (and a sentence on the correction page) opens the form prefilled with the
+  exclusions field focused (`?focus=exclusions`), so a refinement is a new
+  lookup and the old one stays for comparison. No lineage is recorded
+  (Frank, 2026-10-02).
 - **AND**: `toque AND hockey` (upper-case AND, spaces on both sides) becomes
   `"toque" "hockey"`, which requires both words on the page. Google drops or
   loosens unquoted words, so each side is quoted. Handled by `searchTerms` in
