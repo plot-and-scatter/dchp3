@@ -120,6 +120,26 @@ domains; there is no threshold, and Type 5 remains an editorial judgment.
   compact form (4.4B, 247M). The y-axis is padded around the observed range
   rather than starting at zero, since the drift is what matters. One panel
   per domain because `.ca` and `.ie` differ by orders of magnitude.
+- **Chart** (`app/components/frequencyIndex/FrequencyIndexChart.tsx`, added
+  2026-09-30 at Frank's suggestion, from the formatting guide Natalia Mohar
+  shared): the lookup page draws the DCHP-2 frequency chart as SVG, one
+  column per domain in the domain order, the index on the y-axis labelled
+  "Frequency index (x10,000)" with the lookup's multiplier, a data label with
+  one decimal place on each column, no legend, Calibri (Carlito, then a
+  sans-serif, when Calibri is not installed) at 18 pt bold for the title and
+  12 pt for the axes, 9 x 14 cm. The title is the term as entered. "Download
+  PNG" serializes the SVG, draws it on a canvas at 300 dpi (1654 x 1063 px)
+  and stamps a pHYs chunk (`app/utils/pngDpi.ts`) so Word opens it at 9 x 14
+  cm. The caption the guide wants ("Internet Domain Search, 30 September
+  2026", month spelled out, from the lookup's date) is shown beside the
+  button with a copy button; it is not drawn on the image, because it is
+  typed into the entry's image upload. Layout and text are pure functions in
+  `app/models/frequencyChart.ts` (axis steps of 1, 2, 2.5 or 5 with 8%
+  headroom, title and label shrinking when they would not fit), tested.
+  Not done: the guide's "(English sites only)" caption variant, since the
+  tool has no language restriction, and provincial domains.
+- **Navigation**: every subpage has a "Back to the Frequency Index" link
+  under its title (`BackLink.tsx`; Natalia, 2026-09-30).
 - **Import**: `scripts/local/import-normalizer-counts.mjs` loads a spreadsheet
   export as observations with source `spreadsheet` and no lookup. First used
   for Natalia Mohar's sheet of "the" counts, 19 July to 22 September 2026,

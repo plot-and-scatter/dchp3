@@ -17,6 +17,7 @@ import Button from "~/components/elements/LinksAndButtons/Button"
 import FAIcon from "~/components/elements/Icons/FAIcon"
 import DeleteIcon from "~/components/elements/Icons/DeleteIcon"
 import LookupRowsTable from "~/components/frequencyIndex/LookupRowsTable"
+import FrequencyIndexChart from "~/components/frequencyIndex/FrequencyIndexChart"
 import { formatCount } from "~/models/frequencyIndex"
 import {
   deleteFrequencyLookup,
@@ -139,6 +140,8 @@ export default function FrequencyLookupPage() {
           The index is computed from the stored counts each time this page is
           shown, so a corrected normalizer count is reflected here at once.
         </p>
+
+        <FrequencyIndexChart lookup={lookup} />
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <Link
