@@ -32,7 +32,10 @@ export const FREQUENCY_DOMAIN_KEYS = FREQUENCY_DOMAINS.map((d) => d.key) as [
 ]
 
 export const DEFAULT_NORMALIZER = "the"
-export const MULTIPLIERS = [10_000, 100_000, 1_000_000] as const
+// 10 million and 100 million added 2026-10-02 for Stefan, for very rare terms.
+export const MULTIPLIERS = [
+  10_000, 100_000, 1_000_000, 10_000_000, 100_000_000,
+] as const
 export const DEFAULT_MULTIPLIER: typeof MULTIPLIERS[number] = 10_000
 
 /** Language pinned on every generated link so all students run the same query. */

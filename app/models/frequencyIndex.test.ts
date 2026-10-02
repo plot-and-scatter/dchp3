@@ -136,10 +136,14 @@ describe("FrequencyLookupSchema", () => {
   })
   it("rejects an unknown multiplier", () => {
     expect(
+      FrequencyLookupSchema.safeParse({ ...valid, multiplier: 1_000_000_000 })
+        .success
+    ).toBe(false)
+    expect(
       FrequencyLookupSchema.safeParse({ ...valid, multiplier: 5 }).success
     ).toBe(false)
   })
-  it("accepts every listed multiplier, including one million", () => {
+  it("accepts every listed multiplier, up to one hundred million", () => {
     for (const multiplier of MULTIPLIERS)
       expect(
         FrequencyLookupSchema.safeParse({ ...valid, multiplier }).success
