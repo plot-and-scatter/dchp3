@@ -101,13 +101,27 @@ const bars = [
 ]
 
 describe("layoutChart", () => {
-  it("orders columns by the DCHP-2 domain order", () => {
-    expect(sortBars(bars).map((b) => b.key)).toEqual(["ca", "us", "za"])
+  it("orders columns as the published DCHP-2 charts do, US last", () => {
+    expect(sortBars(bars).map((b) => b.key)).toEqual(["ca", "za", "us"])
     expect(
       layoutChart(bars, { title: "toque", multiplier: 10_000 }).bars.map(
         (b) => b.key
       )
-    ).toEqual(["ca", "us", "za"])
+    ).toEqual(["ca", "za", "us"])
+    const all = ["us", "za", "au", "nz", "ie", "uk", "ca"].map((key) => ({
+      key,
+      label: key,
+      value: 1,
+    }))
+    expect(sortBars(all).map((b) => b.key)).toEqual([
+      "ca",
+      "uk",
+      "ie",
+      "nz",
+      "au",
+      "za",
+      "us",
+    ])
   })
 
   it("is 9 x 14 cm in points", () => {

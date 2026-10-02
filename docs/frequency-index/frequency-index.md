@@ -123,8 +123,9 @@ domains; there is no threshold, and Type 5 remains an editorial judgment.
 - **Chart** (`app/components/frequencyIndex/FrequencyIndexChart.tsx`, added
   2026-09-30 at Frank's suggestion, from the formatting guide Natalia Mohar
   shared): the lookup page draws the DCHP-2 frequency chart as SVG, one
-  column per domain in the domain order, labelled by domain (".ca", ".uk";
-  "US" for the US group, Frank 2026-09-30), the index on the y-axis labelled
+  column per domain in the order of the published DCHP-2 charts (.ca, .uk,
+  .ie, .nz, .au, .za, US; the form and table keep the tool's order), labelled
+  by domain with "US" for the US group (Frank, 2026-09-30 and 10-01), the index on the y-axis labelled
   "Frequency index (x10,000)" with the lookup's multiplier, a data label with
   one decimal place on each column, no legend, Calibri (Carlito, then a
   sans-serif, when Calibri is not installed) at 18 pt bold for the title and

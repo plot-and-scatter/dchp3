@@ -8,11 +8,7 @@
 // No server imports: the chart is drawn in the browser, where the PNG is
 // also rendered.
 
-import {
-  FREQUENCY_DOMAIN_KEYS,
-  domainByKey,
-  formatCount,
-} from "./frequencyIndex"
+import { domainByKey, formatCount } from "./frequencyIndex"
 
 export const CM_TO_PT = 72 / 2.54
 export const CHART_WIDTH_PT = 14 * CM_TO_PT
@@ -93,13 +89,20 @@ export const chartFileName = (term: string, created: string) => {
   return `frequency-index-${slug}-${created.slice(0, 10)}.png`
 }
 
-/** Rows in the DCHP-2 domain order, whatever order they were stored in. */
+/**
+ * The column order of the published DCHP-2 charts, which puts the US group
+ * last (Frank, 2026-10-01). The form and the table keep the tool's own
+ * order. A key not listed here goes after the listed ones.
+ */
+export const CHART_DOMAIN_ORDER = ["ca", "uk", "ie", "nz", "au", "za", "us"]
+
+const chartRank = (key: string) => {
+  const i = CHART_DOMAIN_ORDER.indexOf(key)
+  return i === -1 ? CHART_DOMAIN_ORDER.length : i
+}
+
 export const sortBars = (bars: ChartBar[]) =>
-  [...bars].sort(
-    (a, b) =>
-      FREQUENCY_DOMAIN_KEYS.indexOf(a.key) -
-      FREQUENCY_DOMAIN_KEYS.indexOf(b.key)
-  )
+  [...bars].sort((a, b) => chartRank(a.key) - chartRank(b.key))
 
 /** Decimal places needed to write the step exactly: 2.5 → 1, 0.25 → 2, 20 → 0. */
 const decimalsOf = (step: number) =>
