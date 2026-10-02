@@ -9,6 +9,7 @@ import type { SearchResultParams } from "../search.server"
 import type { SearchActionSchema } from "~/routes/search"
 import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
 import { prisma } from "~/db.server"
+import { Prisma } from "@prisma/client"
 import { getCounts } from "./getCounts.server"
 
 // Mock prisma
@@ -39,12 +40,15 @@ describe("Canadianism Type Filtering", () => {
   })
 
   // $queryRaw is a tagged template, so the mock receives the template strings
-  // array as its first argument and the interpolated values after it.
+  // array as its first argument and the interpolated values after it. Some
+  // values are nested Prisma.sql fragments (the category clause), which
+  // Prisma.sql inlines, so the text below is the whole statement with `?`
+  // placeholders.
   const queryRawSql = (callIndex = 0) => {
-    const [strings] = vi.mocked(prisma.$queryRaw).mock.calls[
+    const [strings, ...values] = vi.mocked(prisma.$queryRaw).mock.calls[
       callIndex
-    ] as unknown as [TemplateStringsArray]
-    return strings.join(" ")
+    ] as unknown as [TemplateStringsArray, ...unknown[]]
+    return Prisma.sql(strings, ...values).sql
   }
 
   describe("getHeadwordCount with Canadianism Filtering", () => {
@@ -103,8 +107,8 @@ describe("Canadianism Type Filtering", () => {
       expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
       const sql = queryRawSql()
 
-      expect(sql).toContain("INNER JOIN det_meanings dm")
-      expect(sql).toContain("count(DISTINCT de.id)")
+      expect(sql).toContain("EXISTS (SELECT 1 FROM det_meanings dmc")
+      expect(sql).toContain("count(*)")
     })
 
     it("should handle single canadianism type", async () => {
@@ -119,7 +123,7 @@ describe("Canadianism Type Filtering", () => {
 
       expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
 
-      expect(queryRawSql()).toContain("INNER JOIN det_meanings dm")
+      expect(queryRawSql()).toContain("EXISTS (SELECT 1 FROM det_meanings dmc")
     })
   })
 
@@ -157,7 +161,7 @@ describe("Canadianism Type Filtering", () => {
 
       expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
 
-      expect(queryRawSql()).not.toContain("INNER JOIN det_meanings dm")
+      expect(queryRawSql()).not.toContain("EXISTS (")
     })
 
     it("should use canadianism filter when specific types are selected", async () => {
@@ -181,7 +185,7 @@ describe("Canadianism Type Filtering", () => {
 
       expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
 
-      expect(queryRawSql()).toContain("INNER JOIN det_meanings dm")
+      expect(queryRawSql()).toContain("EXISTS (SELECT 1 FROM det_meanings dmc")
     })
 
     it("should maintain other filters when canadianism filtering is active", async () => {
@@ -201,7 +205,7 @@ describe("Canadianism Type Filtering", () => {
       expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
       const sql = queryRawSql()
 
-      expect(sql).toContain("INNER JOIN det_meanings dm")
+      expect(sql).toContain("EXISTS (SELECT 1 FROM det_meanings dmc")
       expect(sql).toContain("de.dchp_version IN")
       expect(sql).toContain("de.is_public = 1 OR")
     })
@@ -284,7 +288,7 @@ describe("Canadianism Type Filtering", () => {
 
       expect(result.data.entries).toHaveLength(137)
 
-      // Verify that no JOIN was used (no filtering)
+      // One query, no per-meaning subquery when every type is checked
       expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
     })
   })

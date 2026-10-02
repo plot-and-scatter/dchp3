@@ -5,6 +5,7 @@ import {
   editingStatusHelper,
 } from "./getEntriesByBasicTextSearch"
 import { prisma } from "~/db.server"
+import { Prisma } from "@prisma/client"
 import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
 
@@ -111,14 +112,27 @@ describe("getHeadwordCount", () => {
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
   })
 
-  it("should handle non-canadianism filter", async () => {
-    const params = { ...mockParams, nonCanadianism: true }
-
+  it("admits confirmed non-Canadianisms only when their box is checked", async () => {
     vi.mocked(prisma.$queryRaw).mockResolvedValue([{ count: 3 }])
 
-    await getHeadwordCount(params)
+    await getHeadwordCount({ ...mockParams, nonCanadianism: true })
+    await getHeadwordCount({ ...mockParams, nonCanadianism: undefined })
 
-    expect(prisma.$queryRaw).toHaveBeenCalledTimes(1)
+    // The category clause is `(no_cdn_conf = 1 AND <box>) OR (no_cdn_conf = 0
+    // AND <type match>)`. Render the statement as Prisma would and read the
+    // value bound to that first placeholder.
+    const boxValue = (call: number) => {
+      const [strings, ...values] = vi.mocked(prisma.$queryRaw).mock.calls[
+        call
+      ] as unknown as [TemplateStringsArray, ...unknown[]]
+      const rendered = Prisma.sql(strings, ...values)
+      const at = rendered.sql.indexOf("(de.no_cdn_conf = 1 AND ?)")
+      expect(at).toBeGreaterThan(-1)
+      const placeholdersBefore = rendered.sql.slice(0, at).split("?").length - 1
+      return rendered.values[placeholdersBefore]
+    }
+    expect(boxValue(0)).toBe(true)
+    expect(boxValue(1)).toBe(false)
   })
 
   it("should handle admin users", async () => {

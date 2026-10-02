@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client"
 import { prisma } from "~/db.server"
+import { categorySql } from "./entryCategory"
 import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
 import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
@@ -20,6 +21,7 @@ export function getFistNotesCount({
   isUserAdmin = false,
   nonCanadianism,
   editingStatus,
+  canadianismTypes,
 }: SearchResultParams) {
   const searchWildcard =
     searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
@@ -37,7 +39,7 @@ export function getFistNotesCount({
         LOWER(fist_note) LIKE LOWER(${searchWildcard}))
       AND (de.dchp_version IN (${Prisma.join(database)}))
       AND (de.is_public = 1 OR ${isUserAdmin})
-      AND (de.no_cdn_conf = 1 OR NOT ${nonCanadianism === true})
+      AND ${categorySql({ nonCanadianism, canadianismTypes })}
       AND (${allStatuses} OR (
       (de.first_draft = 1 AND ${statusMap["first_draft"] === true}) OR
       (de.revised_draft = 1 AND ${statusMap["revised_draft"] === true}) OR
@@ -64,6 +66,7 @@ export function getSearchResultFistNotes({
   isUserAdmin = false,
   nonCanadianism,
   editingStatus,
+  canadianismTypes,
 }: SearchResultParams): Promise<FistNote[]> {
   const searchWildcard =
     searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
@@ -83,7 +86,7 @@ export function getSearchResultFistNotes({
       LOWER(fist_note) LIKE LOWER(${searchWildcard}))
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
-    AND (de.no_cdn_conf = 1 OR NOT ${nonCanadianism === true})
+    AND ${categorySql({ nonCanadianism, canadianismTypes })}
     AND (${allStatuses} OR (
       (de.first_draft = 1 AND ${statusMap["first_draft"] === true}) OR
       (de.revised_draft = 1 AND ${statusMap["revised_draft"] === true}) OR

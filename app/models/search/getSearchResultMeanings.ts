@@ -1,5 +1,5 @@
-import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
 import { prisma } from "~/db.server"
+import { categoryWhere } from "./entryCategory"
 import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
 import { EDITING_STATUS_INPUTS } from "~/components/EntryEditor/EntryEditorSidebar/EditingStatus/EditingStatusPanel"
@@ -20,21 +20,17 @@ function getWhereClause({
 }: SearchResultParams) {
   const where: any = {
     entry: {
-      no_cdn_conf: nonCanadianism,
       dchp_version: { in: versions },
     },
     definition: {
       contains: searchTerm === SEARCH_WILDCARD ? "" : searchTerm,
     },
+    ...categoryWhere({ nonCanadianism, canadianismTypes }),
   }
 
   // Handle is_public OR isUserAdmin logic
   if (!isUserAdmin) {
     where.entry.is_public = true
-  }
-
-  if (canadianismTypes.length !== BASE_CANADANISM_TYPES.length) {
-    where.canadianism_type = { in: canadianismTypes }
   }
 
   // If editingStatus is not empty, AND not all statuses are selected, then

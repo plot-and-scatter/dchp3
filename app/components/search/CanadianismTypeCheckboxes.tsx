@@ -29,7 +29,6 @@ export default function CanadianismTypeCheckboxes({
         optionSetClassName="flex gap-x-2 mr-4"
         direction="vertical"
         conformField={fields.canadianismType}
-        disabled={fields.nonCanadianism.value === "on"}
         options={
           BASE_CANADANISM_TYPES.map((canadianismType) => ({
             label: canadianismType,
@@ -39,6 +38,11 @@ export default function CanadianismTypeCheckboxes({
           })) as InputOption[]
         }
       />
+      {/* A seventh inclusion box: checked, entries confirmed non-Canadian
+          are included like any type; unchecked, they are left out. Checked by
+          default, and it has no effect on the six type boxes (Stefan,
+          2026-09-30). When the page shows a result the box follows what was
+          searched; an unchecked box is simply absent from the query string. */}
       <RadioOrCheckbox
         type="checkbox"
         name="nonCanadianism"
@@ -47,9 +51,11 @@ export default function CanadianismTypeCheckboxes({
         conformField={fields.nonCanadianism}
         options={[
           {
-            label: "Non-Canadian only",
+            label: "Non-Canadianisms",
             value: "on",
-            defaultChecked: searchParams?.nonCanadianism ?? false,
+            defaultChecked: searchParams
+              ? searchParams.nonCanadianism === true
+              : true,
           },
         ]}
       />

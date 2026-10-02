@@ -1,4 +1,3 @@
-import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
 import { calculatePageSkip } from "./entry.server"
 import { getEntriesByBasicTextSearch } from "./search/getEntriesByBasicTextSearch"
 import { getSearchResultCanadianisms } from "./search/getSearchResultCanadianisms"
@@ -53,10 +52,9 @@ export async function getSearchResults(
   isUserAdmin: boolean
 ): Promise<AllSearchResults> {
   const versions = searchParams.database || ["dchp1", "dchp2", "dchp3"]
-  const canadianismTypes =
-    searchParams.canadianismType?.length > 0
-      ? searchParams.canadianismType
-      : [...BASE_CANADANISM_TYPES]
+  // The checked type boxes, as checked. Nothing checked means no Canadian
+  // entries, not all of them; see search/entryCategory.ts.
+  const canadianismTypes = searchParams.canadianismType ?? []
 
   const params = {
     ...searchParams,
