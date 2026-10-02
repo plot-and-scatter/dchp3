@@ -62,7 +62,7 @@ export default function EditMeaningFields({
               name="usage"
               defaultValue={meaning.usage}
               lightBorder
-              placeholder="e.g. Slang, dated"
+              placeholder="e.g. Sports, British Columbia, slang, rare, in figurative use"
             />
           }
         />
