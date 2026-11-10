@@ -22,7 +22,6 @@ const Etymology = ({ entry, isEditingMode }: etymologyProps) => {
             <Fragment>
               <Input
                 name="etymology"
-                className="italic"
                 lightBorder
                 defaultValue={entry?.etymology}
                 placeholder="e.g. [&lt; Canadian French <i>guichet</i> 'counter']"
@@ -35,7 +34,7 @@ const Etymology = ({ entry, isEditingMode }: etymologyProps) => {
           }
         />
       ) : (
-        <span className="ml-3 italic">
+        <span className="ml-3">
           <SanitizedTextSpan text={entry?.etymology} />
         </span>
       )}
