@@ -187,8 +187,8 @@ export default function Foreword() {
       <p>
         The quotations paragraph continues for meaning #1, before meaning #2
         begins. In the pictured example of <WordLink>stagette</WordLink>,
-        meaning #2 has a “dagger”, which signifies that it is not Canadian but
-        listed here for contextualization.
+        meaning #2 is marked “Non-Cdn.”, which signifies that it is not Canadian
+        but listed here for contextualization.
       </p>
 
       <FrontmatterImage

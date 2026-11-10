@@ -21,7 +21,11 @@ const MeaningHeader = ({
           {number && number !== "0" && (
             <span className="mr-1 font-bold md:text-xl">{number}</span>
           )}
-          {dagger && <span className="mr-1 align-super">&dagger;</span>}
+          {dagger && (
+            <span className="mr-2 text-sm font-semibold uppercase tracking-wide text-gray-600 md:text-base">
+              Non-Cdn.
+            </span>
+          )}
           {partOfSpeech && (
             <span className="text-sm italic md:text-lg">
               <SanitizedTextSpan text={partOfSpeech} />
