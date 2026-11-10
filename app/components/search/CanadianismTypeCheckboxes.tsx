@@ -26,7 +26,7 @@ export default function CanadianismTypeCheckboxes({
       <RadioOrCheckbox
         type="checkbox"
         name="canadianismType"
-        optionSetClassName="flex gap-x-2 mr-4"
+        optionSetClassName="flex items-center gap-x-2 mr-4"
         direction="vertical"
         conformField={fields.canadianismType}
         options={
@@ -46,7 +46,7 @@ export default function CanadianismTypeCheckboxes({
       <RadioOrCheckbox
         type="checkbox"
         name="nonCanadianism"
-        optionSetClassName="flex gap-x-2 mr-4"
+        optionSetClassName="flex items-center gap-x-2 mr-4"
         direction="vertical"
         conformField={fields.nonCanadianism}
         options={[
