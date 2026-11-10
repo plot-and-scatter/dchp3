@@ -18,7 +18,7 @@ export default function DatabaseCheckboxes({
       <RadioOrCheckbox
         type="checkbox"
         name="database"
-        optionSetClassName="flex gap-x-2 mr-4"
+        optionSetClassName="flex items-center gap-x-2 mr-4"
         direction="vertical"
         conformField={fields.database}
         options={[

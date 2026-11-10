@@ -17,7 +17,7 @@ export default function EditingStatusCheckboxes({
       <RadioOrCheckbox
         type="checkbox"
         name="editingStatus"
-        optionSetClassName="flex gap-x-2 mr-4"
+        optionSetClassName="flex items-center gap-x-2 mr-4"
         direction="vertical"
         conformField={fields.editingStatus}
         options={EDITING_STATUS_INPUTS.map((editingStatus) => ({
