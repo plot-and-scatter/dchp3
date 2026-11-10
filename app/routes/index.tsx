@@ -31,7 +31,7 @@ export default function Index() {
         We recognize six types of Canadianisms (see the{" "}
         <Link to="/how-to-use">How-to section, A Typology of Canadianisms</Link>
         ). Some meanings that are not Canadian are included for context and are
-        marked with a dagger (†). A few entries are included that we or others
+        marked “Non-Cdn.”. A few entries are included that we or others
         originally thought were Canadianisms, but our research proved otherwise.
         We include these entries to save others the trouble of checking again;
         they are marked by a{" "}
