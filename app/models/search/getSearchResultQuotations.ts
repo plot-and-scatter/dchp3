@@ -1,7 +1,7 @@
 import { prisma } from "~/db.server"
 import { categoryWhere } from "./entryCategory"
-import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
+import { likePatterns } from "./quoteVariants"
 import { EDITING_STATUS_INPUTS } from "~/components/EntryEditor/EntryEditorSidebar/EditingStatus/EditingStatusPanel"
 
 export interface Quotation {
@@ -52,17 +52,16 @@ function getMeaningCondition({
 }
 
 function getWhereClause(params: SearchResultParams) {
-  const searchWildcard =
-    params.searchTerm === SEARCH_WILDCARD ? "%" : `%${params.searchTerm}%`
+  const patterns = likePatterns(params.searchTerm)
 
   const where: any = {
     AND: [
       { meanings: { some: getMeaningCondition(params) } },
       {
-        OR: [
-          { citation: { contains: searchWildcard } },
-          { headword: { contains: searchWildcard } },
-        ],
+        OR: patterns.flatMap((pattern) => [
+          { citation: { contains: pattern } },
+          { headword: { contains: pattern } },
+        ]),
       },
     ],
   }

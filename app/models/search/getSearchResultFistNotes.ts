@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { categorySql } from "./entryCategory"
-import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
+import { termMatchSql } from "./quoteVariants"
 import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
 import { editingStatusHelper } from "./getEntriesByBasicTextSearch"
 
@@ -23,9 +23,6 @@ export function getFistNotesCount({
   editingStatus,
   canadianismTypes,
 }: SearchResultParams) {
-  const searchWildcard =
-    searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
-
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
   // TODO: Change this
@@ -34,9 +31,7 @@ export function getFistNotesCount({
       count(*) as count
     FROM det_entries de
     WHERE
-      IF(${caseSensitive},
-        (fist_note) LIKE (${searchWildcard}),
-        LOWER(fist_note) LIKE LOWER(${searchWildcard}))
+      ${termMatchSql(["fist_note"], searchTerm, caseSensitive)}
       AND (de.dchp_version IN (${Prisma.join(database)}))
       AND (de.is_public = 1 OR ${isUserAdmin})
       AND ${categorySql({ nonCanadianism, canadianismTypes })}
@@ -68,9 +63,6 @@ export function getSearchResultFistNotes({
   editingStatus,
   canadianismTypes,
 }: SearchResultParams): Promise<FistNote[]> {
-  const searchWildcard =
-    searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
-
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
   // TODO: Change this
@@ -81,9 +73,7 @@ export function getSearchResultFistNotes({
     id
   FROM det_entries de
   WHERE
-    IF(${caseSensitive},
-      (fist_note) LIKE (${searchWildcard}),
-      LOWER(fist_note) LIKE LOWER(${searchWildcard}))
+    ${termMatchSql(["fist_note"], searchTerm, caseSensitive)}
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
     AND ${categorySql({ nonCanadianism, canadianismTypes })}

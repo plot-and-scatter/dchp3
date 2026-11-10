@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { categorySql } from "./entryCategory"
-import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
+import { termMatchSql } from "./quoteVariants"
 import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
 import { editingStatusHelper } from "./getEntriesByBasicTextSearch"
 
@@ -23,9 +23,6 @@ export function getCanadianismsCount({
   canadianismTypes,
   editingStatus,
 }: SearchResultParams) {
-  const searchWildcard =
-    searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
-
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
   return prisma.$queryRaw<{ count: number }[]>`
@@ -34,10 +31,11 @@ export function getCanadianismsCount({
   FROM det_meanings, det_entries de
   WHERE
     det_meanings.entry_id = de.id
-    AND IF(${caseSensitive},
-      (det_meanings.canadianism_type_comment) LIKE (${searchWildcard}),
-      LOWER(det_meanings.canadianism_type_comment) LIKE LOWER(${searchWildcard})
-    )
+    AND ${termMatchSql(
+      ["det_meanings.canadianism_type_comment"],
+      searchTerm,
+      caseSensitive
+    )}
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
     AND ${categorySql({ nonCanadianism, canadianismTypes }, "det_meanings")}
@@ -68,9 +66,6 @@ export function getSearchResultCanadianisms({
   editingStatus,
   canadianismTypes,
 }: SearchResultParams): Promise<Canadianism[]> {
-  const searchWildcard =
-    searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
-
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
   return prisma.$queryRaw<Canadianism[]>`
@@ -81,10 +76,11 @@ export function getSearchResultCanadianisms({
   FROM det_meanings, det_entries de
   WHERE
     det_meanings.entry_id = de.id
-    AND IF(${caseSensitive},
-      (det_meanings.canadianism_type_comment) LIKE (${searchWildcard}),
-      LOWER(det_meanings.canadianism_type_comment) LIKE LOWER(${searchWildcard})
-    )
+    AND ${termMatchSql(
+      ["det_meanings.canadianism_type_comment"],
+      searchTerm,
+      caseSensitive
+    )}
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
     AND ${categorySql({ nonCanadianism, canadianismTypes }, "det_meanings")}
