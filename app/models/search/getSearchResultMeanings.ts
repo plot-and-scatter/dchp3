@@ -2,6 +2,7 @@ import { prisma } from "~/db.server"
 import { categoryWhere } from "./entryCategory"
 import { SEARCH_WILDCARD } from "../search.server"
 import type { SearchResultParams } from "../search.server"
+import { quoteVariants } from "./quoteVariants"
 import { EDITING_STATUS_INPUTS } from "~/components/EntryEditor/EntryEditorSidebar/EditingStatus/EditingStatusPanel"
 
 export interface SearchResultMeaning {
@@ -18,13 +19,29 @@ function getWhereClause({
   versions,
   isUserAdmin,
 }: SearchResultParams) {
+  // One quote spelling keeps the plain `definition: { contains }` shape; more
+  // than one becomes an OR under AND, because categoryWhere owns the top-level
+  // OR.
+  const variants =
+    searchTerm === SEARCH_WILDCARD ? [""] : quoteVariants(searchTerm)
+  const definitionWhere =
+    variants.length === 1
+      ? { definition: { contains: variants[0] } }
+      : {
+          AND: [
+            {
+              OR: variants.map((variant) => ({
+                definition: { contains: variant },
+              })),
+            },
+          ],
+        }
+
   const where: any = {
     entry: {
       dchp_version: { in: versions },
     },
-    definition: {
-      contains: searchTerm === SEARCH_WILDCARD ? "" : searchTerm,
-    },
+    ...definitionWhere,
     ...categoryWhere({ nonCanadianism, canadianismTypes }),
   }
 

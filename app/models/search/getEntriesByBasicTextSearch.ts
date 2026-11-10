@@ -1,9 +1,9 @@
 import { Prisma } from "@prisma/client"
 import { prisma } from "~/db.server"
 import { categorySql } from "./entryCategory"
-import { SEARCH_WILDCARD } from "../search.server"
 import type { Entry } from "../entry.server"
 import type { SearchResultParams } from "../search.server"
+import { termMatchSql } from "./quoteVariants"
 import { DEFAULT_PAGE_SIZE } from "~/utils/pageSize"
 import { EDITING_STATUS_INPUTS } from "~/components/EntryEditor/EntryEditorSidebar/EditingStatus/EditingStatusPanel"
 
@@ -30,9 +30,6 @@ export function getHeadwordCount({
   editingStatus,
   canadianismTypes,
 }: SearchResultParams) {
-  const searchWildcard =
-    searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
-
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
   return prisma.$queryRaw<{ count: number }[]>`
@@ -40,10 +37,11 @@ export function getHeadwordCount({
     count(*) as count
   FROM det_entries de
   WHERE
-    IF (${caseSensitive},
-      (headword) LIKE (${searchWildcard} OR spelling_variants LIKE (${searchWildcard})),
-      (LOWER(headword) LIKE LOWER(${searchWildcard}) OR LOWER(spelling_variants) LIKE LOWER(${searchWildcard}))
-    )
+    ${termMatchSql(
+      ["headword", "spelling_variants"],
+      searchTerm,
+      caseSensitive
+    )}
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
     AND ${categorySql({ nonCanadianism, canadianismTypes })}
@@ -74,9 +72,6 @@ export function getEntriesByBasicTextSearch({
   editingStatus,
   canadianismTypes,
 }: SearchResultParams) {
-  const searchWildcard =
-    searchTerm === SEARCH_WILDCARD ? "%" : `%${searchTerm}%`
-
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
   return prisma.$queryRaw<
@@ -86,10 +81,11 @@ export function getEntriesByBasicTextSearch({
     id, headword, is_public, dchp_version
   FROM det_entries de
   WHERE
-    IF (${caseSensitive},
-      (headword) LIKE (${searchWildcard} OR spelling_variants LIKE (${searchWildcard})),
-      (LOWER(headword) LIKE LOWER(${searchWildcard}) OR LOWER(spelling_variants) LIKE LOWER(${searchWildcard}))
-    )
+    ${termMatchSql(
+      ["headword", "spelling_variants"],
+      searchTerm,
+      caseSensitive
+    )}
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
     AND ${categorySql({ nonCanadianism, canadianismTypes })}
