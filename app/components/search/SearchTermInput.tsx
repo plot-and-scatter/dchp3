@@ -45,7 +45,7 @@ export default function SearchTermInput({
         <RadioOrCheckbox
           type="checkbox"
           name="caseSensitive"
-          optionSetClassName="flex gap-x-2 mr-4"
+          optionSetClassName="flex items-center gap-x-2 mr-4"
           conformField={fields.caseSensitive}
           options={[
             {
