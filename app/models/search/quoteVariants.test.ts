@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest"
+import { describe, it, expect, vi } from "vitest"
 import type { Prisma } from "@prisma/client"
 import {
   likePatterns,
@@ -6,6 +6,11 @@ import {
   straightenQuotes,
   termMatchSql,
 } from "./quoteVariants"
+
+// quoteVariants imports search.server for SEARCH_WILDCARD, and search.server
+// imports db.server, which opens a Prisma client. CI has no DATABASE_URL, so
+// the client has to be mocked away here as in the other search tests.
+vi.mock("~/db.server", () => ({ prisma: {} }))
 
 describe("straightenQuotes", () => {
   it("turns every curly quote into its straight form", () => {
