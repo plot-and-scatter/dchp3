@@ -23,7 +23,7 @@
 # that installs or builds.
 
 set -euo pipefail
-export PATH=/opt/node-v22.23.2-linux-x64/bin:${PATH}
+export PATH=/opt/node-v22.23.4-linux-x64/bin:${PATH}
 
 readonly REPO=plot-and-scatter/dchp3
 
