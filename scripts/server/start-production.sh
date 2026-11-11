@@ -5,7 +5,7 @@
 #
 # Installing and building is deploy.sh's job, run by hand.
 set -euo pipefail
-export PATH=/opt/node-v22.23.2-linux-x64/bin:${PATH}
+export PATH=/opt/node-v22.23.4-linux-x64/bin:${PATH}
 
 # The npm script, not a server binary by name, so this serves whichever tree
 # is checked out: `remix-serve build` on the tree production runs today,
