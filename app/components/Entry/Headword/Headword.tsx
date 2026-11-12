@@ -10,6 +10,8 @@ import EntryEditorForm from "../../EntryEditor/EntryEditorForm/EntryEditorForm"
 import Etymology from "./Etymology"
 import GeneralLabels from "./GeneralLabels"
 import HeadwordHandNote from "./HeadwordHandNote"
+import { useEdition } from "~/editions/EditionPage"
+import { isArchiveEdition } from "~/editions/edition"
 import HeadwordText from "./HeadwordText"
 import NonCanadianism from "./NonCanadianism"
 import SaveIcon from "../../elements/Icons/SaveIcon"
@@ -24,6 +26,13 @@ interface HeadwordProps {
 }
 
 const Headword = ({ entry, isEditingMode }: HeadwordProps): JSX.Element => {
+  // DCHP-3 marks DCHP-1 entries by dchp_version. The DCHP-2 database stamps
+  // every entry dchp2 and records what it inherited from DCHP-1 in
+  // is_legacy, which is what the 2017 site keyed its warning on; the archive
+  // editions use that flag too.
+  const archive = isArchiveEdition(useEdition().id)
+  const isDchp1Entry =
+    entry.dchp_version === "dchp1" || (archive && Boolean(entry.is_legacy))
   const contents = (
     <div className="flex flex-col gap-2 leading-tight md:gap-4" id="headword">
       <div className="flex items-start justify-between border-b-2 border-gray-500 py-4">
@@ -74,7 +83,7 @@ const Headword = ({ entry, isEditingMode }: HeadwordProps): JSX.Element => {
           </p>
         </div>
       )}
-      {entry.dchp_version === "dchp1" && !isEditingMode && (
+      {isDchp1Entry && !isEditingMode && (
         <div className="border border-amber-700 bg-amber-200 p-3">
           <TertiaryHeader>Entry from the DCHP-1 (pre-1967)</TertiaryHeader>
           <p>
