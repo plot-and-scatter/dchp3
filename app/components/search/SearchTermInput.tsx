@@ -49,23 +49,41 @@ export default function SearchTermInput({
           ]}
         />
       </div>
-      <ul className="flex flex-col gap-1 border-l-4 border-amber-500 bg-amber-50 p-3 text-sm">
-        <li>
-          <FAIcon iconStyle="far" iconName="fa-lightbulb" className="mr-1" />{" "}
-          You can enter <strong>*</strong> to match all entries.
+      <ul className="flex flex-col gap-1.5 border-l-4 border-amber-500 bg-amber-50 p-3 text-sm">
+        <li className="flex gap-2">
+          <FAIcon
+            iconStyle="far"
+            iconName="fa-lightbulb"
+            className="w-4 shrink-0 pt-1 text-center"
+          />
+          <span>
+            You can enter <strong>*</strong> to match all entries.
+          </span>
         </li>
-        <li>
-          <FAIcon iconStyle="far" iconName="fa-lightbulb" className="mr-1" />{" "}
-          You can search for headwords using any documented spelling variant
-          (e.g. entering <i>abatteau</i> will call up the <i>aboiteau</i>{" "}
-          entry).
+        <li className="flex gap-2">
+          <FAIcon
+            iconStyle="far"
+            iconName="fa-lightbulb"
+            className="w-4 shrink-0 pt-1 text-center"
+          />
+          <span>
+            You can search for headwords using any documented spelling variant
+            (e.g. entering <i>abatteau</i> will call up the <i>aboiteau</i>{" "}
+            entry).
+          </span>
         </li>
-        <li>
-          <FAIcon iconStyle="far" iconName="fa-lightbulb" className="mr-1" />{" "}
-          You can search for words or phrases in any of the six dictionary
-          sections (Headword, Meaning, Canadianism note, Usage note, Fist note
-          and Quotation block). Select the relevant tab at the top of the search
-          results.
+        <li className="flex gap-2">
+          <FAIcon
+            iconStyle="far"
+            iconName="fa-lightbulb"
+            className="w-4 shrink-0 pt-1 text-center"
+          />
+          <span>
+            You can search for words or phrases in any of the six dictionary
+            sections (Headword, Meaning, Canadianism note, Usage note, Fist note
+            and Quotation block). Select the relevant tab at the top of the
+            search results.
+          </span>
         </li>
       </ul>
     </div>
