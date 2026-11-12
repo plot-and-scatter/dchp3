@@ -279,3 +279,10 @@ The same design, proven on staging first (2026-08-28). Staging runs from
 enabled at boot, which is safe precisely because the start script only serves.
 
 `start-staging.sh` runs from the deployed tree, which is fine: it only serves.
+
+## Archive editions: dchp3-archive@.service, start-archive.sh
+
+DCHP-1 and DCHP-2 are served read-only by this code from their own trees,
+ports 3011 and 3012, under `/dchp1/` and `/dchp2/`. Same split as production:
+`deploy.sh dchp1` builds, the template unit `dchp3-archive@dchp1` serves via
+`start-archive.sh dchp1`. The setup steps are in `docs/editions.md`.

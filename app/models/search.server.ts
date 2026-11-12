@@ -24,6 +24,7 @@ export type SearchResultParams = SearchActionSchema & {
   skip: number
   canadianismTypes: string[]
   versions: string[]
+  ignoreCategories?: boolean
 }
 
 export type AllSearchResults = {
@@ -49,7 +50,8 @@ export type AllSearchResults = {
 
 export async function getSearchResults(
   searchParams: SearchActionSchema,
-  isUserAdmin: boolean
+  isUserAdmin: boolean,
+  options: { ignoreCategories?: boolean } = {}
 ): Promise<AllSearchResults> {
   const versions = searchParams.database || ["dchp1", "dchp2", "dchp3"]
   // The checked type boxes, as checked. Nothing checked means no Canadian
@@ -63,6 +65,7 @@ export async function getSearchResults(
     versions,
     isUserAdmin,
     canadianismTypes,
+    ignoreCategories: options.ignoreCategories ?? false,
   }
 
   const searchResults: AllSearchResults = {

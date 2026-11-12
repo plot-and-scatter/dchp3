@@ -24,6 +24,7 @@ function getMeaningCondition({
   nonCanadianism,
   editingStatus,
   canadianismTypes,
+  ignoreCategories,
   versions,
 }: SearchResultParams) {
   const where: any = {
@@ -32,7 +33,7 @@ function getMeaningCondition({
         is_public: isUserAdmin ? undefined : true,
         dchp_version: { in: versions },
       },
-      ...categoryWhere({ nonCanadianism, canadianismTypes }),
+      ...categoryWhere({ nonCanadianism, canadianismTypes, ignoreCategories }),
     },
   }
 

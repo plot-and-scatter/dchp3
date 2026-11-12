@@ -1,23 +1,31 @@
 import { Link } from "react-router"
+import { EDITIONS } from "~/editions"
+import type { EditionId } from "~/editions/edition"
 
-const Header = ({ isStaging }: { isStaging?: boolean }): JSX.Element => {
+const Header = ({
+  isStaging,
+  edition,
+}: {
+  isStaging?: boolean
+  edition: EditionId
+}): JSX.Element => {
+  const config = EDITIONS[edition]
   return (
     <header
       className={`fixed top-0 z-50 flex h-12 w-full items-center justify-center text-white md:h-16 ${
-        isStaging ? "bg-amber-800" : "bg-gray-700"
+        isStaging ? "bg-amber-800" : config.headerBackground
       }`}
     >
       <Link to="/">
         <div className="hidden text-2xl sm:block md:text-3xl">
-          Dictionary of Canadianisms on Historical Principles{" "}
-          <span className="italic">
-            3<sup>rd</sup> Edition
-          </span>
+          {config.headerTitle}
         </div>
-        <div className="text-2xl tracking-wider sm:hidden">DCHP-3</div>
+        <div className="text-2xl tracking-wider sm:hidden">
+          {config.shortName}
+        </div>
       </Link>
       {isStaging && (
-        <span className="ml-4 rounded bg-yellow-300 px-2 py-0.5 text-sm font-bold tracking-widest text-black">
+        <span className="bg-yellow-300 text-black ml-4 rounded px-2 py-0.5 text-sm font-bold tracking-widest">
           STAGING
         </span>
       )}

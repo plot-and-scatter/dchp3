@@ -56,3 +56,21 @@ blockquote {
   font-display: swap;
   src: url("/fonts/Carlito-Bold.woff") format("woff");
 }
+
+/* ---------------------------------------------------------------------------
+   Archive editions (DCHP-1, DCHP-2)
+   tailwind.config.js resolves gray-50 to gray-400 through these variables.
+   The defaults are Tailwind's slate, so DCHP-3 looks as it always has. An
+   archive edition sits its page on a very light tint of its header colour;
+   slate is a cool blue-grey that clashes with that, so root.tsx sets these
+   same variables on <body> to the edition's tints (app/editions/index.tsx)
+   and every gray-50..400 surface and border follows. Text greys are not
+   touched. Tailwind 4 would do this with @theme; see issue #516.
+   --------------------------------------------------------------------------- */
+:root {
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+}

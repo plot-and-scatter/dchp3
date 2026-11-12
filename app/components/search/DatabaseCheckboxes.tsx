@@ -5,10 +5,14 @@ type DatabaseCheckboxesProps = {
   fields: {
     database: FieldMetadata<string[]>
   }
+  // The editions in this deployment's database, from the edition config.
+  // All checked by default.
+  options: { label: string; value: string }[]
 }
 
 export default function DatabaseCheckboxes({
   fields,
+  options,
 }: DatabaseCheckboxesProps) {
   return (
     <div className="flex flex-col">
@@ -21,12 +25,7 @@ export default function DatabaseCheckboxes({
         optionSetClassName="flex items-center gap-x-2 mr-4"
         direction="vertical"
         conformField={fields.database}
-        options={[
-          { label: "DCHP-1", value: "dchp1", defaultChecked: true },
-          { label: "DCHP-2", value: "dchp2", defaultChecked: true },
-          { label: "DCHP-3", value: "dchp3", defaultChecked: true },
-          { label: "DCHP-3.1", value: "dchp3.1", defaultChecked: true },
-        ]}
+        options={options.map((o) => ({ ...o, defaultChecked: true }))}
       />
     </div>
   )

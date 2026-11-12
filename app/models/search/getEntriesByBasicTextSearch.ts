@@ -29,6 +29,7 @@ export function getHeadwordCount({
   nonCanadianism,
   editingStatus,
   canadianismTypes,
+  ignoreCategories,
 }: SearchResultParams) {
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
@@ -44,7 +45,7 @@ export function getHeadwordCount({
     )}
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
-    AND ${categorySql({ nonCanadianism, canadianismTypes })}
+    AND ${categorySql({ nonCanadianism, canadianismTypes, ignoreCategories })}
     AND (${allStatuses} OR (
       (de.first_draft = 1 AND ${statusMap["first_draft"] === true}) OR
       (de.revised_draft = 1 AND ${statusMap["revised_draft"] === true}) OR
@@ -71,6 +72,7 @@ export function getEntriesByBasicTextSearch({
   nonCanadianism,
   editingStatus,
   canadianismTypes,
+  ignoreCategories,
 }: SearchResultParams) {
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
@@ -88,7 +90,7 @@ export function getEntriesByBasicTextSearch({
     )}
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
-    AND ${categorySql({ nonCanadianism, canadianismTypes })}
+    AND ${categorySql({ nonCanadianism, canadianismTypes, ignoreCategories })}
     AND (${allStatuses} OR (
       (de.first_draft = 1 AND ${statusMap["first_draft"] === true}) OR
       (de.revised_draft = 1 AND ${statusMap["revised_draft"] === true}) OR

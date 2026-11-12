@@ -6,6 +6,8 @@ import QuickLinks from "../quicklinks/QuickLinks"
 import type { LoadedEntryDataType } from "~/routes/entries/$headword"
 import { Link } from "../elements/LinksAndButtons/Link"
 import EditIcon from "../elements/Icons/EditIcon"
+import { useEdition } from "~/editions/EditionPage"
+import { isArchiveEdition } from "~/editions/edition"
 
 type EntryProps = {
   entry: LoadedEntryDataType
@@ -18,12 +20,19 @@ const Entry = ({
   canUserEditEntry,
   canUserViewDraftEntry,
 }: EntryProps): JSX.Element => {
+  // In DCHP-3, amber marks an entry inherited from an earlier edition. In an
+  // archive edition that distinction is meaningless (the DCHP-1 database
+  // flags nearly every entry as legacy, and DCHP-2's flag records what it
+  // inherited from DCHP-1), so the archive ignores the flag. The data is
+  // untouched; the pre-1967 content warning in Headword.tsx still shows.
   //  TODO: Don't rely on `is_legacy`; use `dchp_version` instead.
-  const bgColor = entry.is_legacy
-    ? "bg-amber-50"
-    : entry.no_cdn_conf
-    ? "bg-red-200"
-    : ""
+  const archive = isArchiveEdition(useEdition().id)
+  const bgColor =
+    entry.is_legacy && !archive
+      ? "bg-amber-50"
+      : entry.no_cdn_conf
+      ? "bg-red-200"
+      : ""
 
   return (
     <div

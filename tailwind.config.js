@@ -15,7 +15,19 @@ module.exports = {
       red: colors.red,
       blue: colors.blue,
       green: colors.emerald,
-      gray: colors.slate,
+      // The five light greys resolve through CSS variables so the archive
+      // editions can re-tint them to their own colour (see "Archive
+      // editions" in app/styles/additional.css, which also holds the slate
+      // defaults). Plain hex, not RGB triplets, so opacity modifiers such as
+      // bg-gray-100/50 do not work on these five; nothing uses one.
+      gray: {
+        ...colors.slate,
+        50: "var(--gray-50)",
+        100: "var(--gray-100)",
+        200: "var(--gray-200)",
+        300: "var(--gray-300)",
+        400: "var(--gray-400)",
+      },
       alert: colors.amber,
       // For the Superadmin badge. Nothing else in the palette was free: red
       // means blocked in the neighbouring column and green means can log in.

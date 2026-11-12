@@ -2,32 +2,32 @@ import { NavLink } from "react-router"
 import type { LoggedInUser } from "~/services/auth/auth.server"
 import Popover from "../Popovers/Popover"
 import NavPopoverContents from "../Popovers/NavPopoverContents"
+import { EDITIONS } from "~/editions"
+import { isArchiveEdition, type EditionId } from "~/editions/edition"
 
 interface NavProps {
   user?: LoggedInUser
+  edition: EditionId
 }
 
-const Nav = ({ user }: NavProps): JSX.Element => {
+// The front matter links come from the edition (app/editions/index.tsx);
+// Browse and Search are the same everywhere; the account menu exists only
+// on DCHP-3, since an archive has nobody to sign in.
+const Nav = ({ user, edition }: NavProps): JSX.Element => {
+  const config = EDITIONS[edition]
+  const archive = isArchiveEdition(edition)
   return (
-    <nav className="fixed top-12 z-50 flex h-8 w-full cursor-pointer items-center  justify-center border-b border-gray-500 bg-gray-100 p-3 text-sm text-primary shadow-md  md:top-16 md:h-16 md:text-xl">
-      {/* <div className="flex items-center gap-4 text-base">
-    <div className="">Introduction</div>
-    <div className="">Acknowledgements</div>
-    <div className="">Foreword</div>
-    <div className="">Project History &amp; Team</div>
-  </div> */}
+    <nav
+      className="fixed top-12 z-50 flex h-8 w-full cursor-pointer items-center  justify-center border-b border-gray-500 bg-gray-100 p-3 text-sm text-primary shadow-md  md:top-16 md:h-16 md:text-xl"
+      style={{ backgroundColor: config.tints?.page }}
+    >
       <div className="flex w-full max-w-6xl items-center justify-between">
-        <NavLink to="/about">
-          <i className="fa-regular fa-circle-info mr-1 sm:mr-2"></i> About
-        </NavLink>
-        <NavLink to="/how-to-use">
-          <i className="fa-regular fa-book mr-1 sm:mr-2"></i>How to use
-          <span className="hidden md:inline"></span>
-        </NavLink>
-        <NavLink to="/references">
-          <i className="fa-regular fa-book mr-1 sm:mr-2"></i>
-          <span className="hidden md:inline">References</span>
-        </NavLink>
+        {config.navLinks.map((link) => (
+          <NavLink key={link.to} to={link.to}>
+            <i className={`fa-regular ${link.icon} mr-1 sm:mr-2`}></i>
+            {link.label}
+          </NavLink>
+        ))}
         <div className="font-bold">
           <NavLink to="/entries">
             <i className="fa-regular fa-books mr-1 sm:mr-2"></i> Browse
@@ -40,28 +40,27 @@ const Nav = ({ user }: NavProps): JSX.Element => {
             <span className="hidden md:inline"> entries</span>
           </NavLink>
         </div>
-        <div>
-          {user ? (
-            // <NavLink to="/admin">
-            //   <i className="fa-regular fa-key mr-1 sm:mr-2"></i> Admin screen
-            // </NavLink>
-            <Popover
-              title={
-                <div className="flex items-center">
-                  <i className="fas fa-user mr-1 sm:mr-2" />
-                  {user.name}
-                </div>
-              }
-            >
-              <NavPopoverContents roles={user.roles} />
-            </Popover>
-          ) : (
-            <NavLink to="/login">
-              <i className="fa-regular fa-key mr-1 sm:mr-2"></i> Admin
-              <span className="hidden md:inline"> login</span>
-            </NavLink>
-          )}
-        </div>
+        {!archive && (
+          <div>
+            {user ? (
+              <Popover
+                title={
+                  <div className="flex items-center">
+                    <i className="fas fa-user mr-1 sm:mr-2" />
+                    {user.name}
+                  </div>
+                }
+              >
+                <NavPopoverContents roles={user.roles} />
+              </Popover>
+            ) : (
+              <NavLink to="/login">
+                <i className="fa-regular fa-key mr-1 sm:mr-2"></i> Admin
+                <span className="hidden md:inline"> login</span>
+              </NavLink>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   )

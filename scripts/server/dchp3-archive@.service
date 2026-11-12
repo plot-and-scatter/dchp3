@@ -1,0 +1,15 @@
+[Unit]
+# One unit file for both archive editions: enable it as
+# dchp3-archive@dchp1.service and dchp3-archive@dchp2.service.
+Description=DCHP-%i archive edition (read-only, served by the dchp3 code)
+Wants=network-online.target
+After=network-online.target mysqld.service
+
+[Service]
+# Serve only. Installing and building happen in deploy.sh <edition>, by hand.
+ExecStart=/bin/bash /usr/local/sbin/dchp3-start-archive.sh %i
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
