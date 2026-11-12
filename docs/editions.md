@@ -185,24 +185,29 @@ versions of the same steps.
    sudo /usr/local/sbin/dchp3-deploy.sh dchp1
    ```
 
-5. **Proxy.** Whatever fronts port 3000 for DCHP-3 needs a location per
-   archive that passes the prefix through unchanged (the app expects it).
-   The app itself answers `/dchp1` with a redirect to `/dchp1/`.
-
-   nginx:
-
-   ```
-   location /dchp1/ { proxy_pass http://127.0.0.1:3011; proxy_set_header Host $host; }
-   location = /dchp1 { return 301 /dchp1/; }
-   ```
-
-   Apache:
+5. **Apache.** Public requests to dchp.arts.ubc.ca reach Apache (`httpd`),
+   which forwards them to the DCHP-3 process on port 3000. The live HTTPS
+   configuration is `/etc/httpd/conf.d/ssl.conf`; its two lines
+   `ProxyPass "/" ...` and `ProxyPassReverse "/" ...` send everything to
+   port 3000. The archive rules go **immediately above those two lines**,
+   because Apache uses the first `ProxyPass` that matches and the `/` rule
+   matches everything. Do this last, once both processes are running:
 
    ```
-   ProxyPass        /dchp1/ http://127.0.0.1:3011/dchp1/
-   ProxyPassReverse /dchp1/ http://127.0.0.1:3011/dchp1/
+   # DCHP-1 and DCHP-2 archive editions (read-only), each its own app process.
+   # Must come before the "/" rules below: Apache uses the first ProxyPass that matches.
    RedirectMatch 301 ^/dchp1$ /dchp1/
+   RedirectMatch 301 ^/dchp2$ /dchp2/
+   ProxyPass        "/dchp1/" "http://localhost:3011/dchp1/"
+   ProxyPassReverse "/dchp1/" "http://localhost:3011/dchp1/"
+   ProxyPass        "/dchp2/" "http://localhost:3012/dchp2/"
+   ProxyPassReverse "/dchp2/" "http://localhost:3012/dchp2/"
    ```
+
+   Then `sudo apachectl configtest && sudo systemctl reload httpd`. The
+   prefix is passed through unchanged, which is what the app expects. If
+   the port 80 site (`x_dchp3.reverseproxy.tmp.conf`) serves the site over
+   plain http rather than redirecting to https, it needs the same block.
 
 ### Later deploys
 
