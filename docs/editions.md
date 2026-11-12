@@ -42,28 +42,33 @@ edition's titles and nav links. The shared routes (`/`, `/about`,
 `/how-to-use`, `/acknowledgements`) are thin: they look the page up by slug
 for the edition being served, and 404 when the edition has no such page.
 Pages an edition has beyond those are served at `/pages/<slug>` (DCHP-1:
-`frontmatter`, `abbreviations`, `copyright-notice`).
+`frontmatter`, `abbreviations`, `copyright-notice`; DCHP-2: `foreword`).
 
 The DCHP-1 texts were ported unchanged from the 2013 CakePHP templates
 (`app/views/pages/*.thtml`, `elements/welcome.thtml`) with the old site's
 screenshots.
 
-DCHP-2 has no pages yet; its config has an empty page set so a DCHP-2
-deployment 404s on front matter rather than showing DCHP-1's.
+The DCHP-2 texts come from the 2017 site (`dchp2-old/dchp2/app/views/pages`,
+the published DCHP-2, database `dchpca_dchp_2`; the uppercase `DCHP-2`
+folder is an older editing install with placeholder pages). They were
+Word-exported HTML, run through `tidy` and then the same conversion.
 
 ## Lifting an archive database
 
-Load the dump, create the Frequency Index tables (the Prisma client expects
-them even though the archive never reaches those routes), then run the lift:
+Load the dump, run the lift, then create the Frequency Index tables (the
+Prisma client expects them even though the archive never reaches those
+routes):
 
 ```sh
+(echo "SET @edition='dchp1';"; cat sql/archive-edition-lift.sql) | mysql dchpca_dchp1
 mysql dchpca_dchp1 < sql/create-frequency-index.sql
-mysql dchpca_dchp1 -e "SET @edition='dchp1'; SOURCE sql/archive-edition-lift.sql"
 ```
 
-The lift stamps `det_entries.dchp_version` with the edition (the old apps
-never set it; the search and the entry page read it) and re-creates the four
-views (`det_bibliographies`, `det_citations`, `det_shortcitations`,
+The lift adds the few columns dchp3 gained after the archives were frozen
+(`det_entries.dchp_version`, `det_log_entries.action` and `.email`), converts
+`user` to InnoDB so the frequency tables' foreign key can reference it, stamps
+`dchp_version` with the edition (the old apps never set it; the search and the
+entry page read it) and re-creates the four views (`det_bibliographies`, `det_citations`, `det_shortcitations`,
 `det_users`) so their definer is the current user. The dumps name the old
 hosting account as definer, which no longer exists, and MySQL then refuses
 every SELECT on them with error 1449.
@@ -72,6 +77,7 @@ every SELECT on them with error 1449.
 
 ```sh
 DCHP_EDITION=dchp1 DATABASE_URL="mysql://root@127.0.0.1:3306/dchpca_dchp1" PORT=3001 npm run dev
+DCHP_EDITION=dchp2 DATABASE_URL="mysql://root@127.0.0.1:3306/dchp2" PORT=3002 npm run dev
 ```
 
 ## Adding an edition-specific behaviour

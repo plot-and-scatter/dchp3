@@ -13,6 +13,12 @@ import Dchp1Frontmatter from "./dchp1/pages/Frontmatter"
 import Dchp1Abbreviations from "./dchp1/pages/Abbreviations"
 import Dchp1CopyrightNotice from "./dchp1/pages/CopyrightNotice"
 
+import Dchp2Home from "./dchp2/pages/Home"
+import Dchp2About from "./dchp2/pages/About"
+import Dchp2HowToUse from "./dchp2/pages/HowToUse"
+import Dchp2Foreword from "./dchp2/pages/Foreword"
+import Dchp2Acknowledgements from "./dchp2/pages/Acknowledgements"
+
 // Everything that differs between editions and is not data lives here: the
 // titles, the front matter pages, the nav links to them, and which search
 // filters make sense. Routes stay the same across editions; a route whose
@@ -105,9 +111,9 @@ const DCHP1: EditionConfig = {
   },
 }
 
-// DCHP-2's front matter has not been ported yet; until it is, a DCHP-2
-// deployment would serve DCHP-1's pages with the wrong title. The page set
-// is deliberately empty so every front matter route 404s instead.
+// DCHP-2's pages are the 2017 site's: the welcome page as home, the
+// "Introduction to DCHP-2" as how-to-use (that is what the old nav called
+// it), the two forewords, acknowledgements, and history + team as about.
 const DCHP2: EditionConfig = {
   id: "dchp2",
   shortName: "DCHP-2",
@@ -121,8 +127,23 @@ const DCHP2: EditionConfig = {
   ),
   databases: [{ label: "DCHP-2", value: "dchp2" }],
   hasCanadianismTypes: true,
-  navLinks: [],
-  pages: {},
+  navLinks: [
+    { to: "/about", label: "About", icon: "fa-circle-info" },
+    { to: "/how-to-use", label: "Introduction", icon: "fa-book" },
+    { to: "/pages/foreword", label: "Foreword", icon: "fa-book" },
+    {
+      to: "/acknowledgements",
+      label: "Acknowledgements",
+      icon: "fa-people-group",
+    },
+  ],
+  pages: {
+    home: Dchp2Home,
+    about: Dchp2About,
+    "how-to-use": Dchp2HowToUse,
+    acknowledgements: Dchp2Acknowledgements,
+    foreword: Dchp2Foreword,
+  },
 }
 
 export const EDITIONS: Record<EditionId, EditionConfig> = {
