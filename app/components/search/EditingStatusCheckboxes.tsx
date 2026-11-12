@@ -4,16 +4,22 @@ import type { FieldMetadata } from "@conform-to/react"
 
 type EditingStatusCheckboxesProps = {
   fields: { editingStatus: FieldMetadata<string[]> }
+  // When the caller supplies its own heading (the collapsible on the search
+  // page), skip the built-in one.
+  hideHeading?: boolean
 }
 
 export default function EditingStatusCheckboxes({
   fields,
+  hideHeading,
 }: EditingStatusCheckboxesProps) {
   return (
     <div className="flex flex-col">
-      <div className="mr-4">
-        <strong>Editing status</strong>
-      </div>
+      {!hideHeading && (
+        <div className="mr-4">
+          <strong>Editing status</strong>
+        </div>
+      )}
       <RadioOrCheckbox
         type="checkbox"
         name="editingStatus"

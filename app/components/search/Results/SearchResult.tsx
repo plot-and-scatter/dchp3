@@ -23,7 +23,7 @@ export default function SearchResult({ data, searchTerm }: SearchResultProps) {
   }
 
   return (
-    <div className="mt-5 w-full border-t-2 border-gray-500 pt-5 lg:w-fit">
+    <div className="mt-5 w-full max-w-4xl border-t-2 border-gray-500 pt-5">
       <SecondaryHeader>
         Search results for &ldquo;{searchTerm}
         &rdquo;
