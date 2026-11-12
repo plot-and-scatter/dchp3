@@ -17,7 +17,10 @@ const Nav = ({ user, edition }: NavProps): JSX.Element => {
   const config = EDITIONS[edition]
   const archive = isArchiveEdition(edition)
   return (
-    <nav className="fixed top-12 z-50 flex h-8 w-full cursor-pointer items-center  justify-center border-b border-gray-500 bg-gray-100 p-3 text-sm text-primary shadow-md  md:top-16 md:h-16 md:text-xl">
+    <nav
+      className="fixed top-12 z-50 flex h-8 w-full cursor-pointer items-center  justify-center border-b border-gray-500 bg-gray-100 p-3 text-sm text-primary shadow-md  md:top-16 md:h-16 md:text-xl"
+      style={{ backgroundColor: config.pageBackground }}
+    >
       <div className="flex w-full max-w-6xl items-center justify-between">
         {config.navLinks.map((link) => (
           <NavLink key={link.to} to={link.to}>
