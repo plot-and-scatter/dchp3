@@ -165,24 +165,18 @@ versions of the same steps.
    session module reads them at start-up. The Auth0 and image-bucket write
    credentials are left out: nothing in an archive signs in or uploads.
 
-3. **Scripts and unit**, installed root-only beside the production ones:
+3. **Scripts and unit.** One script installs the shared deploy script
+   (named `dchp3-deploy` on the server), the archive start script and the
+   template unit, and enables both archive units:
 
    ```
-   sudo cp scripts/server/start-archive.sh /usr/local/sbin/dchp3-start-archive.sh
-   sudo chown root:root /usr/local/sbin/dchp3-start-archive.sh
-   sudo chmod 700 /usr/local/sbin/dchp3-start-archive.sh
-   sudo cp scripts/server/dchp3-archive@.service /etc/systemd/system/
-   sudo systemctl daemon-reload
-   sudo systemctl enable dchp3-archive@dchp1
+   sudo bash /var/www/dchp3-dchp1/scripts/server/install-archive-scripts.sh
    ```
-
-   The deploy script is the shared one already installed for production;
-   update it from this branch, since it gained the two edition cases.
 
 4. **First deploy**, which also starts the unit:
 
    ```
-   sudo /usr/local/sbin/dchp3-deploy.sh dchp1
+   sudo /usr/local/sbin/dchp3-deploy dchp1
    ```
 
 5. **Apache.** Public requests to dchp.arts.ubc.ca reach Apache (`httpd`),
@@ -211,7 +205,7 @@ versions of the same steps.
 
 ### Later deploys
 
-`sudo /usr/local/sbin/dchp3-deploy.sh dchp1` (or `dchp2`) and choose main.
+`sudo /usr/local/sbin/dchp3-deploy dchp1` (or `dchp2`) and choose main.
 A branch can be named instead, as for staging, which is how a preview runs
 before the archive code is merged: `... dchp1 499-archive-mode-dchp1`.
 
