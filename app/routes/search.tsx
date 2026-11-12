@@ -110,7 +110,7 @@ export default function SearchPage() {
                 name="attribute"
                 value={attribute}
                 // Stretches to the term box's height on the same row.
-                className="w-full whitespace-nowrap sm:w-auto sm:py-0"
+                className="whitespace-nowrap py-0"
                 formActionPath={SEARCH_PATH}
               >
                 <FAIcon iconName="fa-search" className="mr-2" /> Search

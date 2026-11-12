@@ -20,7 +20,7 @@ export default function SearchTermInput({
 }: SearchTermInputProps) {
   return (
     <div className="flex w-full flex-col gap-3">
-      <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-stretch">
+      <div className="flex w-full items-stretch gap-3">
         <div className="min-w-0 grow">
           <Input
             type="text"
