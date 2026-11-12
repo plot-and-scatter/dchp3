@@ -132,19 +132,7 @@ export default function SearchPage() {
               {/* Editors only. Collapsed by default: nine more boxes would
                   crowd the public view, and the inputs still submit their
                   defaults while closed. */}
-              {data?.isUserAdmin && (
-                <details className="sm:col-span-1">
-                  <summary className="cursor-pointer font-bold">
-                    Editing status
-                    <span className="ml-2 text-sm font-normal text-gray-500">
-                      (editors)
-                    </span>
-                  </summary>
-                  <div className="mt-2">
-                    <EditingStatusCheckboxes fields={fields} hideHeading />
-                  </div>
-                </details>
-              )}
+              {data?.isUserAdmin && <EditingStatusCheckboxes fields={fields} />}
             </div>
           </fieldset>
         </div>
