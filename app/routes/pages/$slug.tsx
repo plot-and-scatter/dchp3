@@ -1,5 +1,6 @@
 import { useLoaderData } from "react-router"
-import { EditionPage, editionPageLoader } from "~/editions/EditionPage"
+import { EditionPage } from "~/editions/EditionPage"
+import { editionPageLoader } from "~/editions/editionPage.server"
 import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary"
 
 // Front matter pages an edition has beyond the shared home, about and
