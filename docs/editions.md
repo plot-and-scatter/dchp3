@@ -211,5 +211,16 @@ versions of the same steps.
 
 ### Later deploys
 
-`sudo /usr/local/sbin/dchp3-deploy.sh dchp1` (or `dchp2`). The archives
-deploy main only, like production, so a change reaches them by being merged.
+`sudo /usr/local/sbin/dchp3-deploy.sh dchp1` (or `dchp2`) and choose main.
+A branch can be named instead, as for staging, which is how a preview runs
+before the archive code is merged: `... dchp1 499-archive-mode-dchp1`.
+
+### Shortcut: load the lifted databases instead of lifting on the server
+
+The lift and the frequency index have already been run on the local copies.
+A dump of those loads straight in and step 1 becomes:
+
+```
+mysql -e "CREATE DATABASE dchpca_dchp1 CHARACTER SET utf8mb4"
+gunzip -c dchpca_dchp1-lifted.sql.gz | mysql dchpca_dchp1
+```
