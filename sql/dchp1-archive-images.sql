@@ -7,9 +7,11 @@
 -- image bucket, which the archive reads through IMAGE_BUCKET_PREFIX like
 -- DCHP-3 does. This file copies those det_images rows into the archive,
 -- matched by headword (three headwords are spelled differently in DCHP-3 and
--- are mapped by hand). Generated 2026-11-12 from the DCHP-3 database.
+-- are mapped by hand; igloo's entry is marked DCHP-2 in DCHP-3 because it
+-- was revised, so its 2013 scan is added explicitly). Generated 2026-11-12
+-- from the DCHP-3 database.
 --
--- Not covered: bombardier, igloo, kayak ((1)) and tuque have an image_file_name in
+-- Not covered: bombardier, kayak ((1)) and tuque have an image_file_name in
 -- the 1967 database but no scan in DCHP-3.
 --
 -- Run after archive-edition-lift.sql, on the DCHP-1 archive database only:
@@ -341,3 +343,6 @@ INSERT INTO det_images (caption, path, entry_id, scale, `order`)
 INSERT INTO det_images (caption, path, entry_id, scale, `order`)
   SELECT NULL, '/uploads/entries/9482/2013.05.23_15.38.51_image214.jpg', id, 1, NULL FROM det_entries WHERE headword = 'water-drum'
   AND NOT EXISTS (SELECT 1 FROM det_images x WHERE x.path = '/uploads/entries/9482/2013.05.23_15.38.51_image214.jpg');
+INSERT INTO det_images (caption, path, entry_id, scale, `order`)
+  SELECT NULL, '/uploads/entries/4321/2013.05.23_13.56.35_image089.JPG', id, 1, NULL FROM det_entries WHERE headword = 'igloo'
+  AND NOT EXISTS (SELECT 1 FROM det_images x WHERE x.path = '/uploads/entries/4321/2013.05.23_13.56.35_image089.JPG');
