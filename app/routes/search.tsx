@@ -100,29 +100,42 @@ export default function SearchPage() {
         Search entries{searchTerm && ":"} {searchTerm}
       </PageHeader>
       <Form {...getFormProps(form)} method="get">
-        <div className="flex w-full max-w-4xl flex-col gap-4 md:flex-row lg:gap-6">
-          <div className="grow-1 flex w-full flex-col gap-4 md:flex-row">
-            <SearchTermInput fields={fields} data={data} />
-          </div>
-          <div className="flex w-fit shrink-0 grow-0 flex-row gap-4">
-            <DatabaseCheckboxes fields={fields} />
-            <CanadianismTypeCheckboxes
-              fields={fields}
-              searchParams={isResult ? data.searchParams : undefined}
-            />
-            {data?.isUserAdmin && <EditingStatusCheckboxes fields={fields} />}
-          </div>
-          <div className="max-w-fit text-center lg:text-start">
-            <ActionButton
-              size="large"
-              name="attribute"
-              value={attribute}
-              className="mx-auto w-fit whitespace-nowrap"
-              formActionPath={SEARCH_PATH}
-            >
-              <FAIcon iconName="fa-search" className="mr-2" /> Search
-            </ActionButton>
-          </div>
+        <div className="flex w-full max-w-4xl flex-col gap-5">
+          <SearchTermInput
+            fields={fields}
+            data={data}
+            action={
+              <ActionButton
+                size="large"
+                name="attribute"
+                value={attribute}
+                // Stretches to the term box's height on the same row.
+                className="whitespace-nowrap py-0"
+                formActionPath={SEARCH_PATH}
+              >
+                <FAIcon iconName="fa-search" className="mr-2" /> Search
+              </ActionButton>
+            }
+          />
+          {/* Filters: optional refinements, so they sit under the term rather
+              than beside it. All boxes default to checked, so leaving them
+              alone searches everything, as before. */}
+          <fieldset className="border-t border-gray-300 pt-4">
+            <legend className="pr-3 text-sm uppercase tracking-wide text-gray-500">
+              Filters
+            </legend>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+              <DatabaseCheckboxes fields={fields} />
+              <CanadianismTypeCheckboxes
+                fields={fields}
+                searchParams={isResult ? data.searchParams : undefined}
+              />
+              {/* Editors only. Collapsed by default: nine more boxes would
+                  crowd the public view, and the inputs still submit their
+                  defaults while closed. */}
+              {data?.isUserAdmin && <EditingStatusCheckboxes fields={fields} />}
+            </div>
+          </fieldset>
         </div>
         {isResult && <SearchResult data={data} searchTerm={searchTerm || ""} />}
       </Form>
