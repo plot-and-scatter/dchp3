@@ -106,31 +106,22 @@ const defaultApp = ({
           crossOrigin="anonymous"
         ></script> */}
       </head>
+      {/* The archive class lets additional.css warm the grey boxes to match
+          the parchment page colour; see "Archive editions" there. */}
       <body
-        className="h-full"
+        className={isArchiveEdition(edition) ? "archive h-full" : "h-full"}
         style={{ backgroundColor: EDITIONS[edition].pageBackground }}
       >
         <div className="relative">
           <Header isStaging={isStaging} edition={edition} />
           <Nav user={user} edition={edition} />
-          {/* An archive keeps the old sites' parchment on the page edges,
-              header and nav, and sets the content on a white sheet so the
-              grey-toned entry boxes read as they do on DCHP-3. */}
-          <div
-            className={
-              isArchiveEdition(edition)
-                ? "mx-auto min-h-screen max-w-screen-2xl bg-white shadow-md"
-                : undefined
-            }
-          >
-            {error ? (
-              <TextPageMain>
-                <DefaultErrorBoundary />
-              </TextPageMain>
-            ) : (
-              <Outlet />
-            )}
-          </div>
+          {error ? (
+            <TextPageMain>
+              <DefaultErrorBoundary />
+            </TextPageMain>
+          ) : (
+            <Outlet />
+          )}
         </div>
         <ScrollRestoration />
         <Scripts />

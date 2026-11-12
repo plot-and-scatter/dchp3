@@ -56,3 +56,16 @@ blockquote {
   font-display: swap;
   src: url("/fonts/Carlito-Bold.woff") format("woff");
 }
+
+/* ---------------------------------------------------------------------------
+   Archive editions (DCHP-1, DCHP-2; body.archive, set in root.tsx)
+   The page sits on the old sites' parchment (#eed). The palette's grey is
+   slate, a cool blue-grey that clashes with it, so the light grey surfaces
+   and borders are warmed to the same family here. Text greys are left alone.
+   --------------------------------------------------------------------------- */
+.archive .bg-gray-50 { background-color: #f7f6ee; }
+.archive .bg-gray-100 { background-color: #e9e8d9; }
+.archive .border-gray-200 { border-color: #dbd9c6; }
+.archive .border-gray-300 { border-color: #cbc9b2; }
+.archive .border-gray-400 { border-color: #b3b199; }
+.archive .shadow-gray-300 { --tw-shadow-color: #cbc9b2; --tw-shadow: var(--tw-shadow-colored); }
