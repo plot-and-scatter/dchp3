@@ -20,7 +20,7 @@ export default function SearchTermInput({
 }: SearchTermInputProps) {
   return (
     <div className="flex w-full flex-col gap-3">
-      <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-start">
+      <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-stretch">
         <div className="min-w-0 grow">
           <Input
             type="text"
@@ -32,7 +32,7 @@ export default function SearchTermInput({
             autoFocus
           />
         </div>
-        {action && <div className="shrink-0">{action}</div>}
+        {action && <div className="flex shrink-0">{action}</div>}
       </div>
       <div className="whitespace-nowrap">
         <RadioOrCheckbox
