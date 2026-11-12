@@ -46,6 +46,10 @@ export type EditionConfig = {
   // apart at a glance (staging still overrides it with amber). Full class
   // names, not fragments, so Tailwind's scanner keeps them.
   headerBackground: string
+  // Page background colour. The 2013 and 2017 sites sat their text on a
+  // flat parchment #ddc; the archives keep that so they read as the old
+  // editions. DCHP-3 leaves it unset (white).
+  pageBackground?: string
   // Values of det_entries.dchp_version this edition's database holds. DCHP-3
   // holds all of them; an archive holds only its own.
   databases: { label: string; value: string }[]
@@ -93,6 +97,7 @@ const DCHP1: EditionConfig = {
   id: "dchp1",
   shortName: "DCHP-1",
   headerBackground: "bg-green-800",
+  pageBackground: "#ddddcc",
   headerTitle: (
     <Fragment>
       Dictionary of Canadianisms on Historical Principles{" "}
@@ -124,6 +129,7 @@ const DCHP2: EditionConfig = {
   id: "dchp2",
   shortName: "DCHP-2",
   headerBackground: "bg-blue-800",
+  pageBackground: "#ddddcc",
   headerTitle: (
     <Fragment>
       Dictionary of Canadianisms on Historical Principles{" "}

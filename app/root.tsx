@@ -105,7 +105,10 @@ const defaultApp = ({
           crossOrigin="anonymous"
         ></script> */}
       </head>
-      <body className="h-full">
+      <body
+        className="h-full"
+        style={{ backgroundColor: EDITIONS[edition].pageBackground }}
+      >
         <div className="relative">
           <Header isStaging={isStaging} edition={edition} />
           <Nav user={user} edition={edition} />
