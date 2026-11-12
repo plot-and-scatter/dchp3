@@ -42,9 +42,27 @@ case "${environment}" in
     readonly UNIT=dchp3-remix-server
     readonly CHOOSE_BRANCH=no
     ;;
+  # The archive editions (docs/editions.md): the same code, main only, each
+  # in its own tree because DCHP_BASENAME is baked into the build, so one
+  # build cannot serve two prefixes.
+  dchp1)
+    readonly TREE=/var/www/dchp3-dchp1
+    readonly PORT=3011
+    readonly UNIT=dchp3-archive@dchp1
+    readonly CHOOSE_BRANCH=no
+    readonly ENV_FILE=.env.dchp1
+    ;;
+  dchp2)
+    readonly TREE=/var/www/dchp3-dchp2
+    readonly PORT=3012
+    readonly UNIT=dchp3-archive@dchp2
+    readonly CHOOSE_BRANCH=no
+    readonly ENV_FILE=.env.dchp2
+    ;;
   *)
     echo "Usage: $(basename "$0") staging [branch]"
     echo "       $(basename "$0") production"
+    echo "       $(basename "$0") dchp1 | dchp2"
     exit 1
     ;;
 esac
@@ -164,6 +182,17 @@ git checkout -B "${branch}" "origin/${branch}"
 
 npm ci --include=dev
 npx prisma generate
+
+# An archive's prefix (DCHP_BASENAME) is read at build time by Vite and
+# React Router, so its env file is loaded before the build. Production and
+# staging build at the root and need nothing here.
+if [ -n "${ENV_FILE:-}" ]; then
+  set -a
+  # shellcheck disable=SC1090
+  source "${ENV_FILE}"
+  set +a
+fi
+
 npm run build
 
 # No `|| true` anywhere below. A restart that fails, or a site that does not
@@ -171,7 +200,7 @@ npm run build
 systemctl restart "${UNIT}"
 
 sleep 5
-curl -fsS -o /dev/null "http://localhost:${PORT}/"
+curl -fsS -o /dev/null "http://localhost:${PORT}${DCHP_BASENAME:-}/"
 
 echo
 echo "${environment} is serving on :${PORT}"

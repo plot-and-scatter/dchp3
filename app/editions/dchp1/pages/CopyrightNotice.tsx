@@ -1,3 +1,4 @@
+import { useHref } from "react-router"
 // DCHP-1: copyright notice
 // Ported from the DCHP-1 Online CakePHP templates (2013); text unchanged.
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
@@ -19,7 +20,11 @@ export default function Dchp1CopyrightNotice() {
 
       <p>
         The copyright pages of the 1991 work are shown{" "}
-        <a href="/files/DCHP-1_Copyright.pdf" target="_blank" rel="noreferrer">
+        <a
+          href={useHref("/files/DCHP-1_Copyright.pdf")}
+          target="_blank"
+          rel="noreferrer"
+        >
           here
         </a>
         .

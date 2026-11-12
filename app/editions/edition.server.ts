@@ -1,4 +1,5 @@
 import { data } from "react-router"
+import { BASENAME } from "./basename.server"
 import {
   DEFAULT_EDITION,
   EDITION_IDS,
@@ -28,8 +29,12 @@ export const isArchive = () => isArchiveEdition(getEditionId())
 // unknown path rather than redirecting to a login page that is itself gone.
 export const throwIfPathBlockedInArchive = (request: Request) => {
   if (!isArchive()) return
+  // request.url carries the basename; the blocked prefixes are app paths.
   const { pathname } = new URL(request.url)
-  if (isPathBlockedInArchive(pathname)) {
+  const appPath = pathname.startsWith(BASENAME)
+    ? pathname.slice(BASENAME.length) || "/"
+    : pathname
+  if (isPathBlockedInArchive(appPath)) {
     // The edition rides along so the error page can still show the right
     // title: when the root loader throws, there is no root loader data.
     throw data(

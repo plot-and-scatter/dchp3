@@ -106,3 +106,105 @@ hidden by the user check; display improvements should apply to all editions.
 If it is, put the switch in the edition config (`app/editions/index.tsx`) and
 read it through `useEdition()` in components or `getEditionId()` on the
 server, rather than scattering `process.env.DCHP_EDITION` reads.
+
+## Deploying the archives
+
+Both archives run on the production server beside DCHP-3, at
+`https://dchp.arts.ubc.ca/dchp1/` and `/dchp2/`. Each is a separate process
+serving its own tree and build, because the path prefix (`DCHP_BASENAME`) is
+baked into the build by Vite and React Router. The scripts follow the
+production split: `deploy.sh <edition>` installs and builds by hand,
+`start-archive.sh <edition>` only serves, from the template unit
+`dchp3-archive@.service`. See `scripts/server/README.md` for the production
+versions of the same steps.
+
+| | DCHP-1 | DCHP-2 |
+| --- | --- | --- |
+| tree | `/var/www/dchp3-dchp1` | `/var/www/dchp3-dchp2` |
+| env file | `.env.dchp1` in the tree | `.env.dchp2` in the tree |
+| database | `dchpca_dchp1` | `dchpca_dchp2` |
+| port | 3011 | 3012 |
+| unit | `dchp3-archive@dchp1` | `dchp3-archive@dchp2` |
+| URL | `/dchp1/` | `/dchp2/` |
+
+### One-time setup, per edition
+
+1. **Database.** Load the dump into a new database, run the lift with that
+   edition, then the frequency index, and grant the app's MySQL user SELECT
+   on it (the archive never writes, apart from the lift itself):
+
+   ```
+   mysql -e "CREATE DATABASE dchpca_dchp1 CHARACTER SET utf8mb4"
+   mysql dchpca_dchp1 < dchp1-dump.sql
+   (echo "SET @edition='dchp1';"; cat sql/archive-edition-lift.sql) | mysql dchpca_dchp1
+   mysql dchpca_dchp1 < sql/create-frequency-index.sql
+   mysql dchpca_dchp1 < sql/dchp1-archive-images.sql     # DCHP-1 only
+   ```
+
+2. **Tree and env file.**
+
+   ```
+   sudo git clone https://github.com/plot-and-scatter/dchp3 /var/www/dchp3-dchp1
+   ```
+
+   Then `/var/www/dchp3-dchp1/.env.dchp1`, which is untracked like
+   `.env.production`:
+
+   ```
+   DCHP_EDITION=dchp1
+   DCHP_BASENAME=/dchp1
+   PORT=3011
+   DATABASE_URL="mysql://<user>:<password>@localhost:3306/dchpca_dchp1"
+   IMAGE_BUCKET_PREFIX="<same value as production>"
+   COOKIE_SECRET="<any random string>"
+   SESSION_SECRET="<any random string>"
+   SITE_URL="https://dchp.arts.ubc.ca/dchp1"
+   ```
+
+   The two secrets are never used to set a cookie in an archive, but the
+   session module reads them at start-up. The Auth0 and image-bucket write
+   credentials are left out: nothing in an archive signs in or uploads.
+
+3. **Scripts and unit**, installed root-only beside the production ones:
+
+   ```
+   sudo cp scripts/server/start-archive.sh /usr/local/sbin/dchp3-start-archive.sh
+   sudo chown root:root /usr/local/sbin/dchp3-start-archive.sh
+   sudo chmod 700 /usr/local/sbin/dchp3-start-archive.sh
+   sudo cp scripts/server/dchp3-archive@.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl enable dchp3-archive@dchp1
+   ```
+
+   The deploy script is the shared one already installed for production;
+   update it from this branch, since it gained the two edition cases.
+
+4. **First deploy**, which also starts the unit:
+
+   ```
+   sudo /usr/local/sbin/dchp3-deploy.sh dchp1
+   ```
+
+5. **Proxy.** Whatever fronts port 3000 for DCHP-3 needs a location per
+   archive that passes the prefix through unchanged (the app expects it).
+   The app itself answers `/dchp1` with a redirect to `/dchp1/`.
+
+   nginx:
+
+   ```
+   location /dchp1/ { proxy_pass http://127.0.0.1:3011; proxy_set_header Host $host; }
+   location = /dchp1 { return 301 /dchp1/; }
+   ```
+
+   Apache:
+
+   ```
+   ProxyPass        /dchp1/ http://127.0.0.1:3011/dchp1/
+   ProxyPassReverse /dchp1/ http://127.0.0.1:3011/dchp1/
+   RedirectMatch 301 ^/dchp1$ /dchp1/
+   ```
+
+### Later deploys
+
+`sudo /usr/local/sbin/dchp3-deploy.sh dchp1` (or `dchp2`). The archives
+deploy main only, like production, so a change reaches them by being merged.

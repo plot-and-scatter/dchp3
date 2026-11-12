@@ -6,6 +6,8 @@ import { defineConfig } from "vite"
 
 export default defineConfig({
   plugins: [reactRouter()],
+  // Asset URL prefix, matching `basename` in react-router.config.ts.
+  base: `${process.env.DCHP_BASENAME || ""}/`,
   server: {
     // Vite would default to 5173, but this app's dev port is part of its
     // contract: SITE_URL in .env feeds the Auth0 callback URL registered in
