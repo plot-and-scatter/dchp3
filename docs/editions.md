@@ -67,8 +67,10 @@ mysql dchpca_dchp1 < sql/create-frequency-index.sql
 The lift adds the few columns dchp3 gained after the archives were frozen
 (`det_entries.dchp_version`, `det_log_entries.action` and `.email`), converts
 `user` to InnoDB so the frequency tables' foreign key can reference it, stamps
-`dchp_version` with the edition (the old apps never set it; the search and the
-entry page read it) and re-creates the four views (`det_bibliographies`, `det_citations`, `det_shortcitations`,
+`dchp_version` (the old apps never set it; the search and the entry page read
+it: every DCHP-1 entry is `dchp1`, and in DCHP-2 the entries flagged
+`is_legacy`, inherited from DCHP-1, are `dchp1` and the rest `dchp2`, as in
+DCHP-3's own import) and re-creates the four views (`det_bibliographies`, `det_citations`, `det_shortcitations`,
 `det_users`) so their definer is the current user. The dumps name the old
 hosting account as definer, which no longer exists, and MySQL then refuses
 every SELECT on them with error 1449.

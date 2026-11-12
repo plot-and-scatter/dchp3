@@ -162,7 +162,12 @@ const DCHP2: EditionConfig = {
       </span>
     </Fragment>
   ),
-  databases: [{ label: "DCHP-2", value: "dchp2" }],
+  // The 2017 edition is DCHP-1's entries plus its own; the lift stamps them
+  // dchp1 and dchp2 by is_legacy, so both can be filtered, as in DCHP-3.
+  databases: [
+    { label: "DCHP-1", value: "dchp1" },
+    { label: "DCHP-2", value: "dchp2" },
+  ],
   hasCanadianismTypes: true,
   navLinks: [
     { to: "/about", label: "About", icon: "fa-circle-info" },

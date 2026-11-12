@@ -49,8 +49,13 @@ PREPARE c FROM @ddl; EXECUTE c; DEALLOCATE PREPARE c;
 ALTER TABLE `user` ENGINE = InnoDB;
 
 -- 1. Edition stamp. The search and the entry page read dchp_version; the
---    old apps never set it.
-UPDATE det_entries SET dchp_version = @edition WHERE dchp_version IS NULL;
+--    old apps never set it. They did set is_legacy, which in DCHP-2 marks
+--    the entries inherited from DCHP-1, so those are stamped dchp1 (as in
+--    DCHP-3's own import) and only DCHP-2's own entries dchp2. In DCHP-1
+--    every entry is dchp1 whatever the flag says.
+UPDATE det_entries
+   SET dchp_version = IF(@edition = 'dchp2' AND is_legacy = 1, 'dchp1', @edition)
+ WHERE dchp_version IS NULL;
 
 -- 2. Views: re-create each with the same definition and no DEFINER clause,
 --    which makes the current user the definer.
