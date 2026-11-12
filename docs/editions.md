@@ -73,6 +73,23 @@ entry page read it) and re-creates the four views (`det_bibliographies`, `det_ci
 hosting account as definer, which no longer exists, and MySQL then refuses
 every SELECT on them with error 1449.
 
+### Entry images
+
+Entry images are not in the database; `det_images.path` is a key into the
+image bucket, and the app prefixes it with `IMAGE_BUCKET_PREFIX`. Both
+archives use the same bucket as DCHP-3, so an archive deployment needs
+`IMAGE_BUCKET_PREFIX` set (the other `IMAGE_BUCKET_*` variables are for
+uploads, which an archive never does).
+
+- DCHP-2's 1,266 entry images are in its own `det_images` and all exist in
+  the bucket.
+- DCHP-1's drawings were recorded by the 2013 site only as
+  `det_entries.image_file_name`, which the dchp3 code does not read, and the
+  files are not in any copy of the old site on hand. DCHP-3 holds the same
+  scans in its `det_images`, so `sql/dchp1-archive-images.sql` copies those
+  rows into the DCHP-1 archive by headword (run it after the lift). Three
+  drawings (bombardier, kayak ((1)), tuque) have no scan anywhere we know of.
+
 ## Running an archive locally
 
 ```sh
