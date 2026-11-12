@@ -12,7 +12,7 @@ export default function Dchp1Frontmatter() {
     <TextPageMain>
       <PageHeader>Frontmatter of the 1967 paper edition</PageHeader>
 
-      <ul>
+      <ul className="my-4 ml-8 flex list-disc flex-col gap-y-2">
         <li>
           <a href="#foreword">Foreword (W.R. Wees, Gage Ltd.)</a>
         </li>
@@ -455,7 +455,7 @@ export default function Dchp1Frontmatter() {
       <span id="introduction" />
       <SecondaryHeader>Introduction</SecondaryHeader>
 
-      <blockquote>
+      <blockquote className="my-4 ml-8">
         That part of Canadian English which is neither British nor American is
         best illustrated by the vocabulary, for there are hundreds of words
         which are native to Canada or which have meanings peculiar to Canada. As

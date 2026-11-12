@@ -93,7 +93,7 @@ export default function Dchp1HowToUse() {
         headwords are:
       </p>
 
-      <blockquote>
+      <blockquote className="my-4 ml-8">
         <strong>
           barouge, bois rouge, bonnet rouge, Parti Rouge, Rouge, rouge ((n.)),
           rouge ((v.)), Rouge party
@@ -155,7 +155,7 @@ export default function Dchp1HowToUse() {
         “S” shows the alphabetic sequence of the headwords in the following way:
       </p>
 
-      <blockquote>
+      <blockquote className="my-4 ml-8">
         <p>DCHP-1 Paper starts with the following headwords:</p>
         <p>
           <strong>

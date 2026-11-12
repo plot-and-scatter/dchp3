@@ -203,7 +203,7 @@ export default function Dchp1About() {
       <p>Margery Fee</p>
 
       <SecondaryHeader>Proofreaders:</SecondaryHeader>
-      <ul>
+      <ul className="my-4 ml-8 flex list-disc flex-col gap-y-2">
         <li>Katrina Lo (lab supervisor 2010)</li>
         <li>Kendi Lam (lab supervisor 2011)</li>
         <li>Caitlin Bethune</li>
@@ -223,13 +223,13 @@ export default function Dchp1About() {
       </ul>
 
       <SecondaryHeader>Programmers:</SecondaryHeader>
-      <ul>
+      <ul className="my-4 ml-8 flex list-disc flex-col gap-y-2">
         <li>Frank Hangler</li>
         <li>David Kennedy</li>
       </ul>
 
       <SecondaryHeader>UBC Archives:</SecondaryHeader>
-      <ul>
+      <ul className="my-4 ml-8 flex list-disc flex-col gap-y-2">
         <li>Chris Hives</li>
         <li>Leslie Fields</li>
       </ul>
