@@ -105,7 +105,8 @@ const DCHP3: EditionConfig = {
 const DCHP1: EditionConfig = {
   id: "dchp1",
   shortName: "DCHP-1",
-  headerBackground: "bg-brown-800",
+  // amber-900 is the palette's nearest brown.
+  headerBackground: "bg-amber-900",
   tints: {
     page: "#f9f6f2",
     50: "#faf7f3",

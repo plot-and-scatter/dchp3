@@ -36,9 +36,6 @@ module.exports = {
       white: colors.white,
       amber: colors.amber,
       action: colors.blue,
-      // DCHP-1's header. Tailwind has no brown; this is a warm, slightly red
-      // one, dark enough for white text.
-      brown: { 800: "#6b4a2b" },
     },
     extend: {
       fontFamily: {
