@@ -9,7 +9,7 @@
 -- matched by headword (three headwords are spelled differently in DCHP-3 and
 -- are mapped by hand). Generated 2026-11-12 from the DCHP-3 database.
 --
--- Not covered: bombardier, kayak ((1)) and tuque have an image_file_name in
+-- Not covered: bombardier, igloo, kayak ((1)) and tuque have an image_file_name in
 -- the 1967 database but no scan in DCHP-3.
 --
 -- Run after archive-edition-lift.sql, on the DCHP-1 archive database only:

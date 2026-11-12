@@ -87,8 +87,9 @@ uploads, which an archive never does).
   `det_entries.image_file_name`, which the dchp3 code does not read, and the
   files are not in any copy of the old site on hand. DCHP-3 holds the same
   scans in its `det_images`, so `sql/dchp1-archive-images.sql` copies those
-  rows into the DCHP-1 archive by headword (run it after the lift). Three
-  drawings (bombardier, kayak ((1)), tuque) have no scan anywhere we know of.
+  rows into the DCHP-1 archive by headword (run it after the lift). Four
+  drawings (bombardier, igloo, kayak ((1)), tuque) have no scan anywhere we
+  know of.
 
 ## Running an archive locally
 
