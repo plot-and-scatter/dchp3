@@ -1,6 +1,6 @@
 import { Link } from "react-router"
 import { EDITIONS } from "~/editions"
-import { isArchiveEdition, type EditionId } from "~/editions/edition"
+import type { EditionId } from "~/editions/edition"
 
 const Header = ({
   isStaging,
@@ -24,14 +24,6 @@ const Header = ({
           {config.shortName}
         </div>
       </Link>
-      {isArchiveEdition(edition) && (
-        <span
-          className="text-black ml-4 rounded bg-gray-200 px-2 py-0.5 text-sm font-bold tracking-widest"
-          title="A read-only archive of this edition"
-        >
-          ARCHIVE
-        </span>
-      )}
       {isStaging && (
         <span className="bg-yellow-300 text-black ml-4 rounded px-2 py-0.5 text-sm font-bold tracking-widest">
           STAGING

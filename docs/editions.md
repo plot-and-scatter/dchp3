@@ -25,7 +25,7 @@ All of it hangs off `app/editions/edition.ts` and `edition.server.ts`:
   goes through it, so all editing UI and all guarded loaders stay closed.
 - **The editing, Bank and sign-in routes 404.** The root loader checks the
   pathname against `ARCHIVE_BLOCKED_PATH_PREFIXES` on every request.
-- **The nav has no account menu**, and the header carries an ARCHIVE badge.
+- **The nav has no account menu**, and the header bar is coloured per edition (green for DCHP-1, blue for DCHP-2).
 - **The search form hides filters that make no sense** for the edition: the
   database checkboxes when there is only one database, and the Canadianism
   type boxes for DCHP-1, whose meanings carry no type (the queries skip the
