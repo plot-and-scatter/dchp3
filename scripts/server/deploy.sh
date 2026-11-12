@@ -42,27 +42,28 @@ case "${environment}" in
     readonly UNIT=dchp3-remix-server
     readonly CHOOSE_BRANCH=no
     ;;
-  # The archive editions (docs/editions.md): the same code, main only, each
-  # in its own tree because DCHP_BASENAME is baked into the build, so one
-  # build cannot serve two prefixes.
+  # The archive editions (docs/editions.md): the same code, each in its own
+  # tree because DCHP_BASENAME is baked into the build, so one build cannot
+  # serve two prefixes. A branch may be named, as for staging, so a preview
+  # can run before the code is merged; with none named, choose 0) main.
   dchp1)
     readonly TREE=/var/www/dchp3-dchp1
     readonly PORT=3011
     readonly UNIT=dchp3-archive@dchp1
-    readonly CHOOSE_BRANCH=no
+    readonly CHOOSE_BRANCH=yes
     readonly ENV_FILE=.env.dchp1
     ;;
   dchp2)
     readonly TREE=/var/www/dchp3-dchp2
     readonly PORT=3012
     readonly UNIT=dchp3-archive@dchp2
-    readonly CHOOSE_BRANCH=no
+    readonly CHOOSE_BRANCH=yes
     readonly ENV_FILE=.env.dchp2
     ;;
   *)
     echo "Usage: $(basename "$0") staging [branch]"
     echo "       $(basename "$0") production"
-    echo "       $(basename "$0") dchp1 | dchp2"
+    echo "       $(basename "$0") dchp1 | dchp2 [branch]"
     exit 1
     ;;
 esac
