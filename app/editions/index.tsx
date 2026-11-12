@@ -1,0 +1,134 @@
+import { Fragment, type ComponentType } from "react"
+import type { EditionId } from "./edition"
+
+import Dchp3Home from "./dchp3/pages/Home"
+import Dchp3About from "./dchp3/pages/About"
+import Dchp3HowToUse from "./dchp3/pages/HowToUse"
+import Dchp3Acknowledgements from "./dchp3/pages/Acknowledgements"
+
+import Dchp1Home from "./dchp1/pages/Home"
+import Dchp1About from "./dchp1/pages/About"
+import Dchp1HowToUse from "./dchp1/pages/HowToUse"
+import Dchp1Frontmatter from "./dchp1/pages/Frontmatter"
+import Dchp1Abbreviations from "./dchp1/pages/Abbreviations"
+import Dchp1CopyrightNotice from "./dchp1/pages/CopyrightNotice"
+
+// Everything that differs between editions and is not data lives here: the
+// titles, the front matter pages, the nav links to them, and which search
+// filters make sense. Routes stay the same across editions; a route whose
+// page an edition does not have (say /acknowledgements on DCHP-1) 404s.
+//
+// Front matter pages are plain components under app/editions/<id>/pages.
+// The ones every edition has (home, about, how-to-use) are keyed by fixed
+// slugs so the shared routes can find them; extra pages are served by
+// /pages/<slug>.
+
+export type EditionNavLink = {
+  to: string
+  label: string
+  // A Font Awesome class, e.g. "fa-circle-info".
+  icon: string
+}
+
+export type EditionConfig = {
+  id: EditionId
+  // "DCHP-1", used in page titles and the compact header.
+  shortName: string
+  // The header's full title: the dictionary name and an edition mark.
+  headerTitle: React.ReactNode
+  // Values of det_entries.dchp_version this edition's database holds. DCHP-3
+  // holds all of them; an archive holds only its own.
+  databases: { label: string; value: string }[]
+  // DCHP-1's meanings carry no Canadianism type, so the type filter would
+  // hide everything; the search form hides the filter and the queries skip
+  // it.
+  hasCanadianismTypes: boolean
+  navLinks: EditionNavLink[]
+  pages: Record<string, ComponentType>
+}
+
+const DCHP3: EditionConfig = {
+  id: "dchp3",
+  shortName: "DCHP-3",
+  headerTitle: (
+    <Fragment>
+      Dictionary of Canadianisms on Historical Principles{" "}
+      <span className="italic">
+        3<sup>rd</sup> Edition
+      </span>
+    </Fragment>
+  ),
+  databases: [
+    { label: "DCHP-1", value: "dchp1" },
+    { label: "DCHP-2", value: "dchp2" },
+    { label: "DCHP-3", value: "dchp3" },
+    { label: "DCHP-3.1", value: "dchp3.1" },
+  ],
+  hasCanadianismTypes: true,
+  navLinks: [
+    { to: "/about", label: "About", icon: "fa-circle-info" },
+    { to: "/how-to-use", label: "How to use", icon: "fa-book" },
+    { to: "/references", label: "References", icon: "fa-book" },
+  ],
+  pages: {
+    home: Dchp3Home,
+    about: Dchp3About,
+    "how-to-use": Dchp3HowToUse,
+    acknowledgements: Dchp3Acknowledgements,
+  },
+}
+
+const DCHP1: EditionConfig = {
+  id: "dchp1",
+  shortName: "DCHP-1",
+  headerTitle: (
+    <Fragment>
+      Dictionary of Canadianisms on Historical Principles{" "}
+      <span className="italic">Online (1967)</span>
+    </Fragment>
+  ),
+  databases: [{ label: "DCHP-1", value: "dchp1" }],
+  hasCanadianismTypes: false,
+  navLinks: [
+    { to: "/about", label: "About", icon: "fa-circle-info" },
+    { to: "/how-to-use", label: "How to use", icon: "fa-book" },
+    { to: "/pages/frontmatter", label: "Frontmatter (1967)", icon: "fa-book" },
+    { to: "/pages/abbreviations", label: "Abbreviations", icon: "fa-list" },
+  ],
+  pages: {
+    home: Dchp1Home,
+    about: Dchp1About,
+    "how-to-use": Dchp1HowToUse,
+    frontmatter: Dchp1Frontmatter,
+    abbreviations: Dchp1Abbreviations,
+    "copyright-notice": Dchp1CopyrightNotice,
+  },
+}
+
+// DCHP-2's front matter has not been ported yet; until it is, a DCHP-2
+// deployment would serve DCHP-1's pages with the wrong title. The page set
+// is deliberately empty so every front matter route 404s instead.
+const DCHP2: EditionConfig = {
+  id: "dchp2",
+  shortName: "DCHP-2",
+  headerTitle: (
+    <Fragment>
+      Dictionary of Canadianisms on Historical Principles{" "}
+      <span className="italic">
+        2<sup>nd</sup> Edition (2017)
+      </span>
+    </Fragment>
+  ),
+  databases: [{ label: "DCHP-2", value: "dchp2" }],
+  hasCanadianismTypes: true,
+  navLinks: [],
+  pages: {},
+}
+
+export const EDITIONS: Record<EditionId, EditionConfig> = {
+  dchp1: DCHP1,
+  dchp2: DCHP2,
+  dchp3: DCHP3,
+}
+
+export const getEditionConfig = (id: EditionId) => EDITIONS[id]

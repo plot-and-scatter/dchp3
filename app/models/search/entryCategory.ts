@@ -17,6 +17,10 @@ import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
 type CategoryParams = {
   nonCanadianism?: boolean | null
   canadianismTypes?: string[]
+  // True for an edition whose meanings carry no Canadianism type (DCHP-1's
+  // archive), where the category rule would hide every meaning-level
+  // result. The search form shows no category boxes there.
+  ignoreCategories?: boolean
 }
 
 const types = (p: CategoryParams) => p.canadianismTypes ?? []
@@ -32,6 +36,7 @@ const typeList = (p: CategoryParams) => Prisma.join(types(p))
  * any meaning of the entry.
  */
 export const categorySql = (p: CategoryParams, meaningAlias?: string) => {
+  if (p.ignoreCategories) return Prisma.sql`TRUE`
   const checked = types(p)
   let typeMatch: Prisma.Sql
   if (checked.length === 0) typeMatch = Prisma.sql`FALSE`
@@ -53,12 +58,19 @@ export const categorySql = (p: CategoryParams, meaningAlias?: string) => {
  * The same rule as a Prisma `where` fragment for a meaning row (`entry` is
  * the relation). Spread into the meaning's `where`; it adds only `OR`.
  */
-export const categoryWhere = (p: CategoryParams) => ({
-  OR: [
-    ...(p.nonCanadianism === true ? [{ entry: { no_cdn_conf: true } }] : []),
-    {
-      entry: { no_cdn_conf: false },
-      ...(allTypesChecked(p) ? {} : { canadianism_type: { in: types(p) } }),
-    },
-  ],
-})
+export const categoryWhere = (p: CategoryParams) =>
+  p.ignoreCategories
+    ? {}
+    : {
+        OR: [
+          ...(p.nonCanadianism === true
+            ? [{ entry: { no_cdn_conf: true } }]
+            : []),
+          {
+            entry: { no_cdn_conf: false },
+            ...(allTypesChecked(p)
+              ? {}
+              : { canadianism_type: { in: types(p) } }),
+          },
+        ],
+      }

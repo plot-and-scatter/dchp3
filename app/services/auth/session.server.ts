@@ -8,6 +8,7 @@ import {
   getPermissionsMap,
 } from "~/services/auth/AuthRole"
 import type { LoggedInUser } from "./auth.server"
+import { isArchive } from "~/editions/edition.server"
 import {
   getUserIdByEmailOrThrow,
   userOwnsCitation,
@@ -64,6 +65,10 @@ export const getReturnHeadersForCookieSession = async ({
 }
 
 export const getUserFromSession = async (request: Request) => {
+  // An archive edition has no users. Every permission check in this module
+  // goes through here, so this one line keeps all editing UI and all guarded
+  // loaders closed there, whatever cookie a browser may still carry.
+  if (isArchive()) return undefined
   const session = await getCookieSession(request)
   return session?.data?.user as LoggedInUser | undefined
 }
@@ -114,8 +119,19 @@ export const userHasPermission = async (
   return rolesContainPermission(roles, permission)
 }
 
+// What a guard throws when the visitor may not proceed. On DCHP-3 that is a
+// redirect to the login or not-allowed page. In an archive edition those
+// pages do not exist and nobody can ever qualify, so the guarded route is
+// simply not found. Loaders run in parallel, so this has to be the guard's
+// own answer; the root loader's 404 for the same path would otherwise be
+// overridden by the redirect.
+const denied = (path: string) =>
+  isArchive()
+    ? data(`Not found`, { status: 404, statusText: "not-found" })
+    : redirect(path)
+
 export const redirectIfUserNotLoggedIn = async (request: Request) => {
-  if (!(await isUserLoggedIn(request))) throw redirect(`${LOGIN_PATH}`)
+  if (!(await isUserLoggedIn(request))) throw denied(LOGIN_PATH)
 }
 
 export const redirectIfUserLacksPermission = async (
@@ -123,7 +139,7 @@ export const redirectIfUserLacksPermission = async (
   permission: AuthPermission
 ) => {
   if (!(await userHasPermission(request, permission)))
-    throw redirect(`${NOT_ALLOWED_PATH}`)
+    throw denied(NOT_ALLOWED_PATH)
 }
 
 export const getUserIdAndEmail = async (request: Request) => {
@@ -168,7 +184,7 @@ export async function redirectIfUserLacksCitationEditPermission(
   citationId: number
 ) {
   if (!(await canUserEditCitation(request, citationId)))
-    throw redirect(`${NOT_ALLOWED_PATH}`)
+    throw denied(NOT_ALLOWED_PATH)
 }
 
 // Tidy this up, it seems redundant with canUserEditEntry above.
@@ -189,5 +205,5 @@ export async function redirectIfUserLacksEntry(
   headword: string
 ) {
   if (await userOwnsEntry(request, headword)) return
-  throw redirect(`${NOT_ALLOWED_PATH}`)
+  throw denied(NOT_ALLOWED_PATH)
 }

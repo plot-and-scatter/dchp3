@@ -9,7 +9,9 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  isRouteErrorResponse,
   useLoaderData,
+  useRouteError,
   useRouteLoaderData,
 } from "react-router"
 
@@ -24,8 +26,21 @@ import { getUserFromSession } from "./services/auth/session.server"
 import { DefaultErrorBoundary } from "./components/elements/DefaultErrorBoundary"
 import type { LoggedInUser } from "./services/auth/auth.server"
 import TextPageMain from "./components/elements/Layouts/TextPageMain"
+import {
+  getEditionId,
+  throwIfPathBlockedInArchive,
+} from "./editions/edition.server"
+import {
+  DEFAULT_EDITION,
+  isEditionId,
+  type EditionId,
+} from "./editions/edition"
+import { EDITIONS } from "./editions"
 
-export const BASE_APP_TITLE = "DCHP-3"
+// The DCHP-3 title. Routes that build a page title use the edition's own
+// short name via the root loader; this stays for the one or two places that
+// have no loader data to hand (and for DCHP-3 it is the same string).
+export const BASE_APP_TITLE = EDITIONS[DEFAULT_EDITION].shortName
 
 export const links: LinksFunction = () => {
   return [
@@ -39,21 +54,43 @@ export const links: LinksFunction = () => {
   ]
 }
 
-export const meta: MetaFunction = () => [{ title: BASE_APP_TITLE }]
+// The edition for the title comes from the loader, or, on an error page
+// where the root loader itself threw, from the thrown response.
+const editionFromError = (error: unknown): EditionId | undefined =>
+  isRouteErrorResponse(error) && isEditionId(error.data?.edition)
+    ? error.data.edition
+    : undefined
+
+export const meta: MetaFunction<typeof loader> = ({ data, error }) => [
+  {
+    title:
+      EDITIONS[data?.edition ?? editionFromError(error) ?? DEFAULT_EDITION]
+        .shortName,
+  },
+]
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  // In an archive edition the sign-in, Bank and editing routes do not exist.
+  throwIfPathBlockedInArchive(request)
+  const edition: EditionId = getEditionId()
   const user = await getUserFromSession(request)
-  return { user, isStaging: process.env.DEPLOYMENT_ENV === "staging" }
+  return {
+    user,
+    edition,
+    isStaging: process.env.DEPLOYMENT_ENV === "staging",
+  }
 }
 
 const defaultApp = ({
   user,
   error,
   isStaging,
+  edition,
 }: {
   user: LoggedInUser | undefined
   error?: boolean
   isStaging?: boolean
+  edition: EditionId
 }) => {
   return (
     <html lang="en" className="h-full">
@@ -70,8 +107,8 @@ const defaultApp = ({
       </head>
       <body className="h-full">
         <div className="relative">
-          <Header isStaging={isStaging} />
-          <Nav user={user} />
+          <Header isStaging={isStaging} edition={edition} />
+          <Nav user={user} edition={edition} />
           {error ? (
             <TextPageMain>
               <DefaultErrorBoundary />
@@ -88,18 +125,26 @@ const defaultApp = ({
 }
 
 export default function App() {
-  const { user, isStaging } = useLoaderData<typeof loader>()
+  const { user, isStaging, edition } = useLoaderData<typeof loader>()
 
   useEffect(() => {
     smartquotes().listen()
   }, [])
 
-  return defaultApp({ user, isStaging })
+  return defaultApp({ user, isStaging, edition })
 }
 
 export function ErrorBoundary() {
   // The root loader's data is still available on error pages unless the
   // loader itself threw.
   const data = useRouteLoaderData<typeof loader>("root")
-  return defaultApp({ user: undefined, error: true, isStaging: data?.isStaging })
+  // When the root loader itself threw (an archive 404), the edition comes
+  // with the thrown response instead.
+  const thrownEdition = editionFromError(useRouteError())
+  return defaultApp({
+    user: undefined,
+    error: true,
+    isStaging: data?.isStaging,
+    edition: data?.edition ?? thrownEdition ?? DEFAULT_EDITION,
+  })
 }

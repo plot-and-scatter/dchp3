@@ -8,13 +8,21 @@ import { getEntryByHeadword } from "~/models/entry.server"
 import { useLoaderData, data } from "react-router"
 import Entry from "~/components/Entry/Entry"
 import invariant from "tiny-invariant"
-import { BASE_APP_TITLE } from "~/root"
+import { BASE_APP_TITLE, type loader as rootLoader } from "~/root"
+import { EDITIONS } from "~/editions"
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => [
-  {
-    title: `${BASE_APP_TITLE} | ${data?.entry?.headword || "Entry not found"}`,
-  },
-]
+export const meta: MetaFunction<typeof loader, { root: typeof rootLoader }> = ({
+  data,
+  matches,
+}) => {
+  const edition = matches.find((m) => m.id === "root")?.data?.edition
+  const title = edition ? EDITIONS[edition].shortName : BASE_APP_TITLE
+  return [
+    {
+      title: `${title} | ${data?.entry?.headword || "Entry not found"}`,
+    },
+  ]
+}
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const headword = params.headword

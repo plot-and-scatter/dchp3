@@ -15,6 +15,7 @@ function getWhereClause({
   nonCanadianism,
   searchTerm,
   canadianismTypes,
+  ignoreCategories,
   editingStatus,
   versions,
   isUserAdmin,
@@ -42,7 +43,7 @@ function getWhereClause({
       dchp_version: { in: versions },
     },
     ...definitionWhere,
-    ...categoryWhere({ nonCanadianism, canadianismTypes }),
+    ...categoryWhere({ nonCanadianism, canadianismTypes, ignoreCategories }),
   }
 
   // Handle is_public OR isUserAdmin logic

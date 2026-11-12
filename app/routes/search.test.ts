@@ -128,7 +128,8 @@ describe("search route loader", () => {
         canadianismType: ["1. Origin"],
         attribute: SearchResultEnum.HEADWORD,
       }),
-      false
+      false,
+      { ignoreCategories: false }
     )
     expect(result.searchResults).toEqual(mockSearchResults)
     expect(result.searchParams).toBeDefined()
@@ -144,7 +145,8 @@ describe("search route loader", () => {
 
     expect(getSearchResults).toHaveBeenCalledWith(
       expect.objectContaining({ database: ["dchp1", "dchp2", "dchp3"] }),
-      false
+      false,
+      { ignoreCategories: false }
     )
     expect(result.searchResults).toBeDefined()
   })
@@ -160,7 +162,8 @@ describe("search route loader", () => {
       expect.objectContaining({
         canadianismType: ["1. Origin", "2. Preservation", "6. Memorial"],
       }),
-      false
+      false,
+      { ignoreCategories: false }
     )
   })
 
@@ -174,7 +177,8 @@ describe("search route loader", () => {
 
     expect(getSearchResults).toHaveBeenCalledWith(
       expect.objectContaining({ searchTerm: "Test", caseSensitive: true }),
-      false
+      false,
+      { ignoreCategories: false }
     )
   })
 
@@ -185,7 +189,8 @@ describe("search route loader", () => {
 
     expect(getSearchResults).toHaveBeenCalledWith(
       expect.objectContaining({ nonCanadianism: true }),
-      false
+      false,
+      { ignoreCategories: false }
     )
   })
 
@@ -196,7 +201,8 @@ describe("search route loader", () => {
 
     expect(getSearchResults).toHaveBeenCalledWith(
       expect.objectContaining({ page: 3 }),
-      false
+      false,
+      { ignoreCategories: false }
     )
   })
 
@@ -209,7 +215,8 @@ describe("search route loader", () => {
 
     expect(getSearchResults).toHaveBeenCalledWith(
       expect.objectContaining({ attribute: SearchResultEnum.MEANING }),
-      false
+      false,
+      { ignoreCategories: false }
     )
   })
 
@@ -220,7 +227,8 @@ describe("search route loader", () => {
 
     expect(getSearchResults).toHaveBeenCalledWith(
       expect.objectContaining({ searchTerm: "*" }),
-      false
+      false,
+      { ignoreCategories: false }
     )
   })
 
@@ -260,7 +268,8 @@ describe("search route loader", () => {
       expect.objectContaining({
         editingStatus: ["first_draft", "revised_draft"],
       }),
-      true
+      true,
+      { ignoreCategories: false }
     )
   })
 })

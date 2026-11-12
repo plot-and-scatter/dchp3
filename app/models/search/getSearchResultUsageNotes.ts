@@ -23,6 +23,7 @@ export function getUsageNotesCount({
   nonCanadianism,
   editingStatus,
   canadianismTypes,
+  ignoreCategories,
 }: SearchResultParams) {
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
@@ -35,7 +36,10 @@ export function getUsageNotesCount({
     AND ${termMatchSql(["det_meanings.usage"], searchTerm, caseSensitive)}
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
-    AND ${categorySql({ nonCanadianism, canadianismTypes }, "det_meanings")}
+    AND ${categorySql(
+      { nonCanadianism, canadianismTypes, ignoreCategories },
+      "det_meanings"
+    )}
     AND (${allStatuses} OR (
       (de.first_draft = 1 AND ${statusMap["first_draft"] === true}) OR
       (de.revised_draft = 1 AND ${statusMap["revised_draft"] === true}) OR
@@ -62,6 +66,7 @@ export function getSearchResultUsageNotes({
   nonCanadianism,
   editingStatus,
   canadianismTypes,
+  ignoreCategories,
 }: SearchResultParams) {
   const { allStatuses, statusMap } = editingStatusHelper(editingStatus)
 
@@ -77,7 +82,10 @@ export function getSearchResultUsageNotes({
     AND ${termMatchSql(["det_meanings.usage"], searchTerm, caseSensitive)}
     AND (de.dchp_version IN (${Prisma.join(database)}))
     AND (de.is_public = 1 OR ${isUserAdmin})
-    AND ${categorySql({ nonCanadianism, canadianismTypes }, "det_meanings")}
+    AND ${categorySql(
+      { nonCanadianism, canadianismTypes, ignoreCategories },
+      "det_meanings"
+    )}
     AND (${allStatuses} OR (
       (de.first_draft = 1 AND ${statusMap["first_draft"] === true}) OR
       (de.revised_draft = 1 AND ${statusMap["revised_draft"] === true}) OR
