@@ -92,7 +92,7 @@ const DCHP3: EditionConfig = {
 const DCHP1: EditionConfig = {
   id: "dchp1",
   shortName: "DCHP-1",
-  headerBackground: "bg-emerald-800",
+  headerBackground: "bg-green-800",
   headerTitle: (
     <Fragment>
       Dictionary of Canadianisms on Historical Principles{" "}
@@ -123,7 +123,7 @@ const DCHP1: EditionConfig = {
 const DCHP2: EditionConfig = {
   id: "dchp2",
   shortName: "DCHP-2",
-  headerBackground: "bg-sky-800",
+  headerBackground: "bg-blue-800",
   headerTitle: (
     <Fragment>
       Dictionary of Canadianisms on Historical Principles{" "}
