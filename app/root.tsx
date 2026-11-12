@@ -32,6 +32,7 @@ import {
 } from "./editions/edition.server"
 import {
   DEFAULT_EDITION,
+  isArchiveEdition,
   isEditionId,
   type EditionId,
 } from "./editions/edition"
@@ -112,13 +113,24 @@ const defaultApp = ({
         <div className="relative">
           <Header isStaging={isStaging} edition={edition} />
           <Nav user={user} edition={edition} />
-          {error ? (
-            <TextPageMain>
-              <DefaultErrorBoundary />
-            </TextPageMain>
-          ) : (
-            <Outlet />
-          )}
+          {/* An archive keeps the old sites' parchment on the page edges,
+              header and nav, and sets the content on a white sheet so the
+              grey-toned entry boxes read as they do on DCHP-3. */}
+          <div
+            className={
+              isArchiveEdition(edition)
+                ? "mx-auto min-h-screen max-w-screen-2xl bg-white shadow-md"
+                : undefined
+            }
+          >
+            {error ? (
+              <TextPageMain>
+                <DefaultErrorBoundary />
+              </TextPageMain>
+            ) : (
+              <Outlet />
+            )}
+          </div>
         </div>
         <ScrollRestoration />
         <Scripts />
