@@ -185,13 +185,13 @@ npm ci --include=dev
 npx prisma generate
 
 # An archive's prefix (DCHP_BASENAME) is read at build time by Vite and
-# React Router, so its env file is loaded before the build. Production and
-# staging build at the root and need nothing here.
+# React Router, so it is taken from the env file before the build. Only that
+# one value: sourcing the whole file would collide with this script's own
+# read-only PORT. Production and staging build at the root and need nothing.
 if [ -n "${ENV_FILE:-}" ]; then
-  set -a
-  # shellcheck disable=SC1090
-  source "${ENV_FILE}"
-  set +a
+  DCHP_BASENAME=$(grep -E '^DCHP_BASENAME=' "${ENV_FILE}" | cut -d= -f2- | tr -d "\"'")
+  export DCHP_BASENAME
+  echo "  prefix:   ${DCHP_BASENAME:-/}"
 fi
 
 npm run build
