@@ -221,6 +221,6 @@ The lift and the frequency index have already been run on the local copies.
 A dump of those loads straight in and step 1 becomes:
 
 ```
-mysql -e "CREATE DATABASE dchpca_dchp1 CHARACTER SET utf8mb4"
-gunzip -c dchpca_dchp1-lifted.sql.gz | mysql dchpca_dchp1
+sudo mysql -e "CREATE DATABASE dchpca_dchp1 CHARACTER SET utf8mb4"
+gunzip -c dchpca_dchp1-lifted.sql.gz | sudo mysql dchpca_dchp1
 ```
