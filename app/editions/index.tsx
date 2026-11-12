@@ -42,6 +42,10 @@ export type EditionConfig = {
   shortName: string
   // The header's full title: the dictionary name and an edition mark.
   headerTitle: React.ReactNode
+  // Tailwind background class for the header bar, so each edition is told
+  // apart at a glance (staging still overrides it with amber). Full class
+  // names, not fragments, so Tailwind's scanner keeps them.
+  headerBackground: string
   // Values of det_entries.dchp_version this edition's database holds. DCHP-3
   // holds all of them; an archive holds only its own.
   databases: { label: string; value: string }[]
@@ -56,6 +60,7 @@ export type EditionConfig = {
 const DCHP3: EditionConfig = {
   id: "dchp3",
   shortName: "DCHP-3",
+  headerBackground: "bg-gray-700",
   headerTitle: (
     <Fragment>
       Dictionary of Canadianisms on Historical Principles{" "}
@@ -87,6 +92,7 @@ const DCHP3: EditionConfig = {
 const DCHP1: EditionConfig = {
   id: "dchp1",
   shortName: "DCHP-1",
+  headerBackground: "bg-emerald-800",
   headerTitle: (
     <Fragment>
       Dictionary of Canadianisms on Historical Principles{" "}
@@ -117,6 +123,7 @@ const DCHP1: EditionConfig = {
 const DCHP2: EditionConfig = {
   id: "dchp2",
   shortName: "DCHP-2",
+  headerBackground: "bg-sky-800",
   headerTitle: (
     <Fragment>
       Dictionary of Canadianisms on Historical Principles{" "}

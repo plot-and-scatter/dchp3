@@ -13,7 +13,7 @@ const Header = ({
   return (
     <header
       className={`fixed top-0 z-50 flex h-12 w-full items-center justify-center text-white md:h-16 ${
-        isStaging ? "bg-amber-800" : "bg-gray-700"
+        isStaging ? "bg-amber-800" : config.headerBackground
       }`}
     >
       <Link to="/">
