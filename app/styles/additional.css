@@ -58,14 +58,19 @@ blockquote {
 }
 
 /* ---------------------------------------------------------------------------
-   Archive editions (DCHP-1, DCHP-2; body.archive, set in root.tsx)
-   The page sits on the old sites' parchment (#eed). The palette's grey is
-   slate, a cool blue-grey that clashes with it, so the light grey surfaces
-   and borders are warmed to the same family here. Text greys are left alone.
+   Archive editions (DCHP-1, DCHP-2)
+   tailwind.config.js resolves gray-50 to gray-400 through these variables.
+   The defaults are Tailwind's slate, so DCHP-3 looks as it always has. An
+   archive edition sits its page on a very light tint of its header colour;
+   slate is a cool blue-grey that clashes with that, so root.tsx sets these
+   same variables on <body> to the edition's tints (app/editions/index.tsx)
+   and every gray-50..400 surface and border follows. Text greys are not
+   touched. Tailwind 4 would do this with @theme; see issue #516.
    --------------------------------------------------------------------------- */
-.archive .bg-gray-50 { background-color: #f7f6ee; }
-.archive .bg-gray-100 { background-color: #e9e8d9; }
-.archive .border-gray-200 { border-color: #dbd9c6; }
-.archive .border-gray-300 { border-color: #cbc9b2; }
-.archive .border-gray-400 { border-color: #b3b199; }
-.archive .shadow-gray-300 { --tw-shadow-color: #cbc9b2; --tw-shadow: var(--tw-shadow-colored); }
+:root {
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+}

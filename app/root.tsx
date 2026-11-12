@@ -32,11 +32,27 @@ import {
 } from "./editions/edition.server"
 import {
   DEFAULT_EDITION,
-  isArchiveEdition,
   isEditionId,
   type EditionId,
 } from "./editions/edition"
-import { EDITIONS } from "./editions"
+import { EDITIONS, type EditionConfig } from "./editions"
+
+// An archive edition's page colour, plus its replacements for the five light
+// greys that tailwind.config.js resolves through --gray-* (defaults in
+// additional.css). Undefined for DCHP-3, so <body> gets no style.
+function tintStyle(
+  tints: EditionConfig["tints"]
+): React.CSSProperties | undefined {
+  if (!tints) return undefined
+  return {
+    backgroundColor: tints.page,
+    "--gray-50": tints[50],
+    "--gray-100": tints[100],
+    "--gray-200": tints[200],
+    "--gray-300": tints[300],
+    "--gray-400": tints[400],
+  } as React.CSSProperties
+}
 
 // The DCHP-3 title. Routes that build a page title use the edition's own
 // short name via the root loader; this stays for the one or two places that
@@ -106,11 +122,11 @@ const defaultApp = ({
           crossOrigin="anonymous"
         ></script> */}
       </head>
-      {/* The archive class lets additional.css warm the grey boxes to match
-          the parchment page colour; see "Archive editions" there. */}
+      {/* tintStyle re-points gray-50..400 at the edition's tints; see
+          "Archive editions" in additional.css. */}
       <body
-        className={isArchiveEdition(edition) ? "archive h-full" : "h-full"}
-        style={{ backgroundColor: EDITIONS[edition].pageBackground }}
+        className="h-full"
+        style={tintStyle(EDITIONS[edition].tints)}
       >
         <div className="relative">
           <Header isStaging={isStaging} edition={edition} />

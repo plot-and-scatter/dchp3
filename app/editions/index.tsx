@@ -46,11 +46,19 @@ export type EditionConfig = {
   // apart at a glance (staging still overrides it with amber). Full class
   // names, not fragments, so Tailwind's scanner keeps them.
   headerBackground: string
-  // Page background colour. The 2013 and 2017 sites sat their text on a
-  // flat parchment #ddc; the archives use a lighter tint of it (#eed, the old
-  // citation-block colour) on the page and the nav so they read as the old
-  // editions. DCHP-3 leaves it unset (white).
-  pageBackground?: string
+  // Archive editions sit the page and nav on a very light tint of the header
+  // colour. The palette's light greys (slate, a cool blue-grey) would clash,
+  // so the five steps replace gray-50/100/200/300/400: root.tsx sets them as
+  // the --gray-* variables that tailwind.config.js resolves those shades
+  // through. DCHP-3 leaves it unset (white page, slate greys).
+  tints?: {
+    page: string
+    50: string
+    100: string
+    200: string
+    300: string
+    400: string
+  }
   // Values of det_entries.dchp_version this edition's database holds. DCHP-3
   // holds all of them; an archive holds only its own.
   databases: { label: string; value: string }[]
@@ -97,8 +105,15 @@ const DCHP3: EditionConfig = {
 const DCHP1: EditionConfig = {
   id: "dchp1",
   shortName: "DCHP-1",
-  headerBackground: "bg-green-800",
-  pageBackground: "#eeeedd",
+  headerBackground: "bg-brown-800",
+  tints: {
+    page: "#f9f6f2",
+    50: "#faf7f3",
+    100: "#f1eae2",
+    200: "#e3d8cb",
+    300: "#d2c2b0",
+    400: "#b9a48c",
+  },
   headerTitle: (
     <Fragment>
       Dictionary of Canadianisms on Historical Principles{" "}
@@ -129,8 +144,15 @@ const DCHP1: EditionConfig = {
 const DCHP2: EditionConfig = {
   id: "dchp2",
   shortName: "DCHP-2",
-  headerBackground: "bg-blue-800",
-  pageBackground: "#eeeedd",
+  headerBackground: "bg-green-800",
+  tints: {
+    page: "#f3f8f4",
+    50: "#f4f9f5",
+    100: "#e3efe7",
+    200: "#cfe3d6",
+    300: "#b5d2c0",
+    400: "#8fb9a0",
+  },
   headerTitle: (
     <Fragment>
       Dictionary of Canadianisms on Historical Principles{" "}
