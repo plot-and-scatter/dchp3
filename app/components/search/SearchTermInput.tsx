@@ -5,23 +5,50 @@ import FAIcon from "../elements/Icons/FAIcon"
 type SearchTermInputProps = {
   data: any
   fields: { searchTerm: any; caseSensitive: any }
+  // The submit button, rendered on the same row as the term box.
+  action?: React.ReactNode
 }
 
+// The search term is what people come for, so it gets a row of its own
+// across the form's width, with the button beside it; the case-sensitive
+// toggle and Natalia's tips sit directly under it, and the filters follow
+// in search.tsx.
 export default function SearchTermInput({
   fields,
   data,
+  action,
 }: SearchTermInputProps) {
   return (
-    <div className="flex w-full flex-col gap-2">
-      <Input
-        type="text"
-        placeholder="Search term"
-        className="border border-gray-700 p-2 text-2xl"
-        name="searchTerm"
-        defaultValue={data?.searchParams?.searchTerm}
-        conformField={fields.searchTerm}
-        autoFocus
-      />
+    <div className="flex w-full flex-col gap-3">
+      <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-start">
+        <div className="min-w-0 grow">
+          <Input
+            type="text"
+            placeholder="Search term"
+            className="w-full border border-gray-700 p-2 text-2xl"
+            name="searchTerm"
+            defaultValue={data?.searchParams?.searchTerm}
+            conformField={fields.searchTerm}
+            autoFocus
+          />
+        </div>
+        {action && <div className="shrink-0">{action}</div>}
+      </div>
+      <div className="whitespace-nowrap">
+        <RadioOrCheckbox
+          type="checkbox"
+          name="caseSensitive"
+          optionSetClassName="flex items-center gap-x-2 mr-4"
+          conformField={fields.caseSensitive}
+          options={[
+            {
+              label: "Case sensitive search",
+              value: "on",
+              defaultChecked: false,
+            },
+          ]}
+        />
+      </div>
       <ul className="flex flex-col gap-1 border-l-4 border-amber-500 bg-amber-50 p-3 text-sm">
         <li>
           <FAIcon iconStyle="far" iconName="fa-lightbulb" className="mr-1" />{" "}
@@ -41,21 +68,6 @@ export default function SearchTermInput({
           results.
         </li>
       </ul>
-      <div className="whitespace-nowrap">
-        <RadioOrCheckbox
-          type="checkbox"
-          name="caseSensitive"
-          optionSetClassName="flex items-center gap-x-2 mr-4"
-          conformField={fields.caseSensitive}
-          options={[
-            {
-              label: "Case sensitive search",
-              value: "on",
-              defaultChecked: false,
-            },
-          ]}
-        />
-      </div>
     </div>
   )
 }
