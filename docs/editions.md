@@ -188,6 +188,11 @@ versions of the same steps.
    matches everything. Do this last, once both processes are running:
 
    ```
+   # /dchp3 is DCHP-3 itself, for parallelism with /dchp1 and /dchp2.
+   # The "!" stops the "/" proxy rule from claiming it, so the redirect can run.
+   ProxyPass "/dchp3" !
+   RedirectMatch 301 ^/dchp3(?:/(.*))?$ /$1
+
    # DCHP-1 and DCHP-2 archive editions (read-only), each its own app process.
    # Must come before the "/" rules below: Apache uses the first ProxyPass that matches.
    ProxyPass        "/dchp1" "http://localhost:3011/dchp1"
