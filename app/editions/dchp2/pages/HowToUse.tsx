@@ -1257,7 +1257,7 @@ export default function Dchp2HowToUse() {
         into oblivion. Today, users can easily access the online version and
         bibliophiles may order remaindered paper copies of the 1991 reprint{" "}
         <a
-          href="http://faculty.arts.ubc.ca/sdollinger/dchp2.htm#dchp-1"
+          href="https://dchp.arts.ubc.ca/dchp1/files/DCHP-1_Copyright.pdf"
           target="_blank"
           rel="noreferrer"
         >
