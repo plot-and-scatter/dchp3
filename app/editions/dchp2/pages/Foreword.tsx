@@ -1,3 +1,4 @@
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 // DCHP-2: forewords
 // Ported from the DCHP-2 (2017) CakePHP templates via tidy; text unchanged.
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
@@ -13,17 +14,17 @@ export default function Dchp2Foreword() {
         Access DCHP-2's two forewords by clicking below, or continue reading:
       </p>
       <p>
-        <a href="#drysdale">
+        <Link to="#drysdale">
           by Patrick Drysdale, <em>editorial team member of DCHP-1</em>
-        </a>
+        </Link>
         <br />
         <span id="drysdale" />
       </p>
       <p>
-        <a href="#considine">
+        <Link to="#considine">
           by John Considine,{" "}
           <em>professor of English, University of Alberta</em>
-        </a>
+        </Link>
         <br />
         <br />
       </p>
@@ -232,7 +233,7 @@ export default function Dchp2Foreword() {
           Avis, Walter S., Charles Crate, Patrick Drysdale, Douglas Leechman and
           Matthew H. Scargill. 1967. Principles of Style. In DCHP-1,{" "}
           <a
-            href="http://www.dchp.ca/DCHP-1/pages/frontmatter#style"
+            href="https://dchp.arts.ubc.ca/dchp1/pages/frontmatter#style"
             target="_blank"
             rel="noreferrer"
           >
@@ -248,7 +249,7 @@ export default function Dchp2Foreword() {
         </p>
       </div>
       <p>
-        <a href="#top">Back to top</a>
+        <Link to="#top">Back to top</Link>
       </p>
     </TextPageMain>
   )

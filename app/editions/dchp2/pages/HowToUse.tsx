@@ -30,6 +30,8 @@ import img_cf08e6_html_7aabf2eb from "../images/i_a41ce94b16cf08e6_html_7aabf2eb
 import img_cf08e6_html_4ed35ac0 from "../images/i_a41ce94b16cf08e6_html_4ed35ac0.png"
 import img_cf08e6_html_9bcc2382 from "../images/i_a41ce94b16cf08e6_html_9bcc2382.png"
 import img_6cf08e6_html_3e09bef from "../images/i_a41ce94b16cf08e6_html_3e09bef.png"
+import legacySite from "../images/legacy-site-2017.png"
+import LegacySiteNote from "../../LegacySiteNote"
 
 export default function Dchp2HowToUse() {
   return (
@@ -38,6 +40,11 @@ export default function Dchp2HowToUse() {
         <span id="goback" />
         Introduction to DCHP‑2
       </PageHeader>
+      <LegacySiteNote
+        siteName="DCHP-2"
+        releasedIn={2017}
+        screenshot={legacySite}
+      />
       <p>
         <strong>Stefan Dollinger &amp; Margery Fee</strong>
       </p>
@@ -500,15 +507,15 @@ export default function Dchp2HowToUse() {
       <p>
         A feature from DCHP-1 is the Fist Note, which is not shown in{" "}
         <em>parkade</em>. Generally a Fist Note{" "}
-        <FrontmatterImage src={img_cf08e6_html_b0eda47d} alt="" />
-        adds information that would help the general reader to contextualize the
+        <FrontmatterImage src={img_cf08e6_html_b0eda47d} alt="" inline /> adds
+        information that would help the general reader to contextualize the
         definition as in the Fist Notes in the first edition (Avis et al. 1967:
         xix) with the exception that in DCHP‑2, the more complex connections are
         explained in the Word Story. One such Fist Note is found under{" "}
         <em>adhesion</em>, 'agreement to join an existing treaty':
       </p>
       <p>
-        <FrontmatterImage src={img_cf08e6_html_b0eda47d} alt="" />
+        <FrontmatterImage src={img_cf08e6_html_b0eda47d} alt="" inline />{" "}
         Treaties are only signed with the Crown, the federal government, yet
         provincial governments often play a role in the negotiations.
       </p>
@@ -1231,7 +1238,7 @@ export default function Dchp2HowToUse() {
         the text was proofread by UBC students in 2010-11 (for a list of staff
         and volunteers see{" "}
         <a
-          href="http://www.dchp.ca/DCHP-1/pages/team"
+          href="https://dchp.arts.ubc.ca/dchp1/pages/team"
           target="_blank"
           rel="noreferrer"
         >
@@ -1239,7 +1246,11 @@ export default function Dchp2HowToUse() {
         </a>
         ). After a period of copyright negotiations, DCHP‑1 Online was made
         available in open access in 2013, free of charge for everyone at{" "}
-        <a href="http://www.dchp.ca/dchp1" target="_blank" rel="noreferrer">
+        <a
+          href="https://dchp.arts.ubc.ca/dchp1"
+          target="_blank"
+          rel="noreferrer"
+        >
           www.dchp.ca/dchp1
         </a>
         . By that time, DCHP‑1 had been out of print for decades and had fallen
@@ -1274,7 +1285,7 @@ export default function Dchp2HowToUse() {
         knowledge. Among the 1103 Canadian meanings, the six types are
         distributed as follows (percent of Canadianisms in the update):
       </p>
-      <ol className="my-4 ml-8 flex list-decimal flex-col gap-y-2">
+      <ol className="my-4 ml-16 list-decimal">
         <li>Origin: 358 meanings or 32.4 percent</li>
         <li>Preservation: 138 meanings or 12.5 percent</li>
         <li>Semantic Change: 202 meanings or 18.3 percent</li>
@@ -2248,7 +2259,7 @@ export default function Dchp2HowToUse() {
         <br />
       </p>
       <TertiaryHeader>List of Regional Labels</TertiaryHeader>
-      <ol className="my-4 ml-8 flex list-decimal flex-col gap-y-2">
+      <ul className="my-4 ml-8 flex list-none flex-col gap-y-2">
         <li>British Columbia</li>
         <li>Alberta</li>
         <li>Saskatchewan</li>
@@ -2274,12 +2285,12 @@ export default function Dchp2HowToUse() {
         <li>mainland Canada</li>
         <li>Maritime Provinces</li>
         <li>Cape Breton Island</li>
-      </ol>
+      </ul>
       <p>
         <br />
       </p>
       <TertiaryHeader>Social labels</TertiaryHeader>
-      <ol className="my-4 ml-8 flex list-decimal flex-col gap-y-2">
+      <ul className="my-4 ml-8 flex list-none flex-col gap-y-2">
         <li>derogatory</li>
         <li>offensive</li>
         <li>euphemism</li>
@@ -2295,10 +2306,10 @@ export default function Dchp2HowToUse() {
           Canadian English. Used sparingly, e.g. <em>Mountie</em>, which is the
           unmarked term and thus common core term in Standard Canadian English)
         </li>
-      </ol>
+      </ul>
       <br />
       <TertiaryHeader>Frequency labels</TertiaryHeader>
-      <ol className="my-4 ml-8 flex list-decimal flex-col gap-y-2">
+      <ul className="my-4 ml-8 flex list-none flex-col gap-y-2">
         <li>rare</li>
         <li>very rare</li>
         <li>originally</li>
@@ -2310,18 +2321,18 @@ export default function Dchp2HowToUse() {
         <li>
           rural (used sparingly): <em>beaver fever, skookum</em>
         </li>
-      </ol>
+      </ul>
       <p>
         <br />
       </p>
       <TertiaryHeader>Syntactic labels</TertiaryHeader>
-      <ol className="my-4 ml-8 flex list-decimal flex-col gap-y-2">
+      <ul className="my-4 ml-8 flex list-none flex-col gap-y-2">
         <li>in figurative use</li>
         <li>predicative</li>
         <li>attributively</li>
         <li>in attributive position</li>
         <li>transitive</li>
-      </ol>
+      </ul>
       <p>
         <br />
       </p>
@@ -2364,7 +2375,7 @@ export default function Dchp2HowToUse() {
         Avis, Walter S. 1967. Introduction. In: Avis et al. (eds.), xii-xv. Also
         in <em>DCHP‑1</em> <em>Online</em>.{" "}
         <a
-          href="http://dchp.ca/DCHP-1/pages/frontmatter"
+          href="https://dchp.arts.ubc.ca/dchp1/pages/frontmatter"
           target="_blank"
           rel="noreferrer"
         >
@@ -2474,7 +2485,11 @@ export default function Dchp2HowToUse() {
           Online
         </em>
         . Based on Walter S. Avis et al. (1967). (Online dictionary){" "}
-        <a href="http://dchp.ca/dchp1/" target="_blank" rel="noreferrer">
+        <a
+          href="https://dchp.arts.ubc.ca/dchp1"
+          target="_blank"
+          rel="noreferrer"
+        >
           http://dchp.ca/dchp1/
         </a>
         . Vancouver, BC: University of British Columbia.

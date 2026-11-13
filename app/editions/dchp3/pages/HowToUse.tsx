@@ -35,7 +35,7 @@ export default function Dchp3Foreword() {
 
       <p>
         The basic principles of entry structure remain the same as in DCHP-2 (
-        <Link to="https://dchp.ca/dchp2/pages/how-to-use">see here</Link>),
+        <Link to="https://dchp.arts.ubc.ca/dchp2/how-to-use">see here</Link>),
         though the appearance is quite different.
       </p>
 
@@ -706,17 +706,19 @@ export default function Dchp3Foreword() {
       <SecondaryHeader id="copyright-note">Copyright Note</SecondaryHeader>
       <p>
         DCHP-3 is an updated edition of DCHP-2 (
-        <Link to="https://www.dchp.ca/dchp2">Dollinger and Fee 2017</Link>). It
-        includes content from DCHP-1,{" "}
+        <Link to="https://dchp.arts.ubc.ca/dchp2">Dollinger and Fee 2017</Link>
+        ). It includes content from DCHP-1,{" "}
         <em>A Dictionary of Canadianisms on Historical Principles</em> (1967 and
         1991 editions, ISBN 0-7715-1976-1), edited by Avis, Walter S.
         (ed.-in-chief), C. Crate, P. Drysdale, D. Leechman, M.H. Scargill and
         C.J. Lovell, published by Gage Educational Publishing Company, a
         division of Canada Publishing Corporation (
-        <Link to="https://www.dchp.ca/DCHP1">DCHP-1</Link>). The copyright
+        <Link to="https://dchp.arts.ubc.ca/dchp1">DCHP-1</Link>). The copyright
         notice of DCHP-1 can be found{" "}
-        <Link to="https://www.dchp.ca/DCHP1/pages/copyrightnotice">here</Link>.
-        DCHP-1 was licensed to The University of British Columbia (UBC) by
+        <Link to="https://dchp.arts.ubc.ca/dchp1/pages/copyright-notice">
+          here
+        </Link>
+        . DCHP-1 was licensed to The University of British Columbia (UBC) by
         Nelson Education Ltd. (Nelson), the copyright owner of DCHP-1. Please
         see <Link to="https://www.nelson.com/">https://www.nelson.com/</Link>{" "}
         for more information about Nelson. The license from Nelson allows UBC to

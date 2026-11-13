@@ -11,7 +11,7 @@ const BibliographyItem = ({
   if (!value) return <Fragment></Fragment>
   return (
     <div className="BibliographyItem flex">
-      <dt className="w-20 shrink-0 font-bold">{label}</dt>
+      <dt className="w-28 shrink-0 font-bold">{label}</dt>
       <dt className="break-all">{value}</dt>
     </div>
   )

@@ -45,7 +45,7 @@ export default function Dchp1Home() {
 
       <p>
         For a brief history of DCHP in all its guises since the 1950s, see{" "}
-        <Link to="/about#project-history">Project History</Link>.
+        <Link to="/pages/history">Project History</Link>.
       </p>
 
       <hr />
@@ -58,7 +58,7 @@ export default function Dchp1Home() {
         at the University of British Columbia under the leadership of Stefan
         Dollinger (editor-in-chief) with co-editors Laurel J. Brinton and
         Margery Fee. For a complete list of the team members, see{" "}
-        <Link to="/about#project-team">Project Team</Link>.
+        <Link to="/pages/team">Project Team</Link>.
       </p>
 
       <p>
@@ -68,7 +68,7 @@ export default function Dchp1Home() {
 
       <p>DCHP-1 Online should be cited as:</p>
 
-      <p>
+      <blockquote>
         Dollinger, Stefan (editor-in-chief), Laurel J. Brinton and Margery Fee
         (eds.). 2013.{" "}
         <em>
@@ -76,11 +76,15 @@ export default function Dchp1Home() {
           Online
         </em>
         . Based on Avis et al. (1967).{" "}
-        <a href="http://dchp.ca/DCHP-1/" target="_blank" rel="noreferrer">
+        <a
+          href="https://dchp.arts.ubc.ca/dchp1"
+          target="_blank"
+          rel="noreferrer"
+        >
           http://dchp.ca/DCHP-1/
         </a>
         .
-      </p>
+      </blockquote>
 
       <div>
         <div>

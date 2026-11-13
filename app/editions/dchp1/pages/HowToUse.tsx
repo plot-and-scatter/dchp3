@@ -1,3 +1,4 @@
+import { Link } from "~/components/elements/LinksAndButtons/Link"
 // DCHP-1: how to use
 // Ported from the DCHP-1 Online CakePHP templates (2013); text unchanged.
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
@@ -9,19 +10,27 @@ import scan2 from "../images/scan2.png"
 import scan3 from "../images/scan3.png"
 import bib from "../images/bib.gif"
 import scan4 from "../images/scan4.png"
+import legacySite from "../images/legacy-site-2013.png"
+import LegacySiteNote from "../../LegacySiteNote"
 
 export default function Dchp1HowToUse() {
   return (
     <TextPageMain>
       <PageHeader>How To Use</PageHeader>
 
+      <LegacySiteNote
+        siteName="DCHP-1 Online"
+        releasedIn={2013}
+        screenshot={legacySite}
+      />
+
       <p>
         The menu bar on the left screen offers the reader two viewing modes for
-        DCHP-1 Online. <a href="#browsing">Browsing</a> and full-text{" "}
-        <a href="#searching">Searching</a>, “quicksearch”.{" "}
-        <a href="#show-reference">Show reference</a> explains how to call up a
-        citation’s reference. Differences between the paper version and DCHP-1
-        Online are shown <a href="#differences">here</a>.
+        DCHP-1 Online. <Link to="#browsing">Browsing</Link> and full-text{" "}
+        <Link to="#searching">Searching</Link>, “quicksearch”.{" "}
+        <Link to="#show-reference">Show reference</Link> explains how to call up
+        a citation’s reference. Differences between the paper version and DCHP-1
+        Online are shown <Link to="#differences">here</Link>.
       </p>
 
       <span id="browsing" />
