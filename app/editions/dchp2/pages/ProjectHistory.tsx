@@ -270,7 +270,6 @@ export default function Dchp2ProjectHistory() {
       </p>
 
       <p>
-        <br />
         <strong>References</strong>
       </p>
       <p>
