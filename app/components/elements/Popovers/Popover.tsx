@@ -28,7 +28,7 @@ export default function Popover({
             }
           >
             <span>{title}</span>
-            <i className={"fas fa-chevron-down ml-2 h-5 w-5 transition"} />
+            <i className="fas fa-chevron-down ml-1.5 text-[0.7em] transition" />
           </HeadlessPopover.Button>
           <Transition
             as={Fragment}
