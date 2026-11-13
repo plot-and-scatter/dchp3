@@ -38,7 +38,7 @@ const Nav = ({ user, edition }: NavProps): JSX.Element => {
   const fullRow = clsx(dense ? "hidden xl:inline" : "hidden lg:inline", minor)
   const suffix = dense ? "hidden" : "hidden lg:inline"
   const emphasis =
-    "inline-block rounded-md border border-primary px-2 py-1 hover:bg-primary hover:text-white sm:px-3"
+    "inline-block rounded-md border border-primary px-2.5 py-1 hover:bg-primary hover:text-white sm:px-4"
   return (
     <nav
       className={clsx(
