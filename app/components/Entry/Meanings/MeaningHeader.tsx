@@ -19,7 +19,7 @@ const MeaningHeader = ({
       {((number && number !== "0") || dagger || partOfSpeech || usage) && (
         <div className="mb-2 flex flex-wrap items-baseline gap-x-2 bg-gray-100 p-2 leading-none shadow-sm shadow-gray-300 md:p-4 md:px-6">
           {number && number !== "0" && (
-            <span className="font-bold md:text-xl">{number}</span>
+            <span className="self-center font-bold md:text-xl">{number}</span>
           )}
           {dagger && (
             <span className="text-sm font-semibold uppercase tracking-wide text-gray-600 md:text-base">
