@@ -40,14 +40,14 @@ export default function Dchp2HowToUse() {
         <span id="goback" />
         Introduction to DCHP‑2
       </PageHeader>
+      <p>
+        <strong>Stefan Dollinger &amp; Margery Fee</strong>
+      </p>
       <LegacySiteNote
         siteName="DCHP-2"
         releasedIn={2017}
         screenshot={legacySite}
       />
-      <p>
-        <strong>Stefan Dollinger &amp; Margery Fee</strong>
-      </p>
       <p>
         In the introduction to the first edition of the{" "}
         <em>Dictionary of Canadianisms on Historical Principles</em> (DCHP‑1),
