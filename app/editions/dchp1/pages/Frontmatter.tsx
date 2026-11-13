@@ -14,22 +14,22 @@ export default function Dchp1Frontmatter() {
 
       <ul className="my-4 ml-8 flex list-disc flex-col gap-y-2">
         <li>
-          <a href="#foreword">Foreword (W.R. Wees, Gage Ltd.)</a>
+          <Link to="#foreword">Foreword (W.R. Wees, Gage Ltd.)</Link>
         </li>
         <li>
-          <a href="#preface">Preface (M. H. Scargill)</a>
+          <Link to="#preface">Preface (M. H. Scargill)</Link>
         </li>
         <li>
-          <a href="#acknowledgements">Acknowledgments (all editors)</a>
+          <Link to="#acknowledgements">Acknowledgments (all editors)</Link>
         </li>
         <li>
-          <a href="#editors">The Editors</a>
+          <Link to="#editors">The Editors</Link>
         </li>
         <li>
-          <a href="#introduction">Introduction (W. S. Avis)</a>
+          <Link to="#introduction">Introduction (W. S. Avis)</Link>
         </li>
         <li>
-          <a href="#style">Principles of style</a>
+          <Link to="#style">Principles of style</Link>
         </li>
       </ul>
 
@@ -1113,8 +1113,8 @@ export default function Dchp1Frontmatter() {
         read, all relevant publication dates have been given. Details as to how
         such have been presented in the text of the dictionary are set forth [in
         the section{" "}
-        <a href="#bibliographical-directions">Bibliographical Directions</a>]
-        under <em>Principles of Style</em>. Various notes and cross-references
+        <Link to="#bibliographical-directions">Bibliographical Directions</Link>
+        ] under <em>Principles of Style</em>. Various notes and cross-references
         have been entered in the bibliography as aids to the reader.
       </p>
 
