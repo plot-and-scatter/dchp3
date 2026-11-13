@@ -94,7 +94,7 @@ const DCHP3: EditionConfig = {
   hasCanadianismTypes: true,
   navLinks: [
     { to: "/about", label: "About", icon: "fa-circle-info" },
-    { to: "/how-to-use", label: "How to use", icon: "fa-book" },
+    { to: "/how-to-use", label: "How to Use", icon: "fa-book" },
     { to: "/references", label: "References", icon: "fa-book" },
   ],
   pages: {
@@ -134,7 +134,7 @@ const DCHP1: EditionConfig = {
       icon: "fa-timeline",
     },
     { to: "/pages/team", label: "Project Team", icon: "fa-users" },
-    { to: "/how-to-use", label: "How to use", icon: "fa-book" },
+    { to: "/how-to-use", label: "How to Use", icon: "fa-book" },
     { to: "/pages/abbreviations", label: "Abbreviations", icon: "fa-list" },
     { to: "/pages/frontmatter", label: "Frontmatter (1967)", icon: "fa-book" },
     {
