@@ -133,9 +133,10 @@ export default function Dchp2Home() {
         editor-in-chief (for new DCHP-2 content, i.e. entries in white and red
         background colours), Nelson and/or UBC (for legacy content, i.e.
         yellow-coloured entries).
-        <br />
-        <br />© Stefan Dollinger; Nelson Education Ltd.; and The University of
-        British Columbia, 2017. All rights reserved.
+      </p>
+      <p>
+        © Stefan Dollinger; Nelson Education Ltd.; and The University of British
+        Columbia, 2017. All rights reserved.
       </p>
       <p className="mt-10 text-center">
         <em>

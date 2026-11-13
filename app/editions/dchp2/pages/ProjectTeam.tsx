@@ -103,13 +103,7 @@ export default function Dchp2ProjectTeam() {
         <li>Geoff Roeder</li>
         <li>Diane Singleton</li>
       </ul>
-      <p>
-        <span id="goback" />
-        <br />
-      </p>
-      <p>
-        <br />
-      </p>
+      <span id="goback" />
     </TextPageMain>
   )
 }
