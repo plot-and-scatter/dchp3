@@ -7,14 +7,16 @@ import Dchp3HowToUse from "./dchp3/pages/HowToUse"
 import Dchp3Acknowledgements from "./dchp3/pages/Acknowledgements"
 
 import Dchp1Home from "./dchp1/pages/Home"
-import Dchp1About from "./dchp1/pages/About"
+import Dchp1ProjectHistory from "./dchp1/pages/ProjectHistory"
+import Dchp1ProjectTeam from "./dchp1/pages/ProjectTeam"
 import Dchp1HowToUse from "./dchp1/pages/HowToUse"
 import Dchp1Frontmatter from "./dchp1/pages/Frontmatter"
 import Dchp1Abbreviations from "./dchp1/pages/Abbreviations"
 import Dchp1CopyrightNotice from "./dchp1/pages/CopyrightNotice"
 
 import Dchp2Home from "./dchp2/pages/Home"
-import Dchp2About from "./dchp2/pages/About"
+import Dchp2ProjectHistory from "./dchp2/pages/ProjectHistory"
+import Dchp2ProjectTeam from "./dchp2/pages/ProjectTeam"
 import Dchp2HowToUse from "./dchp2/pages/HowToUse"
 import Dchp2Foreword from "./dchp2/pages/Foreword"
 import Dchp2Acknowledgements from "./dchp2/pages/Acknowledgements"
@@ -25,9 +27,10 @@ import Dchp2Acknowledgements from "./dchp2/pages/Acknowledgements"
 // page an edition does not have (say /acknowledgements on DCHP-1) 404s.
 //
 // Front matter pages are plain components under app/editions/<id>/pages.
-// The ones every edition has (home, about, how-to-use) are keyed by fixed
-// slugs so the shared routes can find them; extra pages are served by
-// /pages/<slug>.
+// The ones with routes of their own (home, about, how-to-use,
+// acknowledgements) are keyed by fixed slugs so those routes can find them;
+// extra pages are served by /pages/<slug>. The archives have no About page,
+// as the 2013 and 2017 sites had none.
 
 export type EditionNavLink = {
   to: string
@@ -124,21 +127,21 @@ const DCHP1: EditionConfig = {
   databases: [{ label: "DCHP-1", value: "dchp1" }],
   hasCanadianismTypes: false,
   navLinks: [
-    { to: "/about", label: "About", icon: "fa-circle-info" },
-    { to: "/how-to-use", label: "How to use", icon: "fa-book" },
-    { to: "/pages/frontmatter", label: "Frontmatter (1967)", icon: "fa-book" },
-    { to: "/pages/abbreviations", label: "Abbreviations", icon: "fa-list" },
-    // Sections of the About page, as menu items at the editors' request.
-    { to: "/about#project-team", label: "Project Team", icon: "fa-users" },
+    // The 2013 site's menu, in its order; it had no About page.
     {
-      to: "/about#project-history",
+      to: "/pages/history",
       label: "Project History",
       icon: "fa-clock-rotate-left",
     },
+    { to: "/pages/team", label: "Project Team", icon: "fa-users" },
+    { to: "/how-to-use", label: "How to use", icon: "fa-book" },
+    { to: "/pages/abbreviations", label: "Abbreviations", icon: "fa-list" },
+    { to: "/pages/frontmatter", label: "Frontmatter (1967)", icon: "fa-book" },
   ],
   pages: {
     home: Dchp1Home,
-    about: Dchp1About,
+    history: Dchp1ProjectHistory,
+    team: Dchp1ProjectTeam,
     "how-to-use": Dchp1HowToUse,
     frontmatter: Dchp1Frontmatter,
     abbreviations: Dchp1Abbreviations,
@@ -177,7 +180,8 @@ const DCHP2: EditionConfig = {
   ],
   hasCanadianismTypes: true,
   navLinks: [
-    { to: "/about", label: "About", icon: "fa-circle-info" },
+    // The 2017 site had no About page; Project Team and Project History
+    // were pages of their own, as here.
     { to: "/how-to-use", label: "Introduction", icon: "fa-book" },
     { to: "/pages/foreword", label: "Foreword", icon: "fa-book" },
     {
@@ -185,18 +189,17 @@ const DCHP2: EditionConfig = {
       label: "Acknowledgements",
       icon: "fa-people-group",
     },
-    // The 2017 site had these as pages of their own; here they are sections
-    // of the About page.
-    { to: "/about#project-team", label: "Project Team", icon: "fa-users" },
+    { to: "/pages/team", label: "Project Team", icon: "fa-users" },
     {
-      to: "/about#project-history",
+      to: "/pages/history",
       label: "Project History",
       icon: "fa-clock-rotate-left",
     },
   ],
   pages: {
     home: Dchp2Home,
-    about: Dchp2About,
+    history: Dchp2ProjectHistory,
+    team: Dchp2ProjectTeam,
     "how-to-use": Dchp2HowToUse,
     acknowledgements: Dchp2Acknowledgements,
     foreword: Dchp2Foreword,

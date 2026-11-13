@@ -187,7 +187,7 @@ export default function Dchp2Acknowledgements() {
         2013-16 [Dollinger grant #435-2013-0233.]). These funding sources
         combined allowed us to consistently employ an undergraduate workforce
         for over eight years for a total of almost 11,500 remunerated student
-        work hours (see <Link to="/about#project-team">Project Team</Link>). We
+        work hours (see <Link to="/pages/team">Project Team</Link>). We
         owe special thanks to Nelson Education for funding two project meetings,
         one in Toronto in 2006 and one in Vancouver in 2007, for reference book
         purchases and for supporting Stefan Dollinger’s exploratory archival

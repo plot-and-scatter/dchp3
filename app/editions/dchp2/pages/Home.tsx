@@ -80,7 +80,7 @@ export default function Dchp2Home() {
         Stefan Dollinger (editor-in-chief, UBC and Göteborgs Universitet) with
         associate editor Margery Fee (UBC). For a complete list of the team
         members, see the &#160;
-        <Link to="/about#project-team">Project Team</Link>.
+        <Link to="/pages/team">Project Team</Link>.
       </p>
       <p>
         <strong>Copyright notice</strong>
