@@ -41,7 +41,7 @@ export default function Dchp2HowToUse() {
         Introduction to DCHP‑2
       </PageHeader>
       <LegacySiteNote
-        siteName="DCHP-2 Online"
+        siteName="DCHP-2"
         releasedIn={2017}
         screenshot={legacySite}
       />

@@ -1,5 +1,5 @@
 type LegacySiteNoteProps = {
-  // "DCHP-1 Online" / "DCHP-2 Online"
+  // "DCHP-1 Online" / "DCHP-2" (the 2017 site did not call itself Online)
   siteName: string
   // Year the legacy site was first released
   releasedIn: number
