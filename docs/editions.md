@@ -190,13 +190,16 @@ versions of the same steps.
    ```
    # DCHP-1 and DCHP-2 archive editions (read-only), each its own app process.
    # Must come before the "/" rules below: Apache uses the first ProxyPass that matches.
-   RedirectMatch 301 ^/dchp1$ /dchp1/
-   RedirectMatch 301 ^/dchp2$ /dchp2/
-   ProxyPass        "/dchp1/" "http://localhost:3011/dchp1/"
-   ProxyPassReverse "/dchp1/" "http://localhost:3011/dchp1/"
-   ProxyPass        "/dchp2/" "http://localhost:3012/dchp2/"
-   ProxyPassReverse "/dchp2/" "http://localhost:3012/dchp2/"
+   ProxyPass        "/dchp1" "http://localhost:3011/dchp1"
+   ProxyPassReverse "/dchp1" "http://localhost:3011/dchp1"
+   ProxyPass        "/dchp2" "http://localhost:3012/dchp2"
+   ProxyPassReverse "/dchp2" "http://localhost:3012/dchp2"
    ```
+
+   No trailing slash on purpose: a bare `/dchp1` is then forwarded too, and
+   the app answers it with a redirect to `/dchp1/`. A `RedirectMatch` for
+   that in Apache does not work here, because ProxyPass rules are applied
+   before Redirect rules and the `/` rule would take the request first.
 
    Then `sudo apachectl configtest && sudo systemctl reload httpd`. The
    prefix is passed through unchanged, which is what the app expects. If
