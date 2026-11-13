@@ -20,7 +20,7 @@ const Citation = ({ citation }: CitationProps): JSX.Element => {
       <div className="inline">
         <SanitizedTextSpan text={citation.citation} />
       </div>
-      <div className="inline text-sm ">
+      <div className="inline whitespace-nowrap text-sm">
         {citation.url && (
           <Link
             appearance="primary"
