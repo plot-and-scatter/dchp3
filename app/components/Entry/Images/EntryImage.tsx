@@ -7,9 +7,9 @@ type EntryImageProps = {
 
 export function EntryImage({ image }: EntryImageProps) {
   return (
-    <div className="m-5 text-center" key={image.id}>
+    <div className="my-5 text-center md:m-5" key={image.id}>
       <img
-        className="m-3 mx-auto max-w-xl border border-gray-300 shadow-md"
+        className="m-3 mx-auto max-w-full border border-gray-300 shadow-md md:max-w-xl"
         src={image.path}
         alt={image.caption || "Caption unavailable"}
       />

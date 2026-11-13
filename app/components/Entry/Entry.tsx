@@ -36,10 +36,12 @@ const Entry = ({
 
   return (
     <div
-      className="mx-auto flex min-w-full max-w-full flex-row justify-around gap-4"
+      className="mx-auto flex min-w-full max-w-full flex-col gap-4 md:flex-row md:justify-around"
       data-id={`entry-${entry?.id}`}
     >
-      <div className="w-96 max-w-2xl">
+      {/* On phones this column holds only the Edit button (quick links are
+          hidden), so it must not keep its desktop width there. */}
+      <div className="shrink-0 md:w-56 lg:w-96">
         {canUserEditEntry && (
           <Link
             asButton
@@ -57,7 +59,7 @@ const Entry = ({
         </div>
       </div>
       <div
-        className={`md:max-w-2xl lg:max-w-6xl ${bgColor} flex-1 pl-4 pr-5 pt-1`}
+        className={`md:max-w-2xl lg:max-w-6xl ${bgColor} flex-1 pt-1 md:pl-4 md:pr-5`}
       >
         <Headword entry={entry} showEditButton={canUserEditEntry} />
         <Meanings

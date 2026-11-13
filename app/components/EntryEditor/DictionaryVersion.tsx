@@ -71,7 +71,7 @@ const DictionaryVersion = ({
   if (!isEditingMode) {
     return (
       <div
-        className={`border ${color} ml-2 py-1 px-2 text-xs text-gray-700 shadow-sm md:px-4 md:text-sm`}
+        className={`shrink-0 whitespace-nowrap border ${color} ml-2 py-1 px-2 text-xs text-gray-700 shadow-sm md:px-4 md:text-sm`}
       >
         {version.version} ({version.date})
       </div>
