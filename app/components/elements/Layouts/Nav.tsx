@@ -35,7 +35,7 @@ const Nav = ({ user, edition }: NavProps): JSX.Element => {
   const fullRow = dense ? "hidden xl:inline" : "hidden lg:inline"
   const suffix = dense ? "hidden" : "hidden lg:inline"
   const emphasis =
-    "inline-block rounded-md bg-primary px-2 py-1 text-white hover:bg-primary-dark sm:px-3"
+    "inline-block rounded-md border border-primary px-2 py-1 hover:bg-primary hover:text-white sm:px-3"
   return (
     <nav
       className={clsx(
@@ -88,7 +88,7 @@ const Nav = ({ user, edition }: NavProps): JSX.Element => {
           </NavLink>
         ))}
         {/* Browse and Search are what most visitors came for, so they are
-            the two filled buttons in a row of plain links. */}
+            the two outlined buttons in a row of plain links. */}
         <div className="font-bold">
           <NavLink to="/entries" className={emphasis}>
             <i className="fa-regular fa-books mr-1 sm:mr-2"></i> Browse
