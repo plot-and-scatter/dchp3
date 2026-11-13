@@ -32,7 +32,10 @@ const Nav = ({ user, edition }: NavProps): JSX.Element => {
   const config = EDITIONS[edition]
   const archive = isArchiveEdition(edition)
   const dense = config.navLinks.length > 4
-  const fullRow = dense ? "hidden xl:inline" : "hidden lg:inline"
+  // Front matter links (and the account link) are a step smaller than
+  // Browse and Search, which keep the bar's size.
+  const minor = "text-[0.85em]"
+  const fullRow = clsx(dense ? "hidden xl:inline" : "hidden lg:inline", minor)
   const suffix = dense ? "hidden" : "hidden lg:inline"
   const emphasis =
     "inline-block rounded-md border border-primary px-2 py-1 hover:bg-primary hover:text-white sm:px-3"
@@ -106,7 +109,7 @@ const Nav = ({ user, edition }: NavProps): JSX.Element => {
             {user ? (
               <Popover
                 title={
-                  <div className="flex items-center">
+                  <div className={clsx("flex items-center", minor)}>
                     <i className="fas fa-user mr-1 sm:mr-2" />
                     {user.name}
                   </div>
@@ -115,7 +118,12 @@ const Nav = ({ user, edition }: NavProps): JSX.Element => {
                 <NavPopoverContents roles={user.roles} />
               </Popover>
             ) : (
-              <NavLink to="/login" title="Admin login" aria-label="Admin login">
+              <NavLink
+                to="/login"
+                title="Admin login"
+                aria-label="Admin login"
+                className={minor}
+              >
                 <i className="fa-regular fa-key sm:mr-2"></i>
                 <span className="hidden sm:inline">Admin</span>
                 <span className="hidden lg:inline"> login</span>
