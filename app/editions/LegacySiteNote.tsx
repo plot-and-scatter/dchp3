@@ -1,5 +1,3 @@
-import { TertiaryHeader } from "~/components/elements/Headings/TertiaryHeader"
-
 type LegacySiteNoteProps = {
   // "DCHP-1 Online" / "DCHP-2 Online"
   siteName: string
@@ -20,11 +18,10 @@ export default function LegacySiteNote({
 }: LegacySiteNoteProps) {
   return (
     <div className="my-6 border border-amber-700 bg-amber-200 p-4">
-      <TertiaryHeader>Note</TertiaryHeader>
       <p>
-        The original version of {siteName} was first released in {releasedIn}.
-        As of 2026, this legacy version (with design shown below) has been
-        discontinued.
+        <strong>Note:</strong> The original version of {siteName} was first
+        released in {releasedIn}. As of 2026, this legacy version (with design
+        shown below) has been discontinued.
       </p>
       <img
         src={screenshot}
