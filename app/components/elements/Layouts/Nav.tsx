@@ -94,13 +94,13 @@ const Nav = ({ user, edition }: NavProps): JSX.Element => {
             the two outlined buttons in a row of plain links. */}
         <div className="font-bold">
           <NavLink to="/entries" className={emphasis}>
-            <i className="fa-regular fa-books mr-1 sm:mr-2"></i> Browse
+            <i className="fa-regular fa-books mr-1.5 sm:mr-2"></i>Browse
             <span className={suffix}> entries</span>
           </NavLink>
         </div>
         <div className="font-bold">
           <NavLink to="/search" className={emphasis}>
-            <i className="fa-regular fa-search mr-1 sm:mr-2"></i> Search
+            <i className="fa-regular fa-search mr-1.5 sm:mr-2"></i>Search
             <span className={suffix}> entries</span>
           </NavLink>
         </div>
