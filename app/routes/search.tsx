@@ -1,4 +1,4 @@
-import { Fragment } from "react"
+import { Fragment, useState } from "react"
 import { enumValues } from "~/utils/inputUtils"
 import { Form, useLoaderData } from "react-router"
 import { getFormProps, useForm } from "@conform-to/react"
@@ -21,6 +21,8 @@ import type { LoaderFunctionArgs } from "react-router"
 import { EDITIONS } from "~/editions"
 import { getEditionId } from "~/editions/edition.server"
 import { useEdition } from "~/editions/EditionPage"
+import { EDITING_STATUS_INPUTS } from "~/components/EntryEditor/EntryEditorSidebar/EditingStatus/EditingStatusPanel"
+import clsx from "clsx"
 import { BASE_CANADANISM_TYPES } from "~/types/CanadianismTypeEnum"
 
 const searchActionSchema = z.object({
@@ -109,6 +111,36 @@ export default function SearchPage() {
   const showFilters =
     showDatabases || edition.hasCanadianismTypes || !!data?.isUserAdmin
 
+  // On phones the filter groups start collapsed behind a one-line summary
+  // of what is selected ("All databases, all types"), so people can see
+  // nothing is being hidden from them. Before a search everything is
+  // checked; after one the summary follows what was searched.
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const searched = isResult ? data.searchParams : undefined
+  const summaryParts: string[] = []
+  if (showDatabases) {
+    const total = edition.databases.length
+    const n = searched?.database.length ?? total
+    summaryParts.push(
+      n === total ? "all databases" : `${n} of ${total} databases`
+    )
+  }
+  if (edition.hasCanadianismTypes) {
+    const total = BASE_CANADANISM_TYPES.length + 1 // plus Non-Canadianisms
+    const n = searched
+      ? searched.canadianismType.length + (searched.nonCanadianism ? 1 : 0)
+      : total
+    summaryParts.push(n === total ? "all types" : `${n} of ${total} types`)
+  }
+  if (data?.isUserAdmin) {
+    const total = EDITING_STATUS_INPUTS.length
+    const n = searched?.editingStatus?.length ?? total
+    summaryParts.push(
+      n === total ? "all statuses" : `${n} of ${total} statuses`
+    )
+  }
+  const filterSummary = summaryParts.join(", ")
+
   return (
     <Main center>
       <PageHeader>
@@ -165,7 +197,27 @@ export default function SearchPage() {
               <legend className="pr-3 text-sm uppercase tracking-wide text-gray-500">
                 Filters
               </legend>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+              {/* Phone toggle. The boxes stay in the DOM when collapsed (CSS
+                  hidden, not unmounted) so the form still submits them. From
+                  md up the groups are always shown and the toggle is gone. */}
+              <button
+                type="button"
+                aria-expanded={filtersOpen}
+                onClick={() => setFiltersOpen((open) => !open)}
+                className="flex w-full items-center justify-between py-1 text-left md:hidden"
+              >
+                <span className="first-letter:uppercase">{filterSummary}</span>
+                <FAIcon
+                  iconName={filtersOpen ? "fa-chevron-up" : "fa-chevron-down"}
+                  className="ml-2 text-xs text-gray-500"
+                />
+              </button>
+              <div
+                className={clsx(
+                  "grid-cols-1 gap-6 sm:grid-cols-3",
+                  filtersOpen ? "mt-3 grid" : "hidden md:grid"
+                )}
+              >
                 {showDatabases && (
                   <DatabaseCheckboxes
                     fields={fields}

@@ -20,18 +20,21 @@ export default function EditingStatusCheckboxes({
           <strong>Editing status</strong>
         </div>
       )}
-      <RadioOrCheckbox
-        type="checkbox"
-        name="editingStatus"
-        optionSetClassName="flex items-center gap-x-2 mr-4"
-        direction="vertical"
-        conformField={fields.editingStatus}
-        options={EDITING_STATUS_INPUTS.map((editingStatus) => ({
-          label: editingStatus.label,
-          value: editingStatus.type,
-          defaultChecked: true,
-        }))}
-      />
+      {/* Two columns on phones, read down then across; one from sm up. */}
+      <div className="columns-2 gap-x-4 sm:columns-1">
+        <RadioOrCheckbox
+          type="checkbox"
+          name="editingStatus"
+          optionSetClassName="flex items-baseline gap-x-2"
+          direction="vertical"
+          conformField={fields.editingStatus}
+          options={EDITING_STATUS_INPUTS.map((editingStatus) => ({
+            label: editingStatus.label,
+            value: editingStatus.type,
+            defaultChecked: true,
+          }))}
+        />
+      </div>
     </div>
   )
 }

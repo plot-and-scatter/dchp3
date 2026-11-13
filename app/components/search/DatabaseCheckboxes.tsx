@@ -19,14 +19,17 @@ export default function DatabaseCheckboxes({
       <div className="mr-4">
         <strong>Database</strong>
       </div>
-      <RadioOrCheckbox
-        type="checkbox"
-        name="database"
-        optionSetClassName="flex items-center gap-x-2 mr-4"
-        direction="vertical"
-        conformField={fields.database}
-        options={options.map((o) => ({ ...o, defaultChecked: true }))}
-      />
+      {/* Two columns on phones, read down then across; one from sm up. */}
+      <div className="columns-2 gap-x-4 sm:columns-1">
+        <RadioOrCheckbox
+          type="checkbox"
+          name="database"
+          optionSetClassName="flex items-baseline gap-x-2"
+          direction="vertical"
+          conformField={fields.database}
+          options={options.map((o) => ({ ...o, defaultChecked: true }))}
+        />
+      </div>
     </div>
   )
 }
