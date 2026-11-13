@@ -137,6 +137,11 @@ const DCHP1: EditionConfig = {
     { to: "/how-to-use", label: "How to use", icon: "fa-book" },
     { to: "/pages/abbreviations", label: "Abbreviations", icon: "fa-list" },
     { to: "/pages/frontmatter", label: "Frontmatter (1967)", icon: "fa-book" },
+    {
+      to: "/pages/copyright-notice",
+      label: "Copyright Notice",
+      icon: "fa-copyright",
+    },
   ],
   pages: {
     home: Dchp1Home,

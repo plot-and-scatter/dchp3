@@ -68,7 +68,7 @@ export default function Dchp1Home() {
 
       <p>DCHP-1 Online should be cited as:</p>
 
-      <p>
+      <blockquote>
         Dollinger, Stefan (editor-in-chief), Laurel J. Brinton and Margery Fee
         (eds.). 2013.{" "}
         <em>
@@ -80,7 +80,7 @@ export default function Dchp1Home() {
           http://dchp.ca/DCHP-1/
         </a>
         .
-      </p>
+      </blockquote>
 
       <div>
         <div>

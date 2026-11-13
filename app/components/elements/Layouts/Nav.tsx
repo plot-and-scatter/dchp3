@@ -23,10 +23,11 @@ interface NavProps {
 //
 // A "dense" edition has more front matter links than fit at that size
 // (DCHP-2: six, after Project Team and Project History were added at the
-// editors' request). It keeps the Menu dropdown up to xl, and from xl shows
-// the links a step smaller, with Browse and Search losing the word
-// "entries". Measured at 1280px: the full-size row would need about 1260px
-// against the 1152px the bar offers.
+// editors' request; DCHP-1: six, with Copyright Notice). It keeps the Menu
+// dropdown up to xl, and from xl shows the links a step smaller and across
+// a wider bar, with Browse and Search losing the word "entries". Measured
+// at 1280px: DCHP-1's row needs about 1135px at text-lg, against 1152px in
+// a max-w-6xl bar and 1256px in max-w-7xl.
 const Nav = ({ user, edition }: NavProps): JSX.Element => {
   const config = EDITIONS[edition]
   const archive = isArchiveEdition(edition)
@@ -41,7 +42,12 @@ const Nav = ({ user, edition }: NavProps): JSX.Element => {
       )}
       style={{ backgroundColor: config.tints?.page }}
     >
-      <div className="flex w-full max-w-6xl items-center justify-between gap-x-2 whitespace-nowrap sm:gap-x-3">
+      <div
+        className={clsx(
+          "flex w-full items-center justify-between gap-x-2 whitespace-nowrap sm:gap-x-3",
+          dense ? "max-w-7xl" : "max-w-6xl"
+        )}
+      >
         <div className={dense ? "xl:hidden" : "lg:hidden"}>
           <Popover
             align="left"

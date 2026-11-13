@@ -148,25 +148,23 @@ export default function Dchp2Acknowledgements() {
         Newfoundlandisms and two “both Sandras”, Sandra Clarke and Sandra Power,
         and Philip Hiscock for assisting with select Newfoundland entries.
       </p>
-      <br />
-      <br />
-      UBC campus is on traditional, ancestral and unceded Indigenous lands and
-      it is on these lands that most of DCHP-2 was produced. Daniel Heath
-      Justice is thanked for reading drafts of some two dozen entries of special
-      interest to First Nations questions in detail and for generously offering
-      advice on how to consider and reflect on the colonial heritage of DCHP.
-      While all remaining mistakes remain our own, Daniel has helped us avoid
-      the one or the other mistake: wado (thank you in Cherokee).
-      <br />
-      <br />
-      Aside from these researchers, we contacted a great many individuals over
-      the years with requests for help on a given aspect: linguists and language
-      lovers, book authors, bloggers, librarians, archivists, journalists, or
-      simply interested members of the public. All errors, in all cases in which
-      we benefitted from somebody else's expertise and generosity, remain
-      entirely our own.
-      <br />
-      <br />
+      <p>
+        UBC campus is on traditional, ancestral and unceded Indigenous lands and
+        it is on these lands that most of DCHP-2 was produced. Daniel Heath
+        Justice is thanked for reading drafts of some two dozen entries of
+        special interest to First Nations questions in detail and for generously
+        offering advice on how to consider and reflect on the colonial heritage
+        of DCHP. While all remaining mistakes remain our own, Daniel has helped
+        us avoid the one or the other mistake: wado (thank you in Cherokee).
+      </p>
+      <p>
+        Aside from these researchers, we contacted a great many individuals over
+        the years with requests for help on a given aspect: linguists and
+        language lovers, book authors, bloggers, librarians, archivists,
+        journalists, or simply interested members of the public. All errors, in
+        all cases in which we benefitted from somebody else's expertise and
+        generosity, remain entirely our own.
+      </p>
       <p>
         We also owe a debt of gratitude to a number of institutions. Thanks must
         go to UBC’s Department of English for providing office space since
@@ -187,9 +185,9 @@ export default function Dchp2Acknowledgements() {
         2013-16 [Dollinger grant #435-2013-0233.]). These funding sources
         combined allowed us to consistently employ an undergraduate workforce
         for over eight years for a total of almost 11,500 remunerated student
-        work hours (see <Link to="/pages/team">Project Team</Link>). We
-        owe special thanks to Nelson Education for funding two project meetings,
-        one in Toronto in 2006 and one in Vancouver in 2007, for reference book
+        work hours (see <Link to="/pages/team">Project Team</Link>). We owe
+        special thanks to Nelson Education for funding two project meetings, one
+        in Toronto in 2006 and one in Vancouver in 2007, for reference book
         purchases and for supporting Stefan Dollinger’s exploratory archival
         research in early 2006.
       </p>
