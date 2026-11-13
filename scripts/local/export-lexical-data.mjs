@@ -12,6 +12,9 @@
 // own copyright; each meaning gets a quotation count and the year of its
 // earliest quotation instead.
 //
+// The README's copyright and terms section is a placeholder until the
+// editor-in-chief supplies the wording; do not send the export before that.
+//
 // Editorial text keeps its inline HTML (<i>, <sub>, <br>, links), since
 // the italics carry meaning; stray HTML comments left by the old editing
 // software are removed.
@@ -164,13 +167,19 @@ const readme = `# DCHP-3 lexical data export
 Exported ${today} from the Dictionary of Canadianisms on Historical
 Principles, third edition (DCHP-3), https://dchp.arts.ubc.ca.
 
-## Terms of use
+## Copyright and terms of use
 
-Copyright © Stefan Dollinger, Margery Fee and The University of British
-Columbia. This export is provided for non-commercial academic research only.
-Do not redistribute it. Cite the dictionary in any publication that uses it:
+© Stefan Dollinger, Nelson Education Ltd., and The University of British
+Columbia. All rights reserved. (This is the copyright line of the DCHP-3
+website; its Copyright Note, https://dchp.arts.ubc.ca/how-to-use#copyright-note,
+explains that the DCHP-1 content is licensed to UBC by Nelson Education Ltd.
+and that reproduction or distribution of dictionary content needs express
+consent from the editor-in-chief and, for the DCHP-1 content, Nelson and/or
+UBC.)
 
-> Dollinger, Stefan and Margery Fee (eds). ${new Date().getFullYear()}. *DCHP-3: The Dictionary of Canadianisms on Historical Principles, Third Edition.* Vancouver: University of British Columbia. https://dchp.arts.ubc.ca
+TERMS OF USE AND CITATION: TO BE SUPPLIED BY THE EDITOR-IN-CHIEF BEFORE THIS
+EXPORT IS SENT TO ANYONE. Replace this paragraph with the approved wording
+(permitted use, redistribution, how to cite the dictionary).
 
 ## What is included
 
