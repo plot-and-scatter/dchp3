@@ -31,7 +31,11 @@ export default function Dchp2Home() {
           </strong>
         </em>{" "}
         DCHP-2. It combines the legacy data of the first edition from 1967,{" "}
-        <a href="http://www.dchp.ca/DCHP-1/" target="_blank" rel="noreferrer">
+        <a
+          href="https://dchp.arts.ubc.ca/dchp1"
+          target="_blank"
+          rel="noreferrer"
+        >
           DCHP-1
         </a>
         , with a systematically re-conceptualized update focusing on 20th- and
@@ -66,7 +70,11 @@ export default function Dchp2Home() {
         </em>{" "}
         With the assistance of Baillie Ford, Alexandra Gaylie and Gabrielle Lim.
         Vancouver, BC: University of British Columbia,{" "}
-        <a href="http://www.dchp.ca/dchp2" target="_blank" rel="noreferrer">
+        <a
+          href="https://dchp.arts.ubc.ca/dchp2"
+          target="_blank"
+          rel="noreferrer"
+        >
           www.dchp.ca/dchp2
         </a>
         .
@@ -86,7 +94,11 @@ export default function Dchp2Home() {
         <strong>Copyright notice</strong>
         <br />
         DCHP-2 is an updated edition of DCHP‐1 Online (
-        <a href="http://www.dchp.ca/DCHP-1/" target="_blank" rel="noreferrer">
+        <a
+          href="https://dchp.arts.ubc.ca/dchp1"
+          target="_blank"
+          rel="noreferrer"
+        >
           Dollinger, Brinton and Fee 2013
         </a>
         ), which was the first digital version of{" "}
@@ -99,7 +111,7 @@ export default function Dchp2Home() {
         division of Canada Publishing Corporation (DCHP-1). The copyright notice
         of DCHP-1 can be found{" "}
         <a
-          href="http://www.dchp.ca/DCHP-1/pages/copyrightnotice"
+          href="https://dchp.arts.ubc.ca/dchp1/pages/copyright-notice"
           target="_blank"
           rel="noreferrer"
         >

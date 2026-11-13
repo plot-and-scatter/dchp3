@@ -22,7 +22,7 @@ export default function Dchp3Index() {
         a word, expression, or meaning which is native to Canada or which is
         distinctively characteristic of Canadian usage though not necessarily
         exclusive to Canada. (Walter S. Avis in DCHP-1, page xiii;{" "}
-        <Link to="https://dchp.ca/dchp1/pages/frontmatter#introduction">
+        <Link to="https://dchp.arts.ubc.ca/dchp1/pages/frontmatter#introduction">
           see DCHP-1 Online
         </Link>
         )
@@ -54,7 +54,7 @@ export default function Dchp3Index() {
           Edition.
         </em>{" "}
         Vancouver, BC: University of British Columbia,{" "}
-        <Link to="https://www.dchp.ca/dchp3">www.dchp.ca/dchp3</Link>. DOI:{" "}
+        <Link to="https://dchp.arts.ubc.ca">www.dchp.ca/dchp3</Link>. DOI:{" "}
         <Link to="https://doi.org/10.17613/hr345-77f43">
           https://doi.org/10.17613/hr345-77f43
         </Link>{" "}

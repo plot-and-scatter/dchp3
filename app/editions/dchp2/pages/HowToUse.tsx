@@ -1238,7 +1238,7 @@ export default function Dchp2HowToUse() {
         the text was proofread by UBC students in 2010-11 (for a list of staff
         and volunteers see{" "}
         <a
-          href="http://www.dchp.ca/DCHP-1/pages/team"
+          href="https://dchp.arts.ubc.ca/dchp1/pages/team"
           target="_blank"
           rel="noreferrer"
         >
@@ -1246,7 +1246,11 @@ export default function Dchp2HowToUse() {
         </a>
         ). After a period of copyright negotiations, DCHP‑1 Online was made
         available in open access in 2013, free of charge for everyone at{" "}
-        <a href="http://www.dchp.ca/dchp1" target="_blank" rel="noreferrer">
+        <a
+          href="https://dchp.arts.ubc.ca/dchp1"
+          target="_blank"
+          rel="noreferrer"
+        >
           www.dchp.ca/dchp1
         </a>
         . By that time, DCHP‑1 had been out of print for decades and had fallen
@@ -2371,7 +2375,7 @@ export default function Dchp2HowToUse() {
         Avis, Walter S. 1967. Introduction. In: Avis et al. (eds.), xii-xv. Also
         in <em>DCHP‑1</em> <em>Online</em>.{" "}
         <a
-          href="http://dchp.ca/DCHP-1/pages/frontmatter"
+          href="https://dchp.arts.ubc.ca/dchp1/pages/frontmatter"
           target="_blank"
           rel="noreferrer"
         >
@@ -2481,7 +2485,11 @@ export default function Dchp2HowToUse() {
           Online
         </em>
         . Based on Walter S. Avis et al. (1967). (Online dictionary){" "}
-        <a href="http://dchp.ca/dchp1/" target="_blank" rel="noreferrer">
+        <a
+          href="https://dchp.arts.ubc.ca/dchp1"
+          target="_blank"
+          rel="noreferrer"
+        >
           http://dchp.ca/dchp1/
         </a>
         . Vancouver, BC: University of British Columbia.

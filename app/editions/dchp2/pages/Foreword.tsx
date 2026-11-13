@@ -233,7 +233,7 @@ export default function Dchp2Foreword() {
           Avis, Walter S., Charles Crate, Patrick Drysdale, Douglas Leechman and
           Matthew H. Scargill. 1967. Principles of Style. In DCHP-1,{" "}
           <a
-            href="http://www.dchp.ca/DCHP-1/pages/frontmatter#style"
+            href="https://dchp.arts.ubc.ca/dchp1/pages/frontmatter#style"
             target="_blank"
             rel="noreferrer"
           >

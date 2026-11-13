@@ -36,17 +36,17 @@ export default function Dchp3About() {
         is the latest reiteration of a Canadian linguistics project that turned,
         sometime in the early 1960s, into a Canadian Centennial Project. DCHP-3
         is a major technical relaunch of the Second Edition from 2017 (
-        <Link to="https://www.dchp.ca/dchp2">Dollinger & Fee 2017</Link>) and a
-        minor editorial update. Last time Paddy Drysdale, the last surviving
-        member of the DCHP-1 editorial board, offered a{" "}
-        <Link to="https://www.dchp.ca/dchp2/pages/foreword">foreword</Link> for
-        DCHP-2; now we must refer the reader to Paddy’s obituary (
+        <Link to="https://dchp.arts.ubc.ca/dchp2">Dollinger & Fee 2017</Link>)
+        and a minor editorial update. Last time Paddy Drysdale, the last
+        surviving member of the DCHP-1 editorial board, offered a{" "}
+        <Link to="https://dchp.arts.ubc.ca/dchp2/pages/foreword">foreword</Link>{" "}
+        for DCHP-2; now we must refer the reader to Paddy’s obituary (
         <Link to="https://www.academia.edu/46895718/">
           Dollinger & Neufeldt 2021
         </Link>
         ). While DCHP-2 added roughly 10% to the scope of DCHP-1 (Avis et al.
-        1967, <Link to="https://www.dchp.ca/DCHP1">DCHP-1 Online</Link>), DCHP-3
-        adds around 10% of the update for DCHP-2.
+        1967, <Link to="https://dchp.arts.ubc.ca/dchp1">DCHP-1 Online</Link>),
+        DCHP-3 adds around 10% of the update for DCHP-2.
       </p>
 
       <p>
@@ -373,7 +373,7 @@ export default function Dchp3About() {
 
       <p>
         Avis, Walter S. 1967. Introduction. In DCHP-1, xii-xv. Online:{" "}
-        <Link to="https://dchp.ca/dchp1/pages/frontmatter#introduction">
+        <Link to="https://dchp.arts.ubc.ca/dchp1/pages/frontmatter#introduction">
           www.dchp.ca/dchp1
         </Link>
         .
@@ -419,7 +419,7 @@ export default function Dchp3About() {
           1st edition
         </em>
         . Based on Walter S. Avis et al. 1967.{" "}
-        <Link to="https://www.dchp.ca/DCHP1">www.dchp.ca/DCHP1</Link>
+        <Link to="https://dchp.arts.ubc.ca/dchp1">www.dchp.ca/DCHP1</Link>
       </p>
       <p>
         DCHP-2 = Dollinger, Stefan (chief editor) and Margery Fee (associate
@@ -430,7 +430,7 @@ export default function Dchp3About() {
         </em>
         . With the assistance of Baillie Ford, Alexandra Gaylie, and Gabrielle
         Lim. Vancouver: University of British Columbia.{" "}
-        <Link to="https://www.dchp.ca/dchp2">www.dchp.ca/dchp2</Link>
+        <Link to="https://dchp.arts.ubc.ca/dchp2">www.dchp.ca/dchp2</Link>
       </p>
       <p>
         Dollinger, Stefan. 2019.{" "}

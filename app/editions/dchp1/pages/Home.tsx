@@ -76,7 +76,11 @@ export default function Dchp1Home() {
           Online
         </em>
         . Based on Avis et al. (1967).{" "}
-        <a href="http://dchp.ca/DCHP-1/" target="_blank" rel="noreferrer">
+        <a
+          href="https://dchp.arts.ubc.ca/dchp1"
+          target="_blank"
+          rel="noreferrer"
+        >
           http://dchp.ca/DCHP-1/
         </a>
         .

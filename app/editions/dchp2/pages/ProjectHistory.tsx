@@ -83,7 +83,11 @@ export default function Dchp2ProjectHistory() {
         variety of Canadian, Austrian and American sources. Laurel Brinton and
         Margery Fee joined the project that year as associate editors. After the
         open access publication of DCHP-1 Online (
-        <a href="http://www.dchp.ca/dchp1" target="_blank" rel="noreferrer">
+        <a
+          href="https://dchp.arts.ubc.ca/dchp1"
+          target="_blank"
+          rel="noreferrer"
+        >
           www.dchp.ca/dchp1
         </a>
         ) in 2013, Dollinger and Fee embarked on the editing of DCHP-2 content
@@ -124,7 +128,11 @@ export default function Dchp2ProjectHistory() {
         Canada. To ensure that Avis's legacy is accessible, we would like to
         point out that a digital version of the first edition,{" "}
         <em>DCHP-1 Online</em>, is available in open access at{" "}
-        <a href="http://dchp.ca/dchp1" target="_blank" rel="noreferrer">
+        <a
+          href="https://dchp.arts.ubc.ca/dchp1"
+          target="_blank"
+          rel="noreferrer"
+        >
           http://dchp.ca/dchp1
         </a>{" "}
         (with special thanks to Nelson Education for making open access
