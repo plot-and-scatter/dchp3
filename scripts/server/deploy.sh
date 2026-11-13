@@ -42,27 +42,28 @@ case "${environment}" in
     readonly UNIT=dchp3-remix-server
     readonly CHOOSE_BRANCH=no
     ;;
-  # The archive editions (docs/editions.md): the same code, main only, each
-  # in its own tree because DCHP_BASENAME is baked into the build, so one
-  # build cannot serve two prefixes.
+  # The archive editions (docs/editions.md): the same code, each in its own
+  # tree because DCHP_BASENAME is baked into the build, so one build cannot
+  # serve two prefixes. A branch may be named, as for staging, so a preview
+  # can run before the code is merged; with none named, choose 0) main.
   dchp1)
     readonly TREE=/var/www/dchp3-dchp1
     readonly PORT=3011
     readonly UNIT=dchp3-archive@dchp1
-    readonly CHOOSE_BRANCH=no
+    readonly CHOOSE_BRANCH=yes
     readonly ENV_FILE=.env.dchp1
     ;;
   dchp2)
     readonly TREE=/var/www/dchp3-dchp2
     readonly PORT=3012
     readonly UNIT=dchp3-archive@dchp2
-    readonly CHOOSE_BRANCH=no
+    readonly CHOOSE_BRANCH=yes
     readonly ENV_FILE=.env.dchp2
     ;;
   *)
     echo "Usage: $(basename "$0") staging [branch]"
     echo "       $(basename "$0") production"
-    echo "       $(basename "$0") dchp1 | dchp2"
+    echo "       $(basename "$0") dchp1 | dchp2 [branch]"
     exit 1
     ;;
 esac
@@ -184,13 +185,13 @@ npm ci --include=dev
 npx prisma generate
 
 # An archive's prefix (DCHP_BASENAME) is read at build time by Vite and
-# React Router, so its env file is loaded before the build. Production and
-# staging build at the root and need nothing here.
+# React Router, so it is taken from the env file before the build. Only that
+# one value: sourcing the whole file would collide with this script's own
+# read-only PORT. Production and staging build at the root and need nothing.
 if [ -n "${ENV_FILE:-}" ]; then
-  set -a
-  # shellcheck disable=SC1090
-  source "${ENV_FILE}"
-  set +a
+  DCHP_BASENAME=$(grep -E '^DCHP_BASENAME=' "${ENV_FILE}" | cut -d= -f2- | tr -d "\"'")
+  export DCHP_BASENAME
+  echo "  prefix:   ${DCHP_BASENAME:-/}"
 fi
 
 npm run build

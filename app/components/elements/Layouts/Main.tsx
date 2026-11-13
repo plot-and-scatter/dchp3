@@ -10,7 +10,7 @@ const Main = ({ center = false, children }: MainProps): JSX.Element => {
   }
 
   return (
-    <main className={className + " relative mt-20 p-4 md:mt-32"}>
+    <main className={className + " relative mt-24 p-4 md:mt-32"}>
       {children}
     </main>
   )

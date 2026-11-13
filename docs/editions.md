@@ -165,24 +165,18 @@ versions of the same steps.
    session module reads them at start-up. The Auth0 and image-bucket write
    credentials are left out: nothing in an archive signs in or uploads.
 
-3. **Scripts and unit**, installed root-only beside the production ones:
+3. **Scripts and unit.** One script installs the shared deploy script
+   (named `dchp3-deploy` on the server), the archive start script and the
+   template unit, and enables both archive units:
 
    ```
-   sudo cp scripts/server/start-archive.sh /usr/local/sbin/dchp3-start-archive.sh
-   sudo chown root:root /usr/local/sbin/dchp3-start-archive.sh
-   sudo chmod 700 /usr/local/sbin/dchp3-start-archive.sh
-   sudo cp scripts/server/dchp3-archive@.service /etc/systemd/system/
-   sudo systemctl daemon-reload
-   sudo systemctl enable dchp3-archive@dchp1
+   sudo bash /var/www/dchp3-dchp1/scripts/server/install-archive-scripts.sh
    ```
-
-   The deploy script is the shared one already installed for production;
-   update it from this branch, since it gained the two edition cases.
 
 4. **First deploy**, which also starts the unit:
 
    ```
-   sudo /usr/local/sbin/dchp3-deploy.sh dchp1
+   sudo /usr/local/sbin/dchp3-deploy dchp1
    ```
 
 5. **Apache.** Public requests to dchp.arts.ubc.ca reach Apache (`httpd`),
@@ -194,15 +188,23 @@ versions of the same steps.
    matches everything. Do this last, once both processes are running:
 
    ```
+   # /dchp3 is DCHP-3 itself, for parallelism with /dchp1 and /dchp2.
+   # The "!" stops the "/" proxy rule from claiming it, so the redirect can run.
+   ProxyPass "/dchp3" !
+   RedirectMatch 301 ^/dchp3(?:/(.*))?$ /$1
+
    # DCHP-1 and DCHP-2 archive editions (read-only), each its own app process.
    # Must come before the "/" rules below: Apache uses the first ProxyPass that matches.
-   RedirectMatch 301 ^/dchp1$ /dchp1/
-   RedirectMatch 301 ^/dchp2$ /dchp2/
-   ProxyPass        "/dchp1/" "http://localhost:3011/dchp1/"
-   ProxyPassReverse "/dchp1/" "http://localhost:3011/dchp1/"
-   ProxyPass        "/dchp2/" "http://localhost:3012/dchp2/"
-   ProxyPassReverse "/dchp2/" "http://localhost:3012/dchp2/"
+   ProxyPass        "/dchp1" "http://localhost:3011/dchp1"
+   ProxyPassReverse "/dchp1" "http://localhost:3011/dchp1"
+   ProxyPass        "/dchp2" "http://localhost:3012/dchp2"
+   ProxyPassReverse "/dchp2" "http://localhost:3012/dchp2"
    ```
+
+   No trailing slash on purpose: a bare `/dchp1` is then forwarded too, and
+   the app answers it with a redirect to `/dchp1/`. A `RedirectMatch` for
+   that in Apache does not work here, because ProxyPass rules are applied
+   before Redirect rules and the `/` rule would take the request first.
 
    Then `sudo apachectl configtest && sudo systemctl reload httpd`. The
    prefix is passed through unchanged, which is what the app expects. If
@@ -211,5 +213,16 @@ versions of the same steps.
 
 ### Later deploys
 
-`sudo /usr/local/sbin/dchp3-deploy.sh dchp1` (or `dchp2`). The archives
-deploy main only, like production, so a change reaches them by being merged.
+`sudo /usr/local/sbin/dchp3-deploy dchp1` (or `dchp2`) and choose main.
+A branch can be named instead, as for staging, which is how a preview runs
+before the archive code is merged: `... dchp1 499-archive-mode-dchp1`.
+
+### Shortcut: load the lifted databases instead of lifting on the server
+
+The lift and the frequency index have already been run on the local copies.
+A dump of those loads straight in and step 1 becomes:
+
+```
+sudo mysql -e "CREATE DATABASE dchpca_dchp1 CHARACTER SET utf8mb4"
+gunzip -c dchpca_dchp1-lifted.sql.gz | sudo mysql dchpca_dchp1
+```

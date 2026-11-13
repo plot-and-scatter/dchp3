@@ -32,12 +32,12 @@ const Headword = ({ entry, isEditingMode }: HeadwordProps): JSX.Element => {
             `flex`,
             isEditingMode
               ? `flex-1 flex-col items-start gap-4`
-              : `flex-row items-center gap-1`
+              : `flex-row flex-wrap items-center gap-x-3 gap-y-1`
           )}
         >
           <h1
             className={clsx(
-              `gap-x- flex flex-row whitespace-nowrap text-3xl leading-tight md:text-5xl`,
+              `flex flex-row text-3xl leading-tight md:whitespace-nowrap md:text-5xl`,
               isEditingMode ? "gap-x-4" : "gap-x-1"
             )}
           >
