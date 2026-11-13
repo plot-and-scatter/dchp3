@@ -44,8 +44,11 @@ const Nav = ({ user, edition }: NavProps): JSX.Element => {
     >
       <div
         className={clsx(
+          // Phones: Menu, Browse and Search at the two edges and the middle.
+          // Desktop row: spread evenly, so the gap at either edge matches
+          // the gaps between the links.
           "flex w-full items-center justify-between gap-x-2 whitespace-nowrap sm:gap-x-3",
-          dense ? "max-w-7xl" : "max-w-6xl"
+          dense ? "max-w-7xl xl:justify-evenly" : "max-w-6xl lg:justify-evenly"
         )}
       >
         <div className={dense ? "xl:hidden" : "lg:hidden"}>

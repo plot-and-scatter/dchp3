@@ -131,7 +131,7 @@ const DCHP1: EditionConfig = {
     {
       to: "/pages/history",
       label: "Project History",
-      icon: "fa-clock-rotate-left",
+      icon: "fa-timeline",
     },
     { to: "/pages/team", label: "Project Team", icon: "fa-users" },
     { to: "/how-to-use", label: "How to use", icon: "fa-book" },
@@ -198,7 +198,7 @@ const DCHP2: EditionConfig = {
     {
       to: "/pages/history",
       label: "Project History",
-      icon: "fa-clock-rotate-left",
+      icon: "fa-timeline",
     },
   ],
   pages: {
