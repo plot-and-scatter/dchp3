@@ -21,10 +21,8 @@ const MeaningHeader = ({
           {number && number !== "0" && (
             <span className="font-bold md:text-xl">{number}</span>
           )}
-          {/* Small caps at the part-of-speech size, so the label's capitals
-              match the x-height of the italic text beside it. */}
           {dagger && (
-            <span className="text-sm font-semibold tracking-wide text-gray-600 [font-variant-caps:small-caps] md:text-lg">
+            <span className="text-sm font-semibold uppercase tracking-wide text-gray-600 md:text-base">
               Non-Cdn.
             </span>
           )}
