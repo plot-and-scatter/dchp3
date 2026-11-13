@@ -60,6 +60,12 @@ export default function Dchp3Index() {
         </Link>{" "}
         (Published 15 May 2025).
       </blockquote>
+      <p>
+        For those interested in legacy editions, DCHP-2 from 2017 can be
+        accessed <Link to="https://dchp.arts.ubc.ca/dchp2">here</Link>, while
+        the digital version of DCHP-1 from 1967 is found{" "}
+        <Link to="https://dchp.arts.ubc.ca/dchp1">here</Link>.
+      </p>
       <hr className="my-8" />
       <p className="text-center text-sm">
         Supported by the{" "}
