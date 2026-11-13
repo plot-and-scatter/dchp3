@@ -30,7 +30,7 @@ const BibliographyPopover = ({ citation }: BibliographyPopoverProps) => {
         ref={setPopperElement}
         style={styles.popper}
         {...attributes.popper}
-        className="absolute z-10 w-96 rounded-md border border-amber-500 bg-amber-50 p-3 shadow-lg"
+        className="absolute z-10 w-96 whitespace-normal rounded-md border border-amber-500 bg-amber-50 p-3 text-left shadow-lg"
       >
         <div className="grid grid-cols-1">
           <dl>
@@ -55,9 +55,11 @@ const BibliographyPopover = ({ citation }: BibliographyPopoverProps) => {
             <BibliographyItem
               label="URL"
               value={
-                <Link to={citation["url"] || ""} target="_new">
-                  {citation.url}
-                </Link>
+                citation.url && (
+                  <Link to={citation.url} target="_new">
+                    {citation.url}
+                  </Link>
+                )
               }
             />
             <BibliographyItem label="Uttered" value={citation["uttered"]} />

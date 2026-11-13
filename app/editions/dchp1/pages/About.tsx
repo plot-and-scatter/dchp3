@@ -121,11 +121,10 @@ export default function Dchp1About() {
         David Friend and Terry Pratt, continued to support the project, while
         the major funding sources came from a variety of Canadian, Austrian and
         American sources (see the list of{" "}
-        <a href="http://dchp.ca" target="_blank" rel="noreferrer">
-          supporters
-        </a>
-        ). Laurel Brinton and Margery Fee joined the project that year as
-        associate editors of DCHP-2.
+        {/* The 2013 page linked to the project site at dchp.ca, which no
+            longer exists; the supporters are the paragraph below. */}
+        <Link to="/about#supporters">supporters</Link>). Laurel Brinton and
+        Margery Fee joined the project that year as associate editors of DCHP-2.
       </p>
 
       <p>
@@ -148,7 +147,7 @@ export default function Dchp1About() {
         collected from 1967 to 1979, and she had them entered them into the BCE.
       </p>
 
-      <p>
+      <p id="supporters">
         We owe a debt of gratitude to numerous individuals and institutions, too
         many to list individually. Thanks must go to UBC’s{" "}
         <a href="http://www.english.ubc.ca/" target="_blank" rel="noreferrer">

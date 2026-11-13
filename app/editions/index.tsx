@@ -128,6 +128,13 @@ const DCHP1: EditionConfig = {
     { to: "/how-to-use", label: "How to use", icon: "fa-book" },
     { to: "/pages/frontmatter", label: "Frontmatter (1967)", icon: "fa-book" },
     { to: "/pages/abbreviations", label: "Abbreviations", icon: "fa-list" },
+    // Sections of the About page, as menu items at the editors' request.
+    { to: "/about#project-team", label: "Project Team", icon: "fa-users" },
+    {
+      to: "/about#project-history",
+      label: "Project History",
+      icon: "fa-clock-rotate-left",
+    },
   ],
   pages: {
     home: Dchp1Home,
