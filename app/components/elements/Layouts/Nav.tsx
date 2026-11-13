@@ -38,7 +38,7 @@ const Nav = ({ user, edition }: NavProps): JSX.Element => {
   const fullRow = clsx(dense ? "hidden xl:inline" : "hidden lg:inline", minor)
   const suffix = dense ? "hidden" : "hidden lg:inline"
   const emphasis =
-    "inline-block rounded-md border border-primary px-2.5 py-1 hover:bg-primary hover:text-white sm:px-4"
+    "inline-block rounded-md border border-primary px-2.5 py-1 text-[0.9em] font-semibold hover:bg-primary hover:text-white sm:px-4 sm:py-1.5"
   return (
     <nav
       className={clsx(
@@ -92,13 +92,13 @@ const Nav = ({ user, edition }: NavProps): JSX.Element => {
         ))}
         {/* Browse and Search are what most visitors came for, so they are
             the two outlined buttons in a row of plain links. */}
-        <div className="font-bold">
+        <div>
           <NavLink to="/entries" className={emphasis}>
             <i className="fa-regular fa-books mr-1.5 sm:mr-2"></i>Browse
             <span className={suffix}> entries</span>
           </NavLink>
         </div>
-        <div className="font-bold">
+        <div>
           <NavLink to="/search" className={emphasis}>
             <i className="fa-regular fa-search mr-1.5 sm:mr-2"></i>Search
             <span className={suffix}> entries</span>
