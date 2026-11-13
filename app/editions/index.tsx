@@ -187,13 +187,14 @@ const DCHP2: EditionConfig = {
   navLinks: [
     // The 2017 site had no About page; Project Team and Project History
     // were pages of their own, as here.
+    // In the 2017 site's order.
     { to: "/how-to-use", label: "Introduction", icon: "fa-book" },
-    { to: "/pages/foreword", label: "Foreword", icon: "fa-book" },
     {
       to: "/acknowledgements",
       label: "Acknowledgements",
       icon: "fa-people-group",
     },
+    { to: "/pages/foreword", label: "Foreword", icon: "fa-book" },
     { to: "/pages/team", label: "Project Team", icon: "fa-users" },
     {
       to: "/pages/history",
