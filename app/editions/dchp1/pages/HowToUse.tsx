@@ -9,11 +9,19 @@ import scan2 from "../images/scan2.png"
 import scan3 from "../images/scan3.png"
 import bib from "../images/bib.gif"
 import scan4 from "../images/scan4.png"
+import legacySite from "../images/legacy-site-2013.png"
+import LegacySiteNote from "../../LegacySiteNote"
 
 export default function Dchp1HowToUse() {
   return (
     <TextPageMain>
       <PageHeader>How To Use</PageHeader>
+
+      <LegacySiteNote
+        siteName="DCHP-1 Online"
+        releasedIn={2013}
+        screenshot={legacySite}
+      />
 
       <p>
         The menu bar on the left screen offers the reader two viewing modes for

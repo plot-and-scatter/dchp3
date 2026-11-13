@@ -30,6 +30,8 @@ import img_cf08e6_html_7aabf2eb from "../images/i_a41ce94b16cf08e6_html_7aabf2eb
 import img_cf08e6_html_4ed35ac0 from "../images/i_a41ce94b16cf08e6_html_4ed35ac0.png"
 import img_cf08e6_html_9bcc2382 from "../images/i_a41ce94b16cf08e6_html_9bcc2382.png"
 import img_6cf08e6_html_3e09bef from "../images/i_a41ce94b16cf08e6_html_3e09bef.png"
+import legacySite from "../images/legacy-site-2017.png"
+import LegacySiteNote from "../../LegacySiteNote"
 
 export default function Dchp2HowToUse() {
   return (
@@ -38,6 +40,11 @@ export default function Dchp2HowToUse() {
         <span id="goback" />
         Introduction to DCHP‑2
       </PageHeader>
+      <LegacySiteNote
+        siteName="DCHP-2 Online"
+        releasedIn={2017}
+        screenshot={legacySite}
+      />
       <p>
         <strong>Stefan Dollinger &amp; Margery Fee</strong>
       </p>
@@ -500,15 +507,15 @@ export default function Dchp2HowToUse() {
       <p>
         A feature from DCHP-1 is the Fist Note, which is not shown in{" "}
         <em>parkade</em>. Generally a Fist Note{" "}
-        <FrontmatterImage src={img_cf08e6_html_b0eda47d} alt="" />
-        adds information that would help the general reader to contextualize the
+        <FrontmatterImage src={img_cf08e6_html_b0eda47d} alt="" inline /> adds
+        information that would help the general reader to contextualize the
         definition as in the Fist Notes in the first edition (Avis et al. 1967:
         xix) with the exception that in DCHP‑2, the more complex connections are
         explained in the Word Story. One such Fist Note is found under{" "}
         <em>adhesion</em>, 'agreement to join an existing treaty':
       </p>
       <p>
-        <FrontmatterImage src={img_cf08e6_html_b0eda47d} alt="" />
+        <FrontmatterImage src={img_cf08e6_html_b0eda47d} alt="" inline />{" "}
         Treaties are only signed with the Crown, the federal government, yet
         provincial governments often play a role in the negotiations.
       </p>

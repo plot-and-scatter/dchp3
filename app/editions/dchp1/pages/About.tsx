@@ -234,18 +234,8 @@ export default function Dchp1About() {
         <li>Leslie Fields</li>
       </ul>
 
-      <p>
-        For a full list of people working on the data collection for DCHP-2, the
-        BCE, and related projects, please see{" "}
-        <a
-          href="http://faculty.arts.ubc.ca/sdollinger/dchp2.htm#adv"
-          target="_blank"
-          rel="noreferrer"
-        >
-          here
-        </a>
-        .
-      </p>
+      {/* The 2013 page ended with a sentence linking to an external list of
+          people; removed at the editorial team's request (issue 523). */}
     </TextPageMain>
   )
 }
