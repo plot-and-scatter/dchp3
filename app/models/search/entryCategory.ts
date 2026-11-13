@@ -40,11 +40,15 @@ export const categorySql = (p: CategoryParams, meaningAlias?: string) => {
   const checked = types(p)
   let typeMatch: Prisma.Sql
   if (checked.length === 0) typeMatch = Prisma.sql`FALSE`
+  // All six types checked means no type constraint at all, so a meaning
+  // with no Canadianism type (NULL, common in usage notes and comments) is
+  // shown too, as `categoryWhere` and the entry-level branch already do
+  // (#514).
+  else if (allTypesChecked(p)) typeMatch = Prisma.sql`TRUE`
   else if (meaningAlias)
     typeMatch = Prisma.sql`${Prisma.raw(
       meaningAlias
     )}.canadianism_type IN (${typeList(p)})`
-  else if (allTypesChecked(p)) typeMatch = Prisma.sql`TRUE`
   else
     typeMatch = Prisma.sql`EXISTS (SELECT 1 FROM det_meanings dmc WHERE dmc.entry_id = de.id AND dmc.canadianism_type IN (${typeList(
       p
