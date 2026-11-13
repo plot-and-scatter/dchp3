@@ -17,10 +17,10 @@ const Header = ({
       }`}
     >
       <Link to="/">
-        <div className="hidden text-2xl sm:block md:text-3xl">
+        <div className="hidden md:text-3xl lg:block">
           {config.headerTitle}
         </div>
-        <div className="text-2xl tracking-wider sm:hidden">
+        <div className="text-2xl tracking-wider md:text-3xl lg:hidden">
           {config.shortName}
         </div>
       </Link>
