@@ -1281,7 +1281,7 @@ export default function Dchp2HowToUse() {
         knowledge. Among the 1103 Canadian meanings, the six types are
         distributed as follows (percent of Canadianisms in the update):
       </p>
-      <ol className="my-4 ml-8 flex list-decimal flex-col gap-y-2">
+      <ol className="my-4 ml-16 list-decimal">
         <li>Origin: 358 meanings or 32.4 percent</li>
         <li>Preservation: 138 meanings or 12.5 percent</li>
         <li>Semantic Change: 202 meanings or 18.3 percent</li>
@@ -2255,7 +2255,7 @@ export default function Dchp2HowToUse() {
         <br />
       </p>
       <TertiaryHeader>List of Regional Labels</TertiaryHeader>
-      <ol className="my-4 ml-8 flex list-decimal flex-col gap-y-2">
+      <ul className="my-4 ml-8 flex list-none flex-col gap-y-2">
         <li>British Columbia</li>
         <li>Alberta</li>
         <li>Saskatchewan</li>
@@ -2281,12 +2281,12 @@ export default function Dchp2HowToUse() {
         <li>mainland Canada</li>
         <li>Maritime Provinces</li>
         <li>Cape Breton Island</li>
-      </ol>
+      </ul>
       <p>
         <br />
       </p>
       <TertiaryHeader>Social labels</TertiaryHeader>
-      <ol className="my-4 ml-8 flex list-decimal flex-col gap-y-2">
+      <ul className="my-4 ml-8 flex list-none flex-col gap-y-2">
         <li>derogatory</li>
         <li>offensive</li>
         <li>euphemism</li>
@@ -2302,10 +2302,10 @@ export default function Dchp2HowToUse() {
           Canadian English. Used sparingly, e.g. <em>Mountie</em>, which is the
           unmarked term and thus common core term in Standard Canadian English)
         </li>
-      </ol>
+      </ul>
       <br />
       <TertiaryHeader>Frequency labels</TertiaryHeader>
-      <ol className="my-4 ml-8 flex list-decimal flex-col gap-y-2">
+      <ul className="my-4 ml-8 flex list-none flex-col gap-y-2">
         <li>rare</li>
         <li>very rare</li>
         <li>originally</li>
@@ -2317,18 +2317,18 @@ export default function Dchp2HowToUse() {
         <li>
           rural (used sparingly): <em>beaver fever, skookum</em>
         </li>
-      </ol>
+      </ul>
       <p>
         <br />
       </p>
       <TertiaryHeader>Syntactic labels</TertiaryHeader>
-      <ol className="my-4 ml-8 flex list-decimal flex-col gap-y-2">
+      <ul className="my-4 ml-8 flex list-none flex-col gap-y-2">
         <li>in figurative use</li>
         <li>predicative</li>
         <li>attributively</li>
         <li>in attributive position</li>
         <li>transitive</li>
-      </ol>
+      </ul>
       <p>
         <br />
       </p>

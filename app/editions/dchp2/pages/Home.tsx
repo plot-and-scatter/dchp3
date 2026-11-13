@@ -57,7 +57,7 @@ export default function Dchp2Home() {
         DCHP-2 is available in open access but it is not without copyright.
         DCHP-2 should be cited as:
       </p>
-      <p>
+      <blockquote>
         <span id="goback" /> Dollinger, Stefan (chief editor) and Margery Fee
         (associate editor). 2017.{" "}
         <em>
@@ -70,7 +70,7 @@ export default function Dchp2Home() {
           www.dchp.ca/dchp2
         </a>
         .
-      </p>
+      </blockquote>
       <p>
         The project was carried out by the&#160;
         <a href="http://dchp.ca/" target="_blank" rel="noreferrer">
@@ -132,27 +132,27 @@ export default function Dchp2Home() {
         </em>
       </div>
       <p>
-        <FrontmatterImage src={img_bfea6c_html_f0364146} alt="" />
+        <FrontmatterImage logo src={img_bfea6c_html_f0364146} alt="" />
         <a href="http://www.sshrc.ca/" target="_blank" rel="noreferrer">
           Social Sciences and Humanities Research Council of Canada
         </a>{" "}
         (2007/8, 2010/11 funding competitions, 2012/13)
       </p>
       <p>
-        <FrontmatterImage src={img_bfea6c_html_969ce2d0} alt="" />
+        <FrontmatterImage logo src={img_bfea6c_html_969ce2d0} alt="" />
         <a href="http://www.nelson.com/" target="_blank" rel="noreferrer">
           Nelson Education Ltd.
         </a>
       </p>
       <p>
-        <FrontmatterImage src={img_bfea6c_html_fcdb7780} alt="" />
+        <FrontmatterImage logo src={img_bfea6c_html_fcdb7780} alt="" />
         <a href="http://www.univie.ac.at/" target="_blank" rel="noreferrer">
           University of Vienna, Austria
         </a>
       </p>
       <p>&#160;</p>
       <p>
-        <FrontmatterImage src={img_bfea6c_html_646ecfb4} alt="" />
+        <FrontmatterImage logo src={img_bfea6c_html_646ecfb4} alt="" />
         <a
           href="http://www.queensu.ca/strathy/home"
           target="_blank"
@@ -162,7 +162,7 @@ export default function Dchp2Home() {
         </a>
       </p>
       <p>
-        <FrontmatterImage src={img_bfea6c_html_4f824d98} alt="" />
+        <FrontmatterImage logo src={img_bfea6c_html_4f824d98} alt="" />
         <a
           href="http://polyglot.lss.wisc.edu/dsna/"
           target="_blank"
@@ -173,13 +173,13 @@ export default function Dchp2Home() {
       </p>
       <p>&#160;</p>
       <p>
-        <FrontmatterImage src={img_bfea6c_html_104e128d} alt="" />
+        <FrontmatterImage logo src={img_bfea6c_html_104e128d} alt="" />
         <a href="http://archives.queensu.ca/" target="_blank" rel="noreferrer">
           Queen's University Archives
         </a>
       </p>
       <p>
-        <FrontmatterImage src={img_bfea6c_html_d25a81c6} alt="" />
+        <FrontmatterImage logo src={img_bfea6c_html_d25a81c6} alt="" />
         <a
           href="https://phil-kult.univie.ac.at/en/"
           target="_blank"
@@ -189,7 +189,7 @@ export default function Dchp2Home() {
         </a>
       </p>
       <p>
-        <FrontmatterImage src={img_bfea6c_html_bff4ee22} alt="" />
+        <FrontmatterImage logo src={img_bfea6c_html_bff4ee22} alt="" />
         <a
           href="http://www.dfait-maeci.gc.ca/canadaeuropa/austria/menu-en.asp"
           target="_blank"
@@ -199,7 +199,7 @@ export default function Dchp2Home() {
         </a>
       </p>
       <p>
-        <FrontmatterImage src={img_bfea6c_html_751d324b} alt="" />
+        <FrontmatterImage logo src={img_bfea6c_html_751d324b} alt="" />
         <a
           href="https://www.canada.ca/en/employment-social-development/corporate/portfolio/service-canada.html"
           target="_blank"
@@ -209,7 +209,7 @@ export default function Dchp2Home() {
         </a>
       </p>
       <p>
-        <FrontmatterImage src={img_bfea6c_html_3872e0a3} alt="" />
+        <FrontmatterImage logo src={img_bfea6c_html_3872e0a3} alt="" />
       </p>
       <div>
         The&#160;
@@ -224,7 +224,7 @@ export default function Dchp2Home() {
       <br />
       <br />
       <p>
-        <FrontmatterImage src={img_bfea6c_html_c239b55b} alt="" />
+        <FrontmatterImage logo src={img_bfea6c_html_c239b55b} alt="" />
       </p>
       <div>
         The&#160;

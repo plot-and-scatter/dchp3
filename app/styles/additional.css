@@ -8,6 +8,26 @@ body {
   line-height: 140%;
 }
 
+/* Plain <a> links in the ported 2013 and 2017 pages, which were written as
+ * bare anchors; they take the same red as the Link component. */
+.TextPageMain a:not([class]) {
+  color: #dc2626; /* text-primary (red-600); this file is not run through Tailwind */
+}
+.TextPageMain a:not([class]):hover {
+  color: #f87171; /* text-primary-light (red-400) */
+}
+
+/* The header and nav bars are fixed (6rem tall on phones, 8rem from md), so
+ * an in-page anchor such as /about#project-team must stop below them. */
+[id] {
+  scroll-margin-top: 7rem;
+}
+@media (min-width: 768px) {
+  [id] {
+    scroll-margin-top: 9rem;
+  }
+}
+
 blockquote {
   margin: 1rem 2rem;
   line-height: 140%;

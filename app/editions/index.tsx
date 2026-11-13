@@ -178,6 +178,14 @@ const DCHP2: EditionConfig = {
       label: "Acknowledgements",
       icon: "fa-people-group",
     },
+    // The 2017 site had these as pages of their own; here they are sections
+    // of the About page.
+    { to: "/about#project-team", label: "Project Team", icon: "fa-users" },
+    {
+      to: "/about#project-history",
+      label: "Project History",
+      icon: "fa-clock-rotate-left",
+    },
   ],
   pages: {
     home: Dchp2Home,

@@ -45,7 +45,7 @@ export default function Dchp1About() {
         file of Canadian English terms became the basis of DCHP-1. The years
         1954 to 1967 were a time of intense work on DCHP-1, as the Preface to
         DCHP-1 and its Acknowledgements make clear (both can be accessed under{" "}
-        <Link to="/pages/frontmatter">Frontmatter (1967)</Link>)
+        <Link to="/pages/frontmatter">Frontmatter (1967)</Link>).
       </p>
 
       <p>

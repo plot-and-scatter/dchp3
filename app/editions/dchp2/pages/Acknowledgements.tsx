@@ -101,7 +101,7 @@ export default function Dchp2Acknowledgements() {
         recruitment pool for our academic research assistants, 29 of them over
         the years:
       </p>
-      <p>
+      <blockquote>
         Caitlin Bethune, Emily Briggs, Faerie Cabrera, Sam Chung, Cicily Cooper,
         Jona Dervishaj, Mark Douglas, Baillie Ford, Alexandra Gaylie, David
         Haist, Jocelyn Hassel, Javier Ibanez, Laura Kuboniwa, Breanna Laing,
@@ -109,17 +109,17 @@ export default function Dchp2Acknowledgements() {
         Loshi, Helen Lui, Margarita Manabat, Izabela Moldovan, Emily
         Sadlier-Brown, Jimmy Shaw, Lindsey Shin, Hanami Shirai, David
         Stansfield, Jessica Tam, Evgenia Todorova, Phoebe Wong, Frank Yang.
-      </p>
+      </blockquote>
       <p>
         Thanks to all of them for turning Buchanan Tower 328 into a productive,
         pleasant, if at times slightly over-crowded, workplace. Special thanks
         are owed to our volunteers in the Canadian English Lab:
       </p>
-      <p>
+      <blockquote>
         Christine Barker, Damon Barta, Baillie Ford, Sheldon Goldfarb, Ashley
         Gonzalez, Anna Martič, Izabela Moldovan, Matthew Parisien, Geoff Roeder,
         Diane Singleton.
-      </p>
+      </blockquote>
       <p>
         Proofreader Nancy Tinari joined the project only in February 2016 but
         is, apart from the editors, the only person who has read all entries and
@@ -135,13 +135,13 @@ export default function Dchp2Acknowledgements() {
         A number of colleagues answered questions pertaining to select lexical
         items, meanings or other issues, or joined our panel of consultants:
       </p>
-      <p>
-        Joan C. Beal, Charles Boberg, , Charles Boberg, J. K. Chambers,
-        Rose-Marie Déchaine, Elaine Gold, Joan Hall, William A. Kretzschmar,
-        Eric Mathieu, Kevin McCafferty, Leslie Monkman, T. K. Pratt, Jeff
-        Prucher, Yves Roberge, Ray Siemens, Herbert Schendl, Luanne von
-        Schneidemesser, Mireille Tremblay, Martina Wiltschko, William Winder.
-      </p>
+      <blockquote>
+        Joan C. Beal, Charles Boberg, J. K. Chambers, Rose-Marie Déchaine,
+        Elaine Gold, Joan Hall, William A. Kretzschmar, Eric Mathieu, Kevin
+        McCafferty, Leslie Monkman, T. K. Pratt, Jeff Prucher, Yves Roberge, Ray
+        Siemens, Herbert Schendl, Luanne von Schneidemesser, Mireille Tremblay,
+        Martina Wiltschko, William Winder.
+      </blockquote>
       <p>
         Special thanks are owed to Sandra Clarke and her colleagues at Memorial
         University, for important help with the complex question of
