@@ -11,12 +11,13 @@ import {
   ScrollRestoration,
   isRouteErrorResponse,
   useLoaderData,
+  useLocation,
   useRouteError,
   useRouteLoaderData,
 } from "react-router"
 
 import smartquotes from "smartquotes"
-import { useEffect } from "react"
+import { Fragment, useEffect } from "react"
 
 import tailwindStylesheetUrl from "./styles/tailwind.css?url"
 import additionalStylesUrl from "./styles/additional.css?url"
@@ -58,6 +59,42 @@ function tintStyle(
 // short name via the root loader; this stays for the one or two places that
 // have no loader data to hand (and for DCHP-3 it is the same string).
 export const BASE_APP_TITLE = EDITIONS[DEFAULT_EDITION].shortName
+
+// The name search engines show above a result ("site name"). Google keeps
+// one per hostname, and all three editions are served from the same
+// hostname, so it is the dictionary's name without an edition number.
+export const SITE_NAME = "DCHP"
+const SITE_URL = "https://dchp.arts.ubc.ca/"
+
+// Google reads the site name from WebSite structured data on the hostname's
+// home page, which is the DCHP-3 home page. og:site_name goes on every page
+// of every edition. Both are rendered here and not in `meta`, because a
+// route's own `meta` export replaces the root's.
+const SiteNameTags = ({ edition }: { edition: EditionId }) => {
+  const isSiteHomePage =
+    useLocation().pathname === "/" && edition === DEFAULT_EDITION
+  return (
+    <Fragment>
+      <meta property="og:site_name" content={SITE_NAME} />
+      {isSiteHomePage && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: SITE_NAME,
+              alternateName: [
+                "Dictionary of Canadianisms on Historical Principles",
+              ],
+              url: SITE_URL,
+            }),
+          }}
+        />
+      )}
+    </Fragment>
+  )
+}
 
 export const links: LinksFunction = () => {
   return [
@@ -115,6 +152,7 @@ const defaultApp = ({
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
+        <SiteNameTags edition={edition} />
         <Links />
 
         {/* <script
