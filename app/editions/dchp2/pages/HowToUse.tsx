@@ -313,14 +313,14 @@ export default function Dchp2HowToUse() {
           </td>
         </tr>
       </table>
-      Under the horizontal line at the top of Figure 2, the meaning is the basic
-      organizational unit; next is part of speech, here <em>n.</em> for{" "}
-      <em>noun</em>, followed by the mark-up labels, which are regional (e.g.
-      Ontario, Prairies) and social (e.g. slang, dated) and, as shown here,
-      pertaining to the semantic domain, here <em>Automotive</em> (a full list
-      of labels and abbreviations is found at the end of this introduction).
-      <br />
-      <br />
+      <p>
+        Under the horizontal line at the top of Figure 2, the meaning is the
+        basic organizational unit; next is part of speech, here <em>n.</em> for{" "}
+        <em>noun</em>, followed by the mark-up labels, which are regional (e.g.
+        Ontario, Prairies) and social (e.g. slang, dated) and, as shown here,
+        pertaining to the semantic domain, here <em>Automotive</em> (a full list
+        of labels and abbreviations is found at the end of this introduction).
+      </p>
       <p>
         The next item is the heart of the entry, composed of the Typology, in
         this case Type 1 - Origin, followed by the Word Story, which offers a
@@ -342,13 +342,15 @@ export default function Dchp2HowToUse() {
         "original six", opened in Victoria, Vancouver, Edmonton, Calgary,
         Saskatoon and Winnipeg (see HBC reference), where the term is frequent
         to this day.&#160;
-        <br />
+      </p>
+      <p>
         Apart from Canada (see Chart 1), the term has currency in South Africa,
         where it is most likely an independent development. Some US locations
         have adopted&#160;<em>parkade</em>&#160;(see the one shown in Image 2,
         from Spokane, Washington). From a North American perspective, the term
         is Canadian also by virtue of frequency (Type 5).&#160;
-        <br />
+      </p>
+      <p>
         See COD-2, which labels the term "Cdn". See&#160;<em>Gravol</em>
         &#160;and&#160;<em>day parole</em>&#160;for other terms with a
         Canada/South Africa parallel.
@@ -382,11 +384,7 @@ export default function Dchp2HowToUse() {
               <FrontmatterImage src={img_cf08e6_html_9c17b5b8} alt="" />
             </p>
           </td>
-          <td className="border border-gray-300 p-1 align-top">
-            <p>
-              <br />
-            </p>
-          </td>
+          <td className="border border-gray-300 p-1 align-top"></td>
         </tr>
         <tr>
           <td className="border border-gray-300 p-1 align-top">
@@ -395,11 +393,7 @@ export default function Dchp2HowToUse() {
               <em>parkade</em> (1957 quotation)
             </p>
           </td>
-          <td className="border border-gray-300 p-1 align-top">
-            <p>
-              <br />
-            </p>
-          </td>
+          <td className="border border-gray-300 p-1 align-top"></td>
         </tr>
       </table>
       <p>
@@ -790,7 +784,6 @@ export default function Dchp2HowToUse() {
         <FrontmatterImage src={img_picture15} alt="" />
       </p>
       <p>Figure 5: Visual comparison of four normalizing terms</p>
-      <br />
       <p>
         In Figure 5 we see that <em>shall</em>, which is more infrequent than
         the others, shows variation between 0.00010 in the UK and 0.00050 in the
@@ -815,9 +808,6 @@ export default function Dchp2HowToUse() {
             <p>
               <em>snow</em>
             </p>
-            <p>
-              <br />
-            </p>
           </td>
           <td className="border border-gray-300 p-1 align-top">
             <p>
@@ -833,77 +823,47 @@ export default function Dchp2HowToUse() {
             <p>
               <em>cat</em>
             </p>
-            <p>
-              <br />
-            </p>
           </td>
           <td className="border border-gray-300 p-1 align-top">
             <p>
               <em>sex</em>
-            </p>
-            <p>
-              <br />
             </p>
           </td>
           <td className="border border-gray-300 p-1 align-top">
             <p>
               <em>rain</em>
             </p>
-            <p>
-              <br />
-            </p>
           </td>
           <td className="border border-gray-300 p-1 align-top">
             <p>
               <em>like</em>
-            </p>
-            <p>
-              <br />
             </p>
           </td>
           <td className="border border-gray-300 p-1 align-top">
             <p>
               <em>must</em>
             </p>
-            <p>
-              <br />
-            </p>
           </td>
           <td className="border border-gray-300 p-1 align-top">
             <p>
               <em>house</em>
-            </p>
-            <p>
-              <br />
             </p>
           </td>
           <td className="border border-gray-300 p-1 align-top">
             <p>
               <em>could</em>
             </p>
-            <p>
-              <br />
-            </p>
           </td>
         </tr>
         <tr>
           <td className="border border-gray-300 p-1 align-top">
             <p>728%</p>
-            <p>
-              <br />
-            </p>
           </td>
           <td className="border border-gray-300 p-1 align-top">
             <p>400%</p>
-            <p>
-              <br />
-            </p>
           </td>
           <td className="border border-gray-300 p-1 align-top">
             <p>273%</p>
-            <p>
-              <br />
-            </p>
           </td>
           <td className="border border-gray-300 p-1 align-top">
             <p>225%</p>
@@ -951,16 +911,12 @@ export default function Dchp2HowToUse() {
         used in DCHP-2's Frequency Charts, from late 2012 and early 2013:
       </p>
       <p>
-        <br />
-      </p>
-      <p>
         <FrontmatterImage src={img_cf08e6_html_7ed87689} alt="" />
       </p>
       <p>
         Figure 6: Top-level domain tracking (Nov. 2012-Jan. 2013) with
         normalizer <em>could</em>
       </p>
-      <br />
       <p>
         Figure 6 is used to confirm or discard searches made on a particular
         day: as can be seen in the spikes in .au (Australia) and in the .gov
@@ -1033,9 +989,6 @@ export default function Dchp2HowToUse() {
         <em>sobeys bag</em>, but 10,000 for <em>toques</em>). Different
         multipliers are used to make the charts more readable on the page, while
         allowing the cross-comparison across charts.
-      </p>
-      <p>
-        <br />
       </p>
       <table className="my-4 border-collapse">
         <col />
@@ -1160,11 +1113,7 @@ export default function Dchp2HowToUse() {
               Figure 8: Semantic analysis for <em>tabled</em>
             </p>
           </td>
-          <td className="border border-gray-300 p-1 align-top">
-            <p>
-              <br />
-            </p>
-          </td>
+          <td className="border border-gray-300 p-1 align-top"></td>
         </tr>
       </table>
       <p>
@@ -1217,7 +1166,6 @@ export default function Dchp2HowToUse() {
         given further backing, e.g. <em>backcatcher, gem jar, Molson muscle</em>{" "}
         and <em>poutine</em>.
       </p>
-      <br />
       <SecondaryHeader>DCHP-1 Online: A digitized DCHP-1</SecondaryHeader>
       <p>
         The project's first public milestone was the launch in 2013 of the
@@ -1265,7 +1213,6 @@ export default function Dchp2HowToUse() {
         </a>
         ).
       </p>
-      <br />
       <SecondaryHeader>Benchmarks of DCHP-2</SecondaryHeader>
       <p>
         DCHP‑2 contains 1002 new lexemes, which increases the headword count of
@@ -1334,26 +1281,7 @@ export default function Dchp2HowToUse() {
               <FrontmatterImage src={img_cf08e6_html_d13a70e6} alt="" />
             </p>
           </td>
-          <td className="border border-gray-300 p-1 align-top">
-            <p>
-              <br />
-            </p>
-            <p>
-              <br />
-            </p>
-            <p>
-              <br />
-            </p>
-            <p>
-              <br />
-            </p>
-            <p>
-              <br />
-            </p>
-            <p>
-              <br />
-            </p>
-          </td>
+          <td className="border border-gray-300 p-1 align-top"></td>
         </tr>
         <tr>
           <td className="border border-gray-300 p-1 align-top">
@@ -1362,11 +1290,7 @@ export default function Dchp2HowToUse() {
               Online)
             </p>
           </td>
-          <td className="border border-gray-300 p-1 align-top">
-            <p>
-              <br />
-            </p>
-          </td>
+          <td className="border border-gray-300 p-1 align-top"></td>
         </tr>
         <tr>
           <td className="border border-gray-300 p-1 align-top">
@@ -1374,17 +1298,10 @@ export default function Dchp2HowToUse() {
               <FrontmatterImage src={img_cf08e6_html_d3d8e120} alt="" />
             </p>
             <p>
-              <br />
-            </p>
-            <p>
               <FrontmatterImage src={img_cf08e6_html_b62f0ba3} alt="" />
             </p>
           </td>
-          <td className="border border-gray-300 p-1 align-top">
-            <p>
-              <br />
-            </p>
-          </td>
+          <td className="border border-gray-300 p-1 align-top"></td>
         </tr>
         <tr>
           <td className="border border-gray-300 p-1 align-top">
@@ -1392,11 +1309,7 @@ export default function Dchp2HowToUse() {
               Figure 10b: Entry for <em>landed immigrant</em> in DCHP-2
             </p>
           </td>
-          <td className="border border-gray-300 p-1 align-top">
-            <p>
-              <br />
-            </p>
-          </td>
+          <td className="border border-gray-300 p-1 align-top"></td>
         </tr>
       </table>
       <p>
@@ -1552,21 +1465,13 @@ export default function Dchp2HowToUse() {
               <FrontmatterImage src={img_cf08e6_html_9bcc2382} alt="" />
             </p>
           </td>
-          <td className="border border-gray-300 p-1 align-top">
-            <p>
-              <br />
-            </p>
-          </td>
+          <td className="border border-gray-300 p-1 align-top"></td>
         </tr>
         <tr>
           <td className="border border-gray-300 p-1 align-top">
             <p>Figure 12: Non-Canadianisms marked by RED background</p>
           </td>
-          <td className="border border-gray-300 p-1 align-top">
-            <p>
-              <br />
-            </p>
-          </td>
+          <td className="border border-gray-300 p-1 align-top"></td>
         </tr>
       </table>
       <p>
@@ -1596,11 +1501,7 @@ export default function Dchp2HowToUse() {
               <FrontmatterImage src={img_6cf08e6_html_3e09bef} alt="" />
             </p>
           </td>
-          <td className="border border-gray-300 p-1 align-top">
-            <p>
-              <br />
-            </p>
-          </td>
+          <td className="border border-gray-300 p-1 align-top"></td>
         </tr>
       </table>
       <p>
@@ -1865,11 +1766,7 @@ export default function Dchp2HowToUse() {
         <col />
         <col />
         <tr>
-          <td className="border border-gray-300 p-1 align-top">
-            <p>
-              <br />
-            </p>
-          </td>
+          <td className="border border-gray-300 p-1 align-top"></td>
           <td className="border border-gray-300 p-1 align-top">
             <p>
               mainland Canada (Canada except Newfoundland): <em>Newfie joke</em>
@@ -2115,7 +2012,6 @@ export default function Dchp2HowToUse() {
         Dollinger &amp; von Schneidemesser 2011: 138-43, Dollinger 2016c, Swan
         2016, Boberg 2016).
       </p>
-      <br />
       <SecondaryHeader>1867­-1967 (DCHP‑1) - 2017 (DCHP-2)</SecondaryHeader>
       <p>
         We trust that this introduction will help the interested reader in
@@ -2133,9 +2029,6 @@ export default function Dchp2HowToUse() {
         <em>Margery Fee</em> (Vancouver, Canada)
         <br />
         December 2016
-      </p>
-      <p>
-        <br />
       </p>
       <SecondaryHeader>Lists of Labels</SecondaryHeader>
       <TertiaryHeader>Domain labels</TertiaryHeader>
@@ -2255,9 +2148,6 @@ export default function Dchp2HowToUse() {
           Urban culture (<em>booze can, baywop</em>)
         </li>
       </ol>
-      <p>
-        <br />
-      </p>
       <TertiaryHeader>List of Regional Labels</TertiaryHeader>
       <ul className="my-4 ml-8 flex list-none flex-col gap-y-2">
         <li>British Columbia</li>
@@ -2269,12 +2159,7 @@ export default function Dchp2HowToUse() {
         <li>New Brunswick</li>
         <li>Nova Scotia</li>
         <li>Prince Edward Island</li>
-        <li>
-          Newfoundland
-          <p>
-            <br />
-          </p>
-        </li>
+        <li>Newfoundland</li>
         <li>Prairies</li>
         <li>Northern Canada</li>
         <li>Territories</li>
@@ -2286,9 +2171,6 @@ export default function Dchp2HowToUse() {
         <li>Maritime Provinces</li>
         <li>Cape Breton Island</li>
       </ul>
-      <p>
-        <br />
-      </p>
       <TertiaryHeader>Social labels</TertiaryHeader>
       <ul className="my-4 ml-8 flex list-none flex-col gap-y-2">
         <li>derogatory</li>
@@ -2307,7 +2189,6 @@ export default function Dchp2HowToUse() {
           unmarked term and thus common core term in Standard Canadian English)
         </li>
       </ul>
-      <br />
       <TertiaryHeader>Frequency labels</TertiaryHeader>
       <ul className="my-4 ml-8 flex list-none flex-col gap-y-2">
         <li>rare</li>
@@ -2322,9 +2203,6 @@ export default function Dchp2HowToUse() {
           rural (used sparingly): <em>beaver fever, skookum</em>
         </li>
       </ul>
-      <p>
-        <br />
-      </p>
       <TertiaryHeader>Syntactic labels</TertiaryHeader>
       <ul className="my-4 ml-8 flex list-none flex-col gap-y-2">
         <li>in figurative use</li>
@@ -2333,9 +2211,6 @@ export default function Dchp2HowToUse() {
         <li>in attributive position</li>
         <li>transitive</li>
       </ul>
-      <p>
-        <br />
-      </p>
       <PageHeader>References</PageHeader>
       <p>
         Auer, Peter and Frans Hinskens. 1996. The convergence and divergence of

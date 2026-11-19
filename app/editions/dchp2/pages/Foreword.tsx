@@ -17,17 +17,14 @@ export default function Dchp2Foreword() {
         <Link to="#drysdale">
           by Patrick Drysdale, <em>editorial team member of DCHP-1</em>
         </Link>
-        <br />
-        <span id="drysdale" />
       </p>
       <p>
         <Link to="#considine">
           by John Considine,{" "}
           <em>professor of English, University of Alberta</em>
         </Link>
-        <br />
-        <br />
       </p>
+      <span id="drysdale" />
       <TertiaryHeader>
         <strong>Foreword by Patrick Drysdale</strong>
         <strong>
@@ -88,22 +85,21 @@ export default function Dchp2Foreword() {
         gone into deciding how to make the best use of the digital presentation.
         I welcome this new dictionary and wish it every success in every way.
       </p>
-      <br />
-      <em>Patrick Drysdale</em>
-      <br />
-      Radley
-      <br />
-      <span id="considine" /> Oxfordshire, England
-      <br />
-      February 2017
       <p>
+        <em>Patrick Drysdale</em>
         <br />
+        Radley
+        <br />
+        Oxfordshire, England
+        <br />
+        February 2017
       </p>
+      <span id="considine" />
       <TertiaryHeader>
         <strong>Foreword by John Considine</strong>,{" "}
         <em>Professor of English, University of Alberta</em>
       </TertiaryHeader>
-      <div>
+      <p>
         "Towards a second edition of{" "}
         <em>A Dictionary of Canadianisms on Historical Principles</em>" was a
         good title for the conference panel which T. K. Pratt and David Friend
@@ -116,8 +112,8 @@ export default function Dchp2Foreword() {
         the panel assumed, wrongly in both cases, that DCHP-2 would be a printed
         book, and that it would emerge from a funded unit comparable to the
         Australian National Dictionary Centre.
-        <br />
-        <br />
+      </p>
+      <p>
         The actual DCHP-2 is, indeed, instructively unlike the most important
         publication of the Australian National Dictionary Centre, namely the
         second edition of the <em>Australian National Dictionary</em>, which was
@@ -129,31 +125,31 @@ export default function Dchp2Foreword() {
         result of the digitization of datable texts (particularly newspapers).
         However, DCHP-2 has made some quiet, and rather profound, developments
         away from the <em>Oxford English Dictionary</em> tradition.
-        <br />
-        <br />
+      </p>
+      <p>
         One of these is the discursive quality of editorial text, particularly
         in the Word Story section of each entry. For instance, the definitions
         of the food term <em>all-dressed</em> have a familiar terseness (and
         that of sense 2, "a flavour of potato chip," is wisely non-committal),
         but the Word Story is doing something stylistically intriguing. It
         begins
-        <br />
-        <br />
-        <p>
-          Internationally, the term is still almost uniquely used in Canada (see
-          Chart 1), but shows an interesting regional distribution within
-          Canada. The term is a literal translation of a French term (
-          <em>toute garnie</em>) and is most frequent in Quebec English, Eastern
-          Ontario and Saskatechewan (the latter of which is a bit of a mystery).
-        </p>
+      </p>
+      <blockquote>
+        Internationally, the term is still almost uniquely used in Canada (see
+        Chart 1), but shows an interesting regional distribution within Canada.
+        The term is a literal translation of a French term (
+        <em>toute garnie</em>) and is most frequent in Quebec English, Eastern
+        Ontario and Saskatechewan (the latter of which is a bit of a mystery).
+      </blockquote>
+      <p>
         This is the voice of a teacher rather than of a lexicographer of the old
         school; and it is likewise a teacher who finishes the entry with a
         photograph of a bag of chips, and who tactfully leaves the reader to
         reflect that the English-language legend on the bag, "all dressed potato
         chips," has as its French-language counterpart "croustilles assaisonn
         ées."
-        <br />
-        <br />
+      </p>
+      <p>
         This discursiveness takes advantage of the possibilities of born-digital
         lexicography. Two other developments in DCHP-2 do the same. One is the
         linking of an unusually high proportion of quotations to images of the
@@ -169,23 +165,23 @@ export default function Dchp2Foreword() {
         distributed within Canada). As the latter example suggests, DCHP-2 is
         keenly and admirably attentive to the international contexts of Canadian
         usage.
-        <br />
-        <br />
+      </p>
+      <p>
         The examples which I have just mentioned — <em>all-dressed</em>,{" "}
         <em>parking stall</em>, <em>health care card</em> — suggest one other
         noteworthy feature of DCHP-2: its commitment to the vocabulary of
         everyday Canadian life. Katherine Barber remarked at the panel in 2005
         that
-        <br />
-        <br />
-        <p>
-          When you look at the{" "}
-          <em>Dictionary of Canadianisms on Historical Principles</em> as a
-          global thing, you get the impression that Canadians are all out there
-          on their snowshoes, trapping and fur-trading and logging and things
-          like that, and you do not get an image of modern Canadian urban
-          society at all. (Barber &amp; Considine 2010: 142)
-        </p>
+      </p>
+      <blockquote>
+        When you look at the{" "}
+        <em>Dictionary of Canadianisms on Historical Principles</em> as a global
+        thing, you get the impression that Canadians are all out there on their
+        snowshoes, trapping and fur-trading and logging and things like that,
+        and you do not get an image of modern Canadian urban society at all.
+        (Barber &amp; Considine 2010: 142)
+      </blockquote>
+      <p>
         Lexicographers make choices which arise from their vision of the
         language they are documenting: one can speak of a dictionary as having
         an aesthetic. A modest and subtle aesthetic is to be appreciated here. A
@@ -202,8 +198,8 @@ export default function Dchp2Foreword() {
         s.v. <em>Burgess</em> n2). Other omissions point, I think, in the same
         direction, away from the accumulation of specialized words and towards
         the ordinary lived experience of Canadians.
-        <br />
-        <br />
+      </p>
+      <p>
         The conversational tone of some of the editorial text in DCHP-2, its
         deftly managed relationship with its digital environment, and its
         attentiveness to the texture of everyday life orient it in a very
@@ -217,37 +213,35 @@ export default function Dchp2Foreword() {
         al. 1967: xx): to produce a dictionary "in which the information is easy
         of access as well as interesting and informative" so that those who use
         it "will find the experience both rewarding and entertaining."
+      </p>
+      <p>
+        <em>John Considine</em>
         <br />
+        Edmonton, AB
         <br />
-        <p>
-          <em>John Considine</em>
-          <br />
-          Edmonton, AB
-          <br />
-          February 2017
-          <br />
-          <br />
-          <strong>References</strong>
-        </p>
-        <p>
-          Avis, Walter S., Charles Crate, Patrick Drysdale, Douglas Leechman and
-          Matthew H. Scargill. 1967. Principles of Style. In DCHP-1,{" "}
-          <a
-            href="https://dchp.arts.ubc.ca/dchp1/pages/frontmatter#style"
-            target="_blank"
-            rel="noreferrer"
-          >
-            xvi-xx
-          </a>
-          .
-        </p>
-        <p>
-          Barber, Katherine and John Considine. 2010. Revising the Dictionary of
-          Canadianisms: views from 2005. In{" "}
-          <em>Current Projects in Historical Lexicography</em>, edited by John
-          Considine, 141-149. Newcastle: Cambridge Scholars.
-        </p>
-      </div>
+        February 2017
+      </p>
+      <p>
+        <strong>References</strong>
+      </p>
+      <p>
+        Avis, Walter S., Charles Crate, Patrick Drysdale, Douglas Leechman and
+        Matthew H. Scargill. 1967. Principles of Style. In DCHP-1,{" "}
+        <a
+          href="https://dchp.arts.ubc.ca/dchp1/pages/frontmatter#style"
+          target="_blank"
+          rel="noreferrer"
+        >
+          xvi-xx
+        </a>
+        .
+      </p>
+      <p>
+        Barber, Katherine and John Considine. 2010. Revising the Dictionary of
+        Canadianisms: views from 2005. In{" "}
+        <em>Current Projects in Historical Lexicography</em>, edited by John
+        Considine, 141-149. Newcastle: Cambridge Scholars.
+      </p>
       <p>
         <Link to="#top">Back to top</Link>
       </p>

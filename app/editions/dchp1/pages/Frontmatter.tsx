@@ -74,8 +74,8 @@ export default function Dchp1Frontmatter() {
         Vice-President, Publishing
         <br />
         W. J. Gage Limited
-        <br />
-        <br />
+      </p>
+      <p>
         Toronto, Ontario
         <br />
         August, 1967
