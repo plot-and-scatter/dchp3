@@ -96,6 +96,25 @@ const SiteNameTags = ({ edition }: { edition: EditionId }) => {
   )
 }
 
+// Each edition has its own favicon colour: red for DCHP-3, and the header
+// bar's colour for an archive. All three editions share one hostname, and a
+// browser with no tag to follow asks for /favicon.ico at the root of the
+// hostname, which is DCHP-3's. So the tags name the file, under the path the
+// edition is served from (BASE_URL is "/", "/dchp1/" or "/dchp2/").
+const FaviconTags = ({ edition }: { edition: EditionId }) => {
+  const suffix = edition === DEFAULT_EDITION ? "" : `-${edition}`
+  const base = import.meta.env.BASE_URL
+  return (
+    <Fragment>
+      <link rel="icon" href={`${base}favicon${suffix}.ico`} sizes="48x48" />
+      <link
+        rel="apple-touch-icon"
+        href={`${base}apple-touch-icon${suffix}.png`}
+      />
+    </Fragment>
+  )
+}
+
 export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: tailwindStylesheetUrl },
@@ -153,6 +172,7 @@ const defaultApp = ({
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <SiteNameTags edition={edition} />
+        <FaviconTags edition={edition} />
         <Links />
 
         {/* <script

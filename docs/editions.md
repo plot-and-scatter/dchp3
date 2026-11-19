@@ -95,9 +95,13 @@ uploads, which an archive never does).
 ## Running an archive locally
 
 ```sh
-DCHP_EDITION=dchp1 DATABASE_URL="mysql://root@127.0.0.1:3306/dchpca_dchp1" PORT=3001 npm run dev
-DCHP_EDITION=dchp2 DATABASE_URL="mysql://root@127.0.0.1:3306/dchp2" PORT=3002 npm run dev
+DCHP_EDITION=dchp1 DATABASE_URL="mysql://root@127.0.0.1:3306/dchpca_dchp1" npm run dev:react-router -- --port 3001
+DCHP_EDITION=dchp2 DATABASE_URL="mysql://root@127.0.0.1:3306/dchp2" npm run dev:react-router -- --port 3002
 ```
+
+The port goes on the command line because `vite.config.ts` fixes the dev port
+at 3000 and ignores `PORT`. Add `DCHP_BASENAME=/dchp1` (or `/dchp2`) to serve
+the archive under its path prefix, as production does.
 
 ## Adding an edition-specific behaviour
 
