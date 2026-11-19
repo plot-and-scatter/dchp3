@@ -16,6 +16,13 @@ export type LinkProps = ReactRouterLinkProps & {
   underline?: boolean
 }
 
+// A full web address always gets a normal browser page load. Without this,
+// React Router treats an address on the site's own hostname as a route of the
+// running app, so a link from DCHP-3 to https://dchp.arts.ubc.ca/dchp2 (a
+// separate app behind the same hostname) shows DCHP-3's "not found" page.
+const isAbsoluteUrl = (to: LinkProps["to"]) =>
+  typeof to === "string" && /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(to)
+
 export const Link = ({
   appearance,
   asButton,
@@ -25,10 +32,14 @@ export const Link = ({
   underline,
   className,
   children,
+  to,
+  reloadDocument,
   ...rest
 }: LinkProps) => {
   return (
     <RemixLink
+      to={to}
+      reloadDocument={reloadDocument ?? isAbsoluteUrl(to)}
       className={clsx(
         underline && `underline`,
         bold && `font-bold`,
