@@ -5,10 +5,18 @@
 #   dchp3-deploy production
 #   dchp3-deploy dchp1 | dchp2 [branch]
 #   dchp3-deploy all
+#   dchp3-deploy <site> --rollback <commit>
 #
 # "all" is the three public sites -- production (DCHP-3), then the DCHP-1 and
 # DCHP-2 archives -- from main, one after the other, with one confirmation.
 # Staging is not part of it.
+#
+# "--rollback" puts one site back on an earlier commit: it checks that commit
+# out, then installs, builds, restarts and checks the site exactly as a deploy
+# does. Every deploy prints the line to run. A plain deploy cannot do this,
+# because it always moves the tree to the newest commit of its branch, and a
+# checkout alone changes nothing a visitor sees: the site serves its last
+# build until it is rebuilt and restarted. It does not undo database changes.
 #
 # One script for both, because two that had to be kept in step by hand did not
 # stay in step: staging spent weeks without the rollback line, the confirmation
@@ -18,8 +26,7 @@
 #
 # Staging offers a choice from the open pull requests, since trying a branch
 # before it reaches main is what staging is for. Production deploys main and
-# nothing else: anything else wants a deliberate checkout by hand, and having
-# to do it by hand is the point.
+# nothing else; the one exception is --rollback, to a commit named by hand.
 #
 # Install to /usr/local/sbin, NOT to either deployed tree. This rewrites the
 # tree while running, and bash reads a script as it goes, so a copy running
@@ -40,6 +47,7 @@ usage() {
   echo "       $(basename "$0") production"
   echo "       $(basename "$0") dchp1 | dchp2 [branch]"
   echo "       $(basename "$0") all        (production, dchp1 and dchp2, from main)"
+  echo "       $(basename "$0") <site> --rollback <commit>"
 }
 
 tree_for() {
@@ -80,7 +88,7 @@ if [ "${environment}" = "all" ]; then
     tree=$(tree_for "${site}")
     before=$(git -C "${tree}" rev-parse --short HEAD)
     printf "  %-11s %-22s now at %s\n" "${site}" "${tree}" "${before}"
-    rollback+="  ${site}: sudo git -C ${tree} checkout ${before}"$'\n'
+    rollback+="  sudo $(basename "$0") ${site} --rollback ${before}"$'\n'
   done
   echo
   echo "Staging is not included."
@@ -120,8 +128,7 @@ if [ "${environment}" = "all" ]; then
       echo "  failed:       ${site}"
       echo "  not started: ${not_started:- none}"
       echo
-      echo "What each site was serving before this run. To go back, check the"
-      echo "commit out and deploy that site again:"
+      echo "To put a site back on what it was serving before this run:"
       printf "%s" "${rollback}"
       exit 1
     fi
@@ -135,8 +142,7 @@ if [ "${environment}" = "all" ]; then
     printf "  %-11s now at %s\n" "${site}" "$(git -C "${tree}" rev-parse --short HEAD)"
   done
   echo
-  echo "What each site was serving before this run. To go back, check the"
-  echo "commit out and deploy that site again:"
+  echo "To put a site back on what it was serving before this run:"
   printf "%s" "${rollback}"
   exit 0
 fi
@@ -196,17 +202,87 @@ echo "Deploying ${environment}"
 echo "  tree:     ${TREE}"
 echo "  node:     $(node --version) (from $(command -v node))"
 echo "  current:  ${previous_branch} at ${previous_commit}"
-echo "  rollback: sudo git -C ${TREE} checkout ${previous_commit}"
+echo "  rollback: sudo $(basename "$0") ${environment} --rollback ${previous_commit}"
 echo
 
 git fetch --quiet --prune origin
+
+# Everything after the tree is on the commit to serve. Shared by a deploy and
+# a rollback, so a rollback is built and checked the same way.
+build_and_restart() {
+  npm ci --include=dev
+  npx prisma generate
+
+  # An archive's prefix (DCHP_BASENAME) is read at build time by Vite and
+  # React Router, so it is taken from the env file before the build. Only that
+  # one value: sourcing the whole file would collide with this script's own
+  # read-only PORT. Production and staging build at the root and need nothing.
+  if [ -n "${ENV_FILE:-}" ]; then
+    DCHP_BASENAME=$(grep -E '^DCHP_BASENAME=' "${ENV_FILE}" | cut -d= -f2- | tr -d "\"'")
+    export DCHP_BASENAME
+    echo "  prefix:   ${DCHP_BASENAME:-/}"
+  fi
+
+  npm run build
+
+  # No `|| true` anywhere below. A restart that fails, or a site that does not
+  # answer afterwards, is exactly what this is here to notice.
+  systemctl restart "${UNIT}"
+
+  sleep 5
+  curl -fsS -o /dev/null "http://localhost:${PORT}${DCHP_BASENAME:-}/"
+
+  echo
+  echo "${environment} is serving on :${PORT}"
+  echo "  branch:   $(git rev-parse --abbrev-ref HEAD)"
+  echo "  commit:   $(git rev-parse --short HEAD) $(git log -1 --format=%s)"
+}
+
+# Back to an earlier commit. Allowed on production too: the rule that
+# production takes only main is about what goes forward, and the commit named
+# here is one the site has already served.
+if [ "${2:-}" = "--rollback" ]; then
+  commit="${3:-}"
+  if [ -z "${commit}" ]; then
+    echo "Name the commit to go back to, as printed by the deploy:"
+    echo "  $(basename "$0") ${environment} --rollback <commit>"
+    exit 1
+  fi
+  if ! git cat-file -e "${commit}^{commit}" 2>/dev/null; then
+    echo "No commit '${commit}' in ${TREE}. Aborted."
+    exit 1
+  fi
+  target=$(git rev-parse --short "${commit}^{commit}")
+
+  echo "  rolling back to: ${target} $(git log -1 --format=%s "${target}")"
+  if [ "${target}" = "${previous_commit}" ]; then
+    echo "                   (the commit already checked out; this rebuilds it)"
+  fi
+  echo "  Database changes are not undone."
+  echo
+
+  read -r -p "Check out ${target}, install, build and restart ${environment}? [y/N] " reply
+  case "${reply}" in
+    y | Y) ;;
+    *)
+      echo "Aborted."
+      exit 1
+      ;;
+  esac
+
+  # Detached: this is a commit, not a branch. The next ordinary deploy puts
+  # the tree back on its branch.
+  git checkout --detach "${target}"
+  build_and_restart
+  exit 0
+fi
 
 branch="${2:-}"
 
 if [ "${CHOOSE_BRANCH}" = "no" ]; then
   if [ -n "${branch}" ]; then
-    echo "Production deploys main. To put anything else on it, check the tree"
-    echo "out by hand and deploy that -- the extra step is deliberate."
+    echo "Production deploys main and nothing else. To go back to a commit it"
+    echo "has served before: $(basename "$0") production --rollback <commit>"
     exit 1
   fi
   branch=main
@@ -293,29 +369,4 @@ fi
 # tree is somewhere to keep local commits.
 git checkout -B "${branch}" "origin/${branch}"
 
-npm ci --include=dev
-npx prisma generate
-
-# An archive's prefix (DCHP_BASENAME) is read at build time by Vite and
-# React Router, so it is taken from the env file before the build. Only that
-# one value: sourcing the whole file would collide with this script's own
-# read-only PORT. Production and staging build at the root and need nothing.
-if [ -n "${ENV_FILE:-}" ]; then
-  DCHP_BASENAME=$(grep -E '^DCHP_BASENAME=' "${ENV_FILE}" | cut -d= -f2- | tr -d "\"'")
-  export DCHP_BASENAME
-  echo "  prefix:   ${DCHP_BASENAME:-/}"
-fi
-
-npm run build
-
-# No `|| true` anywhere below. A restart that fails, or a site that does not
-# answer afterwards, is exactly what this is here to notice.
-systemctl restart "${UNIT}"
-
-sleep 5
-curl -fsS -o /dev/null "http://localhost:${PORT}${DCHP_BASENAME:-}/"
-
-echo
-echo "${environment} is serving on :${PORT}"
-echo "  branch:   $(git rev-parse --abbrev-ref HEAD)"
-echo "  commit:   $(git rev-parse --short HEAD) $(git log -1 --format=%s)"
+build_and_restart
