@@ -41,8 +41,15 @@ export type EditionNavLink = {
 
 export type EditionConfig = {
   id: EditionId
-  // "DCHP-1", used in page titles and the compact header.
+  // "DCHP-1", used in browser tab titles and the compact (phone) header.
   shortName: string
+  // The home page's browser tab title, which is also the heading search
+  // engines show for the edition. The short name, then the edition's title
+  // as its own "cite as" text gives it.
+  homeTitle: string
+  // The home page's description tag: the text search engines usually show
+  // under the heading. One or two sentences, about 150 to 200 characters.
+  homeDescription: string
   // The header's full title: the dictionary name and an edition mark.
   headerTitle: React.ReactNode
   // Tailwind background class for the header bar, so each edition is told
@@ -75,7 +82,13 @@ export type EditionConfig = {
 
 const DCHP3: EditionConfig = {
   id: "dchp3",
-  shortName: "DCHP-3",
+  // "DCHP", with no edition number: this is the current dictionary, and the
+  // name matches SITE_NAME in root.tsx. The archives keep their numbers.
+  shortName: "DCHP",
+  homeTitle:
+    "DCHP: The Dictionary of Canadianisms on Historical Principles, Third Edition",
+  homeDescription:
+    "The Dictionary of Canadianisms on Historical Principles, Third Edition: a historical dictionary of more than 12,000 words, expressions and meanings native to Canada or distinctively characteristic of Canadian usage, illustrated with dated quotations.",
   headerBackground: "bg-gray-700",
   headerTitle: (
     <Fragment>
@@ -108,6 +121,10 @@ const DCHP3: EditionConfig = {
 const DCHP1: EditionConfig = {
   id: "dchp1",
   shortName: "DCHP-1",
+  homeTitle:
+    "DCHP-1: A Dictionary of Canadianisms on Historical Principles, First Edition (1967)",
+  homeDescription:
+    "The online version of the 1967 first edition of A Dictionary of Canadianisms on Historical Principles, kept as an archive: 9,900 headwords with 13,400 meanings, illustrated by 31,400 quotations from 1505 to 1965.",
   // amber-900 is the palette's nearest brown.
   headerBackground: "bg-amber-900",
   tints: {
@@ -160,6 +177,10 @@ const DCHP1: EditionConfig = {
 const DCHP2: EditionConfig = {
   id: "dchp2",
   shortName: "DCHP-2",
+  homeTitle:
+    "DCHP-2: The Dictionary of Canadianisms on Historical Principles, Second Edition",
+  homeDescription:
+    "The 2017 Second Edition of the Dictionary of Canadianisms on Historical Principles, kept as an archive. It combines the 1967 first edition with an update on 20th- and 21st-century Canadian words and meanings.",
   headerBackground: "bg-green-800",
   tints: {
     page: "#f3f8f4",
