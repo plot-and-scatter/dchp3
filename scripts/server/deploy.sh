@@ -3,6 +3,12 @@
 #
 #   dchp3-deploy staging [branch]
 #   dchp3-deploy production
+#   dchp3-deploy dchp1 | dchp2 [branch]
+#   dchp3-deploy all
+#
+# "all" is the three public sites -- production (DCHP-3), then the DCHP-1 and
+# DCHP-2 archives -- from main, one after the other, with one confirmation.
+# Staging is not part of it.
 #
 # One script for both, because two that had to be kept in step by hand did not
 # stay in step: staging spent weeks without the rollback line, the confirmation
@@ -29,15 +35,119 @@ readonly REPO=plot-and-scatter/dchp3
 
 environment="${1:-}"
 
+usage() {
+  echo "Usage: $(basename "$0") staging [branch]"
+  echo "       $(basename "$0") production"
+  echo "       $(basename "$0") dchp1 | dchp2 [branch]"
+  echo "       $(basename "$0") all        (production, dchp1 and dchp2, from main)"
+}
+
+tree_for() {
+  case "$1" in
+    staging) echo /var/www/dchp3-staging ;;
+    production) echo /var/www/dchp3 ;;
+    dchp1) echo /var/www/dchp3-dchp1 ;;
+    dchp2) echo /var/www/dchp3-dchp2 ;;
+  esac
+}
+
+# All three public sites from main. Each one is an ordinary run of this script
+# (same checks, same build, same health check), started from here with the
+# question already answered. They run one after the other and stop at the
+# first failure, so a build that breaks on production never reaches the
+# archives. Production goes first for that reason.
+if [ "${environment}" = "all" ]; then
+  if [ -n "${2:-}" ]; then
+    echo "'all' deploys main and takes no branch. For a branch, deploy one"
+    echo "site at a time."
+    exit 1
+  fi
+
+  readonly SITES=(production dchp1 dchp2)
+
+  # The repository is public, so this needs no credentials.
+  main_commit=$(git ls-remote "https://github.com/${REPO}.git" refs/heads/main | cut -c1-7)
+  if [ -z "${main_commit}" ]; then
+    echo "Could not read main from GitHub. Aborted."
+    exit 1
+  fi
+
+  echo "Deploying main (${main_commit}) to all three public sites, in this order:"
+  echo
+  # One line per site for the end of the run: how to put it back.
+  rollback=""
+  for site in "${SITES[@]}"; do
+    tree=$(tree_for "${site}")
+    before=$(git -C "${tree}" rev-parse --short HEAD)
+    printf "  %-11s %-22s now at %s\n" "${site}" "${tree}" "${before}"
+    rollback+="  ${site}: sudo git -C ${tree} checkout ${before}"$'\n'
+  done
+  echo
+  echo "Staging is not included."
+  echo
+
+  read -r -p "Pull, install, build and restart all three? [y/N] " reply
+  case "${reply}" in
+    y | Y) ;;
+    *)
+      echo "Aborted."
+      exit 1
+      ;;
+  esac
+
+  finished=""
+  for site in "${SITES[@]}"; do
+    echo
+    echo "================ ${site} ================"
+    echo
+    # Production refuses a branch argument; the archives need one, or they ask.
+    if [ "${site}" = "production" ]; then
+      args=(production)
+    else
+      args=("${site}" main)
+    fi
+    if ! DCHP3_DEPLOY_CONFIRMED=yes "$0" "${args[@]}"; then
+      not_started=""
+      for other in "${SITES[@]}"; do
+        case " ${finished} ${site} " in
+          *" ${other} "*) ;;
+          *) not_started+=" ${other}" ;;
+        esac
+      done
+      echo
+      echo "================ STOPPED: ${site} failed ================"
+      echo "  deployed:    ${finished:- none}"
+      echo "  failed:       ${site}"
+      echo "  not started: ${not_started:- none}"
+      echo
+      echo "What each site was serving before this run. To go back, check the"
+      echo "commit out and deploy that site again:"
+      printf "%s" "${rollback}"
+      exit 1
+    fi
+    finished+=" ${site}"
+  done
+
+  echo
+  echo "================ all three deployed ================"
+  for site in "${SITES[@]}"; do
+    tree=$(tree_for "${site}")
+    printf "  %-11s now at %s\n" "${site}" "$(git -C "${tree}" rev-parse --short HEAD)"
+  done
+  echo
+  echo "What each site was serving before this run. To go back, check the"
+  echo "commit out and deploy that site again:"
+  printf "%s" "${rollback}"
+  exit 0
+fi
+
 case "${environment}" in
   staging)
-    readonly TREE=/var/www/dchp3-staging
     readonly PORT=8081
     readonly UNIT=dchp3-staging
     readonly CHOOSE_BRANCH=yes
     ;;
   production)
-    readonly TREE=/var/www/dchp3
     readonly PORT=3000
     readonly UNIT=dchp3-remix-server
     readonly CHOOSE_BRANCH=no
@@ -47,26 +157,25 @@ case "${environment}" in
   # serve two prefixes. A branch may be named, as for staging, so a preview
   # can run before the code is merged; with none named, choose 0) main.
   dchp1)
-    readonly TREE=/var/www/dchp3-dchp1
     readonly PORT=3011
     readonly UNIT=dchp3-archive@dchp1
     readonly CHOOSE_BRANCH=yes
     readonly ENV_FILE=.env.dchp1
     ;;
   dchp2)
-    readonly TREE=/var/www/dchp3-dchp2
     readonly PORT=3012
     readonly UNIT=dchp3-archive@dchp2
     readonly CHOOSE_BRANCH=yes
     readonly ENV_FILE=.env.dchp2
     ;;
   *)
-    echo "Usage: $(basename "$0") staging [branch]"
-    echo "       $(basename "$0") production"
-    echo "       $(basename "$0") dchp1 | dchp2 [branch]"
+    usage
     exit 1
     ;;
 esac
+
+TREE=$(tree_for "${environment}")
+readonly TREE
 
 cd "${TREE}"
 
@@ -167,14 +276,17 @@ if [ "${target}" = "${previous_commit}" ]; then
 fi
 echo
 
-read -r -p "Pull, install, build and restart ${environment}? [y/N] " reply
-case "${reply}" in
-  y | Y) ;;
-  *)
-    echo "Aborted."
-    exit 1
-    ;;
-esac
+# "all" has already asked, once, for the three sites together.
+if [ "${DCHP3_DEPLOY_CONFIRMED:-}" != "yes" ]; then
+  read -r -p "Pull, install, build and restart ${environment}? [y/N] " reply
+  case "${reply}" in
+    y | Y) ;;
+    *)
+      echo "Aborted."
+      exit 1
+      ;;
+  esac
+fi
 
 # -B rather than checkout-then-pull: it lands exactly on the remote branch
 # whether or not a local one exists and whether or not it has diverged. Neither
