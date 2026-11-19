@@ -41,7 +41,7 @@ export type EditionNavLink = {
 
 export type EditionConfig = {
   id: EditionId
-  // "DCHP-1", used in page titles and the compact header.
+  // "DCHP-1", used in browser tab titles and the compact (phone) header.
   shortName: string
   // The header's full title: the dictionary name and an edition mark.
   headerTitle: React.ReactNode
@@ -75,7 +75,9 @@ export type EditionConfig = {
 
 const DCHP3: EditionConfig = {
   id: "dchp3",
-  shortName: "DCHP-3",
+  // "DCHP", with no edition number: this is the current dictionary, and the
+  // name matches SITE_NAME in root.tsx. The archives keep their numbers.
+  shortName: "DCHP",
   headerBackground: "bg-gray-700",
   headerTitle: (
     <Fragment>

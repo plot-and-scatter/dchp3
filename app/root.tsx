@@ -55,9 +55,10 @@ function tintStyle(
   } as React.CSSProperties
 }
 
-// The DCHP-3 title. Routes that build a page title use the edition's own
-// short name via the root loader; this stays for the one or two places that
-// have no loader data to hand (and for DCHP-3 it is the same string).
+// The DCHP-3 browser tab title, "DCHP". Routes that build a page title use
+// the edition's own short name via the root loader; this stays for the one
+// or two places that have no loader data to hand (and for DCHP-3 it is the
+// same string).
 export const BASE_APP_TITLE = EDITIONS[DEFAULT_EDITION].shortName
 
 // The name search engines show above a result ("site name"). Google keeps
