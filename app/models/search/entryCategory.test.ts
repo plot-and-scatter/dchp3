@@ -46,6 +46,18 @@ describe("categorySql", () => {
     expect(sql.values).toEqual([false, "1. Origin", "6. Memorial"])
   })
 
+  it("does not test the meaning's type when all six types are checked", () => {
+    // A meaning with a NULL canadianism_type must still be found (#514).
+    const sql = categorySql(
+      { nonCanadianism: true, canadianismTypes: all },
+      "det_meanings"
+    )
+    expect(sql.sql).toBe(
+      "((de.no_cdn_conf = 1 AND ?) OR (de.no_cdn_conf = 0 AND TRUE))"
+    )
+    expect(sql.values).toEqual([true])
+  })
+
   it("matches nothing at all when no box is checked", () => {
     const sql = categorySql({ nonCanadianism: null, canadianismTypes: [] })
     expect(sql.sql).toBe(
