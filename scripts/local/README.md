@@ -128,3 +128,17 @@ domain, date and source are skipped, so the script can be re-run.
 
 First used 2026-09-24 for Natalia Mohar's sheet of "the" counts from July to
 September 2026.
+
+## export-lexical-data.mjs
+
+Writes the published entries and meanings as two CSV files plus a README
+describing the columns and the terms of use, for an external researcher
+(issue #506). No quotation texts; each meaning gets a quotation count and
+its earliest quotation year instead.
+
+```
+node scripts/local/export-lexical-data.mjs <output directory>
+```
+
+Reads `DATABASE_URL` from `.env`, so point it at the database you mean to
+export. Takes a few seconds. The output is not committed.
