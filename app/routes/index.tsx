@@ -3,28 +3,27 @@ import { EDITIONS } from "~/editions"
 import { DEFAULT_EDITION } from "~/editions/edition"
 import { EditionPage } from "~/editions/EditionPage"
 import { editionPageLoader } from "~/editions/editionPage.server"
-import { SITE_NAME, type loader as rootLoader } from "~/root"
+import type { loader as rootLoader } from "~/root"
 
 // The content lives in app/editions/<edition>/pages; this route only picks
 // the page for the edition being served. See app/editions/index.tsx.
 export const loader = editionPageLoader("home")
 
-// The DCHP-3 home page is the home page of the whole site, and its title is
-// the heading search engines show for the site. It spells the name out for
-// people who search for the dictionary by its full name and do not know the
-// abbreviation. An archive's home page keeps its short name ("DCHP-2").
-export const HOME_TITLE = `${SITE_NAME} | Dictionary of Canadianisms on Historical Principles`
-
+// A home page's title and description are what search engines show for the
+// edition, so they spell the dictionary's name out for people who search by
+// the full name and do not know the abbreviation. Every other page keeps the
+// short name in its title and has no description.
 export const meta: MetaFunction<typeof loader, { root: typeof rootLoader }> = ({
   matches,
 }) => {
   const edition =
     matches.find((m) => m.id === "root")?.data?.edition ?? DEFAULT_EDITION
+  const { homeTitle, homeDescription } = EDITIONS[edition]
   return [
-    {
-      title:
-        edition === DEFAULT_EDITION ? HOME_TITLE : EDITIONS[edition].shortName,
-    },
+    { title: homeTitle },
+    { name: "description", content: homeDescription },
+    { property: "og:title", content: homeTitle },
+    { property: "og:description", content: homeDescription },
   ]
 }
 
