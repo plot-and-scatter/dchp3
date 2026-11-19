@@ -121,7 +121,8 @@ const DCHP3: EditionConfig = {
 const DCHP1: EditionConfig = {
   id: "dchp1",
   shortName: "DCHP-1",
-  homeTitle: "DCHP-1: A Dictionary of Canadianisms on Historical Principles, First Edition (1967)",
+  homeTitle:
+    "DCHP-1: A Dictionary of Canadianisms on Historical Principles, First Edition (1967)",
   homeDescription:
     "The online version of the 1967 first edition of A Dictionary of Canadianisms on Historical Principles, kept as an archive: 9,900 headwords with 13,400 meanings, illustrated by 31,400 quotations from 1505 to 1965.",
   // amber-900 is the palette's nearest brown.
