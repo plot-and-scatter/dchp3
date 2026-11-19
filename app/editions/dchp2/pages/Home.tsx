@@ -19,8 +19,9 @@ import img_bfea6c_html_c239b55b from "../images/i_253929d055bfea6c_html_c239b55b
 export default function Dchp2Home() {
   return (
     <TextPageMain>
-      <PageHeader>Welcome to DCHP-2, the Second Edition of</PageHeader>
       <PageHeader>
+        Welcome to DCHP-2, the Second Edition of
+        <br />
         <em>A Dictionary of Canadianisms on Historical Principles</em>
       </PageHeader>
       <p>
