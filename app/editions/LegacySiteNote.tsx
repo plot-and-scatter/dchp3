@@ -28,7 +28,8 @@ export default function LegacySiteNote({
         alt={`The ${siteName} site as it looked from ${releasedIn}`}
         className="mx-auto my-4 h-auto max-w-full border border-gray-400 shadow"
       />
-      <p>
+      {/* !mb-0: see ArchiveHomeNote. */}
+      <p className="!mb-0">
         The site you are now visiting preserves the original wording and content
         of the {siteName}, which means that the screenshots are now outdated.
         For up-to-date entries, please see the DCHP-3 at{" "}
