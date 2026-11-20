@@ -2254,7 +2254,7 @@ export default function Dchp2HowToUse() {
           target="_blank"
           rel="noreferrer"
         >
-          http://dchp.ca/DCHP-1/pages/frontmatter
+          www.dchp.ca/dchp1/pages/frontmatter
         </a>{" "}
         (5 Dec. 2016)
       </p>
@@ -2365,7 +2365,7 @@ export default function Dchp2HowToUse() {
           target="_blank"
           rel="noreferrer"
         >
-          http://dchp.ca/dchp1/
+          www.dchp.ca/dchp1
         </a>
         . Vancouver, BC: University of British Columbia.
       </p>

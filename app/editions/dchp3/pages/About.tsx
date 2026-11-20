@@ -419,7 +419,7 @@ export default function Dchp3About() {
           1st edition
         </em>
         . Based on Walter S. Avis et al. 1967.{" "}
-        <Link to="https://dchp.arts.ubc.ca/dchp1">www.dchp.ca/DCHP1</Link>
+        <Link to="https://dchp.arts.ubc.ca/dchp1">www.dchp.ca/dchp1</Link>
       </p>
       <p>
         DCHP-2 = Dollinger, Stefan (chief editor) and Margery Fee (associate
