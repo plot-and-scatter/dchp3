@@ -92,6 +92,25 @@ uploads, which an archive never does).
   rows into the DCHP-1 archive by headword (run it after the lift). Three
   drawings (bombardier, kayak ((1)), tuque) have no scan anywhere we know of.
 
+## Addresses from the original websites
+
+The original DCHP-1 Online (2013) and DCHP-2 (2017) sites used different
+addresses for some pages, and other sites still link to them. An archive
+answers each with a permanent redirect to the page that replaced it:
+
+| Old address | Goes to |
+| --- | --- |
+| `/Entries/view/<headword>`, `/entries/edit/<headword>` | `/entries/<headword>` |
+| `/Browse/view/<letter>` | `/entries/browse/<letter>/1` |
+| `/Browse/welcome`, `/Browse/wordoftheday`, `/pages/`, `/pages/welcome`, `/index.htm` | the home page |
+| `/Search/advanced`, `/Search/results` | `/search` |
+| `/References/listing` | `/references` |
+| `/pages/copyrightnotice` (DCHP-1) | `/pages/copyright-notice` |
+
+Upper and lower case are both accepted. The rules are in
+`app/editions/legacyPaths.ts` and run from the root loader, in archive
+editions only. Add a rule there when another old address turns up.
+
 ## Running an archive locally
 
 ```sh

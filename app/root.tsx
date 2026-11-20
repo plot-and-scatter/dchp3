@@ -29,6 +29,7 @@ import type { LoggedInUser } from "./services/auth/auth.server"
 import TextPageMain from "./components/elements/Layouts/TextPageMain"
 import {
   getEditionId,
+  redirectIfLegacyPath,
   throwIfPathBlockedInArchive,
 } from "./editions/edition.server"
 import {
@@ -144,6 +145,9 @@ export const meta: MetaFunction<typeof loader> = ({ data, error }) => [
 ]
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  // Addresses from the original DCHP-1 and DCHP-2 websites go to the page
+  // that replaced them.
+  redirectIfLegacyPath(request)
   // In an archive edition the sign-in, Bank and editing routes do not exist.
   throwIfPathBlockedInArchive(request)
   const edition: EditionId = getEditionId()
@@ -183,10 +187,7 @@ const defaultApp = ({
       </head>
       {/* tintStyle re-points gray-50..400 at the edition's tints; see
           "Archive editions" in additional.css. */}
-      <body
-        className="h-full"
-        style={tintStyle(EDITIONS[edition].tints)}
-      >
+      <body className="h-full" style={tintStyle(EDITIONS[edition].tints)}>
         <div className="relative">
           <Header isStaging={isStaging} edition={edition} />
           <Nav user={user} edition={edition} />
