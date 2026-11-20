@@ -133,7 +133,7 @@ export default function Dchp2ProjectHistory() {
           target="_blank"
           rel="noreferrer"
         >
-          http://dchp.ca/dchp1
+          www.dchp.ca/dchp1
         </a>{" "}
         (with special thanks to Nelson Education for making open access
         possible).
