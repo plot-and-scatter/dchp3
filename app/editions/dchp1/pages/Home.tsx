@@ -83,7 +83,7 @@ export default function Dchp1Home() {
           target="_blank"
           rel="noreferrer"
         >
-          http://dchp.ca/DCHP-1/
+          www.dchp.ca/dchp1
         </a>
         .
       </blockquote>
