@@ -25,6 +25,27 @@ describe("legacyPathRedirect", () => {
     expect(dchp2("/Entries/view/24/7")).toBe("/entries/24/7")
   })
 
+  it("repairs an entry address the old site encoded several times over", () => {
+    // As printed in a journal article.
+    expect(
+      dchp2("/Entries/view/bush%252520%252528%252528n.%252529%252529")
+    ).toBe("/entries/bush%20%28%28n.%29%29")
+    // The same address after a redirect in front of the site has already
+    // rewritten "/Entries/view/".
+    expect(dchp2("/entries/bush%252520%252528%252528n.%252529%252529")).toBe(
+      "/entries/bush%20%28%28n.%29%29"
+    )
+    // Encoded twice, not three times.
+    expect(dchp2("/Entries/view/matrimonial%2520cake")).toBe(
+      "/entries/matrimonial%20cake"
+    )
+    expect(dchp1("/entries/search-and-rescue%252520unit")).toBe(
+      "/entries/search-and-rescue%20unit"
+    )
+    // A correctly encoded address is not an old address.
+    expect(dchp2("/entries/bush%20%28%28n.%29%29")).toBeUndefined()
+  })
+
   it("sends the old browse pages to their replacements", () => {
     expect(dchp1("/Browse/view/A")).toBe("/entries/browse/A/1")
     expect(dchp1("/browse/view/q")).toBe("/entries/browse/Q/1")
