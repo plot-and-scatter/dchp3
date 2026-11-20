@@ -16,7 +16,9 @@ export default function ArchiveHomeNote({
 }: ArchiveHomeNoteProps) {
   return (
     <div className="my-6 border border-amber-700 bg-amber-200 p-4">
-      <p>
+      {/* !mb-0: `.TextPageMain p` gives every paragraph a bottom margin, which
+          would add to the panel's own padding under the last line. */}
+      <p className="!mb-0">
         <strong>Note:</strong> This is an archived version of the dictionary,{" "}
         {siteName} ({publishedIn}). The current edition, DCHP-3, can be accessed
         at{" "}
