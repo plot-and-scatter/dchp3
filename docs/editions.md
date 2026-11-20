@@ -107,6 +107,11 @@ answers each with a permanent redirect to the page that replaced it:
 | `/References/listing` | `/references` |
 | `/pages/copyrightnotice` (DCHP-1) | `/pages/copyright-notice` |
 
+The old sites also printed some entry addresses encoded three times over
+(`bush%252520%252528%252528n.%252529%252529` for "bush ((n.))"). An entry
+address with such repeated encoding is redirected to the singly encoded
+form.
+
 Upper and lower case are both accepted. The rules are in
 `app/editions/legacyPaths.ts` and run from the root loader, in archive
 editions only. Add a rule there when another old address turns up.
