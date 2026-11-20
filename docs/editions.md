@@ -217,6 +217,8 @@ versions of the same steps.
 
 ### Later deploys
 
+`sudo /usr/local/sbin/dchp3-deploy all` deploys main to production and both
+archives in one run (see scripts/server/README.md). For one archive:
 `sudo /usr/local/sbin/dchp3-deploy dchp1` (or `dchp2`) and choose main.
 A branch can be named instead, as for staging, which is how a preview runs
 before the archive code is merged: `... dchp1 499-archive-mode-dchp1`.

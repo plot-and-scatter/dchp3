@@ -223,14 +223,14 @@ sudo grep -c AUTH0_MGMT_CLIENT_ID /var/www/dchp3/.env.production
 
 ### Deploying
 
-One script, both environments:
+One script for every site:
 
 ```
 sudo dchp3-deploy staging
 sudo dchp3-deploy production
 ```
 
-It prints the current commit and the command to roll back to it before making
+It prints the current commit and the command that rolls back to it before making
 any change, refuses to run over edited tracked files, asks for confirmation,
 and checks the site answers afterwards. **Read the last two lines**, which name
 the branch and commit it ended on. A deploy that quietly stayed on the wrong
@@ -249,8 +249,45 @@ The list comes from the GitHub API without credentials, the repository being
 public. If GitHub cannot be reached the menu still offers `main` and still
 accepts a branch name typed by hand.
 
-**Production deploys `main` and nothing else.** Putting anything else on it
-means checking the tree out by hand first; the extra step is the point.
+**Production deploys `main` and nothing else**, apart from a rollback.
+
+**Rolling back.** Every deploy prints a line of this form before it changes
+anything:
+
+```
+sudo dchp3-deploy production --rollback 5b60cbf
+```
+
+Running it checks that commit out, then installs, builds, restarts and checks
+the site, exactly as a deploy does. It works for every site, production
+included. Two things it is easy to get wrong without it:
+
+- Deploying again does not go back. A deploy always moves the tree to the
+  newest commit of its branch, whatever is checked out when it starts.
+- `git checkout <commit>` alone changes nothing a visitor sees. The site
+  serves its last build until it is rebuilt and restarted.
+
+A rollback does not undo database changes. It leaves the tree on a commit
+and not on a branch; the next ordinary deploy puts it back on its branch.
+
+**All three public sites in one run:**
+
+```
+sudo dchp3-deploy all
+```
+
+This deploys `main` to production (DCHP-3), then the DCHP-1 archive, then the
+DCHP-2 archive. Staging is not included. It shows the commit each site is on
+and the commit `main` is on, asks once, and then runs the ordinary deploy for
+each site in turn, with the same checks, build and health check as a
+single-site deploy. It stops at the first site that fails, so a build that
+breaks on production does not reach the archives, and says which sites were
+deployed, which failed and which were not started. The last lines are the
+rollback command for each site. It takes no branch; to put a branch
+on an archive, deploy that archive on its own.
+
+The three builds run one after the other, so expect about three times as long
+as one deploy. Each site keeps serving its old build until its own restart.
 
 ### Installing the deploy script
 
@@ -266,7 +303,8 @@ sudo chmod 700 /usr/local/sbin/dchp3-deploy
 ```
 
 Re-copy it whenever the script changes; a deploy updates the tree's copy and
-not this one. If `sudo dchp3-deploy` says the command is not found, sudo's
+not this one. `install-archive-scripts.sh` (below) does the same copy from a
+deployed tree and keeps the previous script as `dchp3-deploy.bak`. If `sudo dchp3-deploy` says the command is not found, sudo's
 `secure_path` does not include `/usr/local/sbin`, and the full path works.
 
 The two earlier scripts, `deploy-production.sh` and `deploy-staging.sh`, are
