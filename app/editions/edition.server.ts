@@ -1,4 +1,4 @@
-import { data } from "react-router"
+import { data, redirect } from "react-router"
 import { BASENAME } from "./basename.server"
 import {
   DEFAULT_EDITION,
@@ -8,6 +8,8 @@ import {
   isPathBlockedInArchive,
   type EditionId,
 } from "./edition"
+import { EDITIONS } from "./index"
+import { legacyPathRedirect } from "./legacyPaths"
 
 // DCHP_EDITION picks which dictionary this process serves. Unset means
 // DCHP-3, so existing deployments need no change. Any other value than the
@@ -24,17 +26,35 @@ export const getEditionId = (): EditionId => {
 
 export const isArchive = () => isArchiveEdition(getEditionId())
 
+// The path inside the app: request.url carries the basename ("/dchp2"),
+// and everything that inspects a path works without it.
+const appPathOf = (request: Request) => {
+  const { pathname } = new URL(request.url)
+  return pathname.startsWith(BASENAME)
+    ? pathname.slice(BASENAME.length) || "/"
+    : pathname
+}
+
+// Called from the root loader on every request. An address from the original
+// DCHP-1 or DCHP-2 website is answered with a permanent redirect to the page
+// that replaced it; see legacyPaths.ts. The redirect target is an app path:
+// React Router adds the basename to a loader redirect itself.
+export const redirectIfLegacyPath = (request: Request) => {
+  const edition = getEditionId()
+  const target = legacyPathRedirect(
+    appPathOf(request),
+    edition,
+    Object.keys(EDITIONS[edition].pages)
+  )
+  if (target) throw redirect(`${target}${new URL(request.url).search}`, 301)
+}
+
 // Called from the root loader on every request. In an archive the editing,
 // Bank and sign-in routes simply do not exist, so they 404 like any other
 // unknown path rather than redirecting to a login page that is itself gone.
 export const throwIfPathBlockedInArchive = (request: Request) => {
   if (!isArchive()) return
-  // request.url carries the basename; the blocked prefixes are app paths.
-  const { pathname } = new URL(request.url)
-  const appPath = pathname.startsWith(BASENAME)
-    ? pathname.slice(BASENAME.length) || "/"
-    : pathname
-  if (isPathBlockedInArchive(appPath)) {
+  if (isPathBlockedInArchive(appPathOf(request))) {
     // The edition rides along so the error page can still show the right
     // title: when the root loader throws, there is no root loader data.
     throw data(
