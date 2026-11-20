@@ -3,6 +3,7 @@
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import clsx from "clsx"
+import ArchiveHomeNote from "../../ArchiveHomeNote"
 import TextPageMain from "~/components/elements/Layouts/TextPageMain"
 import img_bfea6c_html_f0364146 from "../images/i_253929d055bfea6c_html_f0364146.jpg"
 import img_bfea6c_html_969ce2d0 from "../images/i_253929d055bfea6c_html_969ce2d0.jpg"
@@ -24,6 +25,7 @@ export default function Dchp2Home() {
         <br />
         <em>A Dictionary of Canadianisms on Historical Principles</em>
       </PageHeader>
+      <ArchiveHomeNote siteName="DCHP-2" publishedIn={2017} />
       <p>
         This is the Second Edition of{" "}
         <em>

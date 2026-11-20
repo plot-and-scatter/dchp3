@@ -1,5 +1,6 @@
 // DCHP-1: home (welcome text)
 // Ported from the DCHP-1 Online CakePHP templates (2013); text unchanged.
+import ArchiveHomeNote from "../../ArchiveHomeNote"
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import { PageHeader } from "~/components/elements/Headings/PageHeader"
 import TextPageMain from "~/components/elements/Layouts/TextPageMain"
@@ -10,6 +11,7 @@ export default function Dchp1Home() {
       <PageHeader>
         Welcome to <em>DCHP-1 Online</em>
       </PageHeader>
+      <ArchiveHomeNote siteName="DCHP-1 Online" publishedIn={1967} />
 
       <p>
         This is the online edition of{" "}
