@@ -27,9 +27,61 @@ For each national domain, Frequency Index = hits(term, domain) ÷
 hits(normalizer, domain) × multiplier. The indices are then compared across
 domains; there is no threshold, and Type 5 remains an editorial judgment.
 
-- **Domains** (DCHP-2 set): Canada `.ca`; USA `.edu` OR `.gov` OR `.mil` OR
+- **Domains** (DCHP-2 set): Canada `.ca`; USA `.edu`, `.gov`, `.mil` and
   `.us`; UK `.uk`; Ireland `.ie`; New Zealand `.nz`; Australia `.au`; South
-  Africa `.za`. Defined once in `FREQUENCY_DOMAINS` in `app/models/frequencyIndex.ts`.
+  Africa `.za`. Defined once in `FREQUENCY_DOMAINS` in
+  `app/models/frequencyIndex.ts`: one entry per country, which is one column
+  of the chart.
+- **US: four searches added up** (2026-11-25, GitHub issue 500). Each
+  top-level domain is its own Google search (`FREQUENCY_SEARCHES`, ten in
+  all: keys `ca`, `us.edu`, `us.gov`, `us.mil`, `us.us`, `uk`, ...). A lookup
+  stores one row and uses one normalizer observation per search. The US
+  index is (the four term counts added) / (the four normalizer counts added)
+  x multiplier, computed on read like every index (`groupByCountry` in
+  `app/models/frequencyIndex.server.ts`; the form and the correction page
+  do the same sum with `addCounts`). This is how Natalia's spreadsheet
+  counted the US before the tool existed.
+
+  Why: from 2026-09-29 the tool sent one search,
+  `site:.edu OR site:.gov OR site:.mil OR site:.us`. Natalia and the students
+  saw the US normalizer drop from about 6.6 billion to about 1.7 billion on
+  that date. Counts read by Frank from google.com on 2026-11-24:
+
+  | Search | "the" | "toque" |
+  | --- | --- | --- |
+  | `.edu` | 1,180,000,000 | 181,000 |
+  | `.gov` | 4,120,000,000 | 14,400 |
+  | `.mil` | 84,700,000 | 252 |
+  | `.us` | 537,000,000 | 105,000 |
+  | the four added up | 5,921,700,000 | 300,652 |
+  | one OR search | 1,750,000,000 | 300,000 |
+
+  Google's figure for the OR search is right for a rare term and about a
+  third of the real figure for the normalizer (less than `.gov` alone), so
+  the US index came out about 3.4 times too high (about 4 times in late
+  September). Google does not document how it estimates counts; the working
+  explanation is that a small result set is close to a real count and a very
+  large one is extrapolated, badly when the query has several `site:`
+  conditions joined by OR. One term on one day: the factor is approximate.
+  The size at which the OR figure starts to fail is unknown, which is why
+  the term is searched per domain too and not only the normalizer.
+
+  **Lookups saved before the change** keep their single US row and
+  observation under the key `us` (`COMBINED_SEARCHES`). They cannot be
+  corrected, because the four counts were not read on those dates. Their
+  page and their correction page say the US index is too high and link to
+  "Repeat this lookup"; `FrequencyLookupView.hasCombinedSearch` and the
+  country's `method: "combined"` carry this. Nothing new is saved under
+  `us`, and the form's schema rejects it. On the normalizer history page
+  the old series has its own panel and column, "USA, one combined search
+  (no longer used)", with a note: its spreadsheet readings (to 2026-09-22)
+  are the four added up, its tool readings are the OR search. No database
+  change was needed: `domain_key` holds the search key.
+
+  `scripts/local/import-normalizer-counts.mjs` now also imports the
+  spreadsheet's `.edu`, `.gov`, `.mil` and `.us` columns as `us.edu` etc.,
+  so the four US series start in July 2026. Run it again on each database
+  after deploying; it skips rows already present.
 - **Normalizer**: `the` by default, per Stefan's current practice. Dollinger
   (2016, "Googleology as Smart Lexicography", *Dictionaries* 37: 60–98) used
   `could`. The field is editable, and the normalizer is stored on every lookup
@@ -56,6 +108,35 @@ domains; there is no threshold, and Type 5 remains an editorial judgment.
   `"toque" "hockey"`, which requires both words on the page. Google drops or
   loosens unquoted words, so each side is quoted. Handled by `searchTerms` in
   `app/models/frequencyIndex.ts`, for the normalizer too. Added 2026-09-24.
+- **OR**: `EU OR European Union` (upper-case OR, spaces on both sides)
+  becomes `("EU" OR "European Union")`, which counts pages with either. OR
+  is read before AND, as Google reads it, so
+  `associate member AND EU OR European Union` becomes
+  `"associate member" ("EU" OR "European Union")`. A term typed entirely
+  inside one pair of quotes is not split. Same function, `searchTerms`.
+  Added 2026-11-24 for Natalia.
+
+  How far an OR count can be trusted: the wordings overlap (a page can have
+  both), so a correct OR count lies between the largest single count and the
+  sum. The US finding above shows Google can undercount an OR search that
+  matches billions of pages, so this was tested on `.uk`, the largest single
+  domain, on 2026-11-25 (counts read by Frank):
+
+  | Search on `.uk` | Count |
+  | --- | --- |
+  | `"EU"` | 608,000,000 |
+  | `"European Union"` | 48,500,000 |
+  | `("EU" OR "European Union")` | 616,000,000 |
+  | `"associate member" "EU"` | 23,000 |
+  | `"associate member" "European Union"` | 7,170 |
+  | `"associate member" ("EU" OR "European Union")` | 24,200 |
+
+  Both OR counts are in the expected range, so OR held up at 600 million
+  pages. One term, one domain, one day; "the" failed at about 6 billion,
+  and the size at which failure starts is unknown. The help panel therefore
+  gives students a check: an OR count lower than the count for its most
+  common wording alone is wrong, and the wordings should then be looked up
+  separately.
 - **Exclusions**: free text, each token becomes `-token` (so `site:x.com`
   becomes `-site:x.com`). Applied to the term query on every domain identically
   and never to the normalizer query, whose count stands in for the size of the
@@ -118,9 +199,13 @@ domains; there is no threshold, and Type 5 remains an editorial judgment.
   updated, updated_user_id), plus the two above. DDL in
   `sql/create-frequency-index.sql`, applied by hand because the project has
   no migration workflow.
-- **History**: the page lists recent lookups; each has a view page with the
-  rows, links to the queries, and a "Repeat this lookup" link that prefills the
-  form through the query string.
+- **History**: the page lists the 25 most recent lookups; each has a view
+  page with the rows, links to the queries, and a "Repeat this lookup" link
+  that prefills the form through the query string. Under that list a link
+  opens **All lookups** (`app/routes/frequency-index/lookups.tsx`, added
+  2026-11-24 after Natalia could not reach lookups older than the 25): every
+  saved lookup, newest first, 50 to a page, with a box that filters by words
+  in the term.
 - **Normalizer history** (`app/routes/frequency-index/normalizers.tsx`, added
   2026-09-24): one panel per domain of every observation, over 30 days, 90
   days, a year or all time, with the same numbers as a table beneath. The

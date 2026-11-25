@@ -1,6 +1,6 @@
 // The unsaved state of the Frequency Index form, kept in localStorage so an
 // accidental Cmd+W on the form tab (easy to do in a workflow built around
-// Cmd+W) does not throw away fourteen typed counts. Cleared when a lookup
+// Cmd+W) does not throw away up to twenty typed counts. Cleared when a lookup
 // is saved. Browser storage can be unavailable or throw, so every access is
 // guarded and the form works without it.
 

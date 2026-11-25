@@ -55,7 +55,21 @@ export default function HelpPanel({
           <strong>Term.</strong> A term with spaces is searched as a phrase. To
           require two words anywhere on the page, join them with{" "}
           <code>AND</code> in capitals: <code>toque AND hockey</code> searches
-          for <code>&quot;toque&quot; &quot;hockey&quot;</code>.
+          for <code>&quot;toque&quot; &quot;hockey&quot;</code>. To accept any
+          one of several wordings, join them with <code>OR</code> in capitals:{" "}
+          <code>EU OR European Union</code> counts pages with either. The two
+          can be combined, and <code>OR</code> is read first:{" "}
+          <code>associate member AND EU OR European Union</code> searches for{" "}
+          <code>
+            &quot;associate member&quot; (&quot;EU&quot; OR &quot;European
+            Union&quot;)
+          </code>
+          . Check an <code>OR</code> count before relying on it, because Google
+          can badly undercount an <code>OR</code> search that matches a very
+          large number of pages. The count should be at least as large as the
+          count for its most common wording on its own (here,{" "}
+          <code>&quot;EU&quot;</code>). If it is lower, look the wordings up as
+          separate lookups instead.
         </li>
         <li>
           <strong>Normalizer.</strong> The common word whose count stands in for
@@ -85,6 +99,18 @@ export default function HelpPanel({
         Google personalizes results by account and location. For counts that
         other people can reproduce, use a private window or a browser profile
         that is not signed in to Google.
+      </p>
+
+      <h3 className="mt-5 font-semibold">The USA is four searches</h3>
+      <p className="mt-2">
+        The USA has no single national domain, so it is counted on .edu, .gov,
+        .mil and .us. Each is searched separately, for the term and for the
+        normalizer, and the tool adds the four counts up before working out the
+        USA index. Until November 2026 the tool used one search across all four;
+        Google&rsquo;s count for that search is far too low for a common word
+        like &ldquo;the&rdquo;, which made the USA index about three times too
+        high. Lookups saved that way say so on their page: repeat them to get a
+        correct USA index.
       </p>
 
       <h3 className="mt-5 font-semibold">Keyboard-only workflow</h3>

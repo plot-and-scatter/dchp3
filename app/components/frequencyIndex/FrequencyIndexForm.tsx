@@ -17,7 +17,9 @@ import Input from "~/components/bank/Input"
 import TopLabelledField from "~/components/bank/TopLabelledField"
 import {
   FREQUENCY_DOMAINS,
+  FREQUENCY_SEARCHES,
   MULTIPLIERS,
+  addCounts,
   digitsOnly,
   formatCount,
   formatIndex,
@@ -25,6 +27,7 @@ import {
   googleSearchUrl,
   normalizerQuery,
   parseCount,
+  searchesOf,
   termQuery,
 } from "~/models/frequencyIndex"
 import type {
@@ -69,9 +72,12 @@ type RowState = {
 /** The inputs the table was built for; links and counts belong to these. */
 type Snapshot = { term: string; normalizer: string; exclusions: string }
 
+// One row of state per Google search. A country with several domains (the
+// US) has one search per domain; the table shows them under the country
+// with their counts added up.
 const emptyRows = (): Record<string, RowState> =>
   Object.fromEntries(
-    FREQUENCY_DOMAINS.map((d) => [
+    FREQUENCY_SEARCHES.map((d) => [
       d.key,
       {
         termHits: "",
@@ -204,7 +210,7 @@ export default function FrequencyIndexForm({
 
     setRows((prev) =>
       Object.fromEntries(
-        FREQUENCY_DOMAINS.map((d) => {
+        FREQUENCY_SEARCHES.map((d) => {
           const keep = sameNormalizer ? prev[d.key] : null
           const reuse = recent[d.key]
           const normalizerState =
@@ -248,7 +254,7 @@ export default function FrequencyIndexForm({
   const queries = useMemo(() => {
     if (!snapshot) return null
     return Object.fromEntries(
-      FREQUENCY_DOMAINS.map((d) => [
+      FREQUENCY_SEARCHES.map((d) => [
         d.key,
         {
           term: termQuery(snapshot.term, d, snapshot.exclusions),
@@ -267,7 +273,7 @@ export default function FrequencyIndexForm({
   const openAll = (which: "term" | "normalizer") => {
     if (!queries) return
     let blocked = false
-    for (const d of FREQUENCY_DOMAINS) {
+    for (const d of FREQUENCY_SEARCHES) {
       const w = window.open(
         googleSearchUrl(queries[d.key][which]),
         targetFor(`${which}-${d.key}`)
@@ -330,11 +336,11 @@ export default function FrequencyIndexForm({
     build()
   }
 
-  const filled = FREQUENCY_DOMAINS.filter(
+  const filled = FREQUENCY_SEARCHES.filter(
     (d) => rows[d.key].termHits !== "" && rows[d.key].normalizerHits !== ""
   ).length
   const complete =
-    snapshot !== null && !stale && filled === FREQUENCY_DOMAINS.length
+    snapshot !== null && !stale && filled === FREQUENCY_SEARCHES.length
 
   const errors = lastResult?.error
     ? Object.entries(lastResult.error).flatMap(([field, msgs]) =>
@@ -390,7 +396,7 @@ export default function FrequencyIndexForm({
               value={term}
               onChange={(e) => setTerm(e.target.value)}
               onKeyDown={onTopFieldKeyDown}
-              placeholder="e.g. toque, or toque AND hockey"
+              placeholder="e.g. toque, toque AND hockey, toque OR tuque"
               autoComplete="off"
               lightBorder
             />
@@ -472,8 +478,8 @@ export default function FrequencyIndexForm({
               variant="outline"
               onClick={() => openAll("term")}
             >
-              <FAIcon iconName="fa-arrow-up-right-from-square" /> Open all seven
-              term searches
+              <FAIcon iconName="fa-arrow-up-right-from-square" /> Open all{" "}
+              {FREQUENCY_SEARCHES.length} term searches
             </Button>
             <Button
               type="button"
@@ -481,8 +487,8 @@ export default function FrequencyIndexForm({
               variant="outline"
               onClick={() => openAll("normalizer")}
             >
-              <FAIcon iconName="fa-arrow-up-right-from-square" /> Open all seven
-              normalizer searches
+              <FAIcon iconName="fa-arrow-up-right-from-square" /> Open all{" "}
+              {FREQUENCY_SEARCHES.length} normalizer searches
             </Button>
           </Fragment>
         )}
@@ -532,91 +538,145 @@ export default function FrequencyIndexForm({
               </tr>
             </thead>
             <tbody>
-              {FREQUENCY_DOMAINS.map((d, i) => {
-                const row = rows[d.key]
-                const q = queries[d.key]
-                const termUrl = googleSearchUrl(q.term)
-                const normUrl = googleSearchUrl(q.normalizer)
+              {FREQUENCY_DOMAINS.map((country) => {
+                const searches = searchesOf(country.key)
+                const grouped = searches.length > 1
+                // The country's index: its searches added up, for the term
+                // and for the normalizer, once every count is in.
+                const termTotal = addCounts(
+                  searches.map((s) => parseCount(rows[s.key].termHits))
+                )
+                const normalizerTotal = addCounts(
+                  searches.map((s) => parseCount(rows[s.key].normalizerHits))
+                )
                 const index = frequencyIndex(
-                  parseCount(row.termHits),
-                  parseCount(row.normalizerHits),
+                  termTotal,
+                  normalizerTotal,
                   multiplier
                 )
+                const indexCell = (
+                  <td className="py-3 pr-4 text-right text-lg font-semibold tabular-nums">
+                    {formatIndex(index) || (
+                      <span className="text-gray-400">&ndash;</span>
+                    )}
+                  </td>
+                )
                 return (
-                  <tr
-                    key={d.key}
-                    className="border-b border-gray-200 align-top"
-                  >
-                    <td className="py-3 pr-4">
-                      <div className="font-semibold">{d.label}</div>
-                      <div className="text-sm text-gray-500">
-                        {d.tlds.join(", ")}
-                      </div>
-                      <input
-                        type="hidden"
-                        name={`rows[${i}].domainKey`}
-                        value={d.key}
-                      />
-                    </td>
-                    <td className="py-3 pr-4">
-                      <CountCell
-                        name={`rows[${i}].termHits`}
-                        value={row.termHits}
-                        url={termUrl}
-                        query={q.term}
-                        target={targetFor(`term-${d.key}`)}
-                        onChange={(v) => setCount(d.key, "termHits", v)}
-                        onKeyDown={(e) => onCountKeyDown(e, termUrl)}
-                        onOpen={() => open(termUrl, SINGLE_TARGET)}
-                      />
-                    </td>
-                    <td className="py-3 pr-4">
-                      <div className="flex items-start gap-4">
-                        <CountCell
-                          name={`rows[${i}].normalizerHits`}
-                          value={row.normalizerHits}
-                          url={normUrl}
-                          query={q.normalizer}
-                          target={targetFor(`normalizer-${d.key}`)}
-                          onChange={(v) => setCount(d.key, "normalizerHits", v)}
-                          onKeyDown={(e) => onCountKeyDown(e, normUrl)}
-                          onOpen={() => open(normUrl, SINGLE_TARGET)}
-                        />
-                        {sparkRange && (
-                          <span className="w-28 shrink-0 pt-2">
-                            <NormalizerSeriesChart
-                              variant="spark"
-                              label={d.label}
-                              normalizer={snapshot.normalizer}
-                              series={snapshotHistory?.[d.key] ?? []}
-                              range={sparkRange}
-                              showLabel={false}
-                            />
-                          </span>
-                        )}
-                      </div>
-                      {row.normalizerCountId !== null && row.reusedFrom && (
-                        <Fragment>
-                          <input
-                            type="hidden"
-                            name={`rows[${i}].normalizerCountId`}
-                            value={row.normalizerCountId}
-                          />
-                          <div className="mt-1 text-sm text-gray-500">
-                            {row.reusedFrom.term !== null
-                              ? `Reused from the lookup of “${row.reusedFrom.term}” on ${row.reusedFrom.observed}.`
-                              : `Reused from the ${row.reusedFrom.source} count of ${row.reusedFrom.observed}.`}{" "}
-                            Type a new count to take a fresh reading instead.
+                  <Fragment key={country.key}>
+                    {grouped && (
+                      <tr className="align-top">
+                        <td className="pb-1 pt-3 pr-4">
+                          <div className="font-semibold">{country.label}</div>
+                          <div className="text-sm text-gray-500">
+                            {searches.length} searches, added up
                           </div>
-                        </Fragment>
-                      )}
-                    </td>
-                    <td className="py-3 pr-4 text-right text-lg font-semibold tabular-nums">
-                      {formatIndex(index) || (
-                        <span className="text-gray-400">&ndash;</span>
-                      )}
-                    </td>
-                  </tr>
+                        </td>
+                        <td className="pb-1 pt-3 pr-4 tabular-nums">
+                          {formatCount(termTotal) || (
+                            <span className="text-gray-400">&ndash;</span>
+                          )}
+                        </td>
+                        <td className="pb-1 pt-3 pr-4 tabular-nums">
+                          {formatCount(normalizerTotal) || (
+                            <span className="text-gray-400">&ndash;</span>
+                          )}
+                        </td>
+                        {indexCell}
+                      </tr>
+                    )}
+                    {searches.map((d, position) => {
+                      const i = FREQUENCY_SEARCHES.indexOf(d)
+                      const row = rows[d.key]
+                      const q = queries[d.key]
+                      const termUrl = googleSearchUrl(q.term)
+                      const normUrl = googleSearchUrl(q.normalizer)
+                      const lastOfGroup = position === searches.length - 1
+                      return (
+                        <tr
+                          key={d.key}
+                          className={clsx(
+                            "align-top",
+                            lastOfGroup && "border-b border-gray-200"
+                          )}
+                        >
+                          <td className={clsx("py-3 pr-4", grouped && "pl-6")}>
+                            {grouped ? (
+                              <div>{d.tlds[0]}</div>
+                            ) : (
+                              <Fragment>
+                                <div className="font-semibold">{d.label}</div>
+                                <div className="text-sm text-gray-500">
+                                  {d.tlds.join(", ")}
+                                </div>
+                              </Fragment>
+                            )}
+                            <input
+                              type="hidden"
+                              name={`rows[${i}].domainKey`}
+                              value={d.key}
+                            />
+                          </td>
+                          <td className="py-3 pr-4">
+                            <CountCell
+                              name={`rows[${i}].termHits`}
+                              value={row.termHits}
+                              url={termUrl}
+                              query={q.term}
+                              target={targetFor(`term-${d.key}`)}
+                              onChange={(v) => setCount(d.key, "termHits", v)}
+                              onKeyDown={(e) => onCountKeyDown(e, termUrl)}
+                              onOpen={() => open(termUrl, SINGLE_TARGET)}
+                            />
+                          </td>
+                          <td className="py-3 pr-4">
+                            <div className="flex items-start gap-4">
+                              <CountCell
+                                name={`rows[${i}].normalizerHits`}
+                                value={row.normalizerHits}
+                                url={normUrl}
+                                query={q.normalizer}
+                                target={targetFor(`normalizer-${d.key}`)}
+                                onChange={(v) =>
+                                  setCount(d.key, "normalizerHits", v)
+                                }
+                                onKeyDown={(e) => onCountKeyDown(e, normUrl)}
+                                onOpen={() => open(normUrl, SINGLE_TARGET)}
+                              />
+                              {sparkRange && (
+                                <span className="w-28 shrink-0 pt-2">
+                                  <NormalizerSeriesChart
+                                    variant="spark"
+                                    label={d.label}
+                                    normalizer={snapshot.normalizer}
+                                    series={snapshotHistory?.[d.key] ?? []}
+                                    range={sparkRange}
+                                    showLabel={false}
+                                  />
+                                </span>
+                              )}
+                            </div>
+                            {row.normalizerCountId !== null && row.reusedFrom && (
+                              <Fragment>
+                                <input
+                                  type="hidden"
+                                  name={`rows[${i}].normalizerCountId`}
+                                  value={row.normalizerCountId}
+                                />
+                                <div className="mt-1 text-sm text-gray-500">
+                                  {row.reusedFrom.term !== null
+                                    ? `Reused from the lookup of “${row.reusedFrom.term}” on ${row.reusedFrom.observed}.`
+                                    : `Reused from the ${row.reusedFrom.source} count of ${row.reusedFrom.observed}.`}{" "}
+                                  Type a new count to take a fresh reading
+                                  instead.
+                                </div>
+                              </Fragment>
+                            )}
+                          </td>
+                          {grouped ? <td /> : indexCell}
+                        </tr>
+                      )
+                    })}
+                  </Fragment>
                 )
               })}
             </tbody>
@@ -636,7 +696,7 @@ export default function FrequencyIndexForm({
                 complete ? "text-green-700" : "text-gray-600"
               )}
             >
-              {filled} of {FREQUENCY_DOMAINS.length} domains complete
+              {filled} of {FREQUENCY_SEARCHES.length} searches complete
             </span>
           </div>
         </Fragment>

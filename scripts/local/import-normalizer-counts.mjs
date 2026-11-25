@@ -12,9 +12,12 @@
 //   ,.ca,.uk,.ie,.nz,.au,.za,US,.edu,.mil,.gov,.us
 //   19-Jul-26,3.31E+09,4.59E+09,...
 //
-// Only columns that map to the tool's seven domains are kept (.ca .uk .ie
-// .nz .au .za and US, the combined .edu/.gov/.mil/.us count). Others, and
-// any block after a blank line, are ignored. Rows already present for the
+// Columns kept: .ca .uk .ie .nz .au .za, and the four US domains .edu .gov
+// .mil .us, which the tool reads as four separate searches and adds up. The
+// US column, the four added up in the spreadsheet, is kept too, under the
+// key the tool once used for a single combined US search; the history page
+// shows that series separately. Others, and any block after a blank line,
+// are ignored. Rows already present for the
 // same normalizer, domain, date and source are skipped, so the script can
 // be run again safely.
 
@@ -24,6 +27,10 @@ import { PrismaClient } from "@prisma/client"
 const COLUMN_TO_DOMAIN = {
   ".ca": "ca",
   us: "us",
+  ".edu": "us.edu",
+  ".gov": "us.gov",
+  ".mil": "us.mil",
+  ".us": "us.us",
   ".uk": "uk",
   ".ie": "ie",
   ".nz": "nz",

@@ -11,11 +11,16 @@ import { z } from "zod"
 export type FrequencyDomain = {
   key: string
   label: string
-  /** Top-level domains searched. More than one means a `site: OR site:` group. */
+  /**
+   * Top-level domains searched. More than one means the country is counted
+   * with one search per domain and the counts are added up: see
+   * FREQUENCY_SEARCHES.
+   */
   tlds: string[]
 }
 
-// The DCHP-2 domain set. The US is a group because .us is barely used.
+// The DCHP-2 domain set: one entry per country, which is one column in the
+// chart. The US is a group because .us is barely used.
 export const FREQUENCY_DOMAINS: FrequencyDomain[] = [
   { key: "ca", label: "Canada", tlds: [".ca"] },
   { key: "us", label: "USA", tlds: [".edu", ".gov", ".mil", ".us"] },
@@ -30,6 +35,86 @@ export const FREQUENCY_DOMAIN_KEYS = FREQUENCY_DOMAINS.map((d) => d.key) as [
   string,
   ...string[]
 ]
+
+/**
+ * One Google search: a single top-level domain. A country with one domain
+ * has one search, under the country's own key ("ca"). A country with several
+ * has one search per domain ("us.edu", "us.gov", ...), and its count is the
+ * searches added up, for the term and for the normalizer alike.
+ *
+ * Until 2026-11 the US was one search, `site:.edu OR site:.gov OR site:.mil
+ * OR site:.us`. Google's estimate for that search is right for a rare term
+ * and far too low for a normalizer such as "the": on 2026-11-24 it gave 1.75
+ * billion where the four domains searched separately gave 5.92 billion, and
+ * less than .gov alone. The term was counted in full and the normalizer was
+ * not, so the US index came out about 3.4 times too high. See
+ * docs/frequency-index/frequency-index.md, "US: four searches added up".
+ */
+export type FrequencySearch = FrequencyDomain & {
+  /** The country this search counts toward: a key of FREQUENCY_DOMAINS. */
+  domainKey: string
+}
+
+export const FREQUENCY_SEARCHES: FrequencySearch[] = FREQUENCY_DOMAINS.flatMap(
+  (d) =>
+    d.tlds.length === 1
+      ? [{ ...d, domainKey: d.key }]
+      : d.tlds.map((tld) => ({
+          key: `${d.key}${tld}`,
+          label: `${d.label} ${tld}`,
+          tlds: [tld],
+          domainKey: d.key,
+        }))
+)
+
+export const FREQUENCY_SEARCH_KEYS = FREQUENCY_SEARCHES.map((s) => s.key) as [
+  string,
+  ...string[]
+]
+
+export const searchByKey = (key: string) =>
+  FREQUENCY_SEARCHES.find((s) => s.key === key)
+
+export const searchesOf = (domainKey: string) =>
+  FREQUENCY_SEARCHES.filter((s) => s.domainKey === domainKey)
+
+/**
+ * Countries that were once counted with one combined OR search. Rows and
+ * normalizer counts saved that way keep the country's key ("us") and are
+ * shown, marked as superseded; nothing new is saved under these keys.
+ */
+export const COMBINED_SEARCHES: FrequencyDomain[] = FREQUENCY_DOMAINS.filter(
+  (d) => d.tlds.length > 1
+)
+
+export const isCombinedSearchKey = (key: string) =>
+  COMBINED_SEARCHES.some((d) => d.key === key)
+
+/** Label for the counts of an old combined search, wherever they are listed. */
+export const combinedSearchLabel = (domain: FrequencyDomain) =>
+  `${domain.label}, one combined search (no longer used)`
+
+/**
+ * The series to show for a normalizer's history: every search, then any old
+ * combined search that has counts in the history given.
+ */
+export const historySeries = (
+  history: Record<string, unknown[]>
+): { key: string; label: string }[] => [
+  ...FREQUENCY_SEARCHES,
+  ...COMBINED_SEARCHES.filter((d) => (history[d.key] ?? []).length > 0).map(
+    (d) => ({ key: d.key, label: combinedSearchLabel(d) })
+  ),
+]
+
+/** The country a stored row or count belongs to, whichever way it was read. */
+export const countryKeyOf = (key: string) => searchByKey(key)?.domainKey ?? key
+
+/** Add up the counts of a country's searches; null until every one is known. */
+export const addCounts = (counts: (number | null)[]): number | null =>
+  counts.length === 0 || counts.some((c) => c === null)
+    ? null
+    : (counts as number[]).reduce((sum, c) => sum + c, 0)
 
 export const DEFAULT_NORMALIZER = "the"
 // 10 million and 100 million added 2026-10-02 for Stefan, for very rare terms.
@@ -49,21 +134,48 @@ export const siteClause = (domain: FrequencyDomain) =>
 const quoteIfPhrase = (term: string) =>
   /\s/.test(term) && !/^".*"$/.test(term) ? `"${term}"` : term
 
+const quoted = (piece: string) => (/^".*"$/.test(piece) ? piece : `"${piece}"`)
+
+const splitOn = (text: string, operator: "AND" | "OR") =>
+  text
+    .split(new RegExp(`\\s+${operator}\\s+`))
+    .map((p) => p.trim())
+    .filter(Boolean)
+
 /**
  * `toque AND hockey` means pages that contain both words. Google has no AND
  * operator (every term is required by default, but a bare word may be
  * dropped or matched loosely), so each side is quoted: `"toque" "hockey"`.
  * AND must be upper case with a space on each side; "and" in a phrase is
  * left alone. A side that is already a phrase is quoted once.
+ *
+ * `EU OR European Union` means pages that contain either. OR is read before
+ * AND, as Google reads it, so `associate member AND EU OR European Union`
+ * is "associate member" with either of the other two:
+ * `"associate member" ("EU" OR "European Union")`. The alternatives are put
+ * in brackets so the grouping is visible in the query that is stored and
+ * shown. Added for Natalia, 2026-11-24.
+ *
+ * A term typed entirely inside one pair of quotes is a phrase and is not
+ * split, so `"sink OR swim"` searches for those three words together.
  */
 export const searchTerms = (term: string) => {
-  const parts = term
-    .trim()
-    .split(/\s+AND\s+/)
-    .map((p) => p.trim())
-    .filter(Boolean)
-  if (parts.length <= 1) return quoteIfPhrase(term.trim())
-  return parts.map((p) => (/^".*"$/.test(p) ? p : `"${p}"`)).join(" ")
+  const trimmed = term.trim()
+  if (/^"[^"]*"$/.test(trimmed)) return trimmed
+
+  const groups = splitOn(trimmed, "AND")
+    .map((group) => splitOn(group, "OR"))
+    .filter((alternatives) => alternatives.length > 0)
+  if (groups.length === 0 || (groups.length === 1 && groups[0].length === 1))
+    return quoteIfPhrase(trimmed)
+
+  return groups
+    .map((alternatives) =>
+      alternatives.length === 1
+        ? quoted(alternatives[0])
+        : `(${alternatives.map(quoted).join(" OR ")})`
+    )
+    .join(" ")
 }
 
 /**
@@ -168,15 +280,13 @@ const multiplierField = z
     ).join(", ")}`,
   })
 
-const rowsField = <T extends z.ZodType<{ domainKey: string }>>(row: T) =>
-  z
-    .array(row)
-    .length(FREQUENCY_DOMAINS.length, "One row per domain is required")
-    .refine(
-      (rows) =>
-        new Set(rows.map((r) => r.domainKey)).size === FREQUENCY_DOMAINS.length,
-      { message: "Each domain must appear exactly once" }
-    )
+const uniqueRows = <T extends z.ZodType<{ domainKey: string }>>(
+  rows: z.ZodArray<T>
+) =>
+  rows.refine(
+    (list) => new Set(list.map((r) => r.domainKey)).size === list.length,
+    { message: "Each search must appear exactly once" }
+  )
 
 export const FrequencyLookupSchema = z.object({
   term: z
@@ -189,14 +299,20 @@ export const FrequencyLookupSchema = z.object({
     .min(1, "Enter a normalizer"),
   exclusions: z.string().trim().optional(),
   multiplier: multiplierField,
-  rows: rowsField(
-    z.object({
-      domainKey: z.enum(FREQUENCY_DOMAIN_KEYS),
-      termHits: countField,
-      normalizerHits: countField.min(1, "Normalizer count must be above 0"),
-      /** Set when the normalizer count was reused from an existing observation. */
-      normalizerCountId: z.number().int().optional(),
-    })
+  // One row per search, not per country: the US is four rows. `domainKey`
+  // holds the search's key; the name is kept from when the two were the same.
+  rows: uniqueRows(
+    z
+      .array(
+        z.object({
+          domainKey: z.enum(FREQUENCY_SEARCH_KEYS),
+          termHits: countField,
+          normalizerHits: countField.min(1, "Normalizer count must be above 0"),
+          /** Set when the normalizer count was reused from an existing observation. */
+          normalizerCountId: z.number().int().optional(),
+        })
+      )
+      .length(FREQUENCY_SEARCHES.length, "One row per search is required")
   ),
 })
 
@@ -217,13 +333,20 @@ export type NormalizerChange = typeof NORMALIZER_CHANGES[number]
 
 export const FrequencyLookupEditSchema = z.object({
   multiplier: multiplierField,
-  rows: rowsField(
-    z.object({
-      domainKey: z.enum(FREQUENCY_DOMAIN_KEYS),
-      termHits: countField,
-      normalizerHits: countField.min(1, "Normalizer count must be above 0"),
-      normalizerChange: z.enum(NORMALIZER_CHANGES).default("correct"),
-    })
+  // The rows are whatever the saved lookup has: one per search for a lookup
+  // saved now, one per country for a lookup saved when the US was a single
+  // combined search. The save checks that every stored row is present.
+  rows: uniqueRows(
+    z
+      .array(
+        z.object({
+          domainKey: z.string().min(1),
+          termHits: countField,
+          normalizerHits: countField.min(1, "Normalizer count must be above 0"),
+          normalizerChange: z.enum(NORMALIZER_CHANGES).default("correct"),
+        })
+      )
+      .min(1, "No counts were sent")
   ),
 })
 

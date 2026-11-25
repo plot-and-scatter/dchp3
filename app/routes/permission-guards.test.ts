@@ -21,6 +21,7 @@ import type * as FrequencyIndex from "./frequency-index/index"
 import type * as FrequencyLookup from "./frequency-index/$id"
 import type * as FrequencyLookupEdit from "./frequency-index/$id.edit"
 import type * as FrequencyNormalizers from "./frequency-index/normalizers"
+import type * as FrequencyLookups from "./frequency-index/lookups"
 
 // These loaders reach Prisma once the guard lets them through, and
 // ~/db.server builds a real PrismaClient at import time. CI has no .env.
@@ -73,6 +74,7 @@ let frequencyNormalizersAction: typeof FrequencyNormalizers.action
 let frequencyLookupEditLoader: typeof FrequencyLookupEdit.loader
 let frequencyLookupEditAction: typeof FrequencyLookupEdit.action
 let frequencyNormalizersLoader: typeof FrequencyNormalizers.loader
+let frequencyLookupsLoader: typeof FrequencyLookups.loader
 
 beforeAll(async () => {
   process.env.COOKIE_SECRET = "test-cookie-secret"
@@ -93,6 +95,9 @@ beforeAll(async () => {
     await import("./frequency-index/$id.edit"))
   ;({ loader: frequencyNormalizersLoader, action: frequencyNormalizersAction } =
     await import("./frequency-index/normalizers"))
+  ;({ loader: frequencyLookupsLoader } = await import(
+    "./frequency-index/lookups"
+  ))
 })
 
 beforeEach(() => {
@@ -223,6 +228,13 @@ const GUARDED = [
     params: {},
     run: (request: Request, params: object) =>
       frequencyNormalizersAction(args(request, params)),
+  },
+  {
+    name: "/frequency-index/lookups loader",
+    url: "http://localhost/frequency-index/lookups",
+    params: {},
+    run: (request: Request, params: object) =>
+      frequencyLookupsLoader(args(request, params)),
   },
 ]
 

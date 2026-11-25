@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
@@ -23,6 +23,7 @@ import {
   FrequencyLookupEditSchema,
   MULTIPLIERS,
   type NormalizerChange,
+  addCounts,
   digitsOnly,
   formatCount,
   formatIndex,
@@ -188,6 +189,19 @@ export default function EditFrequencyLookupPage() {
           below links to the search it came from.
         </p>
 
+        {lookup.hasCombinedSearch && (
+          <p className="mb-6 max-w-3xl border-l-4 border-amber-500 bg-amber-50 p-3">
+            The USA counts here were read with one search across .edu, .gov,
+            .mil and .us, which makes the USA index too high. That cannot be
+            corrected on this page, because the four separate counts were never
+            read.{" "}
+            <Link to={`/frequency-index?${repeatParams}`}>
+              Repeat the lookup
+            </Link>{" "}
+            to read them.
+          </p>
+        )}
+
         {errors.length > 0 && (
           <div
             role="alert"
@@ -236,75 +250,131 @@ export default function EditFrequencyLookupPage() {
               </tr>
             </thead>
             <tbody>
-              {lookup.rows.map((r, i) => {
-                const c = counts[r.domainKey]
+              {lookup.domains.map((d) => {
+                // A country's index comes from its rows added up; the US
+                // has four rows in a lookup saved since November 2026.
+                const grouped = d.rows.length > 1
                 const index = frequencyIndex(
-                  parseCount(c.termHits),
-                  parseCount(c.normalizerHits),
+                  addCounts(
+                    d.rows.map((r) => parseCount(counts[r.domainKey].termHits))
+                  ),
+                  addCounts(
+                    d.rows.map((r) =>
+                      parseCount(counts[r.domainKey].normalizerHits)
+                    )
+                  ),
                   multiplier
                 )
-                const rowChanged =
-                  parseCount(c.termHits) !== r.termHits ||
-                  parseCount(c.normalizerHits) !== r.normalizerHits
-                return (
-                  <tr key={r.id} className="border-b border-gray-200 align-top">
-                    <td className="py-3 pr-4">
-                      <div className="font-semibold">{r.domainLabel}</div>
-                      <div className="text-sm text-gray-500">
-                        {r.siteClause}
-                      </div>
-                      <input
-                        type="hidden"
-                        name={`rows[${i}].domainKey`}
-                        value={r.domainKey}
-                      />
-                    </td>
-                    <td className="py-3 pr-4">
-                      <CountField
-                        name={`rows[${i}].termHits`}
-                        value={c.termHits}
-                        saved={r.termHits}
-                        query={r.termQuery}
-                        className={inputClass}
-                        onChange={(v) => setCount(r.domainKey, "termHits", v)}
-                      />
-                    </td>
-                    <td className="py-3 pr-4">
-                      <CountField
-                        name={`rows[${i}].normalizerHits`}
-                        value={c.normalizerHits}
-                        saved={r.normalizerHits}
-                        query={r.normalizerQuery}
-                        className={inputClass}
-                        onChange={(v) =>
-                          setCount(r.domainKey, "normalizerHits", v)
-                        }
-                      />
-                      <NormalizerChangeChoice
-                        row={r}
-                        changed={
-                          parseCount(c.normalizerHits) !== r.normalizerHits
-                        }
-                        others={otherUsers[r.normalizerCount.id] ?? []}
-                        name={`rows[${i}].normalizerChange`}
-                        value={c.normalizerChange}
-                        onChange={(v) => setChange(r.domainKey, v)}
-                      />
-                    </td>
+                const domainChanged = d.rows.some(
+                  (r) =>
+                    parseCount(counts[r.domainKey].termHits) !== r.termHits ||
+                    parseCount(counts[r.domainKey].normalizerHits) !==
+                      r.normalizerHits
+                )
+                const indexCells = (
+                  <Fragment>
                     <td className="py-3 pr-4 text-right tabular-nums text-gray-500">
-                      {formatIndex(r.frequencyIndex)}
+                      {formatIndex(d.frequencyIndex)}
                     </td>
                     <td
                       className={
                         "py-3 pr-4 text-right text-lg font-semibold tabular-nums" +
-                        (rowChanged || multiplier !== lookup.multiplier
+                        (domainChanged || multiplier !== lookup.multiplier
                           ? ""
                           : " text-gray-400")
                       }
                     >
                       {formatIndex(index) || <span>&ndash;</span>}
                     </td>
-                  </tr>
+                  </Fragment>
+                )
+                return (
+                  <Fragment key={d.domainKey}>
+                    {grouped && (
+                      <tr className="align-top">
+                        <td className="pb-1 pt-3 pr-4" colSpan={3}>
+                          <div className="font-semibold">{d.domainLabel}</div>
+                          <div className="text-sm text-gray-500">
+                            {d.rows.length} searches, added up
+                          </div>
+                        </td>
+                        {indexCells}
+                      </tr>
+                    )}
+                    {d.rows.map((r, position) => {
+                      const i = lookup.rows.findIndex((x) => x.id === r.id)
+                      const c = counts[r.domainKey]
+                      return (
+                        <tr
+                          key={r.id}
+                          className={
+                            "align-top" +
+                            (position === d.rows.length - 1
+                              ? " border-b border-gray-200"
+                              : "")
+                          }
+                        >
+                          <td
+                            className={"py-3 pr-4" + (grouped ? " pl-6" : "")}
+                          >
+                            {grouped ? (
+                              <div>{r.siteClause}</div>
+                            ) : (
+                              <Fragment>
+                                <div className="font-semibold">
+                                  {r.domainLabel}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  {r.siteClause}
+                                </div>
+                              </Fragment>
+                            )}
+                            <input
+                              type="hidden"
+                              name={`rows[${i}].domainKey`}
+                              value={r.domainKey}
+                            />
+                          </td>
+                          <td className="py-3 pr-4">
+                            <CountField
+                              name={`rows[${i}].termHits`}
+                              value={c.termHits}
+                              saved={r.termHits}
+                              query={r.termQuery}
+                              className={inputClass}
+                              onChange={(v) =>
+                                setCount(r.domainKey, "termHits", v)
+                              }
+                            />
+                          </td>
+                          <td className="py-3 pr-4">
+                            <CountField
+                              name={`rows[${i}].normalizerHits`}
+                              value={c.normalizerHits}
+                              saved={r.normalizerHits}
+                              query={r.normalizerQuery}
+                              className={inputClass}
+                              onChange={(v) =>
+                                setCount(r.domainKey, "normalizerHits", v)
+                              }
+                            />
+                            <NormalizerChangeChoice
+                              row={r}
+                              changed={
+                                parseCount(c.normalizerHits) !==
+                                r.normalizerHits
+                              }
+                              others={otherUsers[r.normalizerCount.id] ?? []}
+                              name={`rows[${i}].normalizerChange`}
+                              value={c.normalizerChange}
+                              onChange={(v) => setChange(r.domainKey, v)}
+                            />
+                          </td>
+                          {grouped ? <td colSpan={2} /> : indexCells}
+                        </tr>
+                      )
+                    })}
+                  </Fragment>
                 )
               })}
             </tbody>

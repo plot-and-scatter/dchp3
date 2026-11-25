@@ -126,8 +126,25 @@ export default function FrequencyLookupPage() {
           )}
         </dl>
 
+        {lookup.hasCombinedSearch && (
+          <p className="mb-6 max-w-3xl border-l-4 border-amber-500 bg-amber-50 p-3">
+            <strong>The USA index in this lookup is too high.</strong> It was
+            read with one search across .edu, .gov, .mil and .us. Google&rsquo;s
+            count for that search is about right for the term and far too low
+            for the normalizer (about a third of the real figure in November
+            2026), so the index comes out about three times too high. The other
+            countries are not affected. The tool now reads the four domains
+            separately and adds them up:{" "}
+            <Link to={`/frequency-index?${repeatParams}`}>
+              repeat this lookup
+            </Link>{" "}
+            to get a correct USA index, and do not use the chart below until
+            then.
+          </p>
+        )}
+
         <LookupRowsTable
-          rows={lookup.rows}
+          domains={lookup.domains}
           multiplier={lookup.multiplier}
           history={{
             normalizer: lookup.normalizer,

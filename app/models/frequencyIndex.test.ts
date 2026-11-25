@@ -1,5 +1,13 @@
 import {
+  COMBINED_SEARCHES,
   FREQUENCY_DOMAINS,
+  FREQUENCY_SEARCHES,
+  addCounts,
+  countryKeyOf,
+  historySeries,
+  isCombinedSearchKey,
+  searchByKey,
+  searchesOf,
   FrequencyLookupEditSchema,
   FrequencyLookupSchema,
   MULTIPLIERS,
@@ -39,6 +47,36 @@ describe("termQuery", () => {
     expect(termQuery('"double double" AND toque', ca)).toBe(
       '"double double" "toque" site:.ca'
     )
+  })
+
+  it("puts the alternatives joined by OR in brackets, each one quoted", () => {
+    expect(termQuery("EU OR European Union", ca)).toBe(
+      '("EU" OR "European Union") site:.ca'
+    )
+    expect(termQuery('toque OR "tuque" OR touque', ca)).toBe(
+      '("toque" OR "tuque" OR "touque") site:.ca'
+    )
+  })
+
+  it("reads OR before AND", () => {
+    expect(termQuery("associate member AND EU OR European Union", ca)).toBe(
+      '"associate member" ("EU" OR "European Union") site:.ca'
+    )
+    expect(termQuery("toque OR tuque AND hockey OR curling", ca)).toBe(
+      '("toque" OR "tuque") ("hockey" OR "curling") site:.ca'
+    )
+  })
+
+  it("keeps the exclusions and the US domain group after an OR term", () => {
+    expect(termQuery("EU OR European Union", us, "monkey")).toBe(
+      '("EU" OR "European Union") -monkey site:.edu OR site:.gov OR site:.mil OR site:.us'
+    )
+  })
+
+  it("leaves a lower-case or, and a fully quoted term, alone", () => {
+    expect(termQuery("sink or swim", ca)).toBe('"sink or swim" site:.ca')
+    expect(termQuery('"sink OR swim"', ca)).toBe('"sink OR swim" site:.ca')
+    expect(termQuery('"rock AND roll"', ca)).toBe('"rock AND roll" site:.ca')
   })
 
   it("leaves a lower-case and inside a phrase alone", () => {
@@ -122,7 +160,7 @@ describe("frequencyIndex", () => {
 })
 
 describe("FrequencyLookupSchema", () => {
-  const rows = FREQUENCY_DOMAINS.map((d, i) => ({
+  const rows = FREQUENCY_SEARCHES.map((d, i) => ({
     domainKey: d.key,
     termHits: i * 10,
     normalizerHits: 1000,
@@ -131,6 +169,29 @@ describe("FrequencyLookupSchema", () => {
 
   it("accepts a complete lookup", () => {
     expect(FrequencyLookupSchema.safeParse(valid).success).toBe(true)
+  })
+  it("asks for one row per search, so four for the US and ten in all", () => {
+    expect(rows.map((r) => r.domainKey)).toEqual([
+      "ca",
+      "us.edu",
+      "us.gov",
+      "us.mil",
+      "us.us",
+      "uk",
+      "ie",
+      "nz",
+      "au",
+      "za",
+    ])
+  })
+  it("rejects the US as one combined row", () => {
+    const combined = [
+      ...rows.filter((r) => !r.domainKey.startsWith("us.")),
+      { domainKey: "us", termHits: 1, normalizerHits: 1000 },
+    ]
+    expect(
+      FrequencyLookupSchema.safeParse({ ...valid, rows: combined }).success
+    ).toBe(false)
   })
   it("rejects a missing domain", () => {
     const r = FrequencyLookupSchema.safeParse({ ...valid, rows: rows.slice(1) })
@@ -191,12 +252,81 @@ describe("FrequencyLookupEditSchema", () => {
       }).success
     ).toBe(false)
   })
-  it("still requires one row per domain", () => {
+  // The correction page sends the rows the saved lookup has: seven for a
+  // lookup saved when the US was one combined search, ten since. The save
+  // itself refuses a correction that leaves out a stored row.
+  it("accepts the ten rows of a lookup saved now", () => {
     expect(
       FrequencyLookupEditSchema.safeParse({
         multiplier: 10_000,
-        rows: rows.slice(1),
+        rows: FREQUENCY_SEARCHES.map((d) => ({
+          domainKey: d.key,
+          termHits: 1,
+          normalizerHits: 1000,
+        })),
+      }).success
+    ).toBe(true)
+  })
+  it("rejects no rows, and the same row twice", () => {
+    expect(
+      FrequencyLookupEditSchema.safeParse({ multiplier: 10_000, rows: [] })
+        .success
+    ).toBe(false)
+    expect(
+      FrequencyLookupEditSchema.safeParse({
+        multiplier: 10_000,
+        rows: [rows[0], rows[0]],
       }).success
     ).toBe(false)
+  })
+})
+
+describe("searches", () => {
+  it("gives the US one search per domain and every other country one", () => {
+    expect(searchesOf("us").map((s) => [s.key, s.label, s.tlds])).toEqual([
+      ["us.edu", "USA .edu", [".edu"]],
+      ["us.gov", "USA .gov", [".gov"]],
+      ["us.mil", "USA .mil", [".mil"]],
+      ["us.us", "USA .us", [".us"]],
+    ])
+    expect(searchesOf("ca").map((s) => s.key)).toEqual(["ca"])
+    expect(FREQUENCY_SEARCHES).toHaveLength(10)
+  })
+
+  it("searches one domain at a time, with no OR", () => {
+    const gov = searchByKey("us.gov")!
+    expect(termQuery("toque", gov, "monkey")).toBe("toque -monkey site:.gov")
+    expect(normalizerQuery("the", gov)).toBe("the site:.gov")
+    for (const s of FREQUENCY_SEARCHES)
+      expect(termQuery("toque", s)).not.toContain(" OR ")
+  })
+
+  it("knows which country a stored key belongs to, old or new", () => {
+    expect(countryKeyOf("us.mil")).toBe("us")
+    expect(countryKeyOf("us")).toBe("us")
+    expect(countryKeyOf("ca")).toBe("ca")
+    expect(isCombinedSearchKey("us")).toBe(true)
+    expect(isCombinedSearchKey("us.us")).toBe(false)
+    expect(isCombinedSearchKey("ca")).toBe(false)
+    expect(COMBINED_SEARCHES.map((d) => d.key)).toEqual(["us"])
+  })
+
+  it("adds up counts only when every one is known", () => {
+    expect(addCounts([181_000, 14_400, 252, 105_000])).toBe(300_652)
+    expect(addCounts([181_000, null, 252, 105_000])).toBeNull()
+    expect(addCounts([0, 0])).toBe(0)
+    expect(addCounts([])).toBeNull()
+  })
+
+  it("lists the old combined US series in a history only when it has counts", () => {
+    expect(historySeries({}).map((s) => s.key)).toEqual(
+      FREQUENCY_SEARCHES.map((s) => s.key)
+    )
+    const withOld = historySeries({ us: [{}], ca: [{}] })
+    expect(withOld).toHaveLength(11)
+    expect(withOld[10]).toEqual({
+      key: "us",
+      label: "USA, one combined search (no longer used)",
+    })
   })
 })

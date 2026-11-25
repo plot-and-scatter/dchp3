@@ -1,11 +1,12 @@
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import type { NormalizerHistory } from "~/models/frequencyIndex.server"
-import { FREQUENCY_DOMAINS } from "~/models/frequencyIndex"
+import { FREQUENCY_SEARCHES } from "~/models/frequencyIndex"
 import { historyHref, timeRangeOf } from "~/models/normalizerSeries"
 import NormalizerSeriesChart from "./NormalizerSeriesChart"
 
-// The seven sparklines in a row under the form, for whichever normalizer
-// is typed, until the table is built and each moves into its domain's row.
+// The sparklines under the form, one per search (the US has four), for
+// whichever normalizer is typed, until the table is built and each moves
+// into its search's row.
 
 type Props = {
   normalizer: string
@@ -32,8 +33,8 @@ export default function NormalizerSparklines({
 
   return (
     <div className="mt-3 text-sm text-gray-600">
-      <div className="grid grid-cols-4 gap-x-5 gap-y-2 md:grid-cols-7">
-        {FREQUENCY_DOMAINS.map((d) => (
+      <div className="grid grid-cols-3 gap-x-5 gap-y-2 md:grid-cols-5">
+        {FREQUENCY_SEARCHES.map((d) => (
           <NormalizerSeriesChart
             key={d.key}
             variant="spark"

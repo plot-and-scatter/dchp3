@@ -1,9 +1,10 @@
 // @vitest-environment node
-import { FREQUENCY_DOMAINS } from "./frequencyIndex"
+import { FREQUENCY_DOMAINS, FREQUENCY_SEARCHES } from "./frequencyIndex"
 
 // Every prisma call the module makes is stubbed; $transaction runs the
 // callback against the same stubs so the sequence of writes can be checked.
 const lookup = {
+  count: vi.fn(),
   create: vi.fn(),
   findMany: vi.fn(),
   findUnique: vi.fn(),
@@ -42,9 +43,11 @@ vi.mock("~/db.server", () => ({
 import {
   deleteFrequencyLookup,
   deleteNormalizerCount,
+  getFrequencyLookup,
   getNormalizerHistories,
   getNormalizerHistory,
   getRecentNormalizerCounts,
+  listFrequencyLookups,
   saveFrequencyLookup,
   updateFrequencyLookupCounts,
 } from "./frequencyIndex.server"
@@ -83,7 +86,7 @@ describe("saveFrequencyLookup", () => {
     count.findMany.mockResolvedValue([
       countRecord({ id: 7, domain_key: "ca", hits: 25_000_000_000n }),
     ])
-    const rows = FREQUENCY_DOMAINS.map((d, i) => ({
+    const rows = FREQUENCY_SEARCHES.map((d, i) => ({
       domainKey: d.key,
       termHits: 100 * (i + 1),
       normalizerHits: 25_000_000_000,
@@ -108,8 +111,9 @@ describe("saveFrequencyLookup", () => {
     expect(data.backend).toBe("browser")
     expect(data.user_id).toBe(3)
 
-    // Six fresh observations, all linked to this lookup, none for Canada.
-    expect(count.create).toHaveBeenCalledTimes(6)
+    // One observation per search, so four for the US: nine fresh ones, all
+    // linked to this lookup, none for Canada.
+    expect(count.create).toHaveBeenCalledTimes(9)
     for (const call of count.create.mock.calls) {
       expect(call[0].data.lookup_id).toBe(42)
       expect(call[0].data.source).toBe("lookup")
@@ -117,7 +121,28 @@ describe("saveFrequencyLookup", () => {
       expect(call[0].data.hits).toBe(25_000_000_000n)
     }
 
-    expect(row.create).toHaveBeenCalledTimes(7)
+    expect(count.create.mock.calls.map((c) => c[0].data.domain_key)).toEqual([
+      "us.edu",
+      "us.gov",
+      "us.mil",
+      "us.us",
+      "uk",
+      "ie",
+      "nz",
+      "au",
+      "za",
+    ])
+
+    expect(row.create).toHaveBeenCalledTimes(10)
+    const edu = row.create.mock.calls[1][0].data
+    expect(edu.domain_key).toBe("us.edu")
+    expect(edu.domain_label).toBe("USA .edu")
+    expect(edu.site_clause).toBe("site:.edu")
+    expect(edu.term_query).toBe("toque -monkey site:.edu")
+    // Nothing is saved as one combined US search any more.
+    expect(
+      row.create.mock.calls.map((c) => c[0].data.domain_key)
+    ).not.toContain("us")
     const ca = row.create.mock.calls[0][0].data
     expect(ca.domain_key).toBe("ca")
     expect(ca.term_query).toBe("toque -monkey site:.ca")
@@ -130,7 +155,7 @@ describe("saveFrequencyLookup", () => {
   it("takes a fresh reading when the reused id no longer matches the count", async () => {
     lookup.create.mockResolvedValue({ id: 43 })
     count.findMany.mockResolvedValue([countRecord({ id: 7, hits: 999n })])
-    const rows = FREQUENCY_DOMAINS.map((d, i) => ({
+    const rows = FREQUENCY_SEARCHES.map((d, i) => ({
       domainKey: d.key,
       termHits: 1,
       normalizerHits: 1000,
@@ -140,7 +165,7 @@ describe("saveFrequencyLookup", () => {
       userId: 3,
       input: { term: "toque", normalizer: "the", multiplier: 10_000, rows },
     })
-    expect(count.create).toHaveBeenCalledTimes(7)
+    expect(count.create).toHaveBeenCalledTimes(10)
     expect(row.create.mock.calls[0][0].data.normalizer_count_id).toBe(900)
   })
 })
@@ -217,6 +242,24 @@ describe("updateFrequencyLookupCounts", () => {
       user_id: 9,
     })
     expect(row.update.mock.calls[0][0].data.normalizer_count_id).toBe(900)
+  })
+
+  it("refuses a correction that leaves out one of the stored rows", async () => {
+    lookup.findUnique.mockResolvedValue(stored())
+    const rows = FREQUENCY_DOMAINS.slice(1).map((d) => ({
+      domainKey: d.key,
+      termHits: 20,
+      normalizerHits: 1000,
+      normalizerChange: "correct" as const,
+    }))
+
+    await expect(
+      updateFrequencyLookupCounts({
+        id: 5,
+        userId: 9,
+        input: { multiplier: 10_000, rows },
+      })
+    ).rejects.toThrow("Missing row for domain ca")
   })
 
   it("returns null for an unknown lookup", async () => {
@@ -364,5 +407,158 @@ describe("getNormalizerHistory", () => {
     expect(count.findMany.mock.calls[0][0].where).not.toHaveProperty(
       "normalizer"
     )
+  })
+})
+
+describe("listFrequencyLookups", () => {
+  beforeEach(() => {
+    lookup.findMany.mockResolvedValue([])
+  })
+
+  it("returns the first 50, newest first, when given nothing", async () => {
+    lookup.count.mockResolvedValue(120)
+
+    const result = await listFrequencyLookups()
+
+    expect(result).toMatchObject({ total: 120, page: 1, pageCount: 3 })
+    expect(lookup.count).toHaveBeenCalledWith({ where: {} })
+    expect(lookup.findMany.mock.calls[0][0]).toMatchObject({
+      where: {},
+      orderBy: [{ created: "desc" }, { id: "desc" }],
+      skip: 0,
+      take: 50,
+    })
+  })
+
+  it("skips the earlier pages", async () => {
+    lookup.count.mockResolvedValue(120)
+
+    const result = await listFrequencyLookups({ page: 3 })
+
+    expect(result.page).toBe(3)
+    expect(lookup.findMany.mock.calls[0][0]).toMatchObject({ skip: 100 })
+  })
+
+  it("filters by words in the term, counting only the matches", async () => {
+    lookup.count.mockResolvedValue(2)
+
+    const result = await listFrequencyLookups({ search: "  toque " })
+
+    const where = { term: { contains: "toque" } }
+    expect(lookup.count).toHaveBeenCalledWith({ where })
+    expect(lookup.findMany.mock.calls[0][0]).toMatchObject({ where })
+    expect(result).toMatchObject({ total: 2, pageCount: 1 })
+  })
+
+  it.each([
+    [0, 1],
+    [-4, 1],
+    [NaN, 1],
+    [2.5, 1],
+    [99, 3],
+  ])("brings page %s into range as page %s", async (asked, shown) => {
+    lookup.count.mockResolvedValue(120)
+
+    const result = await listFrequencyLookups({ page: asked })
+
+    expect(result.page).toBe(shown)
+  })
+
+  it("is page 1 of 1 when nothing is saved", async () => {
+    lookup.count.mockResolvedValue(0)
+
+    const result = await listFrequencyLookups({ page: 2 })
+
+    expect(result).toMatchObject({ total: 0, page: 1, pageCount: 1 })
+    expect(lookup.findMany.mock.calls[0][0]).toMatchObject({ skip: 0 })
+  })
+})
+
+describe("getFrequencyLookup", () => {
+  // Hits per search: the term, then the normalizer. The US figures are the
+  // ones read from Google on 2026-11-24 for "toque" and "the".
+  const HITS: Record<string, [bigint, bigint]> = {
+    ca: [50_000n, 4_000_000_000n],
+    "us.edu": [181_000n, 1_180_000_000n],
+    "us.gov": [14_400n, 4_120_000_000n],
+    "us.mil": [252n, 84_700_000n],
+    "us.us": [105_000n, 537_000_000n],
+    us: [300_000n, 1_750_000_000n],
+    uk: [9_000n, 5_000_000_000n],
+  }
+  const record = (keys: string[]) => ({
+    id: 5,
+    term: "toque",
+    normalizer: "the",
+    exclusions: null,
+    multiplier: 1_000_000,
+    backend: "browser",
+    hl: "en",
+    gl: null,
+    created: day(1),
+    user,
+    updated: null,
+    updated_user: null,
+    rows: keys.map((key, i) => ({
+      id: 100 + i,
+      domain_key: key,
+      domain_label: key,
+      site_clause: `site:${key}`,
+      term_query: `toque site:${key}`,
+      term_hits: HITS[key][0],
+      normalizer_count_id: 50 + i,
+      normalizer_count: countRecord({
+        id: 50 + i,
+        domain_key: key,
+        hits: HITS[key][1],
+        lookup_id: 5,
+      }),
+    })),
+  })
+
+  it("adds up the four US searches into one US index", async () => {
+    lookup.findUnique.mockResolvedValue(
+      record(["ca", "us.edu", "us.gov", "us.mil", "us.us", "uk"])
+    )
+
+    const view = await getFrequencyLookup(5)
+
+    expect(view?.rows).toHaveLength(6)
+    expect(view?.domains.map((d) => [d.domainKey, d.method])).toEqual([
+      ["ca", "single"],
+      ["us", "added"],
+      ["uk", "single"],
+    ])
+    const usa = view?.domains[1]
+    expect(usa?.domainLabel).toBe("USA")
+    expect(usa?.rows.map((r) => r.domainKey)).toEqual([
+      "us.edu",
+      "us.gov",
+      "us.mil",
+      "us.us",
+    ])
+    expect(usa?.termHits).toBe(300_652)
+    expect(usa?.normalizerHits).toBe(5_921_700_000)
+    expect(usa?.frequencyIndex).toBeCloseTo(50.77, 2)
+    expect(usa?.rows[0].normalizerQuery).toBe("the site:.edu")
+    expect(view?.hasCombinedSearch).toBe(false)
+  })
+
+  it("marks a US count read with one combined search, whose index is too high", async () => {
+    lookup.findUnique.mockResolvedValue(record(["ca", "us", "uk"]))
+
+    const view = await getFrequencyLookup(5)
+
+    expect(view?.domains.map((d) => [d.domainKey, d.method])).toEqual([
+      ["ca", "single"],
+      ["us", "combined"],
+      ["uk", "single"],
+    ])
+    const usa = view?.domains[1]
+    expect(usa?.frequencyIndex).toBeCloseTo(171.43, 2)
+    expect(usa?.rows[0].normalizerQuery).toBe(
+      "the site:.edu OR site:.gov OR site:.mil OR site:.us"
+    )
+    expect(view?.hasCombinedSearch).toBe(true)
   })
 })

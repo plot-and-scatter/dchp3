@@ -18,6 +18,7 @@ import {
   MULTIPLIERS,
 } from "~/models/frequencyIndex"
 import {
+  countFrequencyLookups,
   getNormalizerHistories,
   getRecentNormalizerCounts,
   listRecentFrequencyLookups,
@@ -53,18 +54,24 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     params.get("focus") === "exclusions" ? ("exclusions" as const) : null
 
   const since = new Date(Date.now() - SPARKLINE_DAYS * 24 * 3600 * 1000)
-  const [recentNormalizerCounts, recentLookups, normalizerHistories] =
-    await Promise.all([
-      getRecentNormalizerCounts(),
-      listRecentFrequencyLookups(),
-      getNormalizerHistories(since),
-    ])
+  const [
+    recentNormalizerCounts,
+    recentLookups,
+    lookupTotal,
+    normalizerHistories,
+  ] = await Promise.all([
+    getRecentNormalizerCounts(),
+    listRecentFrequencyLookups(),
+    countFrequencyLookups(),
+    getNormalizerHistories(since),
+  ])
 
   return {
     defaults,
     focusField,
     recentNormalizerCounts,
     recentLookups,
+    lookupTotal,
     normalizerHistories,
   }
 }
@@ -94,6 +101,7 @@ export default function FrequencyIndexPage() {
     focusField,
     recentNormalizerCounts,
     recentLookups,
+    lookupTotal,
     normalizerHistories,
   } = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
@@ -149,7 +157,7 @@ export default function FrequencyIndexPage() {
                 actionData?.kind === "invalid" ? actionData.result : null
               }
             />
-            <RecentLookups lookups={recentLookups} />
+            <RecentLookups lookups={recentLookups} total={lookupTotal} />
           </div>
           {helpOpen ? (
             <aside className="mb-8 xl:sticky xl:top-28 xl:order-2 xl:mb-0 xl:w-96 xl:shrink-0">

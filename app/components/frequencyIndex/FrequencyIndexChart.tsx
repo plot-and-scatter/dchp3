@@ -38,10 +38,11 @@ export default function FrequencyIndexChart({ lookup }: Props) {
   const [fontNote, setFontNote] = useState(false)
 
   const layout = layoutChart(
-    lookup.rows.map((r) => ({
-      key: r.domainKey,
-      label: chartDomainLabel(r.domainKey),
-      value: r.frequencyIndex,
+    // One column per country; the US column is its four searches added up.
+    lookup.domains.map((d) => ({
+      key: d.domainKey,
+      label: chartDomainLabel(d.domainKey),
+      value: d.frequencyIndex,
     })),
     {
       title: chartTitle(lookup.term, lookup.exclusions),
