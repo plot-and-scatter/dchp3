@@ -45,6 +45,15 @@ const RENAMED_PAGES: Record<string, string> = {
   copyrightnotice: "copyright-notice",
 }
 
+// The old sites sometimes printed an entry's address encoded three times
+// over: "bush ((n.))" as "bush%252520%252528%252528n.%252529%252529", where
+// "%252520" is a space. Thousands of these were recorded by crawlers and
+// some are in print. This puts each character back to a single encoding
+// ("%20"). No headword in either archive contains a percent sign, so "%25"
+// before two hex digits is never part of a real headword.
+const collapseRepeatedEncoding = (path: string) =>
+  path.replace(/%(?:25)+([0-9a-f]{2})/gi, "%$1")
+
 // The new app path for an old address, or undefined when the path is not one
 // of the old sites' addresses (which is nearly always).
 export const legacyPathRedirect = (
@@ -65,7 +74,15 @@ export const legacyPathRedirect = (
 
   for (const rule of RULES) {
     const match = path.match(rule.from)
-    if (match) return rule.to(match)
+    if (match) return collapseRepeatedEncoding(rule.to(match))
+  }
+
+  // An entry address already in the current form, but over-encoded. This is
+  // what arrives when a redirect in front of the site has already turned
+  // "/Entries/view/" into "/entries/".
+  if (/^\/entries\//i.test(path)) {
+    const collapsed = collapseRepeatedEncoding(path)
+    if (collapsed !== path) return collapsed
   }
   return undefined
 }
