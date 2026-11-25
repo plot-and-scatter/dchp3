@@ -1,11 +1,14 @@
 import { prisma } from "~/db.server"
 import {
   BACKEND_BROWSER,
-  FREQUENCY_DOMAINS,
+  FREQUENCY_SEARCHES,
   GOOGLE_HL,
   SOURCE_LOOKUP,
+  countryKeyOf,
   frequencyIndex,
+  isCombinedSearchKey,
   normalizerQuery,
+  searchByKey,
   siteClause,
   termQuery,
   domainByKey,
@@ -48,8 +51,10 @@ export type NormalizerCountView = {
   updatedUser: UserName | null
 }
 
+/** One stored row: one Google search for the term on one domain. */
 export type FrequencyLookupRowView = {
   id: number
+  /** The search's key: "ca", "us.edu", or "us" for an old combined search. */
   domainKey: string
   domainLabel: string
   siteClause: string
@@ -61,6 +66,25 @@ export type FrequencyLookupRowView = {
   normalizerCount: NormalizerCountView
   /** False when the count was read during another lookup or imported. */
   readHere: boolean
+}
+
+/**
+ * How a country's counts were read. "single": one search on its one domain.
+ * "added": one search per domain, added up. "combined": one OR search over
+ * several domains, the method used for the US until 2026-11; Google
+ * undercounts the normalizer in such a search, so the index is too high.
+ */
+export type CountMethod = "single" | "added" | "combined"
+
+/** One country: one column of the chart. Counts are its rows added up. */
+export type FrequencyDomainView = {
+  domainKey: string
+  domainLabel: string
+  termHits: number
+  normalizerHits: number
+  frequencyIndex: number
+  method: CountMethod
+  rows: FrequencyLookupRowView[]
 }
 
 export type FrequencyLookupView = {
@@ -77,10 +101,15 @@ export type FrequencyLookupView = {
   /** Set when the counts or multiplier were corrected after saving. */
   updated: string | null
   updatedUser: UserName | null
+  /** Every stored row, in the order saved. */
   rows: FrequencyLookupRowView[]
+  /** The rows grouped by country, with each country's index. */
+  domains: FrequencyDomainView[]
+  /** True when a country was counted with one combined OR search. */
+  hasCombinedSearch: boolean
 }
 
-/** The most recent observation per normalizer and domain, for prefilling. */
+/** The most recent observation per normalizer and search, for prefilling. */
 export type RecentNormalizerCounts = Record<
   string,
   Record<string, NormalizerCountView>
@@ -128,7 +157,47 @@ const countToView = (c: CountRecord): NormalizerCountView => ({
   updatedUser: c.updated_user,
 })
 
-const toView = (lookup: LookupRecord): FrequencyLookupView => ({
+const groupByCountry = (
+  rows: FrequencyLookupRowView[],
+  multiplier: number
+): FrequencyDomainView[] => {
+  const groups = new Map<string, FrequencyLookupRowView[]>()
+  for (const r of rows) {
+    const key = countryKeyOf(r.domainKey)
+    groups.set(key, [...(groups.get(key) ?? []), r])
+  }
+  return Array.from(groups, ([domainKey, group]) => {
+    const termHits = group.reduce((sum, r) => sum + r.termHits, 0)
+    const normalizerHits = group.reduce((sum, r) => sum + r.normalizerHits, 0)
+    return {
+      domainKey,
+      domainLabel: domainByKey(domainKey)?.label ?? group[0].domainLabel,
+      termHits,
+      normalizerHits,
+      frequencyIndex: frequencyIndex(termHits, normalizerHits, multiplier) ?? 0,
+      method:
+        group.length > 1
+          ? "added"
+          : isCombinedSearchKey(group[0].domainKey)
+          ? "combined"
+          : "single",
+      rows: group,
+    }
+  })
+}
+
+const toView = (lookup: LookupRecord): FrequencyLookupView => {
+  const rows = rowsToView(lookup)
+  const domains = groupByCountry(rows, lookup.multiplier)
+  return {
+    ...lookupFields(lookup),
+    rows,
+    domains,
+    hasCombinedSearch: domains.some((d) => d.method === "combined"),
+  }
+}
+
+const lookupFields = (lookup: LookupRecord) => ({
   id: lookup.id,
   term: lookup.term,
   normalizer: lookup.normalizer,
@@ -141,9 +210,13 @@ const toView = (lookup: LookupRecord): FrequencyLookupView => ({
   user: lookup.user,
   updated: lookup.updated?.toISOString() ?? null,
   updatedUser: lookup.updated_user,
-  rows: lookup.rows.map((r) => {
+})
+
+const rowsToView = (lookup: LookupRecord): FrequencyLookupRowView[] =>
+  lookup.rows.map((r) => {
     const count = countToView(r.normalizer_count)
-    const domain = domainByKey(r.domain_key)
+    // An old combined row has the country's key, which is not a search.
+    const domain = searchByKey(r.domain_key) ?? domainByKey(r.domain_key)
     return {
       id: r.id,
       domainKey: r.domain_key,
@@ -160,8 +233,7 @@ const toView = (lookup: LookupRecord): FrequencyLookupView => ({
       normalizerCount: count,
       readHere: r.normalizer_count.lookup_id === lookup.id,
     }
-  }),
-})
+  })
 
 /** Today as a calendar date at UTC midnight, the form MySQL's DATE column keeps. */
 const today = () => new Date(new Date().toISOString().slice(0, 10))
@@ -200,9 +272,11 @@ export async function saveFrequencyLookup({
       select: { id: true },
     })
 
-    for (const domain of FREQUENCY_DOMAINS) {
+    // One row and one normalizer observation per search, so the US is four
+    // of each. `domain` here is a single top-level domain.
+    for (const domain of FREQUENCY_SEARCHES) {
       const row = input.rows.find((r) => r.domainKey === domain.key)
-      if (!row) throw new Error(`Missing row for domain ${domain.key}`)
+      if (!row) throw new Error(`Missing row for search ${domain.key}`)
 
       // Reuse the observation only if it is what the form said it was; a
       // stale id or an edited value means a fresh reading.
@@ -472,8 +546,10 @@ export async function listNormalizers(): Promise<
   }))
 }
 
+// Keyed by search. Counts from an old combined search ("us") are added
+// under their own key when there are any.
 const emptyHistory = (): NormalizerHistory =>
-  Object.fromEntries(FREQUENCY_DOMAINS.map((d) => [d.key, []]))
+  Object.fromEntries(FREQUENCY_SEARCHES.map((s) => [s.key, []]))
 
 /**
  * Every observation since `since`, grouped by normalizer and then by

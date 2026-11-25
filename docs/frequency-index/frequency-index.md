@@ -27,9 +27,61 @@ For each national domain, Frequency Index = hits(term, domain) ÷
 hits(normalizer, domain) × multiplier. The indices are then compared across
 domains; there is no threshold, and Type 5 remains an editorial judgment.
 
-- **Domains** (DCHP-2 set): Canada `.ca`; USA `.edu` OR `.gov` OR `.mil` OR
+- **Domains** (DCHP-2 set): Canada `.ca`; USA `.edu`, `.gov`, `.mil` and
   `.us`; UK `.uk`; Ireland `.ie`; New Zealand `.nz`; Australia `.au`; South
-  Africa `.za`. Defined once in `FREQUENCY_DOMAINS` in `app/models/frequencyIndex.ts`.
+  Africa `.za`. Defined once in `FREQUENCY_DOMAINS` in
+  `app/models/frequencyIndex.ts`: one entry per country, which is one column
+  of the chart.
+- **US: four searches added up** (2026-11-25, GitHub issue 500). Each
+  top-level domain is its own Google search (`FREQUENCY_SEARCHES`, ten in
+  all: keys `ca`, `us.edu`, `us.gov`, `us.mil`, `us.us`, `uk`, ...). A lookup
+  stores one row and uses one normalizer observation per search. The US
+  index is (the four term counts added) / (the four normalizer counts added)
+  x multiplier, computed on read like every index (`groupByCountry` in
+  `app/models/frequencyIndex.server.ts`; the form and the correction page
+  do the same sum with `addCounts`). This is how Natalia's spreadsheet
+  counted the US before the tool existed.
+
+  Why: from 2026-09-29 the tool sent one search,
+  `site:.edu OR site:.gov OR site:.mil OR site:.us`. Natalia and the students
+  saw the US normalizer drop from about 6.6 billion to about 1.7 billion on
+  that date. Counts read by Frank from google.com on 2026-11-24:
+
+  | Search | "the" | "toque" |
+  | --- | --- | --- |
+  | `.edu` | 1,180,000,000 | 181,000 |
+  | `.gov` | 4,120,000,000 | 14,400 |
+  | `.mil` | 84,700,000 | 252 |
+  | `.us` | 537,000,000 | 105,000 |
+  | the four added up | 5,921,700,000 | 300,652 |
+  | one OR search | 1,750,000,000 | 300,000 |
+
+  Google's figure for the OR search is right for a rare term and about a
+  third of the real figure for the normalizer (less than `.gov` alone), so
+  the US index came out about 3.4 times too high (about 4 times in late
+  September). Google does not document how it estimates counts; the working
+  explanation is that a small result set is close to a real count and a very
+  large one is extrapolated, badly when the query has several `site:`
+  conditions joined by OR. One term on one day: the factor is approximate.
+  The size at which the OR figure starts to fail is unknown, which is why
+  the term is searched per domain too and not only the normalizer.
+
+  **Lookups saved before the change** keep their single US row and
+  observation under the key `us` (`COMBINED_SEARCHES`). They cannot be
+  corrected, because the four counts were not read on those dates. Their
+  page and their correction page say the US index is too high and link to
+  "Repeat this lookup"; `FrequencyLookupView.hasCombinedSearch` and the
+  country's `method: "combined"` carry this. Nothing new is saved under
+  `us`, and the form's schema rejects it. On the normalizer history page
+  the old series has its own panel and column, "USA, one combined search
+  (no longer used)", with a note: its spreadsheet readings (to 2026-09-22)
+  are the four added up, its tool readings are the OR search. No database
+  change was needed: `domain_key` holds the search key.
+
+  `scripts/local/import-normalizer-counts.mjs` now also imports the
+  spreadsheet's `.edu`, `.gov`, `.mil` and `.us` columns as `us.edu` etc.,
+  so the four US series start in July 2026. Run it again on each database
+  after deploying; it skips rows already present.
 - **Normalizer**: `the` by default, per Stefan's current practice. Dollinger
   (2016, "Googleology as Smart Lexicography", *Dictionaries* 37: 60–98) used
   `could`. The field is editable, and the normalizer is stored on every lookup

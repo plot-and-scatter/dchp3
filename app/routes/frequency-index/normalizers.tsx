@@ -14,9 +14,10 @@ import { DefaultErrorBoundary } from "~/components/elements/DefaultErrorBoundary
 import { Link } from "~/components/elements/LinksAndButtons/Link"
 import NormalizerHistoryChart from "~/components/frequencyIndex/NormalizerHistoryChart"
 import {
+  COMBINED_SEARCHES,
   DEFAULT_NORMALIZER,
-  FREQUENCY_DOMAINS,
   formatCount,
+  historySeries,
 } from "~/models/frequencyIndex"
 import {
   deleteNormalizerCount,
@@ -87,6 +88,10 @@ export default function NormalizerHistoryPage() {
       days: String(d),
     })}`
 
+  const series = historySeries(history)
+  const hasCombined = COMBINED_SEARCHES.some(
+    (d) => (history[d.key] ?? []).length > 0
+  )
   const observations = Object.values(history).flat()
   const dates = [...new Set(observations.map((p) => p.observed))].sort()
 
@@ -169,6 +174,20 @@ export default function NormalizerHistoryPage() {
           <NormalizerHistoryChart history={history} normalizer={normalizer} />
         )}
 
+        {hasCombined && (
+          <p className="mt-6 max-w-3xl border-l-4 border-amber-500 bg-amber-50 p-3">
+            <strong>About the combined USA counts.</strong> Until November 2026
+            the tool read one count for the USA, from a single search across
+            .edu, .gov, .mil and .us. Google&rsquo;s figure for that search is
+            far too low for a common word, so the tool now reads the four
+            domains separately and adds them up. Counts in the combined series
+            that came from the spreadsheet are the four added up; counts read in
+            the tool are the single search, which is why that series drops at
+            the end of September 2026. Google&rsquo;s count for the USA did not
+            fall.
+          </p>
+        )}
+
         {dates.length > 0 && (
           <section className="mt-10">
             <h2 className="mb-3 text-xl font-semibold">
@@ -179,7 +198,7 @@ export default function NormalizerHistoryPage() {
                 <thead>
                   <tr className="border-b-2 border-gray-400">
                     <th className="py-2 pr-4">Date</th>
-                    {FREQUENCY_DOMAINS.map((d) => (
+                    {series.map((d) => (
                       <th key={d.key} className="py-2 pr-4 text-right">
                         {d.label}
                       </th>
@@ -190,7 +209,7 @@ export default function NormalizerHistoryPage() {
                   {dates.map((date) => (
                     <tr key={date} className="border-b border-gray-200">
                       <td className="py-2 pr-4">{date}</td>
-                      {FREQUENCY_DOMAINS.map((d) => {
+                      {series.map((d) => {
                         const onDate = (history[d.key] ?? []).filter(
                           (p) => p.observed === date
                         )

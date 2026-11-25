@@ -98,6 +98,18 @@ export default function HelpPanel({
         that is not signed in to Google.
       </p>
 
+      <h3 className="mt-5 font-semibold">The USA is four searches</h3>
+      <p className="mt-2">
+        The USA has no single national domain, so it is counted on .edu, .gov,
+        .mil and .us. Each is searched separately, for the term and for the
+        normalizer, and the tool adds the four counts up before working out the
+        USA index. Until November 2026 the tool used one search across all four;
+        Google&rsquo;s count for that search is far too low for a common word
+        like &ldquo;the&rdquo;, which made the USA index about three times too
+        high. Lookups saved that way say so on their page: repeat them to get a
+        correct USA index.
+      </p>
+
       <h3 className="mt-5 font-semibold">Keyboard-only workflow</h3>
       <ol className="mt-2 list-decimal space-y-2 pl-6">
         <li>
