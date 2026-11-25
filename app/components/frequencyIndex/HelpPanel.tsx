@@ -64,9 +64,12 @@ export default function HelpPanel({
             &quot;associate member&quot; (&quot;EU&quot; OR &quot;European
             Union&quot;)
           </code>
-          . Google&rsquo;s count for an <code>OR</code> search is a rougher
-          estimate than its count for a single term, and is not the sum of the
-          separate counts.
+          . Check an <code>OR</code> count before relying on it, because
+          Google can badly undercount an <code>OR</code> search that matches
+          a very large number of pages. The count should be at least as large
+          as the count for its most common wording on its own (here,{" "}
+          <code>&quot;EU&quot;</code>). If it is lower, look the wordings up
+          as separate lookups instead.
         </li>
         <li>
           <strong>Normalizer.</strong> The common word whose count stands in for

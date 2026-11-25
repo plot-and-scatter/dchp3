@@ -114,8 +114,29 @@ domains; there is no threshold, and Type 5 remains an editorial judgment.
   `associate member AND EU OR European Union` becomes
   `"associate member" ("EU" OR "European Union")`. A term typed entirely
   inside one pair of quotes is not split. Same function, `searchTerms`.
-  Google's count for an OR query is not the sum of the separate counts (the
-  US domain group has the same property). Added 2026-11-24 for Natalia.
+  Added 2026-11-24 for Natalia.
+
+  How far an OR count can be trusted: the wordings overlap (a page can have
+  both), so a correct OR count lies between the largest single count and the
+  sum. The US finding above shows Google can undercount an OR search that
+  matches billions of pages, so this was tested on `.uk`, the largest single
+  domain, on 2026-11-25 (counts read by Frank):
+
+  | Search on `.uk` | Count |
+  | --- | --- |
+  | `"EU"` | 608,000,000 |
+  | `"European Union"` | 48,500,000 |
+  | `("EU" OR "European Union")` | 616,000,000 |
+  | `"associate member" "EU"` | 23,000 |
+  | `"associate member" "European Union"` | 7,170 |
+  | `"associate member" ("EU" OR "European Union")` | 24,200 |
+
+  Both OR counts are in the expected range, so OR held up at 600 million
+  pages. One term, one domain, one day; "the" failed at about 6 billion,
+  and the size at which failure starts is unknown. The help panel therefore
+  gives students a check: an OR count lower than the count for its most
+  common wording alone is wrong, and the wordings should then be looked up
+  separately.
 - **Exclusions**: free text, each token becomes `-token` (so `site:x.com`
   becomes `-site:x.com`). Applied to the term query on every domain identically
   and never to the normalizer query, whose count stands in for the size of the
