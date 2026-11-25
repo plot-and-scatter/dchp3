@@ -390,7 +390,7 @@ export default function FrequencyIndexForm({
               value={term}
               onChange={(e) => setTerm(e.target.value)}
               onKeyDown={onTopFieldKeyDown}
-              placeholder="e.g. toque, or toque AND hockey"
+              placeholder="e.g. toque, toque AND hockey, toque OR tuque"
               autoComplete="off"
               lightBorder
             />

@@ -56,6 +56,14 @@ domains; there is no threshold, and Type 5 remains an editorial judgment.
   `"toque" "hockey"`, which requires both words on the page. Google drops or
   loosens unquoted words, so each side is quoted. Handled by `searchTerms` in
   `app/models/frequencyIndex.ts`, for the normalizer too. Added 2026-09-24.
+- **OR**: `EU OR European Union` (upper-case OR, spaces on both sides)
+  becomes `("EU" OR "European Union")`, which counts pages with either. OR
+  is read before AND, as Google reads it, so
+  `associate member AND EU OR European Union` becomes
+  `"associate member" ("EU" OR "European Union")`. A term typed entirely
+  inside one pair of quotes is not split. Same function, `searchTerms`.
+  Google's count for an OR query is not the sum of the separate counts (the
+  US domain group has the same property). Added 2026-11-24 for Natalia.
 - **Exclusions**: free text, each token becomes `-token` (so `site:x.com`
   becomes `-site:x.com`). Applied to the term query on every domain identically
   and never to the normalizer query, whose count stands in for the size of the
@@ -118,9 +126,13 @@ domains; there is no threshold, and Type 5 remains an editorial judgment.
   updated, updated_user_id), plus the two above. DDL in
   `sql/create-frequency-index.sql`, applied by hand because the project has
   no migration workflow.
-- **History**: the page lists recent lookups; each has a view page with the
-  rows, links to the queries, and a "Repeat this lookup" link that prefills the
-  form through the query string.
+- **History**: the page lists the 25 most recent lookups; each has a view
+  page with the rows, links to the queries, and a "Repeat this lookup" link
+  that prefills the form through the query string. Under that list a link
+  opens **All lookups** (`app/routes/frequency-index/lookups.tsx`, added
+  2026-11-24 after Natalia could not reach lookups older than the 25): every
+  saved lookup, newest first, 50 to a page, with a box that filters by words
+  in the term.
 - **Normalizer history** (`app/routes/frequency-index/normalizers.tsx`, added
   2026-09-24): one panel per domain of every observation, over 30 days, 90
   days, a year or all time, with the same numbers as a table beneath. The

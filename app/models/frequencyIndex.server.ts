@@ -395,6 +395,43 @@ export async function listRecentFrequencyLookups(
   return lookups.map(toView)
 }
 
+export const LOOKUPS_PAGE_SIZE = 50
+
+/**
+ * Every saved lookup, newest first, one page at a time. The form page shows
+ * only the newest 25; this is how the older ones are reached. `search`
+ * keeps the lookups whose term contains it (the database's collation makes
+ * that case-insensitive). `page` starts at 1 and is brought into range, so
+ * a stale link to a page that no longer exists shows the last page.
+ */
+export async function listFrequencyLookups({
+  page = 1,
+  search = "",
+}: { page?: number; search?: string } = {}) {
+  const term = search.trim()
+  const where = term ? { term: { contains: term } } : {}
+
+  const total = await prisma.frequencyLookup.count({ where })
+  const pageCount = Math.max(1, Math.ceil(total / LOOKUPS_PAGE_SIZE))
+  const current = Math.min(
+    Math.max(1, Number.isInteger(page) ? page : 1),
+    pageCount
+  )
+
+  const lookups = await prisma.frequencyLookup.findMany({
+    where,
+    orderBy: [{ created: "desc" }, { id: "desc" }],
+    skip: (current - 1) * LOOKUPS_PAGE_SIZE,
+    take: LOOKUPS_PAGE_SIZE,
+    include: LOOKUP_INCLUDE,
+  })
+  return { lookups: lookups.map(toView), total, page: current, pageCount }
+}
+
+export function countFrequencyLookups() {
+  return prisma.frequencyLookup.count()
+}
+
 /**
  * The newest observation in the last NORMALIZER_REUSE_DAYS per normalizer
  * and domain, whatever its source, so the form can prefill it instead of

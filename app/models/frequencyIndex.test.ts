@@ -41,6 +41,36 @@ describe("termQuery", () => {
     )
   })
 
+  it("puts the alternatives joined by OR in brackets, each one quoted", () => {
+    expect(termQuery("EU OR European Union", ca)).toBe(
+      '("EU" OR "European Union") site:.ca'
+    )
+    expect(termQuery('toque OR "tuque" OR touque', ca)).toBe(
+      '("toque" OR "tuque" OR "touque") site:.ca'
+    )
+  })
+
+  it("reads OR before AND", () => {
+    expect(termQuery("associate member AND EU OR European Union", ca)).toBe(
+      '"associate member" ("EU" OR "European Union") site:.ca'
+    )
+    expect(termQuery("toque OR tuque AND hockey OR curling", ca)).toBe(
+      '("toque" OR "tuque") ("hockey" OR "curling") site:.ca'
+    )
+  })
+
+  it("keeps the exclusions and the US domain group after an OR term", () => {
+    expect(termQuery("EU OR European Union", us, "monkey")).toBe(
+      '("EU" OR "European Union") -monkey site:.edu OR site:.gov OR site:.mil OR site:.us'
+    )
+  })
+
+  it("leaves a lower-case or, and a fully quoted term, alone", () => {
+    expect(termQuery("sink or swim", ca)).toBe('"sink or swim" site:.ca')
+    expect(termQuery('"sink OR swim"', ca)).toBe('"sink OR swim" site:.ca')
+    expect(termQuery('"rock AND roll"', ca)).toBe('"rock AND roll" site:.ca')
+  })
+
   it("leaves a lower-case and inside a phrase alone", () => {
     expect(termQuery("rock and roll", ca)).toBe('"rock and roll" site:.ca')
   })

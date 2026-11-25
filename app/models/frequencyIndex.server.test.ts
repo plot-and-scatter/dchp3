@@ -4,6 +4,7 @@ import { FREQUENCY_DOMAINS } from "./frequencyIndex"
 // Every prisma call the module makes is stubbed; $transaction runs the
 // callback against the same stubs so the sequence of writes can be checked.
 const lookup = {
+  count: vi.fn(),
   create: vi.fn(),
   findMany: vi.fn(),
   findUnique: vi.fn(),
@@ -45,6 +46,7 @@ import {
   getNormalizerHistories,
   getNormalizerHistory,
   getRecentNormalizerCounts,
+  listFrequencyLookups,
   saveFrequencyLookup,
   updateFrequencyLookupCounts,
 } from "./frequencyIndex.server"
@@ -364,5 +366,69 @@ describe("getNormalizerHistory", () => {
     expect(count.findMany.mock.calls[0][0].where).not.toHaveProperty(
       "normalizer"
     )
+  })
+})
+
+describe("listFrequencyLookups", () => {
+  beforeEach(() => {
+    lookup.findMany.mockResolvedValue([])
+  })
+
+  it("returns the first 50, newest first, when given nothing", async () => {
+    lookup.count.mockResolvedValue(120)
+
+    const result = await listFrequencyLookups()
+
+    expect(result).toMatchObject({ total: 120, page: 1, pageCount: 3 })
+    expect(lookup.count).toHaveBeenCalledWith({ where: {} })
+    expect(lookup.findMany.mock.calls[0][0]).toMatchObject({
+      where: {},
+      orderBy: [{ created: "desc" }, { id: "desc" }],
+      skip: 0,
+      take: 50,
+    })
+  })
+
+  it("skips the earlier pages", async () => {
+    lookup.count.mockResolvedValue(120)
+
+    const result = await listFrequencyLookups({ page: 3 })
+
+    expect(result.page).toBe(3)
+    expect(lookup.findMany.mock.calls[0][0]).toMatchObject({ skip: 100 })
+  })
+
+  it("filters by words in the term, counting only the matches", async () => {
+    lookup.count.mockResolvedValue(2)
+
+    const result = await listFrequencyLookups({ search: "  toque " })
+
+    const where = { term: { contains: "toque" } }
+    expect(lookup.count).toHaveBeenCalledWith({ where })
+    expect(lookup.findMany.mock.calls[0][0]).toMatchObject({ where })
+    expect(result).toMatchObject({ total: 2, pageCount: 1 })
+  })
+
+  it.each([
+    [0, 1],
+    [-4, 1],
+    [NaN, 1],
+    [2.5, 1],
+    [99, 3],
+  ])("brings page %s into range as page %s", async (asked, shown) => {
+    lookup.count.mockResolvedValue(120)
+
+    const result = await listFrequencyLookups({ page: asked })
+
+    expect(result.page).toBe(shown)
+  })
+
+  it("is page 1 of 1 when nothing is saved", async () => {
+    lookup.count.mockResolvedValue(0)
+
+    const result = await listFrequencyLookups({ page: 2 })
+
+    expect(result).toMatchObject({ total: 0, page: 1, pageCount: 1 })
+    expect(lookup.findMany.mock.calls[0][0]).toMatchObject({ skip: 0 })
   })
 })

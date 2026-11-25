@@ -55,7 +55,18 @@ export default function HelpPanel({
           <strong>Term.</strong> A term with spaces is searched as a phrase. To
           require two words anywhere on the page, join them with{" "}
           <code>AND</code> in capitals: <code>toque AND hockey</code> searches
-          for <code>&quot;toque&quot; &quot;hockey&quot;</code>.
+          for <code>&quot;toque&quot; &quot;hockey&quot;</code>. To accept any
+          one of several wordings, join them with <code>OR</code> in capitals:{" "}
+          <code>EU OR European Union</code> counts pages with either. The two
+          can be combined, and <code>OR</code> is read first:{" "}
+          <code>associate member AND EU OR European Union</code> searches for{" "}
+          <code>
+            &quot;associate member&quot; (&quot;EU&quot; OR &quot;European
+            Union&quot;)
+          </code>
+          . Google&rsquo;s count for an <code>OR</code> search is a rougher
+          estimate than its count for a single term, and is not the sum of the
+          separate counts.
         </li>
         <li>
           <strong>Normalizer.</strong> The common word whose count stands in for

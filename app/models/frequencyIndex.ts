@@ -49,21 +49,48 @@ export const siteClause = (domain: FrequencyDomain) =>
 const quoteIfPhrase = (term: string) =>
   /\s/.test(term) && !/^".*"$/.test(term) ? `"${term}"` : term
 
+const quoted = (piece: string) => (/^".*"$/.test(piece) ? piece : `"${piece}"`)
+
+const splitOn = (text: string, operator: "AND" | "OR") =>
+  text
+    .split(new RegExp(`\\s+${operator}\\s+`))
+    .map((p) => p.trim())
+    .filter(Boolean)
+
 /**
  * `toque AND hockey` means pages that contain both words. Google has no AND
  * operator (every term is required by default, but a bare word may be
  * dropped or matched loosely), so each side is quoted: `"toque" "hockey"`.
  * AND must be upper case with a space on each side; "and" in a phrase is
  * left alone. A side that is already a phrase is quoted once.
+ *
+ * `EU OR European Union` means pages that contain either. OR is read before
+ * AND, as Google reads it, so `associate member AND EU OR European Union`
+ * is "associate member" with either of the other two:
+ * `"associate member" ("EU" OR "European Union")`. The alternatives are put
+ * in brackets so the grouping is visible in the query that is stored and
+ * shown. Added for Natalia, 2026-11-24.
+ *
+ * A term typed entirely inside one pair of quotes is a phrase and is not
+ * split, so `"sink OR swim"` searches for those three words together.
  */
 export const searchTerms = (term: string) => {
-  const parts = term
-    .trim()
-    .split(/\s+AND\s+/)
-    .map((p) => p.trim())
-    .filter(Boolean)
-  if (parts.length <= 1) return quoteIfPhrase(term.trim())
-  return parts.map((p) => (/^".*"$/.test(p) ? p : `"${p}"`)).join(" ")
+  const trimmed = term.trim()
+  if (/^"[^"]*"$/.test(trimmed)) return trimmed
+
+  const groups = splitOn(trimmed, "AND")
+    .map((group) => splitOn(group, "OR"))
+    .filter((alternatives) => alternatives.length > 0)
+  if (groups.length === 0 || (groups.length === 1 && groups[0].length === 1))
+    return quoteIfPhrase(trimmed)
+
+  return groups
+    .map((alternatives) =>
+      alternatives.length === 1
+        ? quoted(alternatives[0])
+        : `(${alternatives.map(quoted).join(" OR ")})`
+    )
+    .join(" ")
 }
 
 /**
