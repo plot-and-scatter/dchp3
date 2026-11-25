@@ -163,7 +163,7 @@ export default function LookupRowsTable({
 const provenance = (r: FrequencyLookupRowView) => {
   const c = r.normalizerCount
   const origin = r.readHere
-    ? "read here"
+    ? "recorded with this lookup"
     : c.lookup
     ? `reused from “${c.lookup.term}”, ${c.observed}`
     : `from ${c.source}, ${c.observed}`
